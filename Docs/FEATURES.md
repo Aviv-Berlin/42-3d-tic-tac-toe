@@ -5,6 +5,7 @@ Our goal is to deliver a competitive, accessible, and enjoyable 3D board game ex
 
 
 ## Feature List
+
 1. User Management
 Account Registration
     Create a user account using email and password.
@@ -12,17 +13,49 @@ Account Registration
 
 User Login
     Sign in using registered credentials.
-    Persistent user profile and game history.
-    User has performance satistics - 
-        Total games plays
-        wins, losses and draws
-        avrege score and win rate.
+    Persistent user profile and history.
+
+User Profile
+   Users can access a personal profile page containing:
+        Total games played
+        Wins, losses, and draws
+        Average score
+        Win rate
+        Ranking points
+        Match history
         winning game with N=5 is more points than N=3
+
+Match Replay
     User can view a list of previously played matches.
     User can reply game - a reply of all the moves leading to the win.
-    User can chance visual preferences (bright / dark modes / color schemes)
 
-2. Game Modes
+User Preferences
+    Users can customize:
+        Light and dark mode
+        Color themes
+        Sound settings
+
+
+2. Website Navigation and Pages
+Landing Page
+    The application provides a public landing page where visitors can:
+        Register a new account
+        Log in to an existing account
+
+Main Game Page
+    After authentication, users are directed to the main game page.
+    The page contains:
+        The game board displayed in the center of the page
+        A Babylon.js canvas rendering the interactive 3D game board
+        A button to access the user profile and statistics page
+        A logout button
+        Footer Navigation
+
+The footer contains links to:
+    Privacy Policy
+    Terms of Service
+
+3. Game Modes
 Single Player
     Play against a computer-controlled opponent (AI).
 
@@ -33,12 +66,12 @@ Online Multiplayer
     Two registered users can play against each other from different devices and locations.
     Three registered users can play.
 
-3. Board Configurations
+4. Board Configurations
 3×3×3 Cube
 4×4×4 Cube
 5x5x5 Cube
 
-4. 3D Gameplay Interface
+5. 3D Gameplay Interface
 Interactive 3D Board
     The game board is represented as a semi-transparent cube structure.
     Individual cells are displayed as transparent cubes.
@@ -57,7 +90,7 @@ Hover Feedback
 Cell Selection
     Clicking an available cube places the player's marker and marks the cell as occupied.
 
-5. Keyboard Accessibility
+6. Keyboard Accessibility
 Keyboard Navigation
     Players can navigate between playable cells using keyboard controls.
     The currently selected cell is highlighted.
@@ -65,7 +98,7 @@ Keyboard Navigation
 Keyboard Selection
     Pressing the Enter key confirms the move.
 
-6. Game Logic
+7. Game Logic
 Turn-Based Gameplay
     Players alternate turns until a winning condition or draw is reached.
 
@@ -74,7 +107,7 @@ Win Detection
     A short animation marks the win (spheres pulse / sphere shoot stars / game board spins)
     When a player wins, the winning sequence of spheres is visually highlighted.
 
-7. Web Platform
+8. Web Platform
 Browser-Based Application
 
     Runs entirely within a modern web browser.
@@ -83,10 +116,15 @@ Browser-Based Application
 Cross-Platform Access
     Accessible from desktop and laptop devices using supported browsers.
 
+9. Audio
+Sound Effects
+    Sound when selecting a valid cell.
+    Sound when a player wins a game.
+    Optional UI sounds for navigation and notifications.
 
 
 Possible future enhancements (nice-to-have)
-
+    Alternative board visualization (grid-based board)
     Global leaderboard
     Spectator mode
     Friends list

@@ -13,7 +13,7 @@ export default function LoginPage() {
     <div className="page">
         <h1>3D Tic-Tac-Toe</h1>
 
-        <form onSubmit={handleSubmit}>
+        <form className="loginForm" onSubmit={handleSubmit}>
           <div className="field">
             <label>Email</label>
             <input
@@ -28,13 +28,13 @@ export default function LoginPage() {
             <label>Password</label>
             <input
               type="password"
-              placeholder=""
+              placeholder="••••••••"
               value={password}
               onChange={(e) => setPassword(e.target.value)}
             />
           </div>
 
-          <button type="submit">Sign in</button>
+          <button className="submitButton" type="submit">Sign in</button>
         </form>
     </div>
   )

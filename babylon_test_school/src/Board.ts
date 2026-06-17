@@ -48,7 +48,6 @@ export class Board {
         const previewMat = new BABYLON.StandardMaterial("previewMat", this.scene);
         previewMat.diffuseColor = new BABYLON.Color3(1, 1, 1);
         previewMat.alpha = 0.6;
-        this.previewSphere.renderingGroupId = 1;
 
 
         this.previewSphere.material = previewMat;

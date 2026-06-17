@@ -34,23 +34,23 @@ export class PlacementManager {
         switch (plane) {
             case "x":
                 if (direction)
-                    this.cursorX++;
+                    this.cursorX = this.isValidPlacement(this.cursorX + 1);
                 else
-                    this.cursorX--;
+                    this.cursorX = this.isValidPlacement(this.cursorX - 1);
                 break;
             
             case "y":
                 if (direction)
-                    this.cursorY++;
+                    this.cursorY = this.isValidPlacement(this.cursorY + 1);
                 else
-                    this.cursorY--;
+                    this.cursorY = this.isValidPlacement(this.cursorY - 1);
                 break;
 
             case "z":
                 if (direction)
-                    this.cursorZ++;
+                    this.cursorZ = this.isValidPlacement(this.cursorZ + 1);
                 else
-                    this.cursorZ--;
+                    this.cursorZ = this.isValidPlacement(this.cursorZ - 1);
                 break;
         }
         if (this.currentSphere)
@@ -73,6 +73,14 @@ export class PlacementManager {
         this.currentSphere = this.board.putSphere(this.cursorX, this.cursorY, this.cursorZ, material);
     }
 
+    private isValidPlacement(cursor: number): number {
+        if (cursor === this.N)
+            return 0;
+        else if (cursor < 0)
+            return this.N - 1;
+        else
+            return cursor;
+    }
     private getCurrentPlayerMaterial(preview: boolean): Material {
         if (preview)
         {

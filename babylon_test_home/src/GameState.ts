@@ -1,9 +1,9 @@
-
+import { GameUI } from "./GameUI.ts";
 
 export enum CellState {
-    Empty = 0;
-    Player1 = 1;
-    Player2 = 2;
+    Empty = 0,
+    Player1 = 1,
+    Player2 = 2,
 }
 
 export interface GridPosition {
@@ -16,10 +16,13 @@ export class GameState {
     private boardState: CellState [][][] = [];
     private currentPlayer: CellState = CellState.Player1;
     private N;
+    private ui: GameUI;
 
-    constructor(_N: number) {
-        this.N = _N;
+    constructor(N: number, ui: GameUI) {
+        this.N = N;
         this.initBoard();
+        this.ui = ui;
+        this.ui.playerTitle("Player 1");
     }
 
     private initBoard() {
@@ -41,5 +44,37 @@ export class GameState {
 
     public getCurrentPlayer(): CellState {
         return this.currentPlayer;
+    }
+
+    public placePiece(pos: GridPosition): boolean {
+        if (!this.isCellEmpty(pos))
+            return false;
+        this.boardState[pos.x][pos.y][pos.z] = this.currentPlayer;
+        this.switchPlayer();
+        return true;
+    }
+
+    private switchPlayer() {
+        if (this.currentPlayer === CellState.Player1)
+        {
+            this.currentPlayer = CellState.Player2;
+            this.ui.playerTitle("Player 2");
+        }
+        else
+        {
+            this.currentPlayer = CellState.Player1;
+            this.ui.playerTitle("Player 1");
+
+        }
+    }
+
+    public getCell(pos: GridPosition): CellState {
+        return this.boardState[pos.x][pos.y][pos.z];
+    }
+
+    public reset() {
+        this.initBoard();
+        this.currentPlayer = CellState.Player1;
+        this.ui.playerTitle("Player 1");
     }
 }

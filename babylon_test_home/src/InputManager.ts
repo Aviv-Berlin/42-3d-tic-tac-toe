@@ -1,11 +1,11 @@
-import { PlacementManager } from "./PlacementManager";
+import { GameGraphics } from "./GameGraphics.ts";
 
 export class InputManager{
     
-    private place: PlacementManager;
+    private graphics: GameGraphics;
 
-    constructor(_place: PlacementManager) {
-        this.place = _place;
+    constructor(graphics: GameGraphics) {
+        this.graphics = graphics;
     }
 
     public registerEvents(): void {
@@ -17,30 +17,34 @@ export class InputManager{
     private handleKeyDown(event: KeyboardEvent): void {
         switch (event.key) {
             case "q":
-                this.place.moveCursor(true, "y");
+                this.graphics.moveCursor(true, "y");
                 break;
             case "a":
-                this.place.moveCursor(false, "y");
+                this.graphics.moveCursor(false, "y");
                 break;
 
             case "w":
-                this.place.moveCursor(true, "z");
+                this.graphics.moveCursor(true, "z");
                 break;
 
             case "s":
-                this.place.moveCursor(false, "z");
+                this.graphics.moveCursor(false, "z");
                 break;
 
             case "e":
-                this.place.moveCursor(true, "x");
+                this.graphics.moveCursor(true, "x");
                 break;
 
             case "d":
-                this.place.moveCursor(false, "x");
+                this.graphics.moveCursor(false, "x");
                 break;
 
             case "Enter":
-                this.place.placeSphere();
+                this.graphics.placeSphere();
+                break;
+            
+            case "r":
+                this.graphics.reset();
                 break;
         }
     }

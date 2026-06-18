@@ -1,4 +1,4 @@
-//import * as BABYLON from "@babylonjs/core";
+import * as BABYLON from "@babylonjs/core";
 import { Scene } from "@babylonjs/core/scene";
 import { StandardMaterial } from "@babylonjs/core/Materials/standardMaterial";
 import { Color3 } from "@babylonjs/core/Maths/math.color";
@@ -12,6 +12,10 @@ export class Materials {
 
     constructor(scene: Scene)
     {
+        const light = new BABYLON.HemisphericLight
+            ("light", new BABYLON.Vector3(0, 1, 0), scene);
+        light.intensity = 0.7;
+
         this.cube = new StandardMaterial("cubeMat", scene);
         this.cube.diffuseColor = new Color3(0.67, 0.7, 0.71);
         this.cube.alpha = 0.35;

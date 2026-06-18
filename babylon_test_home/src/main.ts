@@ -38,3 +38,7 @@ input.registerEvents();
 window.addEventListener("resize", () => {
   engine.resize();
 })
+
+
+// for win detection: each cell has a +1 number if the cell next to it is the same.
+// the cell that gets N is part of a winning sequence

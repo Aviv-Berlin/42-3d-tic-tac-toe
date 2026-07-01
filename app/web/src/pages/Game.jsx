@@ -1,10 +1,11 @@
 import Navbar from '../components/Navbar'
+import Canvas from '../components/Canvas'
 
 const Game = () => {
   return (
     <div className="page">
       <Navbar />
-      <div className="game-container">babylon game goes here :)</div>
+      <Canvas />
     </div>
   )
 }

@@ -27,6 +27,12 @@ button {
   justify-content: flex-end;
 }
 
+.canvas {
+  height: 400px;
+  width: 400px;
+  border: 1px solid black;
+}
+
 .auth-form {
   width: 320px;
   display: flex;
@@ -66,11 +72,4 @@ button {
 .invalid-input-message {
   color: grey;
   height: 1rem;
-}
-
-.game-container {
-  width: 400px;
-  height: 400px;
-  border: 1px solid black;
-  text-align: center;
 }

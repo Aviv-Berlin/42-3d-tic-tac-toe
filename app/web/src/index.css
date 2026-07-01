@@ -10,11 +10,21 @@
   justify-content: center;
 }
 
+button {
+  border: 1px solid black;
+  cursor: pointer;
+}
+
 .page {
   margin: 40px;
   display: flex;
   flex-direction: column;
   gap: 16px;
+}
+
+.navbar {
+  display: flex;
+  justify-content: flex-end;
 }
 
 .auth-form {
@@ -27,7 +37,6 @@
 .input-field,
 .submit-button {
   width: 100%;
-  border: 1px solid black;
 }
 
 .submit-button {
@@ -37,7 +46,11 @@
 .play-button {
   width: 320px;
   height: 40px;
-  border: 1px solid black;
+}
+
+.exit-button {
+  height: 40px;
+  padding: 8px;
 }
 
 .input-field {
@@ -53,4 +66,11 @@
 .invalid-input-message {
   color: grey;
   height: 1rem;
+}
+
+.game-container {
+  width: 400px;
+  height: 400px;
+  border: 1px solid black;
+  text-align: center;
 }

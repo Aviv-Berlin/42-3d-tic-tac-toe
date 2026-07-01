@@ -34,7 +34,7 @@ const Register = () => {
   }
 
   return (
-    <div className="auth-page">
+    <div className="auth">
       <h1>Sign up</h1>
       <form className="auth-form" onSubmit={handleSubmit}>
         <Input name="username" value={form.username} handler={handleChange} submit={submit}/>

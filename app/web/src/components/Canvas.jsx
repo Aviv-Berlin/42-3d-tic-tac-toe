@@ -1,8 +1,13 @@
-const Canvas = () => {
+import './Canvas.css'
 
+const Canvas = () => {
   // here goes the babylon code
 
-  return <canvas className="canvas" />
+  return (
+    <div className="canvas-container">
+      <canvas className="canvas" />
+    </div>
+  )
 }
 
 export default Canvas

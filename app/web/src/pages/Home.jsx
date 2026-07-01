@@ -1,7 +1,7 @@
 import { useState } from 'react'
 import { useNavigate } from 'react-router-dom';
 import Navbar from '../components/Navbar';
-import Slider from '../components/Slider';
+import GridSize from '../components/GridSize';
 import './Home.css'
 
 const Home = () => {
@@ -18,7 +18,7 @@ const Home = () => {
     <div className={page}>
       <Navbar page={page} />
       <h1>Home</h1>
-      <Slider size={size} setSize={setSize} />
+      <GridSize size={size} setSize={setSize} />
       <button className="play-button" onClick={handleClick}>Play</button>
     </div>
   )

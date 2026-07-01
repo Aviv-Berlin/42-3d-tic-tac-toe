@@ -1,13 +1,50 @@
 * {
   margin: 0;
   padding: 0;
+  border-radius: 0px;
   box-sizing: border-box;
 }
 
 #root {
-  height: 100vh;
   display: flex;
-  align-items: center;
   justify-content: center;
-  overflow: hidden;
+}
+
+.page {
+  margin: 40px;
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+
+.auth-form {
+  width: 320px;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.input-field,
+.submit-button {
+  width: 100%;
+  border: 1px solid black;
+}
+
+.submit-button {
+  height: 40px;
+}
+
+.input-field {
+  height: 32px;
+  padding: 8px;
+}
+
+.input-field:focus {
+  outline: none;
+  border: 1px solid black;
+}
+
+.invalid-input-message {
+  color: grey;
+  height: 1rem;
 }

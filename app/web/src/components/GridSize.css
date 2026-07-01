@@ -8,7 +8,7 @@
 .grid-size-values {
   width: 100%;
   display: flex;
-  justify-content: space-between;
+  gap: 4px;
 }
 
 .grid-size-button {

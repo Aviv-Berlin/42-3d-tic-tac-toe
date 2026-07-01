@@ -3,30 +3,40 @@ import './Navbar.css'
 
 const Navbar = ({page}) => {
   const navigate = useNavigate();
+  let buttons;
 
   if (page === "game") {
-    const handleClick = () => {
-      navigate('/home');
-    }
-
-    return (
-      <nav className="navbar">
-        <button className="navbar-button" onClick={handleClick}>Exit game</button>
-      </nav>
-    )
+    buttons = 
+    [
+      {
+        name: "Profile",
+        handler: () => navigate('/profile'),
+      },
+      {
+        name: "Exit game",
+        handler: () => navigate('/home'),
+      },
+    ]
+  } else if (page == "home") {
+    buttons = 
+    [
+      {
+        name: "Profile",
+        handler: () => navigate('/profile'),
+      },
+      {
+        name: "Log out",
+        handler: () => navigate('/login'),
+      },
+    ]
   }
-
-  if (page === "home") {
-    const handleClick = () => {
-      navigate('/login');
-    }
-    
-    return (
-      <nav className="navbar">
-        <button className="navbar-button" onClick={handleClick}>Log out</button>
-      </nav>
-    )
-  }
+  return (
+    <nav className="navbar">
+      {buttons.map((b) => (
+        <button key={b.name} className="navbar-button" onClick={b.handler}>{b.name}</button>
+      ))}
+    </nav>
+  )
 }
 
 export default Navbar

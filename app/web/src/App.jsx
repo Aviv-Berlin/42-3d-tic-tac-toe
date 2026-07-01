@@ -3,6 +3,7 @@ import Register from './pages/Register'
 import Login from './pages/Login'
 import Home from './pages/Home'
 import Game from './pages/Game'
+import Profile from './pages/Profile'
 
 const App = () => {
   return (
@@ -12,6 +13,7 @@ const App = () => {
       <Route path="/login" element={<Login />} />
       <Route path="/home" element={<Home />} />
       <Route path="/game" element={<Game />} />
+      <Route path="/profile" element={<Profile />} />
     </Routes>
   )
 }

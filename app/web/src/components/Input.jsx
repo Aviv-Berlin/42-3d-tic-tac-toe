@@ -1,3 +1,5 @@
+import './Input.css'
+
 const normalize = (name) => {
   return name
           .replace(/([A-Z])/g, (c) => ` ${c}`)
@@ -14,8 +16,9 @@ const Input = ({name, value, handler, validate, message, submit}) => {
       </label>
       <div className="invalid-input-message">
         {(submit && !value && "This field cannot be empty") ||
-          (validate && value && !validate() && message)}
-      </div>
+          (validate && value && !validate() && message) ||
+          '\u00A0'}
+     </div>
     </div>
   )
 }

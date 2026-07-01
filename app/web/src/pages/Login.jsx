@@ -2,6 +2,7 @@ import { useState } from 'react'
 import { Link, useNavigate } from 'react-router-dom'
 import Input from '../components/Input'
 import auth from '../services/auth'
+import './auth.css'
 
 const Login = () => {
   const [form, setForm] = useState({username: '', password: ''});
@@ -27,7 +28,7 @@ const Login = () => {
   }
 
   return (
-    <div className="page">
+    <div className="auth-page">
       <h1>Log in</h1>
       <form className="auth-form" onSubmit={handleSubmit}>
         <Input name="username" value={form.username} handler={handleChange} submit={submit}/>

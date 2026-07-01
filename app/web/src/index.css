@@ -5,78 +5,37 @@
   box-sizing: border-box;
 }
 
+:root {
+  --text-primary: #0C0C0C;
+  --text-secondary: #555555;
+
+  --bg-primary: #FAFAFA;
+}
+
+html, body {
+  height: 100%;
+  overflow: hidden;
+  color: var(--text-primary);
+  background-color: var(--bg-primary);
+}
+
 #root {
   display: flex;
-  justify-content: center;
+  height: 100%;
 }
 
 button {
   border: 1px solid black;
   cursor: pointer;
+  background-color: white;
 }
 
 input {
   border: 1px solid black;
+  height: 36px;
 }
 
-.page {
-  margin: 20px 40px;
-  width: 100%;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  gap: 16px;
-}
-
-.navbar {
-  width: 100%;
-  display: flex;
-  justify-content: flex-end;
-}
-
-.canvas {
-  height: 600px;
-  width: 600px;
-  border: 1px dashed red;
-}
-
-.auth-form {
-  width: 320px;
-  display: flex;
-  flex-direction: column;
-  gap: 8px;
-}
-
-.input-field,
-.submit-button {
-  width: 100%;
-}
-
-.submit-button {
-  height: 40px;
-}
-
-.play-button {
-  width: 320px;
-  height: 40px;
-}
-
-.exit-button {
-  height: 40px;
-  padding: 8px;
-}
-
-.input-field {
-  height: 32px;
-  padding: 8px;
-}
-
-.input-field:focus {
-  outline: none;
+input:focus {
   border: 1px solid black;
-}
-
-.invalid-input-message {
-  color: grey;
-  height: 1rem;
+  outline: none;
 }

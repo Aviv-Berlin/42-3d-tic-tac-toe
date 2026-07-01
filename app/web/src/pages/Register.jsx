@@ -34,7 +34,7 @@ const Register = () => {
   }
 
   return (
-    <div className="page">
+    <div className="auth-page">
       <h1>Sign up</h1>
       <form className="auth-form" onSubmit={handleSubmit}>
         <Input name="username" value={form.username} handler={handleChange} submit={submit}/>
@@ -45,8 +45,8 @@ const Register = () => {
         <Input name="confirmPassword" value={form.confirmPassword} handler={handleChange}
           validate={() => form.password === form.confirmPassword} message="Passwords don't match" submit={submit}/>
         <button className="submit-button" type="submit">Sign up</button>
-        <p className="auth-link">Already registered? <Link to="/login">Log in</Link></p>
       </form>
+      <p className="auth-link">Already registered? <Link to="/login">Log in</Link></p>
     </div>
   )
 }

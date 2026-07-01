@@ -15,22 +15,29 @@ button {
   cursor: pointer;
 }
 
+input {
+  border: 1px solid black;
+}
+
 .page {
-  margin: 40px;
+  margin: 20px 40px;
+  width: 100%;
   display: flex;
   flex-direction: column;
+  align-items: center;
   gap: 16px;
 }
 
 .navbar {
+  width: 100%;
   display: flex;
   justify-content: flex-end;
 }
 
 .canvas {
-  height: 400px;
-  width: 400px;
-  border: 1px solid black;
+  height: 600px;
+  width: 600px;
+  border: 1px dashed red;
 }
 
 .auth-form {

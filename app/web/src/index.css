@@ -10,6 +10,7 @@
   --text-secondary: #555555;
 
   --bg-primary: #FAFAFA;
+  --bg-hover: #EAEAEA;
 }
 
 html, body {
@@ -25,17 +26,21 @@ html, body {
 }
 
 button {
-  border: 1px solid black;
+  border: 1px solid var(--text-primary);
   cursor: pointer;
-  background-color: white;
+  background-color: var(--bg-primary);
+}
+
+button:hover {
+  background-color: var(--bg-hover);
 }
 
 input {
-  border: 1px solid black;
+  border: 1px solid var(--text-primary);
   height: 36px;
 }
 
 input:focus {
-  border: 1px solid black;
+  border: 1px solid var(--text-primary);
   outline: none;
 }

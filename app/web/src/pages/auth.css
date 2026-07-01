@@ -20,5 +20,10 @@
 }
 
 .auth-form button {
+  margin-top: 8px;
   height: 44px;
+}
+
+.auth-link {
+  margin-top: 8px;
 }

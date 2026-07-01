@@ -29,7 +29,7 @@ const Login = () => {
         <Input name="password" value={form.password} handler={handleChange} submit={submit}/>
         <button className="submit-button" type="submit">Log in</button>
       </form>
-      <p>Don't have an account? <Link to="/register">Signup</Link></p>
+      <p>Don't have an account? <Link to="/register">Sign up</Link></p>
     </div>
   )
 }

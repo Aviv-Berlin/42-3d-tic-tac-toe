@@ -34,6 +34,12 @@
   height: 40px;
 }
 
+.play-button {
+  width: 320px;
+  height: 40px;
+  border: 1px solid black;
+}
+
 .input-field {
   height: 32px;
   padding: 8px;

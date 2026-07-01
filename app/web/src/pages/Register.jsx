@@ -44,7 +44,7 @@ const Register = () => {
           validate={() => form.password.length >= 8} message="Passwords must be at least 8 characters long" submit={submit}/>
         <Input name="confirmPassword" value={form.confirmPassword} handler={handleChange}
           validate={() => form.password === form.confirmPassword} message="Passwords don't match" submit={submit}/>
-        <button className="submit-button" type="submit">Signup</button>
+        <button className="submit-button" type="submit">Sign up</button>
         <p className="auth-link">Already registered? <Link to="/login">Log in</Link></p>
       </form>
     </div>

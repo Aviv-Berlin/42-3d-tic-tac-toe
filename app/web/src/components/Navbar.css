@@ -1,6 +1,6 @@
 .navbar {
   width: 100%;
-  padding: 20px;
+  padding: 10px;
   border-botton: 0.4px solid var(--text-secondary);
 
   display: flex;
@@ -8,5 +8,6 @@
 }
 
 .navbar button {
+  padding: 10px;
   border: 0px;
 }

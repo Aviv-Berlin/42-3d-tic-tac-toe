@@ -1,11 +1,13 @@
 import { useState } from 'react'
-import { Link } from 'react-router-dom'
+import { Link, useNavigate } from 'react-router-dom'
 import Input from '../components/Input'
 import auth from '../services/auth'
 
 const Login = () => {
   const [form, setForm] = useState({username: '', password: ''});
   const [submit, setSubmit] = useState(false);
+
+  const navigate = useNavigate();
 
   const handleChange = (e) => {
     setForm({...form, [e.target.name]: e.target.value});
@@ -15,10 +17,13 @@ const Login = () => {
   const handleSubmit = (e) => {
     e.preventDefault();
     setSubmit(true);
+    /*
     auth
       .login(form)
       .then(() => console.log("success"))
       .catch(() => console.log("failure"))
+    */
+    navigate('/home');
   }
 
   return (

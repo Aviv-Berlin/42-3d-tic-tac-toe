@@ -1,8 +1,15 @@
+import { useNavigate } from 'react-router-dom';
+
 const Home = () => {
+  const navigate = useNavigate();
+  const handleClick = () => {
+    navigate('/game'); 
+  }
+
   return (
     <div className="page">
       <h1>Home</h1>
-      <button className="play-button">Play</button>
+      <button className="play-button" onClick={handleClick}>Play</button>
     </div>
   )
 }

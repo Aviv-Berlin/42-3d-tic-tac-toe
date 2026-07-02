@@ -1,5 +1,3 @@
-import './Input.css'
-
 const normalize = (name) => {
   return name
           .replace(/([A-Z])/g, (c) => ` ${c}`)
@@ -10,15 +8,14 @@ const Input = ({name, value, handler, validate, message, submit}) => {
   const label = normalize(name);
   const type = (name.toLowerCase().includes("password")) ? "password" : "text";
   return (
-    <div className="input-container">
-      <label>{label}
-        <div><input className="input-field" type={type} name={name} onChange={handler} /></div>
-      </label>
-      <div className="invalid-input-message">
+    <div className="flex flex-col">
+      <label className="flex flex-col">
+        {label}
+        <input className="border border-stone-400 focus:outline-none focus:border-stone-800 p-2" type={type} name={name} onChange={handler} />
         {(submit && !value && "This field cannot be empty") ||
           (validate && value && !validate() && message) ||
           '\u00A0'}
-     </div>
+      </label>
     </div>
   )
 }

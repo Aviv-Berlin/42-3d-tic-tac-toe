@@ -1,8 +1,10 @@
 import { useState } from 'react'
 import { Link, useNavigate } from 'react-router-dom'
+import AuthLayout from '../layouts/AuthLayout'
+import AuthCard from '../components/AuthCard'
 import Input from '../components/Input'
+import Button from '../components/Button'
 import auth from '../services/auth'
-import './auth.css'
 
 const Login = () => {
   const [form, setForm] = useState({username: '', password: ''});
@@ -28,15 +30,17 @@ const Login = () => {
   }
 
   return (
-    <div className="auth">
-      <h1>Log in</h1>
-      <form className="auth-form" onSubmit={handleSubmit}>
-        <Input name="username" value={form.username} handler={handleChange} submit={submit}/>
-        <Input name="password" value={form.password} handler={handleChange} submit={submit}/>
-        <button className="submit-button" type="submit">Log in</button>
-      </form>
-      <p className="auth-link">Don't have an account? <Link to="/register">Sign up</Link></p>
-    </div>
+    <AuthLayout>
+      <AuthCard>
+        <h1>Log in</h1>
+        <form className="flex flex-col" onSubmit={handleSubmit}>
+          <Input name="username" value={form.username} handler={handleChange} submit={submit}/>
+          <Input name="password" value={form.password} handler={handleChange} submit={submit}/>
+          <Button type="submit">Log in</Button>
+        </form>
+        <p className="">Don't have an account? <Link to="/register">Sign up</Link></p>
+      </AuthCard>
+    </AuthLayout>
   )
 }
 

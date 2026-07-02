@@ -1,7 +1,6 @@
 import { useSearchParams } from 'react-router-dom';
-import Navbar from '../components/Navbar';
+import MainLayout from '../layouts/MainLayout';
 import Canvas from '../components/Canvas';
-import './Game.css';
 
 const Game = () => {
   const [searchParams] = useSearchParams();
@@ -11,11 +10,11 @@ const Game = () => {
   //size is read from the query parameters of the URL and then passed to the Canvas object
 
   const page = "game";
+  
   return (
-    <div className={page}>
-      <Navbar page={page} />
+    <MainLayout page={page}>
       <Canvas size={size}/>
-    </div>
+    </MainLayout>
   )
 }
 

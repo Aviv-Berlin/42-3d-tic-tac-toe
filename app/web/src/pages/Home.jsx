@@ -1,8 +1,7 @@
 import { useState } from 'react'
 import { useNavigate } from 'react-router-dom';
-import Navbar from '../components/Navbar';
-import GridSize from '../components/GridSize';
-import './Home.css'
+import MainLayout from '../layouts/MainLayout';
+import Button from '../components/Button';
 
 const Home = () => {
   const [size, setSize] = useState(3);
@@ -15,12 +14,11 @@ const Home = () => {
   const page = "home";
 
   return (
-    <div className={page}>
-      <Navbar page={page} />
-      <h1>Home</h1>
-      <GridSize size={size} setSize={setSize} />
-      <button className="play-button" onClick={handleClick}>Play</button>
-    </div>
+    <MainLayout page={page}>
+      <div className="flex-1 flex justify-center items-center">
+        <Button onClick={handleClick}>Play</Button>
+      </div>
+    </MainLayout>
   )
 }
 

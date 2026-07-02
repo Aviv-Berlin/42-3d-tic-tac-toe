@@ -1,5 +1,5 @@
 import { useNavigate } from 'react-router-dom'
-import './Navbar.css'
+import Button from './Button'
 
 const Navbar = ({page}) => {
   const navigate = useNavigate();
@@ -29,11 +29,24 @@ const Navbar = ({page}) => {
         handler: () => navigate('/login'),
       },
     ]
+  } else if (page == "profile") {
+    buttons = 
+    [
+      {
+        name: "Home",
+        handler: () => navigate('/home'),
+      },
+      {
+        name: "Log out",
+        handler: () => navigate('/login'),
+      },
+    ]
   }
+    
   return (
-    <nav className="navbar">
+    <nav className="flex justify-between p-4 border-b border-stone-400">
       {buttons.map((b) => (
-        <button key={b.name} className="navbar-button" onClick={b.handler}>{b.name}</button>
+        <Button key={b.name} onClick={b.handler} border="no">{b.name}</Button>
       ))}
     </nav>
   )

@@ -1,6 +1,9 @@
 import { useState } from 'react'
 import { Link } from 'react-router-dom'
+import AuthLayout from '../layouts/AuthLayout'
+import AuthCard from '../components/AuthCard'
 import Input from '../components/Input'
+import Button from '../components/Button'
 import auth from '../services/auth'
 
 const Register = () => {
@@ -34,20 +37,22 @@ const Register = () => {
   }
 
   return (
-    <div className="auth">
-      <h1>Sign up</h1>
-      <form className="auth-form" onSubmit={handleSubmit}>
-        <Input name="username" value={form.username} handler={handleChange} submit={submit}/>
-        <Input name="email" value={form.email} handler={handleChange}
-          validate={() => form.email.includes('@')} message="Invalid email" submit={submit} />
-        <Input name="password" value={form.password} handler={handleChange}
-          validate={() => form.password.length >= 8} message="Passwords must be at least 8 characters long" submit={submit}/>
-        <Input name="confirmPassword" value={form.confirmPassword} handler={handleChange}
-          validate={() => form.password === form.confirmPassword} message="Passwords don't match" submit={submit}/>
-        <button className="submit-button" type="submit">Sign up</button>
-      </form>
-      <p className="auth-link">Already registered? <Link to="/login">Log in</Link></p>
-    </div>
+    <AuthLayout>
+      <AuthCard>
+        <h1>Sign up</h1>
+        <form className="flex flex-col" onSubmit={handleSubmit}>
+          <Input name="username" value={form.username} handler={handleChange} submit={submit}/>
+          <Input name="email" value={form.email} handler={handleChange}
+            validate={() => form.email.includes('@')} message="Invalid email" submit={submit} />
+          <Input name="password" value={form.password} handler={handleChange}
+            validate={() => form.password.length >= 8} message="Passwords must be at least 8 characters long" submit={submit}/>
+          <Input name="confirmPassword" value={form.confirmPassword} handler={handleChange}
+            validate={() => form.password === form.confirmPassword} message="Passwords don't match" submit={submit}/>
+          <Button type="submit">Sign up</Button>
+        </form>
+      <p className="">Already registered? <Link to="/login">Log in</Link></p>
+      </AuthCard>
+    </AuthLayout>
   )
 }
 

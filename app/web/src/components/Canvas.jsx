@@ -1,5 +1,5 @@
 import { useEffect, useRef } from "react";
-import { createBabylonGame } from "/../../babylon_test_home/src/main.ts";
+import { createBabylonGame } from "/../game/src/main.ts";
 
 const Canvas = ({ size }) => {
   const canvasRef = useRef(null); // why?
@@ -16,7 +16,7 @@ const Canvas = ({ size }) => {
     <canvas
       ref={canvasRef}
       id="renderCanvas"
-      className="w-full h-full"
+      className="flex-1"
     />
   );
 };

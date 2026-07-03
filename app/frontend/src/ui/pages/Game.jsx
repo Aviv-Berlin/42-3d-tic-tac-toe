@@ -1,5 +1,5 @@
 import { useSearchParams } from 'react-router-dom';
-import MainLayout from '../layouts/MainLayout';
+import GameLayout from '../layouts/GameLayout';
 import Canvas from '../components/Canvas';
 
 const Game = () => {
@@ -12,9 +12,9 @@ const Game = () => {
   const page = "game";
   
   return (
-    <MainLayout page={page}>
+    <GameLayout page={page}>
       <Canvas size={size}/>
-    </MainLayout>
+    </GameLayout>
   )
 }
 

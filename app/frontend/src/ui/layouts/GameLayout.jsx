@@ -1,12 +1,14 @@
 import Navbar from '../components/Navbar'
 
-const MainLayout = ({children}) => {
+const GameLayout = ({children}) => {
   return (
     <div className="min-h-screen flex flex-col">
       <Navbar />
-      {children}
+      <div className="flex-1 flex">
+        {children}
+      </div>
     </div>
   )
 }
 
-export default MainLayout
+export default GameLayout

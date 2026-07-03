@@ -1,5 +1,5 @@
 import { useEffect, useRef } from "react";
-import { createBabylonGame } from "/../game/src/main.ts";
+import { createBabylonGame } from "../../game/main.ts";
 
 const Canvas = ({ size }) => {
   const canvasRef = useRef(null); // why?

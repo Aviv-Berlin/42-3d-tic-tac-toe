@@ -4,7 +4,7 @@ import AuthLayout from '../layouts/AuthLayout'
 import AuthCard from '../components/AuthCard'
 import Input from '../components/Input'
 import Button from '../components/Button'
-import auth from '../services/auth'
+import auth from '../../services/auth'
 
 const Register = () => {
   const [form, setForm] = useState({username: '', email: '', password: '', confirmPassword: ''});

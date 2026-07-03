@@ -1,13 +1,24 @@
-const Canvas = ({size = 3}) => {
-  console.log(`grid size: ${size}`); // this prints the size selected by the user through the slider
+import { useEffect, useRef } from "react";
+import { createBabylonGame } from "/../../babylon_test_home/src/main.ts";
 
-  // here goes the babylon code
+const Canvas = ({ size }) => {
+  const canvasRef = useRef(null); // why?
+
+  useEffect(() => {
+    if (!canvasRef.current) return;
+
+    const cleanup = createBabylonGame(canvasRef.current, size);
+
+    return cleanup;
+  }, [size]);
 
   return (
-    <div className="flex-1 flex">
-      <canvas className="flex-1" />
-    </div>
-  )
-}
+    <canvas
+      ref={canvasRef}
+      id="renderCanvas"
+      className="w-full h-full"
+    />
+  );
+};
 
-export default Canvas
+export default Canvas;

@@ -10,6 +10,8 @@
     "preview": "vite preview"
   },
   "dependencies": {
+    "@babylonjs/core": "^9.15.0",
+    "@babylonjs/gui": "^9.15.0",
     "@tailwindcss/vite": "^4.3.2",
     "axios": "^1.18.1",
     "react": "^19.2.7",

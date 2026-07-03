@@ -1,44 +1,40 @@
 import * as BABYLON from "@babylonjs/core";
-import "./style.css";
-import { Materials } from "./Materials.ts";
-import { Board } from "./Board.ts";
-import { GameUI } from "./GameUI.ts";
-import { GameState } from "./GameState.ts";
-import { InputManager } from "./InputManager.ts";
-import { GameGraphics } from "./GameGraphics.ts";
-import { CameraManager } from "./CameraManager.ts";
+import { Materials } from "./Materials";
+import { Board } from "./Board";
+import { GameUI } from "./GameUI";
+import { GameState } from "./GameState";
+import { InputManager } from "./InputManager";
+import { GameGraphics } from "./GameGraphics";
+import { CameraManager } from "./CameraManager";
 
+export function createBabylonGame(canvas: HTMLCanvasElement, N: number) {
+  const engine = new BABYLON.Engine(canvas, true);
+  const scene = new BABYLON.Scene(engine);
 
-var N: number;
-N = 4;
-const canvas = document.getElementById("renderCanvas") as HTMLCanvasElement | null;
+  const materials = new Materials(scene);
+  const camera = new CameraManager(scene, canvas);
 
-if (!canvas) {
-  throw new Error("Canvas element #renderCanvas not found");
-}
+  const board = new Board(N, scene, materials);
+  const ui = new GameUI(scene);
+  const game = new GameState(N, ui);
+  const graphics = new GameGraphics(board, materials, N, game, camera);
+  const input = new InputManager(graphics);
 
-const engine = new BABYLON.Engine(canvas, true);
-const scene = new BABYLON.Scene(engine);
-const materials = new Materials(scene);
-const camera = new CameraManager(scene, canvas);
-
-
-const board = new Board(N, scene, materials);
-const ui = new GameUI(scene);
-const game = new GameState(N, ui);
-const graphics = new GameGraphics(board, materials, N, game, camera);
-const input = new InputManager(graphics);
-
-engine.runRenderLoop(() => {
+  engine.runRenderLoop(() => {
     scene.render();
-});
+  });
 
-input.registerEvents();
+  input.registerEvents();
 
-window.addEventListener("resize", () => {
-  engine.resize();
-})
+  const handleResize = () => {
+    engine.resize();
+  };
 
+  window.addEventListener("resize", handleResize);
 
-// for win detection: each cell has a +1 number if the cell next to it is the same.
-// the cell that gets N is part of a winning sequence
+  return () => {
+    window.removeEventListener("resize", handleResize);
+    scene.dispose();
+    engine.dispose();
+  };
+}

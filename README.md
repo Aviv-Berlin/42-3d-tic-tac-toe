@@ -3,10 +3,10 @@ A web-based multiplayer 3D Tic-Tac-Toe game built for the 42 Berlin ft_transcend
 
 ## How to run the frontend in dev mode through Vite
 
-Change to `web` directory:
+Change to the `frontend` directory:
 
 ```bash
-cd app/web
+cd app/frontend
 ```
 
 Run vite through the script:

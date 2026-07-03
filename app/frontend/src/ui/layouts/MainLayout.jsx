@@ -1,9 +1,9 @@
 import Navbar from '../components/Navbar'
 
-const MainLayout = ({children}) => {
+const MainLayout = ({username, children}) => {
   return (
     <div className="min-h-screen flex flex-col">
-      <Navbar />
+      <Navbar username={username}/>
       {children}
     </div>
   )

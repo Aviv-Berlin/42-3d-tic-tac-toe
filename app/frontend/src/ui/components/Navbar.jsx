@@ -1,9 +1,8 @@
 import { useNavigate } from 'react-router-dom'
 import NavbarButton from './NavbarButton'
 
-const Navbar = ({page}) => {
+const Navbar = ({username}) => {
   const navigate = useNavigate();
-  
     
   return (
     <nav className="flex justify-between p-4 border-b border-stone-400">
@@ -11,7 +10,7 @@ const Navbar = ({page}) => {
         <img src="/logo.png" className="w-6 h-auto"/>
         <p>3D tic-tac-toe</p>
       </NavbarButton>
-      <NavbarButton onClick={() => navigate('/profile')} border="no">Profile</NavbarButton> 
+      <NavbarButton onClick={() => navigate('/profile')} border="no">{username}</NavbarButton> 
     </nav>
   )
 }

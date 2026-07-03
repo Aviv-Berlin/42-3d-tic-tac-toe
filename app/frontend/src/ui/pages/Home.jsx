@@ -9,13 +9,13 @@ const Home = () => {
   const navigate = useNavigate();
 
   const handleClick = () => {
-    navigate(`/game?size=${size}`);
+    navigate(`/game?user=${username}&size=${size}`);
   };
 
   const username = searchParams.get('user') || "";
 
   return (
-    <MainLayout page="home">
+    <MainLayout username={username}>
       <div className="flex justify-between items-center py-60 px-60">
         <div className="flex flex-col">
           <p className="text-xl">{`Welcome back ${username}!`}</p>

@@ -6,7 +6,7 @@ const Navbar = ({username}) => {
     
   return (
     <nav className="flex justify-between p-4 border-b border-stone-400">
-      <NavbarButton onClick={() => navigate('/home')}>
+      <NavbarButton onClick={() => navigate(`/home?user=${username}`)}>
         <img src="/logo.png" className="w-6 h-auto"/>
         <p>3D tic-tac-toe</p>
       </NavbarButton>

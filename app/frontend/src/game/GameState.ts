@@ -1,4 +1,6 @@
-import { GameUI } from "./GameUI.ts";
+import { FlowGraphAssetType } from "@babylonjs/core";
+import { GameUI } from "./GameUI";
+import { checkWin } from "./GameCheckWin";
 
 export enum CellState {
     Empty = 0,
@@ -10,6 +12,22 @@ export interface GridPosition {
     x: number,
     y: number,
     z: number,
+}
+
+export function addGP(a: GridPosition, b: GridPosition): GridPosition {
+    return {
+        x: a.x + b.x,
+        y: a.y + b.y,
+        z: a.z + b.z
+    };
+}
+
+export function negateGP(a: GridPosition): GridPosition {
+    return {
+        x: -a.x,
+        y: -a.y,
+        z: -a.z
+    };
 }
 
 export class GameState {
@@ -50,6 +68,10 @@ export class GameState {
         if (!this.isCellEmpty(pos))
             return false;
         this.boardState[pos.x][pos.y][pos.z] = this.currentPlayer;
+        if (checkWin(this.boardState, pos, this.currentPlayer, this.N))
+            console.log("Player" + this.currentPlayer + "wins!");
+        else
+            console.log("No win detected.");
         this.switchPlayer();
         return true;
     }

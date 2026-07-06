@@ -15,7 +15,7 @@ const NavDropDown = ({username}) => {
         <p>{username}</p>
         { open ? <ArrowDropDownIcon /> : <ArrowDropUpIcon /> }
       </NavbarButton>
-      <div className={`absolute flex flex-col border border-stone-400 mt-6 w-full items-center ${open ? "visible" : "invisible"}`}>
+      <div className={`absolute right-0 flex flex-col border border-stone-400 mt-6 w-40 items-center ${open ? "visible" : "invisible"}`}>
         <DropDownButton path={`/profile?user=${username}`}> 
           Profile
         </DropDownButton>

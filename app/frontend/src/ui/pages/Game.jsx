@@ -14,7 +14,7 @@ const Game = () => {
   
   return (
     <GameLayout username={username}>
-      <Canvas size={size}/>
+      <Canvas username={username} size={size}/>
     </GameLayout>
   )
 }

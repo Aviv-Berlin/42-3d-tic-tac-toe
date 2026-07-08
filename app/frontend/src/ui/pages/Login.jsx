@@ -20,12 +20,10 @@ const Login = () => {
   const handleSubmit = (e) => {
     e.preventDefault();
     setSubmit(true);
-    /*
     auth
       .login(form)
       .then(() => console.log("success"))
       .catch(() => console.log("failure"))
-    */
     navigate(`/home?user=${form.username}`);
   }
 

@@ -1,10 +1,9 @@
-import { useNavigate } from 'react-router-dom'
-
-const DropDownButton = ({path, children}) => {
-  const navigate = useNavigate();
-
+const DropDownButton = ({children, ...props}) => {
   return (
-    <button className="w-full px-4 py-2 hover:bg-stone-200 cursor-pointer" onClick={() => navigate(path)}>
+    <button 
+      className="flex px-4 py-2 hover:bg-stone-200 cursor-pointer gap-2"
+      {...props}
+    >
       {children}
     </button>
   )

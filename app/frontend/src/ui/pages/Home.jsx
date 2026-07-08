@@ -16,12 +16,12 @@ const Home = () => {
 
   return (
     <MainLayout username={username}>
-      <div className="flex justify-between items-center py-60 px-60">
+      <div className="flex gap-16">
         <div className="flex flex-col">
           <p className="text-xl">{`Welcome back ${username}!`}</p>
           <p className="text-4xl">Ready for a game?</p>
         </div>
-      <MainButton onClick={handleClick}>PLAY NOW</MainButton>
+        <MainButton onClick={handleClick}>PLAY NOW</MainButton>
       </div>
     </MainLayout>
   );

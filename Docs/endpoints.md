@@ -16,6 +16,7 @@ Payload example:
     "email": "johndoe@example.com",
     "password": "10402070"
 }
+```
 
 ### Log in
 

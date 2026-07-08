@@ -31,3 +31,4 @@ Payload example:
     "username": "John Doe",
     "email": "johndoe@example.com",
 }
+```

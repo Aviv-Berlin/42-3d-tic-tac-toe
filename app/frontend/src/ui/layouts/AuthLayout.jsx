@@ -1,7 +1,10 @@
+import Footer from '../components/Footer'
+
 const AuthLayout = ({children}) => {
   return (
-    <div className="min-h-screen flex items-center justify-center">
-      {children}
+    <div className="min-h-screen flex flex-col">
+      <main className="flex-1 flex justify-center items-center gap-8 p-4">{children}</main>
+      <Footer />
     </div>
   )
 }

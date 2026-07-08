@@ -4,9 +4,9 @@ const GameLayout = ({username, children}) => {
   return (
     <div className="min-h-screen flex flex-col">
       <Navbar username={username}/>
-      <div className="flex-1 flex">
+      <main className="flex-1 flex">
         {children}
-      </div>
+      </main>
     </div>
   )
 }

@@ -5,7 +5,7 @@ const MainLayout = ({username, children}) => {
   return (
     <div className="min-h-screen flex flex-col">
       <Navbar username={username}/>
-      <main className="flex-1 flex flex-col justify-center items-center">{children}</main>
+      <main className="flex-1 flex flex-col justify-center items-center p-4">{children}</main>
       <Footer />
     </div>
   )

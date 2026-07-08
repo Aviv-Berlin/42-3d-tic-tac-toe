@@ -1,53 +1,14 @@
-import { useNavigate } from 'react-router-dom'
-import Button from './Button'
+import { Link } from 'react-router-dom'
+import NavDropDown from './NavDropDown'
 
-const Navbar = ({page}) => {
-  const navigate = useNavigate();
-  let buttons;
-
-  if (page === "game") {
-    buttons = 
-    [
-      {
-        name: "Profile",
-        handler: () => navigate('/profile'),
-      },
-      {
-        name: "Exit game",
-        handler: () => navigate('/home'),
-      },
-    ]
-  } else if (page == "home") {
-    buttons = 
-    [
-      {
-        name: "Profile",
-        handler: () => navigate('/profile'),
-      },
-      {
-        name: "Log out",
-        handler: () => navigate('/login'),
-      },
-    ]
-  } else if (page == "profile") {
-    buttons = 
-    [
-      {
-        name: "Home",
-        handler: () => navigate('/home'),
-      },
-      {
-        name: "Log out",
-        handler: () => navigate('/login'),
-      },
-    ]
-  }
-    
+const Navbar = ({username}) => {
   return (
     <nav className="flex justify-between p-4 border-b border-stone-400">
-      {buttons.map((b) => (
-        <Button key={b.name} onClick={b.handler} border="no">{b.name}</Button>
-      ))}
+      <Link to={`/home?user=${username}`} className="px-4 py-2 hover:bg-stone-200 cursor-pointer flex gap-2">
+        <img src="/logo.png" className="w-6 h-auto"/>
+        <p>3D tic-tac-toe</p>
+      </Link>
+      <NavDropDown username={username} />
     </nav>
   )
 }

@@ -1,44 +1,27 @@
 import { useState } from 'react';
-import { useNavigate } from 'react-router-dom';
+import { useNavigate, useSearchParams } from 'react-router-dom';
 import MainLayout from '../layouts/MainLayout';
-import Button from '../components/Button';
+import MainButton from '../components/MainButton';
 
 const Home = () => {
   const [size, setSize] = useState(3);
+  const [searchParams] = useSearchParams();
   const navigate = useNavigate();
 
   const handleClick = () => {
-    navigate(`/game?size=${size}`);
+    navigate(`/game?user=${username}&size=${size}`);
   };
 
+  const username = searchParams.get('user') || "";
+
   return (
-    <MainLayout page="home">
-      <div className="flex-1 flex flex-col items-center justify-center gap-6">
-
-        <div className="flex flex-col items-center gap-2">
-          <label className="text-lg font-semibold">
-            Board Size: {size} × {size} × {size}
-          </label>
-
-          <input
-            type="range"
-            min="3"
-            max="5"
-            step="1"
-            value={size}
-            onChange={(e) => setSize(Number(e.target.value))}
-            className="w-64"
-          />
-
-          <div className="flex justify-between w-64 text-sm">
-            <span>3</span>
-            <span>4</span>
-            <span>5</span>
-          </div>
+    <MainLayout username={username}>
+      <div className="flex gap-16">
+        <div className="flex flex-col">
+          <p className="text-xl">{`Welcome back ${username}!`}</p>
+          <p className="text-4xl">Ready for a game?</p>
         </div>
-
-        <Button onClick={handleClick}>Play</Button>
-
+        <MainButton onClick={handleClick}>PLAY NOW</MainButton>
       </div>
     </MainLayout>
   );

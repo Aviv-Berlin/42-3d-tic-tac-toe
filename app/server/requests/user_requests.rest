@@ -1,0 +1,84 @@
+GET http://localhost:3001/v1/users
+
+###
+
+//successful registration
+POST http://localhost:3001/v1/auth/register HTTP/1.1
+content-type: application/json
+
+  {
+    "username": "test",
+    "email": "test@example.com",
+    "password": "10402070"
+  }
+
+###
+
+//username already exists
+POST http://localhost:3001/v1/auth/register HTTP/1.1
+content-type: application/json
+
+  {
+    "username": "John Doe",
+    "email": "test@example.com",
+    "password": "10402070"
+  }
+
+###
+
+//email already registered
+POST http://localhost:3001/v1/auth/register HTTP/1.1
+content-type: application/json
+
+  {
+    "username": "test",
+    "email": "johndoe@example.com",
+    "password": "10402070"
+  }
+
+###
+
+//successful login - username
+POST http://localhost:3001/v1/auth/login HTTP/1.1
+content-type: application/json
+
+  {
+    "username": "John Doe",
+    "password": "10402070"
+  }
+
+###
+
+//successful login - email
+POST http://localhost:3001/v1/auth/login HTTP/1.1
+content-type: application/json
+
+  {
+    "username": "johndoe@example.com",
+    "password": "10402070"
+  }
+
+###
+
+//bad password
+POST http://localhost:3001/v1/auth/login HTTP/1.1
+content-type: application/json
+
+  {
+    "username": "John Doe",
+    "password": "wrong"
+  }
+
+###
+
+//bad login
+POST http://localhost:3001/v1/auth/login HTTP/1.1
+content-type: application/json
+
+  {
+    "username": "i don't exist",
+    "password": "10402070"
+  }
+
+###
+

@@ -2,89 +2,76 @@ const express = require('express')
 const app = express()
 
 
-let persons = [
+let users = [
   {
-    "id": "1",
-    "name": "Arto Hellas",
-    "number": "040-123456"
-  },
-  {
-    "id": "2",
-    "name": "Ada Lovelace",
-    "number": "39-44-5323523"
-  },
-  {
-    "id": "3",
-    "name": "Dan Abramov",
-    "number": "12-43-234345"
-  },
-  {
-    "id": "4",
-    "name": "Mary Poppendieck",
-    "number": "39-23-6423122"
+    "username": "John Doe",
+    "email": "johndoe@example.com",
+    "password": "10402070"
   }
 ]
 
 app.use(express.json())
 
-app.get('/', (request, response) => {
-	response.send('<h1>Hello World!</h1>')
+//********************for testing - delete this */
+app.get('/v1/users', (request, response) => {
+  response.json(users)
   })
+//********************for testing - delete this */
 
-app.get('/api/info', (request, response) => {
-  resBody = '<p>Phonebook has info for '
-  resBody += persons.length
-  resBody += ' people</p>\n'
-  resBody += Date()
-  response.send(resBody)
-  })
-
-app.get('/api/persons', (request, response) => {
-response.json(persons)
-})
-
-app.get('/api/persons/:id', (request, response) => {
-	const id = request.params.id
-	console.log("id:", id)
-	const person = persons.find(person => person.id === id)
-	if (person) {
-		response.json(person)
-	} else {
-		response.status(404).end() }
-})
-
-app.delete('/api/persons/:id', (request, response) => {
-	const id = request.params.id
-	persons = persons.filter(person => person.id !== id)
-
-	response.status(204).end()
-  })
-
-const generateId = () => {
-  const maxId = persons.length > 0
-    ? Math.max(...persons.map(n => Number(n.id)))
-    : 0
-  return String(maxId + 1)
-}
-
-app.post('/api/persons', (request, response) => {
+app.post('/v1/auth/register', (request, response) => {
   const body = request.body
 
-  if (!body.name || !body.number) {
+  if (!body.username || !body.email || !body.password) {
     return response.status(400).json({
-      error: 'missing name and/or number'
+      error: 'registration data incomplete'
     })
   }
 
-  const person = {
-    name: body.name,
-    number: body.number,
-    id: generateId(),
+  let check = users.find(u => u.username === body.username)
+	if (check) {
+		return response.status(409).json({
+      error: 'username already exists'
+    })}
+
+  check = users.find(u => u.email === body.email)
+  if (check) {
+    return response.status(409).json({
+      error: 'email already registered'
+    })}
+
+  const user = {
+    username: body.username,
+    email: body.email,
+    password: body.password,
   }
 
-  persons = persons.concat(person)
+  users = users.concat(user)
 
-  response.json(person)
+  response.status(201).json({
+    username: user.username,
+    email: user.email})
+})
+
+app.post('/v1/auth/login', (request, response) => {
+  const body = request.body
+
+  if (!body.username || !body.password) {
+    return response.status(400).json({
+      error: 'login data incomplete'
+    })
+  }
+
+  let check = users.find(u => u.username === body.username)
+  if (!check)
+    check = users.find(u => u.email === body.username)
+	if (!check || check.password !== body.password) {
+		return response.status(401).json({
+      error: 'bad credentials'
+    })}
+
+  response.status(200).json({
+    accessToken: 'token123'
+  })
 })
 
 const PORT = 3001

@@ -9,7 +9,7 @@ const NavDropDown = ({username}) => {
   return (
     <div className="relative">
       <DropDownButton onClick={() => setOpen((prev) => !prev)}>
-        <p>{username}</p>
+        <p className="hidden sm:inline">{username}</p>
         { open ? <ChevronUp /> : <ChevronDown /> }
       </DropDownButton>
       <div className={`absolute right-0 flex flex-col border border-stone-400 mt-6 w-40 items-center ${open ? "visible" : "invisible"}`}>

@@ -14,4 +14,4 @@ const UsernameProvider = ({children}) => {
 
 const useUsername = () => useContext(UsernameContext);
 
-export default { UsernameProvider, useUsername }
+export { UsernameProvider, useUsername }

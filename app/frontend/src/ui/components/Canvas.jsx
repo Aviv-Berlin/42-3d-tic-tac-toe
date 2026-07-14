@@ -10,7 +10,6 @@ const Canvas = ({size}) => {
     if (!canvasRef.current) return;
 
     const cleanup = createBabylonGame(canvasRef.current, size, username); 
-    //passing also "username" as parameter, so we can display their name instead of just "player 1" or "player 2"
 
     return cleanup;
   }, []);

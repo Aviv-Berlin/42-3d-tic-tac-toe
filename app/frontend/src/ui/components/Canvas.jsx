@@ -11,7 +11,7 @@ const Canvas = ({username,size}) => {
     //passing also "username" as parameter, so we can display their name instead of just "player 1" or "player 2"
 
     return cleanup;
-  }, [size]);
+  }, []);
 
   return (
     <canvas

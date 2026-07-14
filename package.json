@@ -1,5 +1,6 @@
 {
   "dependencies": {
-    "@babylonjs/gui": "^9.12.1"
+    "@babylonjs/gui": "^9.12.1",
+    "express": "^5.2.1"
   }
 }

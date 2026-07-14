@@ -6,12 +6,10 @@ import MainLayout from '../layouts/MainLayout';
 
 const GameSettings = () => {
   const [size, setSize] = useState(3) 
-  const [searchParams] = useSearchParams();
   const navigate = useNavigate();
-  const username = searchParams.get('user') || "";
  
   return (
-    <MainLayout username={username}>
+    <MainLayout>
       <div className="flex flex-col gap-8 items-center">
         <h1 className="text-2xl">Choose board size</h1>
         <div className="flex gap-4">
@@ -19,7 +17,7 @@ const GameSettings = () => {
           <BoardSizeButton selected={size === 4} onClick={() => setSize(4)}>4x4x4</BoardSizeButton>
           <BoardSizeButton selected={size === 5} onClick={() => setSize(5)}>5x5x5</BoardSizeButton>
         </div>
-        <MainButton onClick={() => navigate(`/game?user=${username}&size=${size}`)}>CONFIRM</MainButton>
+        <MainButton onClick={() => navigate(`/game?size=${size}`)}>CONFIRM</MainButton>
       </div>
     </MainLayout>
   )

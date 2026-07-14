@@ -1,8 +1,10 @@
 import { useEffect, useRef } from "react";
+import { useUsername } from '../context/UsernameContext'
 import { createBabylonGame } from "../../game/main.ts";
 
-const Canvas = ({username,size}) => {
-  const canvasRef = useRef(null); // why?
+const Canvas = ({size}) => {
+  const canvasRef = useRef(null);
+  const { username } = useUsername();
 
   useEffect(() => {
     if (!canvasRef.current) return;

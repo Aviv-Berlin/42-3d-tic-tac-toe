@@ -1,9 +1,9 @@
 import Navbar from '../components/Navbar'
 
-const GameLayout = ({username, children}) => {
+const GameLayout = ({children}) => {
   return (
     <div className="min-h-screen flex flex-col">
-      <Navbar username={username}/>
+      <Navbar />
       <main className="flex-1 flex">
         {children}
       </main>

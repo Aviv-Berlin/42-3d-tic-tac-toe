@@ -1,11 +1,15 @@
 import { GameGraphics } from "./GameGraphics.ts";
+import { GameState, CellState, type GridPosition } from "./GameState";
+
 
 export class InputManager{
     
     private graphics: GameGraphics;
+    private game: GameState;
 
-    constructor(graphics: GameGraphics) {
+    constructor(graphics: GameGraphics, game: GameState) {
         this.graphics = graphics;
+        this.game = game;
     }
 
     public registerEvents(): void {
@@ -17,30 +21,30 @@ export class InputManager{
     private handleKeyDown(event: KeyboardEvent): void {
         switch (event.key) {
             case "q":
-                this.graphics.moveCursor(true, "y");
+                this.game.moveCursor(true, "y");
                 break;
             case "a":
-                this.graphics.moveCursor(false, "y");
+                this.game.moveCursor(false, "y");
                 break;
 
             case "w":
-                this.graphics.moveCursor(true, "z");
+                this.game.moveCursor(true, "z");
                 break;
 
             case "s":
-                this.graphics.moveCursor(false, "z");
+                this.game.moveCursor(false, "z");
                 break;
 
             case "e":
-                this.graphics.moveCursor(true, "x");
+                this.game.moveCursor(true, "x");
                 break;
 
             case "d":
-                this.graphics.moveCursor(false, "x");
+                this.game.moveCursor(false, "x");
                 break;
 
             case "Enter":
-                this.graphics.placeSphere();
+                this.game.placeSphere();
                 break;
             
             case "r":

@@ -1,5 +1,7 @@
-import { FlowGraphAssetType } from "@babylonjs/core";
-import { GameState, CellState, addGP, negateGP, type GridPosition, } from "./GameState";
+import { addGP, negateGP, } from "./Utils";
+import { GridPosition, CellState } from "./Types"
+
+
 
 const points: GridPosition[] = [
 	{ x: -1, y: 1, z: 1 },

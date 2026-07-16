@@ -2,36 +2,13 @@ import { FlowGraphAssetType } from "@babylonjs/core";
 import { GameUI } from "./GameUI";
 import { checkWin } from "./GameCheckWin";
 import { GameGraphics } from "./GameGraphics";
+import { GridPosition, CellState } from "./Types"
 
 
 
-export enum CellState {
-    Empty = 0,
-    Player1 = 1,
-    Player2 = 2,
-}
 
-export interface GridPosition {
-    x: number,
-    y: number,
-    z: number,
-}
 
-export function addGP(a: GridPosition, b: GridPosition): GridPosition {
-    return {
-        x: a.x + b.x,
-        y: a.y + b.y,
-        z: a.z + b.z
-    };
-}
 
-export function negateGP(a: GridPosition): GridPosition {
-    return {
-        x: -a.x,
-        y: -a.y,
-        z: -a.z
-    };
-}
 
 export class GameState {
     private boardState: CellState [][][] = [];
@@ -278,7 +255,7 @@ export class GameState {
     }
 
         
-    private playRandomMove(boardState: CellState [][][], N: number): GridPosition | null {
+    private playRandomMove(boardState: CellState[][][], N: number): GridPosition | null {
         while(1)
         {
             const pos: GridPosition = {x: Math.floor(Math.random() * N),

@@ -1,7 +1,7 @@
 import * as BABYLON from "@babylonjs/core";
 import type { AbstractMesh, Scene, StandardMaterial, Mesh, Material } from "@babylonjs/core";
 import { Materials } from "./Materials";
-import type { GridPosition } from "./GameState";
+import type { GridPosition } from "./Types";
 
 
 export class Board {

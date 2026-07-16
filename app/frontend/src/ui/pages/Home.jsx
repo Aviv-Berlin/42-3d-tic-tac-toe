@@ -1,18 +1,19 @@
 import { useNavigate, useSearchParams } from 'react-router-dom';
+import { useUsername } from '../context/UsernameContext'
 import MainLayout from '../layouts/MainLayout';
 import MainButton from '../components/MainButton';
 
 const Home = () => {
   const [searchParams] = useSearchParams();
   const navigate = useNavigate();
-  const username = searchParams.get('user') || "";
+  const { username } = useUsername();
 
   const handleClick = () => {
-    navigate(`/game-settings?user=${username}`);
+    navigate("/game-settings");
   };
 
   return (
-    <MainLayout username={username}>
+    <MainLayout>
       <div className="flex gap-16">
         <div className="flex flex-col">
           <p className="text-xl">{`Welcome back ${username}!`}</p>

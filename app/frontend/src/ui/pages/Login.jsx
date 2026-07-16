@@ -1,5 +1,6 @@
 import { useState } from 'react'
 import { Link, useNavigate } from 'react-router-dom'
+import { useUsername } from '../context/UsernameContext'
 import AuthLayout from '../layouts/AuthLayout'
 import AuthCard from '../components/AuthCard'
 import Input from '../components/Input'
@@ -11,6 +12,8 @@ const Login = () => {
   const [submit, setSubmit] = useState(false);
 
   const navigate = useNavigate();
+
+  const { setUsername } = useUsername(); 
 
   const handleChange = (e) => {
     setForm({...form, [e.target.name]: e.target.value});
@@ -24,7 +27,8 @@ const Login = () => {
       .login(form)
       .then(() => console.log("success"))
       .catch(() => console.log("failure"))
-    navigate(`/home?user=${form.username}`);
+    setUsername(form.username);
+    navigate("/home");
   }
 
   return (

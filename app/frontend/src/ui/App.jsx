@@ -9,16 +9,16 @@ import PrivacyPolicy from './pages/PrivacyPolicy'
 
 const App = () => {
   return (
-    <Routes>
-      <Route path="/" element={<Navigate to="/login" />} />
-      <Route path="/register" element={<Register />} />
-      <Route path="/login" element={<Login />} />
-      <Route path="/home" element={<Home />} />
-      <Route path="/game-settings" element={<GameSettings />} />
-      <Route path="/game" element={<Game />} />
-      <Route path="/profile" element={<Profile />} />
-      <Route path="/privacy" element={<PrivacyPolicy />} />
-    </Routes>
+      <Routes>
+        <Route path="/" element={<Navigate to="/login" />} />
+        <Route path="/register" element={<Register />} />
+        <Route path="/login" element={<Login />} />
+        <Route path="/home" element={<Home />} />
+        <Route path="/game-settings" element={<GameSettings />} />
+        <Route path="/game" element={<Game />} />
+        <Route path="/profile" element={<Profile />} />
+        <Route path="/privacy" element={<PrivacyPolicy />} />
+      </Routes>
   )
 }
 

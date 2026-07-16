@@ -1,13 +1,9 @@
-import { useNavigate, useSearchParams } from 'react-router-dom';
+import { useNavigate } from 'react-router-dom';
 import MainLayout from '../layouts/MainLayout';
 
 const Profile = () => {
-  const [searchParams] = useSearchParams();
-
-  const username = searchParams.get('user') || "";
-
   return (
-    <MainLayout username={username}>
+    <MainLayout>
       <h1>Profile</h1>
     </MainLayout>
   )

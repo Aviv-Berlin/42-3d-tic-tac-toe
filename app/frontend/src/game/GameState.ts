@@ -169,29 +169,22 @@ export class GameState {
     public placeMoveAt(pos: GridPosition): boolean {
         if (this.gameOver)
             return false;
-
         if (!this.isCellEmpty(pos))
             return false;
-
-        //const playerWhoMoved = this.currentPlayer;
-
         this.boardState[pos.x][pos.y][pos.z] = this.currentPlayer;
-
         this.graphics.placeMove(pos, this.currentPlayer);
 
         const winningPositions = checkWin(this.boardState, pos, this.currentPlayer, this.N);
-
         if (winningPositions) {
             this.finishGame(this.currentPlayer, winningPositions);
             return true;
         }
 
         this.switchPlayer();
-
         if(this.currentPlayer === CellState.Player2) 
         {
             this.graphics.hidePreview();
-            this.randomMove();
+            this.randomMove(); //this is the AI player
         }
         else
         {

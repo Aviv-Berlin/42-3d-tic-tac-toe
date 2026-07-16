@@ -13,17 +13,20 @@ const PrivacyPolicy = () => {
         <p> - <span className="italic">Messages</span>: the content of your conversations with other users.</p>
       <p>We do not collect payment information, location data, or any special category data.</p>
       <h2 className="text-2xl">Why we collect this data</h2>
-        <p> - Account credentials are used to create and authenticate your account.</p>
-        <p> - Activity status is used to show other users when you were last online.</p>
-        <p> - Game data is stored to power match history, statistics, and the core gameplay features of the app.</p>
-        <p> - Friends list data supports the social features of the app.</p>
-        <p> - Messages are stored so you and your conversation partner can access your chat history.</p>
+        <p> - <span className="italic">Account credentials</span>: used to create and authenticate your account.</p>
+        <p> - <span className="italic">Activity status</span>: used to show other users when you were last online.</p>
+        <p> - <span className="italic">Game data</span>: stored to power match history, statistics, and the core gameplay features of the app.</p>
+        <p> - <span className="italic">Friends list</span>: supports the social features of the app.</p>
+        <p> - <span className="italic">Messages</span>: stored so you and your conversation partner can access your chat history.</p>
+      <h2 className="text-2xl">How long do we keep the data</h2>
+        <p> - <span className="italic">Account credentials</span> and <span className="italic">activity status</span> are kept for as long as your account is active.</p>
+        <p> - <span className="italic">Game data</span>, <span className="italic">friends list</span>, and <span className="italic">messages</span> are kept indefinitely, even after account deletion.</p>
       <h2 className="text-2xl">Contact</h2>
       <p>For any question, you can contact us at any of these emails:</p>
       <a className="underline underline-offset-4" href="mailto:akosloff@student.42berlin.de">akosloff@student.42berlin.de</a>
       <a className="underline underline-offset-4" href="mailto:lhagemos@student.42berlin.de">lhagemos@student.42berlin.de</a>
       <a className="underline underline-offset-4" href="mailto:sgaspari@student.42berlin.de">sgaspari@student.42berlin.de</a>
-      <a className="underline underline-offset-4" href="mailto:smoon@student.42.berlin.de">smoon@student.42berlin.de</a>
+      <a className="underline underline-offset-4" href="mailto:smoon@student.42berlin.de">smoon@student.42berlin.de</a>
     </TextLayout>
   )
 }

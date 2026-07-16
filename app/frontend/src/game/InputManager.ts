@@ -1,28 +1,26 @@
-import { GameGraphics } from "./GameGraphics.ts";
-import { GameState, CellState, type GridPosition } from "./GameState";
+import { GameState } from "./GameState";
 
-
-export class InputManager{
-    
-    private graphics: GameGraphics;
+export class InputManager {
     private game: GameState;
 
-    constructor(graphics: GameGraphics, game: GameState) {
-        this.graphics = graphics;
+    constructor(game: GameState) {
         this.game = game;
     }
 
     public registerEvents(): void {
-        window.addEventListener("keydown", (event) => {
-            this.handleKeyDown(event);
-        });
+        window.addEventListener("keydown", this.handleKeyDown);
     }
 
-    private handleKeyDown(event: KeyboardEvent): void {
+    public unregisterEvents(): void {
+        window.removeEventListener("keydown", this.handleKeyDown);
+    }
+
+    private handleKeyDown = (event: KeyboardEvent): void => {
         switch (event.key) {
             case "q":
                 this.game.moveCursor(true, "y");
                 break;
+
             case "a":
                 this.game.moveCursor(false, "y");
                 break;
@@ -46,10 +44,6 @@ export class InputManager{
             case "Enter":
                 this.game.placeSphere();
                 break;
-            
-            case "r":
-                this.graphics.reset();
-                break;
         }
-    }
+    };
 }

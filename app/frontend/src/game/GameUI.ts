@@ -34,7 +34,7 @@ export class GameUI {
         this.instructions.paddingLeft = "40px";
         this.instructions.paddingBottom = "40px";
 
-        this.instructions.text = "move with q,a,w,s,e,d, choose with Enter, reset with r";
+        this.instructions.text = "move with q,a,w,s,e,d, choose with Enter";
 
         ui.addControl(this.instructions);
     }

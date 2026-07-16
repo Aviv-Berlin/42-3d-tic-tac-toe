@@ -3,7 +3,7 @@ import { Board } from "./Board";
 import { Materials } from "./Materials";
 import { StandardMaterial } from "@babylonjs/core/Materials/standardMaterial";
 import { GameState, CellState, type GridPosition } from "./GameState";
-import { CameraManager } from "./CameraManager.ts";
+import { CameraManager } from "./CameraManager";
 
 
 export class GameGraphics {

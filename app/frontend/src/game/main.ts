@@ -7,7 +7,7 @@ import { InputManager } from "./InputManager";
 import { GameGraphics } from "./GameGraphics";
 import { CameraManager } from "./CameraManager";
 
-export function createBabylonGame(canvas: HTMLCanvasElement, N: number, user: string) {
+export function createBabylonGame(canvas: HTMLCanvasElement, N: number, user: string, onExit: () => void) {
   const engine = new BABYLON.Engine(canvas, true);
   const scene = new BABYLON.Scene(engine);
 
@@ -17,8 +17,8 @@ export function createBabylonGame(canvas: HTMLCanvasElement, N: number, user: st
   const board = new Board(N, scene, materials);
   const ui = new GameUI(scene);
   const graphics = new GameGraphics(board, materials, camera);
-  const game = new GameState(N, ui, user, "AI Player", graphics);
-  const input = new InputManager(graphics, game);
+  const game = new GameState(N, ui, user, "AI Player", graphics, onExit);
+  const input = new InputManager(game);
 
   engine.runRenderLoop(() => {
     scene.render();
@@ -33,6 +33,8 @@ export function createBabylonGame(canvas: HTMLCanvasElement, N: number, user: st
   window.addEventListener("resize", handleResize);
 
   return () => {
+    game.dispose();
+    input.unregisterEvents();
     window.removeEventListener("resize", handleResize);
     scene.dispose();
     engine.dispose();

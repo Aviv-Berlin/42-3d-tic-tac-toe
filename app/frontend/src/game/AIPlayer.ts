@@ -15,7 +15,7 @@ export class AiPlayer extends Player {
     }
 
     private playSmartMove(BoardState: CellState[][][], N: number) {
-        let bestScore: number = 0;
+        let bestScore: number = -1;
         let bestPos: GridPosition | null = null;
 
         for (let x = 0; x < N; x++) {
@@ -45,7 +45,7 @@ export class AiPlayer extends Player {
             const myColor = checkVector(boardState, pos, player, points[i]).length;
             const empty = checkVector(boardState, pos, 0, points[i]).length - 1;
             if (empty + myColor >= N && myColor > bestScore)
-                bestScore += myColor;
+                bestScore = myColor;
             i++;
         }
 

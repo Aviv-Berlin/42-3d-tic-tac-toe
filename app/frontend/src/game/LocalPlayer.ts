@@ -24,16 +24,27 @@ export class LocalPlayer extends Player {
         if (!this.myTurn)
             return;
         const movement = direction ? 1 : -1;
-        this.cursor[plane] = this.loopPlacement(this.cursor[plane] + movement, this.N);
-        if(this.game.isCellEmpty(this.cursor))
-            this.graphics.showPreview(this.cursor, this.IAm);
+        const originalPos = this.cursor[plane];
+        let nextPos = originalPos;
+
+        for (let i = 0; i < this.N; i++) {
+            nextPos = this.loopPlacement(originalPos + movement, this.N);
+            const nextCursor: GridPosition = { ...this.cursor, [plane]: nextPos };
+            if (this.game.isCellEmpty(nextCursor)) {
+                this.cursor = nextCursor;
+                this.graphics.showPreview(this.cursor, this.IAm);
+                return;
+            }
+        }
+        //preivew will only move if there is a free cell in that direction.
 
     }
 
     public choosePos(): void {
         if (!this.myTurn)
             return;
-        this.game.placeMove(this.cursor);
+        if (this.game.placeMove(this.cursor))
+            this.myTurn = false;
     }
 
 

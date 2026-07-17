@@ -16,6 +16,7 @@ export abstract class Player {
     abstract yourTurn(BoardState: CellState[][][], N: number, youAre: CellState): boolean;
     abstract moveCursor(direction: boolean, plane:  "x" | "y" | "z"): void;
     abstract choosePos(): void;
+    abstract selectPos(pos: GridPosition): boolean;
 
     protected getRandomEmptyCell(boardState: CellState[][][], N: number): GridPosition {
         const emptyCells: GridPosition[] = [];

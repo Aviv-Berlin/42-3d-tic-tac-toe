@@ -1,20 +1,58 @@
 import { GameState } from "./GameState"
-import { Player } from "./Player"
+import * as BABYLON from "@babylonjs/core";
+import { Scene, Observer,PointerInfo } from "@babylonjs/core";
+import type { GridPosition } from "./Types"
 
 export class InputManager {
     private game: GameState;
+    private scene: Scene;
+    private mouse: Observer<PointerInfo> | null = null
 
-    constructor(game: GameState) {
+    constructor(game: GameState, scene: Scene) {
         this.game = game;
+        this.scene = scene;
     }
 
     public registerEvents(): void {
         window.addEventListener("keydown", this.handleKeyDown);
+        this.mouse = this.scene.onPointerObservable.add(this.handleMouse,
+            BABYLON.PointerEventTypes.POINTERTAP | BABYLON.PointerEventTypes.POINTERDOUBLETAP);
+
     }
 
     public unregisterEvents(): void {
         window.removeEventListener("keydown", this.handleKeyDown);
+        if (this.mouse !== null) {
+            this.scene.onPointerObservable.remove(this.mouse);
+            this.mouse = null;
+        }
     }
+
+    private getClickedPos(pointerInfo: PointerInfo): Readonly<GridPosition> | null {
+        const pickedMesh = pointerInfo.pickInfo?.pickedMesh;
+        if (!pointerInfo.pickInfo?.hit || !pickedMesh)
+            return null;
+        const pos = pickedMesh.metadata ?.gridPosition as GridPosition | undefined;
+        if (!pos)
+            return null;
+        return pos;
+    }
+
+    private handleMouse = (mouse: PointerInfo): void => {
+        const pos = this.getClickedPos(mouse);
+        if (pos === null)
+            return;
+        const player = this.game.getCurrentPlayer();
+        if (mouse.type === BABYLON.PointerEventTypes.POINTERTAP)
+            player.selectPos(pos);
+        else if (mouse.type === BABYLON.PointerEventTypes.POINTERDOUBLETAP) {
+            if (player.selectPos(pos))
+                player.choosePos();
+        }
+        
+    }
+
+
 
     private handleKeyDown = (event: KeyboardEvent): void => {
 
@@ -49,3 +87,10 @@ export class InputManager {
         }
     };
 }
+
+
+
+
+
+
+    

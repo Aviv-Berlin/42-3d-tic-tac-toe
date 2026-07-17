@@ -1,7 +1,7 @@
 import * as BABYLON from "@babylonjs/core";
 import type { AbstractMesh, Scene, StandardMaterial, Mesh, Material } from "@babylonjs/core";
 import { Materials } from "./Materials";
-import type { GridPosition } from "./Types";
+import { GridPosition } from "./Types";
 
 
 export class Board {
@@ -38,6 +38,7 @@ export class Board {
 
                     cube.position = this.getPosition(x, y, z);
                     cube.material = this.materials.cube;
+                    cube.metadata = { gridPosition: { x, y, z}};
                 }
             }
         }
@@ -55,6 +56,7 @@ export class Board {
         sphere.position = this.getPosition(pos.x, pos.y, pos.z);
         sphere.material = material;
         sphere.renderingGroupId = 1;
+        sphere.isPickable = false;
 
         this.spheres.push(sphere);
         if (storeMove) // ignore preivew spheres

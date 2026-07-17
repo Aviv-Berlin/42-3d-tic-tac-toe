@@ -79,12 +79,15 @@ export class AiPlayer extends Player {
         this.game.placeMove(this.getRandomEmptyCell(BoardState, N));
     }
 
+    //these methods dont do anything, they are here in case input manager calls the ai player.
     public moveCursor(direction: boolean, plane:  "x" | "y" | "z"): void {
         return;
     }
-
     public choosePos(): void {
         return;
+    }
+    public selectPos(pos: GridPosition): boolean {
+        return false;
     }
 
 }

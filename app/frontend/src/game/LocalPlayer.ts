@@ -40,6 +40,19 @@ export class LocalPlayer extends Player {
 
     }
 
+    public selectPos(pos: GridPosition): boolean {
+        if (!this.myTurn)
+            return false;
+
+        if (!this.game.isCellEmpty(pos))
+            return false;
+
+        this.cursor = { ...pos };
+        this.graphics.showPreview(this.cursor, this.IAm);
+
+        return true;
+    }
+
     public choosePos(): void {
         if (!this.myTurn)
             return;

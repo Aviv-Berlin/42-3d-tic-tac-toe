@@ -1,91 +1,80 @@
-import { FlowGraphAssetType } from "@babylonjs/core";
 import { GameUI } from "./GameUI";
 import { checkWin } from "./GameCheckWin";
 import { GameGraphics } from "./GameGraphics";
-import { GridPosition, CellState } from "./Types"
+import { GridPosition, CellState, GameData } from "./Types";
+import { Player } from "./Player";
 
 
-
+interface NewPlayer {
+    name: string;
+    yourTurn(BoardState: CellState[][][], N: number): boolean;
+}
 
 
 
 
 export class GameState {
     private boardState: CellState [][][] = [];
-    private currentPlayer: CellState = CellState.Player1;
+    private currentPlayer: CellState = CellState.Player1; 
+    private currentName: string = "";
     private N;
     private ui: GameUI;
-    private player1: string;
-    private player2: string;
+    private taken1: boolean = false;
+    private player1: Player;
+    private player2: Player;
+    private moveCounter: number = 0;
     private graphics: GameGraphics;
-    private cursor: GridPosition;
     private gameOver: boolean = false;
     private onExit: () => void; //this is a function that is called when game is over
     private exitTimeout: ReturnType<typeof setTimeout> | null = null;
     private aiTimeout: ReturnType<typeof setTimeout> | null = null;
 
-    constructor(N: number, ui: GameUI, player1: string, player2: string, graphics: GameGraphics, onExit: () => void) {
+    constructor(N: number, ui: GameUI, graphics: GameGraphics, onExit: () => void) {
         this.N = N;
         this.ui = ui;
-        this.player1 = player1;
-        this.player2 = player2;
         this.graphics = graphics;
         this.onExit = onExit;
 
         this.initBoard();
-        this.cursor = {x: this.N -1, y: this.N - 1, z: this.N- 1};
-        this.ui.playerTitle(player1);
-        this.updatePreview();
 
     }
+    public register(player: Player): void {
+        if (!this.taken1) 
+            this.player1 = player;
+        else {
+            this.player2 = player;
+            if (Math.floor(Math.random() * 2) === 0) {
+                this.currentPlayer = CellState.Player1;
+                this.currentName = this.player1.name;
+                this.player1.yourTurn(this.boardState, this.N);
+            }
+            else { 
+                this.currentPlayer = CellState.Player2;
+                this.currentName = this.player2.name;
+                this.player2.yourTurn(this.boardState, this.N);
+            }
+            this.ui.playerTitle(this.currentName);
+        }
+    }
 
-    public moveCursor(direction: boolean, plane: "x" | "y" | "z"): void {
+    public placeMove(pos: GridPosition): boolean {
         if (this.gameOver)
-            return;
-
-        if (this.currentPlayer !== CellState.Player1) // no cursor control whil AI is playing
-            return;
-
-        const movement = direction ? 1 : -1;
-
-        this.cursor[plane] = this.loopPlacement(this.cursor[plane] + movement);
-
-        this.updatePreview();
-    }
-
-    private updatePreview(): void {
-        const foundEmptyCell = this.findNextEmptyCell();
-
-        if (!foundEmptyCell) {
-            this.graphics.hidePreview();
-            return;
+            return false;
+        if (this.moveCounter >= this.N * this.N * this.N) {
+            this.endGameDraw();
+            return false;
         }
-        this.graphics.showPreview(this.cursor, this.currentPlayer);
-    }
+        this.moveCounter++;
+        this.boardState[pos.x][pos.y][pos.z] = this.currentPlayer;
+        this.graphics.placeMove(pos, this.currentPlayer);
 
-    private findNextEmptyCell(): boolean {
-        const maxTries = this.N * this.N * this.N;
-        let tries = 0;
-
-        while (!this.isCellEmpty(this.cursor) && tries < maxTries) {
-            this.advanceCursor();
-            tries++;
+        const winningPositions = checkWin(this.boardState, pos, this.currentPlayer, this.N);
+        if (winningPositions) {
+            this.finishGame(this.currentPlayer, winningPositions);
+            return true;
         }
-        return tries < maxTries;
-    }
-
-
-    private loopPlacement(value: number): number {
-        if (value >= this.N)
-            return 0;
-        if (value < 0)
-            return this.N - 1;
-        return value;
-    }
-
-
-    public getCursorPosition(): GridPosition {
-        return { ...this.cursor };
+        this.switchPlayer();
+        return true;
     }
 
     private initBoard() {
@@ -114,14 +103,16 @@ export class GameState {
         if (this.currentPlayer === CellState.Player1)
         {
             this.currentPlayer = CellState.Player2;
-            this.ui.playerTitle(this.player2);
+            this.currentName = this.player2.name;
+            this.player2.yourTurn(this.boardState, this.N);
         }
         else
         {
             this.currentPlayer = CellState.Player1;
-            this.ui.playerTitle(this.player1);
-
+            this.currentName = this.player1.name;
+            this.player1.yourTurn(this.boardState, this.N);
         }
+        this.ui.playerTitle(this.currentName);
     }
 
     public getCell(pos: GridPosition): CellState {
@@ -131,45 +122,7 @@ export class GameState {
     public reset() {
         this.initBoard();
         this.currentPlayer = CellState.Player1;
-        this.ui.playerTitle(this.player1);
-    }
-
-    
-    public placeSphere(): boolean {
-        if (this.gameOver)
-            return false;
-        if (this.currentPlayer !== CellState.Player1) // prevent player from putting sphere while AI moves.
-            return false;
-        return this.placeMoveAt({...this.cursor});
-    }
-
-    public placeMoveAt(pos: GridPosition): boolean {
-        if (this.gameOver)
-            return false;
-        if (!this.isCellEmpty(pos))
-            return false;
-        this.boardState[pos.x][pos.y][pos.z] = this.currentPlayer;
-        this.graphics.placeMove(pos, this.currentPlayer);
-
-        const winningPositions = checkWin(this.boardState, pos, this.currentPlayer, this.N);
-        if (winningPositions) {
-            this.finishGame(this.currentPlayer, winningPositions);
-            return true;
-        }
-
-        this.switchPlayer();
-        if(this.currentPlayer === CellState.Player2) 
-        {
-            this.graphics.hidePreview();
-            this.randomMove(); //this is the AI player
-        }
-        else
-        {
-            this.advanceCursor();
-            this.updatePreview();
-        }
-
-        return true;
+        this.ui.playerTitle(this.player1.name);
     }
 
     private finishGame(winner: CellState, winningPositions: GridPosition[]): void {
@@ -177,45 +130,10 @@ export class GameState {
         this.graphics.hidePreview();
         this.graphics.animateWin(winningPositions);
         if (this.currentPlayer === CellState.Player1)
-            this.ui.displayWinner(this.player1);
+            this.ui.displayWinner(this.player1.name);
         else
-            this.ui.displayWinner(this.player2);
+            this.ui.displayWinner(this.player2.name);
         this.exitTimeout = setTimeout(() => { this.onExit();}, 2000);
-    }
-
-    private randomMove(): void {
-        this.aiTimeout = setTimeout(() => {
-            this.aiTimeout = null;
-            if (this.gameOver)
-                return;
-            if (this.currentPlayer !== CellState.Player2)
-                return;
-            const randomPosition = this.getRandomEmptyCell();
-            if (randomPosition === null) {
-                // The board is full.
-                this.endGameDraw();
-                return;
-            }
-            this.placeMoveAt(randomPosition);
-        }, 500);
-    }
-
-    private getRandomEmptyCell(): GridPosition | null {
-        const emptyCells: GridPosition[] = [];
-
-        for (let x = 0; x < this.N; x++) {
-            for (let y = 0; y < this.N; y++) {
-                for (let z = 0; z < this.N; z++) {
-                    const pos: GridPosition = {x,y,z};
-                    if (this.isCellEmpty(pos))
-                        emptyCells.push(pos);
-                }
-            }
-        }
-        if (emptyCells.length === 0)
-            return null;
-        const randomNumber = Math.floor(Math.random() * emptyCells.length);
-        return emptyCells[randomNumber];
     }
 
     private endGameDraw() {
@@ -223,28 +141,6 @@ export class GameState {
         this.graphics.hidePreview();
         this.ui.displayWinner("No One");
         this.exitTimeout = setTimeout(() => { this.onExit();}, 2000);
-    }
-
-    public getCursor(): GridPosition {
-        return this.cursor;
-    }
-
-    private advanceCursor(): void {
-        this.cursor.x--;
-
-        if (this.cursor.x < 0) {
-            this.cursor.x =  this.N - 1;
-            this.cursor.y--;
-        }
-
-        if (this.cursor.y < 0) {
-            this.cursor.y = this.N - 1;
-            this.cursor.z--;
-        }
-
-        if (this.cursor.z < 0) {
-            this.cursor.z = this.N - 1;
-        }
     }
 
     public dispose(): void {
@@ -255,15 +151,6 @@ export class GameState {
     }
 
         
-    private playRandomMove(boardState: CellState[][][], N: number): GridPosition | null {
-        while(1)
-        {
-            const pos: GridPosition = {x: Math.floor(Math.random() * N),
-                y: Math.floor(Math.random() * N), z: Math.floor(Math.random() * N),};
-            if(boardState[pos.x][pos.y][pos.z] === 0)
-                return pos;
-            }
-            return null;
-    }
+
 
 }

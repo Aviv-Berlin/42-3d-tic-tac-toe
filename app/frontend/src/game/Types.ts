@@ -9,3 +9,9 @@ export interface GridPosition {
     y: number,
     z: number,
 }
+
+export interface GameData {
+    YouAre: CellState;
+    N: number;
+    boardState: CellState[][][];
+}

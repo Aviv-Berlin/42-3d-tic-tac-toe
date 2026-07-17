@@ -11,7 +11,6 @@ export abstract class Player {
         this.name = name;
         this.game = game;
         this.graphics = graphics;
-        this.game.register(this);
     }
     abstract yourTurn(BoardState: CellState[][][], N: number, youAre: CellState): boolean;
 

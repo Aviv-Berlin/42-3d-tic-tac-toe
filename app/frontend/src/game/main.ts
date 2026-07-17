@@ -23,13 +23,16 @@ export function createBabylonGame(canvas: HTMLCanvasElement, N: number, user: st
   const ai = new AiPlayer("Ai1", game, graphics);
   const player = new LocalPlayer(user, game, graphics);
   const input = new InputManager(player);
+  input.registerEvents();
 
+  game.register(ai);
+  game.register(player);
+  game.startGame();
 
   engine.runRenderLoop(() => {
     scene.render();
   });
 
-  input.registerEvents();
 
   const handleResize = () => {
     engine.resize();

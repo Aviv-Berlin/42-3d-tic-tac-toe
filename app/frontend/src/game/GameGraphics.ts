@@ -12,11 +12,7 @@ export class GameGraphics {
     private previewSphere: BABYLON.Mesh | null = null;
     private camera: CameraManager;
 
-    constructor(
-        board: Board,
-        materials: Materials,
-        camera: CameraManager
-    ) {
+    constructor(board: Board, materials: Materials, camera: CameraManager) {
         this.board = board;
         this.materials = materials;
         this.camera = camera;
@@ -25,11 +21,7 @@ export class GameGraphics {
     public showPreview(pos: GridPosition, player: CellState): void {
         this.hidePreview();
 
-        const material =
-            player === CellState.Player1
-                ? this.materials.PreivewPlayer1Mat
-                : this.materials.PreivewPlayer2Mat;
-
+        const material = this.materials.getPreviewMaterial(player);
         this.previewSphere = this.board.putSphere(pos,material, false);
     }
 
@@ -43,12 +35,7 @@ export class GameGraphics {
 
     public placeSphere(pos: GridPosition, player: CellState): void {
         this.hidePreview();
-
-        const material =
-            player === CellState.Player1
-                ? this.materials.Player1Mat
-                : this.materials.Player2Mat;
-
+        const material = this.materials.getPlayerMaterial(player);
         this.board.putSphere(pos, material, true);
     }
 

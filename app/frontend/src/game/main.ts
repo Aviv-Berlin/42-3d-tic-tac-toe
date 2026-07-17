@@ -19,7 +19,7 @@ export function createBabylonGame(canvas: HTMLCanvasElement, N: number, user: st
   const board = new Board(N, scene, materials);
   const ui = new GameUI(scene);
   const graphics = new GameGraphics(board, materials, camera);
-  const game = new GameState(N, ui, graphics, onExit);
+  const game = new GameState(N, ui, graphics, onExit, 2);
   const ai = new AiPlayer("AiPlayer", game, graphics);
   const player = new LocalPlayer(user, game, graphics);
   //const guest = new LocalPlayer("guest", game, graphics);

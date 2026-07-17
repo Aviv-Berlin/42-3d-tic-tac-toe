@@ -1,4 +1,4 @@
-import { GridPosition, CellState } from "./Types"
+import { GridPosition, CellState, PLAYER_STATES } from "./Types"
 
 
 export function addGP(a: GridPosition, b: GridPosition): GridPosition {
@@ -15,4 +15,16 @@ export function negateGP(a: GridPosition): GridPosition {
         y: -a.y,
         z: -a.z
     };
+}
+
+export function playerStateToIndex(state: CellState): number {
+    const index = PLAYER_STATES.indexOf(state);
+
+    if (index === -1) {
+        throw new Error(
+            `CellState ${state} does not represent a player`
+        );
+    }
+
+    return index;
 }

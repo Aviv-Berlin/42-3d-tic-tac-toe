@@ -1,7 +1,7 @@
 import { GameUI } from "./GameUI";
 import { checkWin } from "./GameCheckWin";
 import { GameGraphics } from "./GameGraphics";
-import { GridPosition, CellState, GameData } from "./Types";
+import { GridPosition, CellState, PLAYER_STATES,} from "./Types";
 import { Player } from "./Player";
 
 
@@ -11,75 +11,68 @@ interface NewPlayer {
 }
 
 
-
-
 export class GameState {
     private boardState: CellState [][][] = [];
-    private currentPlayer: CellState = CellState.Player1; 
-    private currentName: string = "";
-    private N;
+    private N: number;
     private ui: GameUI;
-    private player1: Player | null = null;
-    private player2: Player | null = null;
+    private players: Player[] = [];
+    private currentPlayerIndex: number = 0;
+    private nPlayers: number;
     private moveCounter: number = 0;
     private graphics: GameGraphics;
     private gameOver: boolean = false;
     private onExit: () => void; //this is a function that is called when game is over
     private exitTimeout: ReturnType<typeof setTimeout> | null = null;
 
-    constructor(N: number, ui: GameUI, graphics: GameGraphics, onExit: () => void) {
+    constructor(N: number, ui: GameUI, graphics: GameGraphics, onExit: () => void, nPlayers: number) {
+        if (nPlayers < 2 || nPlayers > 4)
+            throw new Error("The game supports between 2 and 4 players");
         this.N = N;
         this.ui = ui;
         this.graphics = graphics;
         this.onExit = onExit;
+        this.nPlayers = nPlayers;
 
         this.initBoard();
     }
     public register(player: Player): void {
-        if (this.player1 === null) {
-            this.player1 = player;
-            return;
-        }
-        if (this.player2 === null) {
-            this.player2 = player;
-            return;
-        }
+        if (this.players.length >= this.nPlayers)
+            throw new Error("Too many players were registered");
 
-        throw new Error("Two Pplayers are already registered");
+        this.players.push(player);
     }
 
     public startGame(): void {
-        if (this.player1 === null || this.player2 === null)
-            throw new Error("Cannot start wihtout two players");
+        if (this.players.length < this.nPlayers)
+            throw new Error("Not enough players");
 
-        if (Math.floor(Math.random() * 2) === 0) {
-            this.currentPlayer = CellState.Player1;
-            this.currentName = this.player1.name;
-            this.player1.yourTurn(this.boardState, this.N, CellState.Player1);
-        }
-        else { 
-            this.currentPlayer = CellState.Player2;
-            this.currentName = this.player2.name;
-            this.player2.yourTurn(this.boardState, this.N, CellState.Player2);
-        }
-        this.ui.playerTitle(this.currentName);
+        this.currentPlayerIndex = Math.floor(Math.random() * this.nPlayers);
+        this.ui.playerTitle(this.getCurrentPlayer().name);
+        this.getCurrentPlayer().yourTurn(this.boardState, this.N, this.getCurrentPlayerState());
     }
+
+
 
     public placeMove(pos: GridPosition): boolean {
         if (this.gameOver)
             return false;
+        if (!this.isCellEmpty(pos))
+            return false;
+
+
+        const playerState = this.getCurrentPlayerState();
+        this.moveCounter++;
+        this.boardState[pos.x][pos.y][pos.z] = playerState;
+        this.graphics.placeSphere(pos, playerState);
+
+        const winningPositions = checkWin(this.boardState, pos, playerState, this.N);
+        if (winningPositions) {
+            this.finishGame(this.getCurrentPlayer(), winningPositions);
+            return true;
+        }
         if (this.moveCounter >= this.N * this.N * this.N) {
             this.endGameDraw();
             return false;
-        }
-        this.moveCounter++;
-        this.boardState[pos.x][pos.y][pos.z] = this.currentPlayer;
-        this.graphics.placeSphere(pos, this.currentPlayer);
-
-        const winningPositions = checkWin(this.boardState, pos, this.currentPlayer, this.N);
-        if (winningPositions) {
-            this.finishGame(this.currentPlayer, winningPositions);
-            return true;
         }
         this.switchPlayer();
         return true;
@@ -103,32 +96,30 @@ export class GameState {
     }
 
     public getCurrentPlayer(): Player {
-        const player = this.currentPlayer === CellState.Player1 ? this.player1 : this.player2;
-        if (player === null) {
+        const player = this.players[this.currentPlayerIndex];
+        if (player === undefined) {
             throw new Error("Current player has not been registered");
         }
         return player;
     }
 
+    public getCurrentPlayerState(): CellState {
+        const state = PLAYER_STATES[this.currentPlayerIndex];
 
-    private switchPlayer() {
-        if (this.player1 === null || this.player2 === null)
-            throw new Error("Cannot switch wihtout two players");
-        
-        if (this.currentPlayer === CellState.Player1)
-        {
-            this.currentPlayer = CellState.Player2;
-            this.currentName = this.player2.name;
-            this.player2.yourTurn(this.boardState, this.N, CellState.Player2);
+        if (state === undefined) {
+            throw new Error("Current player has no CellState");
         }
-        else
-        {
-            this.currentPlayer = CellState.Player1;
-            this.currentName = this.player1.name;
-            this.player1.yourTurn(this.boardState, this.N, CellState.Player1);
-        }
-        this.ui.playerTitle(this.currentName);
+
+        return state;
     }
+
+    private switchPlayer(): void {
+        this.currentPlayerIndex =
+            (this.currentPlayerIndex + 1) % this.players.length;
+
+        this.ui.playerTitle(this.getCurrentPlayer().name);
+        this.getCurrentPlayer().yourTurn(this.boardState, this.N, this.getCurrentPlayerState());
+    }    
 
     public getCell(pos: GridPosition): CellState {
         return this.boardState[pos.x][pos.y][pos.z];
@@ -136,16 +127,11 @@ export class GameState {
 
 
 
-    private finishGame(winner: CellState, winningPositions: GridPosition[]): void {
-        if (this.player1 === null || this.player2 === null)
-            throw new Error("Cannot finish wihtout two players");
+    private finishGame(winner: Player, winningPositions: GridPosition[]): void {
         this.gameOver = true;
         this.graphics.hidePreview();
         this.graphics.animateWin(winningPositions);
-        if (this.currentPlayer === CellState.Player1)
-            this.ui.displayWinner(this.player1.name);
-        else
-            this.ui.displayWinner(this.player2.name);
+        this.ui.displayWinner(winner.name);
         this.exitTimeout = setTimeout(() => { this.onExit();}, 2000);
     }
 
@@ -163,7 +149,7 @@ export class GameState {
         }  
     }
 
-        
+     
 
 
 }

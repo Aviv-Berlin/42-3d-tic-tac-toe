@@ -1,23 +1,5 @@
 import { addGP, negateGP, } from "./Utils";
-import { GridPosition, CellState } from "./Types"
-
-
-
-const points: GridPosition[] = [
-	{ x: -1, y: 1, z: 1 },
-	{ x: 0, y: 1, z: 1 },
-	{ x: 1, y: 1, z: 1 },
-	{ x: -1, y: 0, z: 1 },
-	{ x: 0, y: 0, z: 1 },
-	{ x: 1, y: 0, z: 1 },
-	{ x: -1, y: -1, z: 1 },
-	{ x: 0, y: -1, z: 1 },
-	{ x: 1, y: -1, z: 1 },
-	{ x: -1, y: 1, z: 0 },
-	{ x: 0, y: 1, z: 0 },
-	{ x: 1, y: 1, z: 0 },
-	{ x: 1, y: 0, z: 0 }
-  ];
+import { GridPosition, CellState, points } from "./Types"
 
 function checkForward(boardState: CellState[][][], startPos: GridPosition, player: CellState, vec: GridPosition): GridPosition[] {
 	const positions: GridPosition[] = [];
@@ -31,9 +13,7 @@ function checkForward(boardState: CellState[][][], startPos: GridPosition, playe
 	return positions;
 }
 
-function checkVector(boardState: CellState[][][], startPos: GridPosition, player: CellState, vec: GridPosition): GridPosition[] {
-	//const positions: GridPosition[] = [];
-	//let count: number = 0;
+export function checkVector(boardState: CellState[][][], startPos: GridPosition, player: CellState, vec: GridPosition): GridPosition[] {
 	const forward = checkForward(boardState, startPos, player, vec);
 	const backward = checkForward(boardState, startPos, player, negateGP(vec));
 	return [...backward.reverse(), {...startPos}, ...forward];

@@ -1,4 +1,4 @@
-import { GridPosition, CellState, points } from "./Types"
+import { GridPosition, CellState, points, PLAYER_STATES } from "./Types"
 import { Player } from "./Player";
 import { checkVector } from "./GameCheckWin";
 
@@ -24,7 +24,7 @@ export class AiPlayer extends Player {
                     if (BoardState[x][y][z] != CellState.Empty)
                         continue;
                     const pos: GridPosition = {x,y,z};
-                    const score = this.scorePos(BoardState, pos, this.IAm, N);
+                    const score = this.scoreMove(BoardState, pos, N);
                     if (score > bestScore) {
                         bestScore = score;
                         bestPos = pos;
@@ -34,6 +34,29 @@ export class AiPlayer extends Player {
         };
         if (bestPos !== null)
             this.game.placeMove(bestPos);
+    }
+
+    private scoreMove(boardState: CellState[][][], pos: GridPosition, N: number): number {
+        const myScore = this.scorePos(boardState, pos, this.IAm, N);
+        // Winning is always the highest priority.
+        if (myScore >= N)
+            return 10000;
+
+        let bestOpponentScore = 0;
+        for (const opponent of PLAYER_STATES) {
+            if (opponent === this.IAm)
+                continue;
+            const opponentScore = this.scorePos(boardState, pos, opponent, N);
+            if (opponentScore > bestOpponentScore)
+                bestOpponentScore = opponentScore;
+        }
+        if (bestOpponentScore >= N)
+            return 5000 + myScore;
+
+
+        // For ordinary moves, prefer our own progress,
+        // while also considering dangerous opponent lines.
+        return myScore * 3 + bestOpponentScore;
     }
 
     //this function give a score for each position on the board based on how many positions are fromt the same color (and if there are no position already taken by other player)

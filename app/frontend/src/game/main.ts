@@ -20,13 +20,15 @@ export function createBabylonGame(canvas: HTMLCanvasElement, N: number, user: st
   const ui = new GameUI(scene);
   const graphics = new GameGraphics(board, materials, camera);
   const game = new GameState(N, ui, graphics, onExit);
-  const ai = new AiPlayer("Ai1", game, graphics);
+  const ai = new AiPlayer("AiPlayer", game, graphics);
   const player = new LocalPlayer(user, game, graphics);
-  const input = new InputManager(player);
+  //const guest = new LocalPlayer("guest", game, graphics);
+  const input = new InputManager(game);
   input.registerEvents();
 
   game.register(ai);
   game.register(player);
+  //game.register(guest);
   game.startGame();
 
   engine.runRenderLoop(() => {

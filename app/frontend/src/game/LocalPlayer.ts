@@ -13,7 +13,8 @@ export class LocalPlayer extends Player {
         this.boardState = boardState;
         this.N = N;
         this.IAm = youAre;
-        this.cursor = this.getRandomEmptyCell(boardState, N);
+        this.cursor = {x: N - 1, y: N - 1, z: N -1};
+        this.placeCursor();
         this.graphics.showPreview(this.cursor, this.IAm);
         this.myTurn = true;
         return true;
@@ -24,7 +25,8 @@ export class LocalPlayer extends Player {
             return;
         const movement = direction ? 1 : -1;
         this.cursor[plane] = this.loopPlacement(this.cursor[plane] + movement, this.N);
-        this.graphics.showPreview(this.cursor, this.IAm);
+        if(this.game.isCellEmpty(this.cursor))
+            this.graphics.showPreview(this.cursor, this.IAm);
 
     }
 
@@ -35,21 +37,23 @@ export class LocalPlayer extends Player {
     }
 
 
-    private advanceCursor(N: number): void {
-        this.cursor.x--;
+    private placeCursor(): void {
+        while(!this.game.isCellEmpty(this.cursor)){
+            this.cursor.x--;
 
-        if (this.cursor.x < 0) {
-            this.cursor.x =  N - 1;
-            this.cursor.y--;
-        }
+            if (this.cursor.x < 0) {
+                this.cursor.x =  this.N - 1;
+                this.cursor.y--;
+            }
 
-        if (this.cursor.y < 0) {
-            this.cursor.y = N - 1;
-            this.cursor.z--;
-        }
+            if (this.cursor.y < 0) {
+                this.cursor.y = this.N - 1;
+                this.cursor.z--;
+            }
 
-        if (this.cursor.z < 0) {
-            this.cursor.z = N - 1;
+            if (this.cursor.z < 0) {
+                this.cursor.z = this.N - 1;
+            }
         }
     }
 

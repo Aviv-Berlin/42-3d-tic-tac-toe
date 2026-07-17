@@ -9,6 +9,12 @@ export class AiPlayer extends Player {
         return true;
     }
 
+    public moveCursor(direction: boolean, plane:  "x" | "y" | "z"): void {
+        return;
+    }
 
+    public choosePos(): void {
+        return;
+    }
 
 }

@@ -1,10 +1,11 @@
-import { LocalPlayer } from "./LocalPlayer"
+import { GameState } from "./GameState"
+import { Player } from "./Player"
 
 export class InputManager {
-    private player: LocalPlayer;
+    private game: GameState;
 
-    constructor(player: LocalPlayer) {
-        this.player = player;
+    constructor(game: GameState) {
+        this.game = game;
     }
 
     public registerEvents(): void {
@@ -16,33 +17,34 @@ export class InputManager {
     }
 
     private handleKeyDown = (event: KeyboardEvent): void => {
+
         switch (event.key) {
             case "q":
-                this.player.moveCursor(true, "y");
+                this.game.getCurrentPlayer().moveCursor(true, "y");
                 break;
 
             case "a":
-                this.player.moveCursor(false, "y");
+                this.game.getCurrentPlayer().moveCursor(false, "y");
                 break;
 
             case "w":
-                this.player.moveCursor(true, "z");
+                this.game.getCurrentPlayer().moveCursor(true, "z");
                 break;
 
             case "s":
-                this.player.moveCursor(false, "z");
+                this.game.getCurrentPlayer().moveCursor(false, "z");
                 break;
 
             case "e":
-                this.player.moveCursor(true, "x");
+                this.game.getCurrentPlayer().moveCursor(true, "x");
                 break;
 
             case "d":
-                this.player.moveCursor(false, "x");
+                this.game.getCurrentPlayer().moveCursor(false, "x");
                 break;
 
             case "Enter":
-                this.player.choosePos();
+                this.game.getCurrentPlayer().choosePos();
                 break;
         }
     };

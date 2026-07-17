@@ -19,7 +19,6 @@ export class GameState {
     private currentName: string = "";
     private N;
     private ui: GameUI;
-    private taken1: boolean = false;
     private player1: Player | null = null;
     private player2: Player | null = null;
     private moveCounter: number = 0;
@@ -27,7 +26,6 @@ export class GameState {
     private gameOver: boolean = false;
     private onExit: () => void; //this is a function that is called when game is over
     private exitTimeout: ReturnType<typeof setTimeout> | null = null;
-    private aiTimeout: ReturnType<typeof setTimeout> | null = null;
 
     constructor(N: number, ui: GameUI, graphics: GameGraphics, onExit: () => void) {
         this.N = N;
@@ -36,7 +34,6 @@ export class GameState {
         this.onExit = onExit;
 
         this.initBoard();
-
     }
     public register(player: Player): void {
         if (this.player1 === null) {
@@ -105,8 +102,12 @@ export class GameState {
         return this.boardState[pos.x][pos.y][pos.z] === CellState.Empty;
     }
 
-    public getCurrentPlayer(): CellState {
-        return this.currentPlayer;
+    public getCurrentPlayer(): Player {
+        const player = this.currentPlayer === CellState.Player1 ? this.player1 : this.player2;
+        if (player === null) {
+            throw new Error("Current player has not been registered");
+        }
+        return player;
     }
 
 
@@ -124,7 +125,7 @@ export class GameState {
         {
             this.currentPlayer = CellState.Player1;
             this.currentName = this.player1.name;
-            this.player1.yourTurn(this.boardState, this.N, CellState.Player2);
+            this.player1.yourTurn(this.boardState, this.N, CellState.Player1);
         }
         this.ui.playerTitle(this.currentName);
     }

@@ -12,7 +12,10 @@ export abstract class Player {
         this.game = game;
         this.graphics = graphics;
     }
+    
     abstract yourTurn(BoardState: CellState[][][], N: number, youAre: CellState): boolean;
+    abstract moveCursor(direction: boolean, plane:  "x" | "y" | "z"): void;
+    abstract choosePos(): void;
 
     protected getRandomEmptyCell(boardState: CellState[][][], N: number): GridPosition {
         const emptyCells: GridPosition[] = [];

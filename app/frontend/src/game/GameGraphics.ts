@@ -41,7 +41,7 @@ export class GameGraphics {
         this.previewSphere = null;
     }
 
-    public placeMove(pos: GridPosition, player: CellState): void {
+    public placeSphere(pos: GridPosition, player: CellState): void {
         this.hidePreview();
 
         const material =

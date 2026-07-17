@@ -39,19 +39,21 @@ export class GameState {
 
     }
     public register(player: Player): void {
-        if (!this.taken1) 
+        if (!this.taken1) {
             this.player1 = player;
+            this.taken1 = true;
+        }
         else {
             this.player2 = player;
             if (Math.floor(Math.random() * 2) === 0) {
                 this.currentPlayer = CellState.Player1;
                 this.currentName = this.player1.name;
-                this.player1.yourTurn(this.boardState, this.N);
+                this.player1.yourTurn(this.boardState, this.N, CellState.Player1);
             }
             else { 
                 this.currentPlayer = CellState.Player2;
                 this.currentName = this.player2.name;
-                this.player2.yourTurn(this.boardState, this.N);
+                this.player2.yourTurn(this.boardState, this.N, CellState.Player2);
             }
             this.ui.playerTitle(this.currentName);
         }
@@ -66,7 +68,7 @@ export class GameState {
         }
         this.moveCounter++;
         this.boardState[pos.x][pos.y][pos.z] = this.currentPlayer;
-        this.graphics.placeMove(pos, this.currentPlayer);
+        this.graphics.placeSphere(pos, this.currentPlayer);
 
         const winningPositions = checkWin(this.boardState, pos, this.currentPlayer, this.N);
         if (winningPositions) {

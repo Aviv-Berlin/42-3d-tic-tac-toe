@@ -1,4 +1,5 @@
-import { Scene, TransformNode, Vector3, MeshBuilder } from "@babylonjs/core/scene";
+import * as BABYLON from "@babylonjs/core";
+import type { AbstractMesh, Scene, StandardMaterial, Mesh, Material } from "@babylonjs/core";
 import * as GUI from "@babylonjs/gui";
 import { CameraManager } from "./CameraManager"
 import { Materials } from "./Materials"
@@ -6,46 +7,115 @@ import { Materials } from "./Materials"
 export class GameUI {
 
     private ui: GUI.AdvancedDynamicTexture;
-    private playerText: GUI.TextBlock | null = null;
+    private playerNameCube: BABYLON.Mesh | null = null;
+    private playerNameTexture: BABYLON.DynamicTexture | null = null;
     private instructions: GUI.TextBlock | null = null;
     private scene: Scene;
     private onExit: () => void;
-    private camera;
-    private materials;
+    private materials: Materials;
+    private gui3DManager: GUI.GUI3DManager;
 
     
-    constructor(scene: Scene, onExit: () => void, camera: CameraManager, materials: Materials) {
+    constructor(scene: Scene, onExit: () => void, materials: Materials) {
         this.scene = scene;
         this.onExit = onExit;
-        this.camera = camera;
         this.materials = materials;
         this.ui = GUI.AdvancedDynamicTexture.CreateFullscreenUI("UI", true, scene);
-        this.displayPlayer();
+        this.gui3DManager = new GUI.GUI3DManager(this.scene);
+        this.createPlayerCube("test");
         this.displayInstructions();
-        const gui3DManager = this.createExitCube();
-        //this.createExitButton();
+        this.createExitCube();
     }
-    private createExitCube(): GUI.GUI3DManager {
-        const manager = new GUI.GUI3DManager(this.scene);
-        const cube = MeshBuilder.CreateBox("exitCube", {size: 0.4}, this.scene);
-        cube.material = this.materials.cube;
+    private createExitCube() {
+        const cubeSize = 2;
+        const cube = BABYLON.MeshBuilder.CreateBox("exitCube", {size: cubeSize}, this.scene);
+        cube.material = this.createTextMaterial("EXIT");
+        cube.rotation = new BABYLON.Vector3(0, 0, 0);
+
+        const babylonCamera = this.scene.activeCamera;
+        if (!babylonCamera)
+            throw new Error("No active camera found");
         const exitButton = new GUI.MeshButton3D(cube, "exitButton");
-        manager.addControl(exitButton);
+        this.gui3DManager.addControl(exitButton);
+
+        if(exitButton.node)
+            exitButton.node.parent = babylonCamera;
+        exitButton.position = new BABYLON.Vector3(30, 14, 40);
         exitButton.onPointerUpObservable.add(()=> {this.onExit();});
-        return manager;
     }
 
-    private displayPlayer () {
-        this.playerText = new GUI.TextBlock();
-        this.playerText.color = "gray";
-        this.playerText.fontSize = 50;
-        this.playerText.textHorizontalAlignment = GUI.Control.HORIZONTAL_ALIGNMENT_LEFT;
-        this.playerText.horizontalAlignment = GUI.Control.HORIZONTAL_ALIGNMENT_LEFT;
-        this.playerText.textVerticalAlignment = GUI.Control.VERTICAL_ALIGNMENT_TOP;
-        this.playerText.verticalAlignment = GUI.Control.VERTICAL_ALIGNMENT_TOP;
-        this.playerText.paddingLeft = "40px";
-        this.playerText.paddingTop = "40px";
-        this.ui.addControl(this.playerText);
+    private createTextMaterial(text: string): BABYLON.StandardMaterial {
+        const texture = new BABYLON.DynamicTexture("textTexture",
+            { width: 512, height: 512}, this.scene, true);
+
+        texture.drawText(text,
+            null,                   // center horizontally
+            300,                    // vertical position
+            "bold 150px Futura",
+            "white",                // text color
+            "#969696d0",              // background color
+            true
+        );
+
+        const material = new BABYLON.StandardMaterial("textMaterial",  this.scene);
+
+        material.diffuseTexture = texture;
+
+        // Optional: makes the texture clearly visible without depending on light.
+        //material.emissiveTexture = texture;
+
+        return material;
+    }
+
+private createPlayerCube(initialPlayer: string): void {
+        const babylonCamera = this.scene.activeCamera;
+
+        if (!babylonCamera)
+            throw new Error("No active camera found");
+
+        const cubeSize = 4;
+        this.playerNameCube = BABYLON.MeshBuilder.CreateBox(
+            "playerNameCube", { size: cubeSize }, this.scene);
+
+        this.playerNameTexture = new BABYLON.DynamicTexture("playerNameTexture",
+            { width: 512, height: 512 }, this.scene, true);
+
+        const material = new BABYLON.StandardMaterial("playerNameMaterial", this.scene);
+
+        material.diffuseTexture = this.playerNameTexture;
+
+        // Keep the text visible regardless of lighting.
+        //material.disableLighting = true;
+
+        this.playerNameCube.material = material;
+
+        // Attach it to the camera.
+        this.playerNameCube.parent = babylonCamera;
+
+        // Same placement as EXIT, but on the left.
+        this.playerNameCube.position.set(-28, 12, 40);
+
+        this.playerNameCube.rotation.set(0, 0, 0);
+
+        this.drawPlayerName(initialPlayer);
+    }
+
+    private drawPlayerName(player: string): void {
+        if (!this.playerNameTexture)
+            return;
+
+        const fontSize = 720 /player.length;
+
+        this.playerNameTexture.drawText(
+            player,
+            null,                          // center horizontally
+            300,                           // vertical position
+            `bold ${fontSize}px Futura`,
+            "white",
+            "#eee9e9",
+            true,
+            true
+        );
     }
 
     private displayInstructions() {
@@ -62,10 +132,9 @@ export class GameUI {
         this.ui.addControl(this.instructions);
     }
 
-    public playerTitle(player: string) {
-        if (this.playerText)
-            this.playerText.text = player;
-    }
+public playerTitle(player: string): void {
+    this.drawPlayerName(player);
+}
 
     public displayWinner(winner: string): void {
         const ui = GUI.AdvancedDynamicTexture.CreateFullscreenUI("winnerUI", true, this.scene);
@@ -102,6 +171,7 @@ export class GameUI {
     }
     public dispose(): void {
         this.ui.dispose();
+        this.gui3DManager.dispose();
     }
 
 }

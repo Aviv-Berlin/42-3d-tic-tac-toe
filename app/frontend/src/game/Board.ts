@@ -13,6 +13,8 @@ export class Board {
     private offset: number;
     public materials: Materials;
     private spheres: Mesh [] = [];
+    private cubes: Mesh[] = [];
+    private cubesShrink: boolean = false;
     private sphereMeshes: (AbstractMesh | null)[][][];
 
     constructor(N: number, scene: Scene, materials: Materials)
@@ -39,9 +41,17 @@ export class Board {
                     cube.position = this.getPosition(x, y, z);
                     cube.material = this.materials.cube;
                     cube.metadata = { gridPosition: { x, y, z}};
+                    this.cubes.push(cube);
                 }
             }
         }
+    }
+
+    public toggleCubeSize(): void {
+        const scale = this.cubesShrink ? 1 : 0.25;
+        for(const cube of this.cubes)
+            cube.scaling.set(scale, scale, scale);
+        this.cubesShrink = !this.cubesShrink;
     }
 
     private getPosition(x: number, y: number, z: number): BABYLON.Vector3 {

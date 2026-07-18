@@ -2,15 +2,19 @@ import { GameState } from "./GameState"
 import * as BABYLON from "@babylonjs/core";
 import { Scene, Observer,PointerInfo } from "@babylonjs/core";
 import type { GridPosition } from "./Types"
+import { Board } from "./Board"
+
 
 export class InputManager {
     private game: GameState;
     private scene: Scene;
     private mouse: Observer<PointerInfo> | null = null
+    private board: Board;
 
-    constructor(game: GameState, scene: Scene) {
+    constructor(game: GameState, scene: Scene, board: Board) {
         this.game = game;
         this.scene = scene;
+        this.board = board;
     }
 
     public registerEvents(): void {
@@ -84,6 +88,9 @@ export class InputManager {
             case "Enter":
                 this.game.getCurrentPlayer().choosePos();
                 break;
+            
+            case "1":
+                this.board.toggleCubeSize();
         }
     };
 }

@@ -11,7 +11,7 @@ CREATE TABLE users(
 	user_id SERIAL PRIMARY KEY,
 	user_name TEXT NOT NULL UNIQUE,
 	user_email TEXT NOT NULL UNIQUE,
-	password_hash TEXT NOT NULL,
+	password_hash TEXT NOT NULL, -- adjust 
 	last_seen TIMESTAMPTZ DEFAULT NOW()
 );
 
@@ -49,6 +49,8 @@ CREATE TABLE matches(
 	match_id SERIAL PRIMARY KEY,
 	player_a INT NOT NULL REFERENCES users(user_id),
 	player_b INT NOT NULL REFERENCES users(user_id),
+	-- size INT NOT NULL,
+	-- game_type (spped game, normal game) - extra table customizations? (power ups, limit, size)
 	winner INT REFERENCES users(user_id), -- NULL on draw
 	started_at TIMESTAMPTZ DEFAULT NOW(),
 	ended_at TIMESTAMPTZ

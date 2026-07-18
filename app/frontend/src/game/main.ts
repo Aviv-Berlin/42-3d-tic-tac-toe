@@ -17,7 +17,7 @@ export function createBabylonGame(canvas: HTMLCanvasElement, N: number, user: st
   const camera = new CameraManager(scene, canvas);
 
   const board = new Board(N, scene, materials);
-  const ui = new GameUI(scene);
+  const ui = new GameUI(scene, onExit, camera, materials);
   const graphics = new GameGraphics(board, materials, camera);
   const game = new GameState(N, ui, graphics, onExit, 2);
   const ai = new AiPlayer("AiPlayer", game, graphics);
@@ -44,6 +44,7 @@ export function createBabylonGame(canvas: HTMLCanvasElement, N: number, user: st
 
   return () => {
     game.dispose();
+    ui.dispose();
     input.unregisterEvents();
     window.removeEventListener("resize", handleResize);
     scene.dispose();

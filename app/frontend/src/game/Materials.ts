@@ -19,6 +19,7 @@ export class Materials {
 
     constructor(scene: Scene) {
         this.scene = scene;
+        //scene.clearColor = new BABYLON.Color4(1, 1, 1, 0);
         const light = new BABYLON.HemisphericLight("light", new BABYLON.Vector3(0, 1, 0), scene);
         light.intensity = 0.7;
 

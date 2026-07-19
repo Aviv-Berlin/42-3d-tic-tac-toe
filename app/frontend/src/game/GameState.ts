@@ -1,7 +1,7 @@
 import { GameUI } from "./GameUI";
 import { checkWin } from "./GameCheckWin";
 import { GameGraphics } from "./GameGraphics";
-import { GridPosition, CellState, PLAYER_STATES,} from "./Types";
+import { GridPosition, CellState, PLAYER_STATES, GameStats} from "./Types";
 import { Player } from "./Player";
 
 
@@ -21,10 +21,11 @@ export class GameState {
     private moveCounter: number = 0;
     private graphics: GameGraphics;
     private gameOver: boolean = false;
-    private onExit: () => void; //this is a function that is called when game is over
+    private onExit: (stats: GameStats) => void; //this is a function that is called when game is 
+    private stats: GameStats;
     private exitTimeout: ReturnType<typeof setTimeout> | null = null;
 
-    constructor(N: number, ui: GameUI, graphics: GameGraphics, onExit: () => void, nPlayers: number) {
+    constructor(N: number, ui: GameUI, graphics: GameGraphics, onExit: (stats: GameStats) => void, nPlayers: number) {
         if (nPlayers < 2 || nPlayers > 4)
             throw new Error("The game supports between 2 and 4 players");
         this.N = N;
@@ -32,6 +33,7 @@ export class GameState {
         this.graphics = graphics;
         this.onExit = onExit;
         this.nPlayers = nPlayers;
+
 
         this.initBoard();
     }

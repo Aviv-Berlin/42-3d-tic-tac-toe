@@ -1,3 +1,27 @@
+type playerType = "real" | "ai" | "guest";
+
+export interface Player {
+    name: string;
+    type: playerType;
+}
+
+export interface Move {
+    pos: GridPosition;
+    who: CellState;
+}
+
+export interface GameStats {
+    N: number;
+    Players: Player[] | null;
+    nPlayers: number;
+    moves: Move[];
+    startTime: number;
+    endTime: number;
+    isFinished: boolean;
+    isDraw: boolean;
+    winner: string;
+}
+
 export enum CellState {
     Empty = 0,
     Player1 = 1,

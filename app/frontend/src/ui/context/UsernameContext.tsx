@@ -1,9 +1,15 @@
 import { createContext, useContext, useState } from 'react'
+import { PropsWithChildren } from 'react'
 
-const UsernameContext = createContext(null);
+interface UsernameContextType {
+  username: string | null;
+  setUsername: React.Dispatch<React.SetStateAction<string | null>>;
+}
 
-const UsernameProvider = ({children}) => {
-  const [username, setUsername] = useState(null);
+const UsernameContext = createContext<UsernameContextType | null>(null);
+
+const UsernameProvider = ({children}: PropsWithChildren) => {
+  const [username, setUsername] = useState<string | null>(null);
 
   return (
     <UsernameContext.Provider value={{ username, setUsername }}>

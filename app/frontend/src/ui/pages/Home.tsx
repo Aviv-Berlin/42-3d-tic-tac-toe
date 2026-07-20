@@ -6,7 +6,11 @@ import MainButton from '../components/MainButton';
 const Home = () => {
   const [searchParams] = useSearchParams();
   const navigate = useNavigate();
-  const { username } = useUsername();
+
+  const userInfo = useUsername();
+  if (!userInfo) return null;
+  
+  const { username } = userInfo;
 
   const handleClick = () => {
     navigate("/game-settings");

@@ -16,8 +16,6 @@ const Canvas = ({size}: CanvasProps) => {
 
   const navigate = useNavigate();
 
-
-
   useEffect(() => {
     if (!canvasRef.current) return;
 

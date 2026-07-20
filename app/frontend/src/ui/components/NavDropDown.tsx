@@ -7,7 +7,10 @@ import DropDownButton from './DropDownButton'
 const NavDropDown = () => {
   const [open, setOpen] = useState(false);
 
-  const { username } = useUsername();
+  const userInfo = useUsername();
+  if (!userInfo) return null;
+
+  const { username } = userInfo;
 
   return (
     <div className="relative">

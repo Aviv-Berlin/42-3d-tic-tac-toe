@@ -7,10 +7,6 @@ const Game = () => {
 
   const size = Number(searchParams.get('size')) || 3;
 
-  //size is read from the query parameters of the URL and then passed to the Canvas object
-
-  const page = "game";
-  
   return (
     <GameLayout>
       <Canvas size={size}/>

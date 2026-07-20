@@ -1,12 +1,18 @@
 import { useEffect, useRef } from "react";
 import { useUsername } from '../context/UsernameContext'
-import { createBabylonGame } from "../../game/main.ts";
 import { useNavigate } from "react-router-dom";
+import { createBabylonGame } from "../../game/main";
 
+interface CanvasProps {
+  size: number;
+}
 
-const Canvas = ({size}) => {
+const Canvas = ({size}: CanvasProps) => {
   const canvasRef = useRef(null);
-  const { username } = useUsername();
+  const userInfo = useUsername();
+  if (!userInfo) return null;
+
+  const { username } = userInfo;
 
   const navigate = useNavigate();
 

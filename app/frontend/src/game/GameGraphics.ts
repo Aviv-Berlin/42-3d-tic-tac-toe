@@ -53,4 +53,19 @@ export class GameGraphics {
                 sphere.scaling.setAll(1.3);
         }
     }
+<<<<<<< HEAD
 }
+=======
+
+    if (this.cursor.y < 0) {
+        this.cursor.y = this.N - 1;
+        this.cursor.z--;
+    }
+
+    if (this.cursor.z < 0) {
+        this.cursor.z = this.N - 1;
+    }
+}
+
+}
+>>>>>>> e30127e (Start fix components signatures with types)

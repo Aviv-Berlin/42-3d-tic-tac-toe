@@ -145,3 +145,4 @@ ignore_this_folder/
 node_modules/
 dist/
 .vite/
+.DS_Store

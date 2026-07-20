@@ -85,17 +85,5 @@ export class InputManager {
                 this.game.getCurrentPlayer().choosePos();
                 break;
         }
-<<<<<<< HEAD
     };
 }
-
-
-
-
-
-
-    
-=======
-    }
-}
->>>>>>> e30127e (Start fix components signatures with types)

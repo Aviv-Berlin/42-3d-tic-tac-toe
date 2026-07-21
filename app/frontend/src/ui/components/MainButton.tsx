@@ -1,4 +1,8 @@
-const MainButton = ({children, ...props}) => {
+interface MainButtonProps extends React.ButtonHTMLAttributes<HTMLButtonElement> {
+  children: React.ReactNode;
+}
+
+const MainButton = ({children, ...props}: MainButtonProps) => {
   return (
     <button 
       className="border border-stone-400 px-8 py-4 hover:bg-stone-200 cursor-pointer text-xl"

@@ -1,10 +1,19 @@
-const normalize = (name) => {
+const normalize = (name: string) => {
   return name
           .replace(/([A-Z])/g, (c) => ` ${c}`)
           .replace(/^./, (c) => c.toUpperCase())
 }
 
-const Input = ({name, value, handler, validate, message, submit}) => {
+interface InputProps {
+  name: string;
+  value: string;
+  handler: (e: React.ChangeEvent<HTMLInputElement>) => void;
+  validate?: () => boolean;
+  message?: string;
+  submit?: boolean;
+}
+
+const Input = ({name, value, handler, validate, message, submit}: InputProps) => {
   const label = normalize(name);
   const type = (name.toLowerCase().includes("password")) ? "password" : "text";
   return (

@@ -18,11 +18,11 @@ const Home = () => {
   return (
     <MainLayout>
       <div className="flex gap-16 items-center">
-        <div className="flex flex-col">
-          <p className="text-xl">{`Welcome back ${username}!`}</p>
-          <p className="text-4xl">Ready for a game?</p>
+        <div className="flex flex-col gap-2">
+          <p className="text-lg">{`Welcome back ${username}!`}</p>
+          <p className="text-4xl font-serif italic">Ready for a game?</p>
         </div>
-        <div className="flex flex-col gap-4">
+        <div className="flex gap-4">
           <MainButton onClick={handleClick}>PLAY ONLINE</MainButton>
           <MainButton onClick={handleClick}>PLAY VS AI</MainButton>
           <MainButton onClick={handleClick}>PLAY LOCALLY</MainButton>

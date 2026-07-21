@@ -1,11 +1,11 @@
 import MainLayout from '../layouts/MainLayout';
 
-const Profile = () => {
+const Settings = () => {
   return (
     <MainLayout>
-      <h1>Profile</h1>
+      <h1>Settings</h1>
     </MainLayout>
   )
 }
 
-export default Profile
+export default Settings

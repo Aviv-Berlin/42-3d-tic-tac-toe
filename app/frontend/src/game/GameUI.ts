@@ -184,6 +184,32 @@ export class GameUI {
         winnerText.left = "0px";
 
         ui.addControl(winnerText);
+        // this.disposeTextCubeRow(this.playerNameRow);
+        // const camera = this.scene.activeCamera;
+        // if (!camera)
+        //     throw new Error("No active camera found");
+        // this.createTextCubeRow(
+        //     Array.from(winner),
+        //     {
+        //         name: "playerName",
+        //         parent: camera,
+        //         position: new BABYLON.Vector3(0, 0.3, 1.2), cubeSize: 0.15, gap: 0.02,
+        //         // Position marks the left edge.
+        //         // The letters extend toward the right.
+        //         anchor: "center"
+        //     }
+        // );
+        // this.createTextCubeRow(
+        //     Array.from("wins!"),
+        //     {
+        //         name: "playerName",
+        //         parent: camera,
+        //         position: new BABYLON.Vector3(0, -0.3, 1.2), cubeSize: 0.15, gap: 0.02,
+        //         // Position marks the left edge.
+        //         // The letters extend toward the right.
+        //         anchor: "center"
+        //     }
+        // );
     }
 
 

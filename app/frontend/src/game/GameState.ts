@@ -131,7 +131,7 @@ export class GameState {
         this.graphics.hidePreview();
         this.graphics.animateWin(winningPositions);
         this.ui.displayWinner(winner.name);
-        this.exitTimeout = setTimeout(() => { this.onExit();}, 2000);
+        this.exitTimeout = setTimeout(() => { this.onExit();}, 5000);
     }
 
     private endGameDraw() {

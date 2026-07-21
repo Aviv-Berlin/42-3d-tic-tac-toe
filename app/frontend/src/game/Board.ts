@@ -3,7 +3,6 @@ import type { AbstractMesh, Scene, StandardMaterial, Mesh, Material } from "@bab
 import { Materials } from "./Materials";
 import { GridPosition } from "./Types";
 
-
 export class Board {
     scene: Scene;
     private N: number;

@@ -13,14 +13,17 @@ const Login = () => {
 
   const navigate = useNavigate();
 
-  const { setUsername } = useUsername(); 
+  const userInfo = useUsername();
+  if (!userInfo) return null;
 
-  const handleChange = (e) => {
+  const { setUsername } = userInfo; 
+
+  const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     setForm({...form, [e.target.name]: e.target.value});
     setSubmit(false);
   }
 
-  const handleSubmit = (e) => {
+  const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
     setSubmit(true);
     auth

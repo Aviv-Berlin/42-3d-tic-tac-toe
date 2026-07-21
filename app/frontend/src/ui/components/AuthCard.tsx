@@ -1,4 +1,6 @@
-const AuthCard = ({children}) => {
+import { PropsWithChildren } from 'react'
+
+const AuthCard = ({children}: PropsWithChildren ) => {
     return (
       <div className="w-full max-w-xs flex flex-col gap-2">
         {children}

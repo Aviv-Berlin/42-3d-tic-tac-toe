@@ -1,5 +1,5 @@
 import { useState } from 'react';
-import { useNavigate, useSearchParams } from 'react-router-dom';
+import { useNavigate } from 'react-router-dom';
 import MainButton from '../components/MainButton'
 import BoardSizeButton from '../components/BoardSizeButton'
 import MainLayout from '../layouts/MainLayout';

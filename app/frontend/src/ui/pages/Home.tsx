@@ -1,10 +1,9 @@
-import { useNavigate, useSearchParams } from 'react-router-dom';
+import { useNavigate } from 'react-router-dom';
 import { useUsername } from '../context/UsernameContext'
 import MainLayout from '../layouts/MainLayout';
 import MainButton from '../components/MainButton';
 
 const Home = () => {
-  const [searchParams] = useSearchParams();
   const navigate = useNavigate();
 
   const userInfo = useUsername();
@@ -18,15 +17,15 @@ const Home = () => {
 
   return (
     <MainLayout>
-      <div className="flex gap-16">
-        <div className="flex flex-col">
-          <p className="text-xl">{`Welcome back ${username}!`}</p>
-          <p className="text-4xl">Ready for a game?</p>
+      <div className="flex gap-16 items-end">
+        <div className="flex flex-col gap-2">
+          <p className="text-lg">{`Welcome back ${username}!`}</p>
+          <p className="text-5xl font-serif italic">Ready for a game?</p>
         </div>
-        <div className="flex flex-col gap-4">
+        <div className="flex gap-4">
           <MainButton onClick={handleClick}>PLAY ONLINE</MainButton>
-          <MainButton onClick={handleClick}>PLAY AGAINST AI</MainButton>
-          <MainButton onClick={handleClick}>PLAY LOCALLY WITH A FRIEND</MainButton>
+          <MainButton onClick={handleClick}>PLAY VS AI</MainButton>
+          <MainButton onClick={handleClick}>PLAY LOCALLY</MainButton>
         </div>
       </div>
     </MainLayout>

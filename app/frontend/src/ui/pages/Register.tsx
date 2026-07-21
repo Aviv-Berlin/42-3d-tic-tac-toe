@@ -51,7 +51,7 @@ const Register = () => {
             validate={() => form.password === form.confirmPassword} message="Passwords don't match" submit={submit}/>
           <SubmitButton>Sign up</SubmitButton>
         </form>
-      <p className="">Already registered? <Link to="/login">Log in</Link></p>
+      <p className="">Already registered? <Link className="hover:underline underline-offset-4" to="/login">Log in</Link></p>
       </AuthCard>
     </AuthLayout>
   )

@@ -5,7 +5,7 @@ interface MainButtonProps extends React.ButtonHTMLAttributes<HTMLButtonElement> 
 const MainButton = ({children, ...props}: MainButtonProps) => {
   return (
     <button 
-      className="border border-stone-400 px-8 py-4 hover:bg-stone-200 cursor-pointer text-xl"
+      className="border border-stone-400 px-8 py-5 hover:bg-stone-200 cursor-pointer text-xl"
       {...props}
     >{children}</button>
   )

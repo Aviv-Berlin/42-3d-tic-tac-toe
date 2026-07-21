@@ -44,7 +44,7 @@ const Login = () => {
           <Input name="password" value={form.password} handler={handleChange} submit={submit}/>
           <SubmitButton>Log in</SubmitButton>
         </form>
-        <p className="">Don't have an account? <Link to="/register">Sign up</Link></p>
+        <p className="">Don't have an account? <Link className="hover:underline underline-offset-4" to="/register">Sign up</Link></p>
       </AuthCard>
     </AuthLayout>
   )

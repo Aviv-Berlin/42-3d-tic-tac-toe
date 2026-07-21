@@ -1,8 +1,11 @@
 import { GameState } from "./GameState"
+import { Vector3} from "@babylonjs/core/Maths/math.vector";
 import * as BABYLON from "@babylonjs/core";
 import { Scene, Observer,PointerInfo } from "@babylonjs/core";
 import type { GridPosition } from "./Types"
 import { Board } from "./Board"
+import { CameraManager } from "./CameraManager"
+
 
 
 export class InputManager {
@@ -10,11 +13,13 @@ export class InputManager {
     private scene: Scene;
     private mouse: Observer<PointerInfo> | null = null
     private board: Board;
+    private camera: CameraManager;
 
-    constructor(game: GameState, scene: Scene, board: Board) {
+    constructor(game: GameState, scene: Scene, board: Board, camera: CameraManager) {
         this.game = game;
         this.scene = scene;
         this.board = board;
+        this.camera = camera;
     }
 
     public registerEvents(): void {
@@ -60,37 +65,59 @@ export class InputManager {
 
     private handleKeyDown = (event: KeyboardEvent): void => {
 
+        let cameraDir = new Vector3(0,0,0);
+        const right = new Vector3(1,0,0);
+        const left = new Vector3(-1,0,0);
+        const up = new Vector3(0,1,0);
+        const down = new Vector3(0,-1,0);
+        const front = new Vector3(0,0,1);
+        const back = new Vector3(0,0,-1);
+
         switch (event.key) {
-            case "q":
-                this.game.getCurrentPlayer().moveCursor(true, "y");
-                break;
-
-            case "a":
-                this.game.getCurrentPlayer().moveCursor(false, "y");
-                break;
-
-            case "w":
-                this.game.getCurrentPlayer().moveCursor(true, "z");
-                break;
-
-            case "s":
-                this.game.getCurrentPlayer().moveCursor(false, "z");
-                break;
-
-            case "e":
-                this.game.getCurrentPlayer().moveCursor(true, "x");
-                break;
-
-            case "d":
-                this.game.getCurrentPlayer().moveCursor(false, "x");
-                break;
-
             case "Enter":
                 this.game.getCurrentPlayer().choosePos();
                 break;
             
             case "1":
                 this.board.toggleCubeSize();
+                break;
+            
+            case "l":
+                cameraDir = this.camera.getCameraDir(right);
+                break;
+            
+            case "j":
+                cameraDir = this.camera.getCameraDir(left);
+                break;
+
+            case "i":
+                cameraDir = this.camera.getCameraDir(up);
+                break;
+            
+            case "m":
+                cameraDir = this.camera.getCameraDir(down);
+                break;
+            
+            case "u":
+                cameraDir = this.camera.getCameraDir(front);
+                break;
+            
+            case "h":
+                cameraDir = this.camera.getCameraDir(back);
+                break;
         }
+
+        if (cameraDir.equals(right))
+            this.game.getCurrentPlayer().moveCursor(true, "x");
+        else if (cameraDir.equals(left))
+            this.game.getCurrentPlayer().moveCursor(false, "x");
+        else if (cameraDir.equals(up))
+            this.game.getCurrentPlayer().moveCursor(true, "y");
+        else if (cameraDir.equals(down))
+            this.game.getCurrentPlayer().moveCursor(false, "y");
+        else if (cameraDir.equals(front))
+            this.game.getCurrentPlayer().moveCursor(true, "z");
+        else if (cameraDir.equals(back))
+            this.game.getCurrentPlayer().moveCursor(false, "z");
     };
 }

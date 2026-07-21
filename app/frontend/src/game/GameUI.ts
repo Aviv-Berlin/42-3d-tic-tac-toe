@@ -4,6 +4,7 @@ import * as GUI from "@babylonjs/gui";
 import { Materials } from "./Materials"
 
 type CubeRowAnchor = "left" | "center" | "right";
+type AnimationDirection = "current" | "above" | "below" | "left" | "right" | "behind";
 
 interface TextCubeRowOptions {
     name: string;
@@ -117,7 +118,7 @@ export class GameUI {
         this.instructions.verticalAlignment = GUI.Control.VERTICAL_ALIGNMENT_BOTTOM;
         this.instructions.paddingLeft = "40px";
         this.instructions.paddingBottom = "40px";
-        this.instructions.text = "click on cube to place preview, double click or enter to place move\n1 to toggle cube sizes, mouse drag to rotate board, move with q,a,w,s,e,d";
+        this.instructions.text = "click on cube to place preview, double click or enter to place move\n1 to toggle cube sizes, mouse drag to rotate board, move with j,l,i,m,u,h";
         this.ui.addControl(this.instructions);
     }
 
@@ -125,7 +126,7 @@ export class GameUI {
         const camera = this.scene.activeCamera;
         if (!camera)
             throw new Error("No active camera found");
-        this.animateCubeRow(this.playerNameRow);
+        //this.animateCubeRow(this.playerNameRow);
         this.disposeTextCubeRow(this.playerNameRow);
         this.playerNameRow = this.createTextCubeRow(
             Array.from(player),
@@ -143,7 +144,7 @@ export class GameUI {
     private animateCubeRow(row: BABYLON.TransformNode | null): void {
         if (!row)
             return;
-        const offset = new BABYLON.Vector3(30, -14, 0);
+        const offset = new BABYLON.Vector3(30, -14, -20);
         const cubes = row.getChildMeshes();
         for (const cube of cubes) {
             const startPos = cube.position.clone();
@@ -175,7 +176,7 @@ export class GameUI {
         const ui = GUI.AdvancedDynamicTexture.CreateFullscreenUI("winnerUI", true, this.scene);
 
         const winnerText = new GUI.TextBlock();
-        this.animateCubeRow(this.playerNameRow);
+        //this.animateCubeRow(this.playerNameRow);
         winnerText.text = `${winner} wins!`;
         winnerText.color = "gray";
         winnerText.fontSize = 150;

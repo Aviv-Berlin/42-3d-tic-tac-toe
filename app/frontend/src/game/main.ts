@@ -23,7 +23,7 @@ export function createBabylonGame(canvas: HTMLCanvasElement, N: number, user: st
   const ai = new AiPlayer("AiPlayer", game, graphics);
   const player = new LocalPlayer(user, game, graphics);
   //const guest = new LocalPlayer("guest", game, graphics);
-  const input = new InputManager(game, scene, board);
+  const input = new InputManager(game, scene, board, camera);
   input.registerEvents();
 
   game.register(ai);

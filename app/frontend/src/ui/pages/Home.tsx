@@ -24,8 +24,8 @@ const Home = () => {
         </div>
         <div className="flex flex-col gap-4">
           <MainButton onClick={handleClick}>PLAY ONLINE</MainButton>
-          <MainButton onClick={handleClick}>PLAY AGAINST AI</MainButton>
-          <MainButton onClick={handleClick}>PLAY LOCALLY WITH A FRIEND</MainButton>
+          <MainButton onClick={handleClick}>PLAY VS AI</MainButton>
+          <MainButton onClick={handleClick}>PLAY LOCALLY</MainButton>
         </div>
       </div>
     </MainLayout>

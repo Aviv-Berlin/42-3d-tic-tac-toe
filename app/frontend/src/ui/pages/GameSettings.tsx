@@ -1,0 +1,55 @@
+import { useState, useEffect } from 'react';
+import { useNavigate, useSearchParams } from 'react-router-dom';
+import MainButton from '../components/MainButton'
+import BoardSizeButton from '../components/BoardSizeButton'
+import BoardPreview from '../components/BoardPreview'
+import MainLayout from '../layouts/MainLayout';
+
+const GameSettings = () => {
+  const [size, setSize] = useState(3) 
+  const navigate = useNavigate();
+
+  const [searchParams] = useSearchParams();
+
+  const gameMode = searchParams.get('game-mode'); 
+
+  const isValid = gameMode === "online" || gameMode === "ai" || gameMode === "local";
+
+  useEffect(() => {
+    if (!isValid) navigate('/not-found');
+  }, [isValid]);
+
+  if (!isValid) return null;
+
+  return (
+    <MainLayout>
+      <div className="flex flex-col gap-8 items-center">
+        <div className="self-start">
+          <button className="border rounded-md border-stone-400 px-2 py-1 hover:bg-stone-200 cursor-pointer" onClick={() => navigate('/home')}>← Back</button>
+        </div>
+        <p>{`Mode: ${gameMode}`}</p>
+        <h1 className="text-2xl font-serif italic">Choose your board size</h1>
+        <div className="flex flex-col sm:flex-row gap-4">
+          <BoardSizeButton selected={size === 3} onClick={() => setSize(3)}>
+            <div className="w-full h-full relative flex justify-center items-center">
+              <p className="text-xs absolute bottom-2 right-2">3x3x3</p>
+            </div>
+          </BoardSizeButton>
+          <BoardSizeButton selected={size === 4} onClick={() => setSize(4)}>
+            <div className="w-full h-full relative flex justify-center items-center">
+              <p className="text-xs absolute bottom-2 right-2">4x4x4</p>
+            </div>
+          </BoardSizeButton>
+          <BoardSizeButton selected={size === 5} onClick={() => setSize(5)}>
+            <div className="w-full h-full relative flex justify-center items-center">
+              <p className="text-xs absolute bottom-2 right-2">5x5x5</p>
+            </div>
+          </BoardSizeButton>
+        </div>
+        <MainButton onClick={() => navigate(`/game?game-mode=${gameMode}&size=${size}`)}>CONFIRM</MainButton>
+      </div>
+    </MainLayout>
+  )
+}
+
+export default GameSettings

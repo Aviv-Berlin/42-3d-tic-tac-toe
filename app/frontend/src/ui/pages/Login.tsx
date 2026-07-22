@@ -13,14 +13,17 @@ const Login = () => {
 
   const navigate = useNavigate();
 
-  const { setUsername } = useUsername(); 
+  const userInfo = useUsername();
+  if (!userInfo) return null;
 
-  const handleChange = (e) => {
+  const { setUsername } = userInfo; 
+
+  const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     setForm({...form, [e.target.name]: e.target.value});
     setSubmit(false);
   }
 
-  const handleSubmit = (e) => {
+  const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
     setSubmit(true);
     auth
@@ -33,7 +36,7 @@ const Login = () => {
 
   return (
     <AuthLayout>
-      <img src="/logo.png" className="w-60 h-auto"/>
+      <img src="/logo.png" className="hidden md:block w-60 h-auto"/>
       <AuthCard>
         <h1 className="text-xl">Log in</h1>
         <form className="flex flex-col" onSubmit={handleSubmit}>
@@ -41,7 +44,7 @@ const Login = () => {
           <Input name="password" value={form.password} handler={handleChange} submit={submit}/>
           <SubmitButton>Log in</SubmitButton>
         </form>
-        <p className="">Don't have an account? <Link to="/register">Sign up</Link></p>
+        <p className="">Don't have an account? <Link className="hover:underline underline-offset-4" to="/register">Sign up</Link></p>
       </AuthCard>
     </AuthLayout>
   )

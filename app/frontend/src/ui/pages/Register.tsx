@@ -18,12 +18,12 @@ const Register = () => {
     )
   }
 
-  const handleChange = (e) => {
+  const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     setForm({...form, [e.target.name]: e.target.value});
     setSubmit(false);
   }
 
-  const handleSubmit = (e) => {
+  const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
     setSubmit(true);
     if (!validate()) {
@@ -38,7 +38,7 @@ const Register = () => {
 
   return (
     <AuthLayout>
-      <img src="/logo.png" className="w-60 h-auto"/>
+      <img src="/logo.png" className="hidden md:block w-60 h-auto"/>
       <AuthCard>
         <h1 className="text-xl">Sign up</h1>
         <form className="flex flex-col" onSubmit={handleSubmit}>
@@ -51,7 +51,7 @@ const Register = () => {
             validate={() => form.password === form.confirmPassword} message="Passwords don't match" submit={submit}/>
           <SubmitButton>Sign up</SubmitButton>
         </form>
-      <p className="">Already registered? <Link to="/login">Log in</Link></p>
+      <p className="">Already registered? <Link className="hover:underline underline-offset-4" to="/login">Log in</Link></p>
       </AuthCard>
     </AuthLayout>
   )

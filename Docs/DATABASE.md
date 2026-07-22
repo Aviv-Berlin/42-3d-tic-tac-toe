@@ -3,7 +3,7 @@
 
 ___
 
-## A. Building A Databse
+## Steps For Setting Up A Database
 
 ### 1. Create your database
  - use chosen DBMS to create db and define tables and realtionships based on the data schema
@@ -33,7 +33,7 @@ ___
 
 _____
 
-## B. Create your database
+## Create The Database
 
 ### Database Management System (DBMS)
 
@@ -98,7 +98,7 @@ Example:
 	3.	Losses
 	4.	coins (in-game currency)
 
-### Possible Structure for passing match data
+### Possible Structure For Passing Match Data
 
 ```bash
 struct match{
@@ -115,6 +115,23 @@ struct move{
 	int y;
 	int z;
 };
+```
+## C. Export Database
+
+### Export schema + data
+```bash
+sudo -u postgres pg_dump --no-owner -d ttt_db > schemaAndData.sql
+# --no-owner -> otherwise postgres is assigned as owner and ttt_user gets permission errors
+```
+
+### Export schema only
+```bash
+sudo -u postgres pg_dump --no-owner -d ttt_db --schema-only > schema.sql
+```
+
+### Export data only
+```bash
+sudo -u postgres pg_dump --no-owner -d ttt_db --data-only > seed.sql 
 ```
 
 

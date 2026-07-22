@@ -2,6 +2,7 @@ import { useNavigate } from 'react-router-dom';
 import { useUsername } from '../context/UsernameContext'
 import MainLayout from '../layouts/MainLayout';
 import MainButton from '../components/MainButton';
+import { GameMode } from '../../types/game';
 
 const Home = () => {
   const navigate = useNavigate();
@@ -11,8 +12,8 @@ const Home = () => {
   
   const { username } = userInfo;
 
-  const handleClick = () => {
-    navigate("/game-settings");
+  const handleClick = (gameMode: GameMode) => {
+    navigate(`/game-settings?game-mode=${gameMode}`);
   };
 
   return (
@@ -23,9 +24,9 @@ const Home = () => {
           <p className="text-5xl font-serif italic">Ready for a game?</p>
         </div>
         <div className="flex gap-4">
-          <MainButton onClick={handleClick}>PLAY ONLINE</MainButton>
-          <MainButton onClick={handleClick}>PLAY VS AI</MainButton>
-          <MainButton onClick={handleClick}>PLAY LOCALLY</MainButton>
+          <MainButton onClick={() => handleClick("online")}>PLAY ONLINE</MainButton>
+          <MainButton onClick={() => handleClick("ai")}>PLAY VS AI</MainButton>
+          <MainButton onClick={() => handleClick("local")}>PLAY LOCALLY</MainButton>
         </div>
       </div>
     </MainLayout>

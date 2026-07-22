@@ -23,15 +23,18 @@ const Login = () => {
     setSubmit(false);
   }
 
-  const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
+  const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
     setSubmit(true);
-    auth
-      .login(form)
-      .then(() => console.log("success"))
-      .catch(() => console.log("failure"))
-    setUsername(form.username);
-    navigate("/home");
+    try {
+      const response = await auth.login(form)
+      const token = response.data.accessToken;
+      console.log(token);
+      setUsername(form.username);
+      navigate("/home");
+    } catch(err) {
+      console.log(err);
+    }
   }
 
   return (

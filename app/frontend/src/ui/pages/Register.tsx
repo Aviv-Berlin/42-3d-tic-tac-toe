@@ -37,7 +37,7 @@ const Register = () => {
       await auth.register(form)
       navigate('/login'); 
     } catch (err) {
-      console.log("failure", err)
+      console.log(err)
     }
   }
 

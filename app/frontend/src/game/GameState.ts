@@ -3,6 +3,7 @@ import { checkWin } from "./GameCheckWin";
 import { GameGraphics } from "./GameGraphics";
 import { GridPosition, CellState, PLAYER_STATES} from "./Types";
 import { Player } from "./Player";
+import { GameData } from "../types/game";
 
 
 interface NewPlayer {
@@ -23,30 +24,33 @@ export class GameState {
     private gameOver: boolean = false;
     private onExit: () => void; //this is a function that is called when game is 
     private exitTimeout: ReturnType<typeof setTimeout> | null = null;
+    private gameData: GameData;
 
-    constructor(N: number, ui: GameUI, graphics: GameGraphics, onExit: () => void, nPlayers: number) {
+    constructor(gameData: GameData, ui: GameUI, graphics: GameGraphics, onExit: () => void, nPlayers: number) {
         if (nPlayers < 2 || nPlayers > 4)
             throw new Error("The game supports between 2 and 4 players");
-        this.N = N;
+        this.gameData = gameData;
+        this.gameData.isFinished = false;
+        this.gameData.winner = null;
+        this.gameData.isDraw = false;
+        this.N = gameData.size;
         this.ui = ui;
         this.graphics = graphics;
         this.onExit = onExit;
         this.nPlayers = nPlayers;
-
-
         this.initBoard();
     }
+
     public register(player: Player): void {
         if (this.players.length >= this.nPlayers)
             throw new Error("Too many players were registered");
-
         this.players.push(player);
     }
 
     public async startGame(): Promise<void> {
         if (this.players.length < this.nPlayers)
             throw new Error("Not enough players");
-
+        this.gameData.gameStart = Date.now();
         this.currentPlayerIndex = Math.floor(Math.random() * this.nPlayers);
         await this.ui.playerTitle(this.getCurrentPlayer().name);
         this.getCurrentPlayer().yourTurn(this.boardState, this.N, this.getCurrentPlayerState());
@@ -131,6 +135,11 @@ export class GameState {
         this.graphics.hidePreview();
         this.graphics.animateWin(winningPositions);
         this.ui.displayWinner(winner.name);
+        this.gameData.isFinished = true;
+        if (winner.name === this.gameData.player1.username)
+            this.gameData.winner = this.gameData.player1;
+        else
+            this.gameData.winner = this.gameData.player2;
         this.exitTimeout = setTimeout(() => { this.onExit();}, 3000);
     }
 
@@ -138,6 +147,9 @@ export class GameState {
         this.gameOver = true;
         this.graphics.hidePreview();
         this.ui.displayWinner("No One");
+        this.gameData.isFinished = true;
+        this.gameData.isDraw = true;
+        this.gameData.gameEnd = Date.now();
         this.exitTimeout = setTimeout(() => { this.onExit();}, 2000);
     }
 

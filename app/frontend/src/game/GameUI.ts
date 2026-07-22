@@ -135,7 +135,7 @@ export class GameUI {
             throw new Error("No active camera found");
         const finalPlayerPos = new BABYLON.Vector3(-30, 14, 40);
         if (this.playerNameRow === null) {
-            this.playerNameRow = this.createTextCubeRow(Array.from(player), {
+            this.playerNameRow = this.createTextCubeRow(Array.from(player.toUpperCase()), {
                 name: "playerName",
                 parent: camera,
                 position: new BABYLON.Vector3(-30, 14, 40), cubeSize: 2, gap: 0.25,
@@ -149,7 +149,7 @@ export class GameUI {
             false, 30, 3, 60).then(() => { this.disposeTextCubeRow(previousRow )});
         //this line will create a gap between first and second animation
         //await new Promise<void>((resolve) => setTimeout(resolve, -1000));
-        const newPlayer = this.createTextCubeRow(Array.from(player), {
+        const newPlayer = this.createTextCubeRow(Array.from(player.toUpperCase()), {
                 name: "playerName",
                 parent: camera,
                 position: new BABYLON.Vector3(-30, 14, 40), cubeSize: 2, gap: 0.25,

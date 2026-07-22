@@ -3,7 +3,7 @@ import { useEffect, useRef } from 'react';
 import { useUsername } from '../context/UsernameContext'
 import GameLayout from '../layouts/GameLayout';
 import Canvas from '../components/Canvas';
-import { GameState, GameMode } from '../../types/game';
+import { GameData, GameMode } from '../../types/game';
 import createPlayers from '../../utils/players';
 
 const Game = () => {
@@ -19,7 +19,7 @@ const Game = () => {
   const isValid = (gameModeParam === "online" || gameModeParam === "ai" || gameModeParam === "local") &&
                   (sizeParam === "3" || sizeParam === "4" || sizeParam === "5");
 
-  let initialGameState: GameState | null = null;
+  let initialGameState: GameData | null = null;
 
   if (isValid) {
     const size = Number(sizeParam);
@@ -42,13 +42,13 @@ const Game = () => {
     if (!isValid) navigate('/not-found');
   }, [isValid]);
 
-  const gameStateRef = useRef<GameState | null>(initialGameState);
+  const gameStateRef = useRef<GameData | null>(initialGameState);
 
   if (!isValid || !gameStateRef.current) return null;
 
   return (
     <GameLayout>
-      <Canvas gameState={gameStateRef.current}/>
+      <Canvas GameData={gameStateRef.current}/>
     </GameLayout>
   )
 }

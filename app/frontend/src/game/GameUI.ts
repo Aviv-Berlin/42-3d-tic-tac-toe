@@ -4,7 +4,6 @@ import * as GUI from "@babylonjs/gui";
 import { Materials } from "./Materials"
 
 type CubeRowAnchor = "left" | "center" | "right";
-type AnimationDirection = "current" | "above" | "below" | "left" | "right" | "behind";
 
 interface TextCubeRowOptions {
     name: string;
@@ -13,7 +12,20 @@ interface TextCubeRowOptions {
     cubeSize?: number;
     gap?: number;
     anchor?: CubeRowAnchor;
+    alwaysOnTop?: boolean;
     onClick?: () => void;
+}
+
+interface TextCubeRowData {
+    cubeSize: number;
+    gap: number;
+    anchor: CubeRowAnchor;
+}
+
+interface CubeRowPose {
+    position: BABYLON.Vector3;
+    scale: number;
+    anchor: CubeRowAnchor;
 }
 
 export class GameUI {
@@ -25,6 +37,9 @@ export class GameUI {
     private scene: Scene;
     private onExit: () => void;
     private materials: Materials;
+    private winnerMessageRow: BABYLON.TransformNode | null = null;
+    private rowAnimations =
+    new Map<BABYLON.TransformNode, BABYLON.AnimationGroup>();
 
     
     constructor(scene: Scene, onExit: () => void, materials: Materials) {
@@ -32,9 +47,7 @@ export class GameUI {
         this.onExit = onExit;
         this.materials = materials;
         this.ui = GUI.AdvancedDynamicTexture.CreateFullscreenUI("UI", true, scene);
-        this.playerTitle("");
         this.createExitCubeRow();
-       // this.createPlayerCube("test");
         this.displayInstructions();
     }
 
@@ -47,30 +60,23 @@ export class GameUI {
             root.parent = options.parent;
         if (options.position) 
             root.position.copyFrom(options.position);
-        const step = cubeSize + gap;
-        const totalWidth = labels.length === 0 ? 0 : labels.length * cubeSize + (labels.length - 1) * gap;
-        let firstCubeX: number;
-        switch (anchor) {
-            case "left":
-                firstCubeX = cubeSize / 2;
-                break;
 
-            case "right":
-                firstCubeX =
-                    -totalWidth + cubeSize / 2;
-                break;
-
-            case "center":
-                firstCubeX =
-                    -totalWidth / 2 + cubeSize / 2;
-                break;
-        }
+        const cubeXPositions = this.getCubeXPositions(labels.length, cubeSize, gap, anchor);
+        root.metadata = {textCubeRow: { cubeSize, gap, anchor } satisfies TextCubeRowData};
 
         labels.forEach((label, index) => { const cubeName = `${options.name}Cube${index}`;
             const cube = BABYLON.MeshBuilder.CreateBox(cubeName, { size: cubeSize }, this.scene);
             cube.parent = root;
-            cube.position.x = firstCubeX + index * step;
+            cube.metadata = {textCubeIndex: index};
+            cube.position.x = cubeXPositions[index];
             cube.material = this.materials.createTextCubeMaterial(cubeName, label);
+
+
+            if (options.alwaysOnTop) {
+                cube.renderingGroupId = 2;
+                cube.material.depthFunction = BABYLON.Constants.ALWAYS;
+                cube.material.disableDepthWrite = true;
+            }
 
             if (options.onClick) {
                 cube.isPickable = true;
@@ -101,6 +107,7 @@ export class GameUI {
                 // Position marks the right edge.
                 // The letters extend toward the left.
                 anchor: "right",
+                alwaysOnTop :true,
                 onClick: () => {
                     this.onExit();
                 }
@@ -122,40 +129,164 @@ export class GameUI {
         this.ui.addControl(this.instructions);
     }
 
-    public playerTitle(player: string): void {
+    public async playerTitle(player: string): Promise<void> {
         const camera = this.scene.activeCamera;
         if (!camera)
             throw new Error("No active camera found");
-        //this.animateCubeRow(this.playerNameRow);
-        this.disposeTextCubeRow(this.playerNameRow);
-        this.playerNameRow = this.createTextCubeRow(
-            Array.from(player),
-            {
+        const finalPlayerPos = new BABYLON.Vector3(-30, 14, 40);
+        if (this.playerNameRow === null) {
+            this.playerNameRow = this.createTextCubeRow(Array.from(player), {
                 name: "playerName",
                 parent: camera,
                 position: new BABYLON.Vector3(-30, 14, 40), cubeSize: 2, gap: 0.25,
-                // Position marks the left edge.
-                // The letters extend toward the right.
-                anchor: "left"
+                anchor: "left",
+                alwaysOnTop :true,
+            });
+            return ;
+        }
+        const previousRow = this.playerNameRow;
+        const exitAnimation = this.animateCubeRow(previousRow , { position: new BABYLON.Vector3(-30, -20, 40), scale: 1, anchor: "left"},
+            false, 30, 3, 60).then(() => { this.disposeTextCubeRow(previousRow )});
+        //this line will create a gap between first and second animation
+        //await new Promise<void>((resolve) => setTimeout(resolve, -1000));
+        const newPlayer = this.createTextCubeRow(Array.from(player), {
+                name: "playerName",
+                parent: camera,
+                position: new BABYLON.Vector3(-30, 14, 40), cubeSize: 2, gap: 0.25,
+                anchor: "left",
+                alwaysOnTop :true,
             }
         );
+        this.playerNameRow = newPlayer;
+        const entranceAnimation = this.animateCubeRow(newPlayer , { position: new BABYLON.Vector3(-30, 18, 40), scale: 1, anchor: "left"},
+            true, 30, 3, 60);
+        await Promise.all([exitAnimation, entranceAnimation]);
     }
 
-    private animateCubeRow(row: BABYLON.TransformNode | null): void {
-        if (!row)
+    private animateCubeRow(row: BABYLON.TransformNode | null, pose: CubeRowPose, poseIsStart: boolean,
+        durationFrames: number = 30,  staggerFrames: number = 3, fps: number = 60): Promise<void> { return new Promise((resolve) => {
+        if (!row) {
+            resolve();
             return;
-        const offset = new BABYLON.Vector3(30, -14, -20);
-        const cubes = row.getChildMeshes();
-        for (const cube of cubes) {
-            const startPos = cube.position.clone();
-            BABYLON.Animation.CreateAndStartAnimation("MoveCube", cube, "position", 60, 30,
-                startPos, startPos.add(offset), BABYLON.Animation.ANIMATIONLOOPMODE_CONSTANT);
         }
-    }
+        const rowData = row.metadata?.textCubeRow as TextCubeRowData | undefined;
+        if (!rowData)
+            throw new Error(`Missing row metadata for ${row.name}`);
+        const cubes = row.getChildMeshes().sort((a, b) => {
+            const indexA = Number(a.metadata?.textCubeIndex ?? 0);
+            const indexB = Number(b.metadata?.textCubeIndex ?? 0);
+            return indexA - indexB;
+        });
+        if (cubes.length === 0) {
+            resolve();
+            return;
+        }
+        // This animation assumes the TransformNode uses uniform scaling.
+        const currentScale = row.scaling.x;
+        const currentPose: CubeRowPose = {
+            position: row.position.clone(),
+            scale: currentScale,
+            anchor: rowData.anchor
+        };
+        const suppliedPose: CubeRowPose = {
+            position: pose.position.clone(),
+            scale: pose.scale,
+            anchor: pose.anchor
+        };
+        const startPose = poseIsStart ? suppliedPose : currentPose;
+        const endPose = poseIsStart ? currentPose : suppliedPose;
+        const startXPositions = this.getCubeXPositions(
+            cubes.length,
+            rowData.cubeSize,
+            rowData.gap,
+            startPose.anchor
+        );
+        const endXPositions = this.getCubeXPositions(
+            cubes.length,
+            rowData.cubeSize,
+            rowData.gap,
+            endPose.anchor
+        );
+        //Calculate how every cube would appear after applying the row position, scale and anchor.
+        const getComposedPosition = ( rowPose: CubeRowPose, cubeX: number ): BABYLON.Vector3 => {
+            return new BABYLON.Vector3(rowPose.position.x + cubeX * rowPose.scale, rowPose.position.y, rowPose.position.z);};
+        const startScale = new BABYLON.Vector3(startPose.scale, startPose.scale, startPose.scale);
+        const endScale = new BABYLON.Vector3(endPose.scale, endPose.scale, endPose.scale);
+        //Temporarily make the row root neutral. Each cube now holds its complete position and scale, allowing independent movement.
+        row.position.set(0, 0, 0);
+        row.scaling.set(1, 1, 1);
+        const animationGroup = new BABYLON.AnimationGroup(`${row.name}StaggerAnimation`, this.scene);
+        const easing = new BABYLON.CubicEase();
+        easing.setEasingMode(BABYLON.EasingFunction.EASINGMODE_EASEINOUT);
+
+        cubes.forEach((cube, index) => {
+            const delay = index * staggerFrames;
+            const endFrame = delay + durationFrames;
+            const startPosition = getComposedPosition(startPose, startXPositions[index]);
+            const endPosition = getComposedPosition(endPose, endXPositions[index]);
+            //Set the visual beginning before starting the animation.
+            cube.position.copyFrom(startPosition);
+            cube.scaling.copyFrom(startScale);
+            const positionAnimation = new BABYLON.Animation(
+                `${cube.name}PositionAnimation`,
+                "position",
+                fps,
+                BABYLON.Animation.ANIMATIONTYPE_VECTOR3,
+                BABYLON.Animation.ANIMATIONLOOPMODE_CONSTANT
+            );
+            const positionKeys = delay === 0 ? [
+                    { frame: 0, value: startPosition.clone()},
+                    { frame: endFrame, value: endPosition.clone() } ]
+                : [ { frame: 0, value: startPosition.clone() },
+                    { frame: delay, value: startPosition.clone() },
+                    { frame: endFrame, value: endPosition.clone() } ];
+            positionAnimation.setKeys(positionKeys);
+            positionAnimation.setEasingFunction(easing);
+            const scalingAnimation = new BABYLON.Animation( `${cube.name}ScalingAnimation`,
+                "scaling", fps, BABYLON.Animation.ANIMATIONTYPE_VECTOR3, BABYLON.Animation.ANIMATIONLOOPMODE_CONSTANT );
+
+            const scalingKeys = delay === 0 ? [ {
+                        frame: 0, value: startScale.clone() },
+                    {   frame: endFrame, value: endScale.clone()
+                    } ] : [ {
+                        frame: 0,
+                        value: startScale.clone() }, {
+                        frame: delay, value: startScale.clone() },
+                    {   frame: endFrame, value: endScale.clone() } ];
+            scalingAnimation.setKeys(scalingKeys);
+            scalingAnimation.setEasingFunction(easing);
+            animationGroup.addTargetedAnimation( positionAnimation, cube);
+            animationGroup.addTargetedAnimation( scalingAnimation, cube );
+        });
+        animationGroup.onAnimationGroupEndObservable.addOnce(() => {
+            // Restore the normal row structure without changing the cubes' visible final positions.
+            row.position.copyFrom(endPose.position);
+            row.scaling.set(
+                endPose.scale,
+                endPose.scale,
+                endPose.scale
+            );
+            cubes.forEach((cube, index) => {
+                cube.position.set(endXPositions[index], 0, 0);
+                cube.scaling.set(1, 1, 1);
+            });
+            rowData.anchor = endPose.anchor;
+            animationGroup.dispose();
+            resolve();
+        });
+        animationGroup.play(false);
+        });
+    } 
 
     private disposeTextCubeRow(row: BABYLON.TransformNode | null) : void {
         if (!row)
             return;
+        const animation = this.rowAnimations.get(row);
+        if (animation) {
+            animation.stop();
+            animation.dispose();
+            this.rowAnimations.delete(row);
+        }
         const cubes = row.getChildMeshes();
         for (const cube of cubes) {
             cube.actionManager?.dispose();
@@ -173,54 +304,59 @@ export class GameUI {
     }
 
     public displayWinner(winner: string): void {
-        const ui = GUI.AdvancedDynamicTexture.CreateFullscreenUI("winnerUI", true, this.scene);
+        const camera = this.scene.activeCamera;
+        if (!camera)
+            throw new Error("No active camera found");
+        this.animateCubeRow(this.playerNameRow, { position: new BABYLON.Vector3(0, 3, 30), scale: 2, anchor: "center"}, false, 30, 3);
+        setTimeout(() => {
+        this.winnerMessageRow = this.createTextCubeRow(
+            Array.from("wins!"),
+            {
+                name: "winnerMessage",
+                parent: camera,
+                position: new BABYLON.Vector3(0, -3, 30), cubeSize: 4, gap: 0.375,
+                anchor: "center",
+                alwaysOnTop :true
+            });
+        this.animateCubeRow(this.winnerMessageRow, { position: new BABYLON.Vector3(-30, -14, 30), scale: 0.5, anchor: "left"}, true, 30, 3);
+        }, 500);
 
-        const winnerText = new GUI.TextBlock();
-        //this.animateCubeRow(this.playerNameRow);
-        winnerText.text = `${winner} wins!`;
-        winnerText.color = "gray";
-        winnerText.fontSize = 150;
-        winnerText.top = "0px";
-        winnerText.left = "0px";
-
-        ui.addControl(winnerText);
-        // this.disposeTextCubeRow(this.playerNameRow);
-        // const camera = this.scene.activeCamera;
-        // if (!camera)
-        //     throw new Error("No active camera found");
-        // this.createTextCubeRow(
-        //     Array.from(winner),
-        //     {
-        //         name: "playerName",
-        //         parent: camera,
-        //         position: new BABYLON.Vector3(0, 0.3, 1.2), cubeSize: 0.15, gap: 0.02,
-        //         // Position marks the left edge.
-        //         // The letters extend toward the right.
-        //         anchor: "center"
-        //     }
-        // );
-        // this.createTextCubeRow(
-        //     Array.from("wins!"),
-        //     {
-        //         name: "playerName",
-        //         parent: camera,
-        //         position: new BABYLON.Vector3(0, -0.3, 1.2), cubeSize: 0.15, gap: 0.02,
-        //         // Position marks the left edge.
-        //         // The letters extend toward the right.
-        //         anchor: "center"
-        //     }
-        // );
     }
 
 
     public dispose(): void {
         this.disposeTextCubeRow(this.playerNameRow);
         this.disposeTextCubeRow(this.exitRow);
+        this.disposeTextCubeRow(this.winnerMessageRow);
 
         this.playerNameRow = null;
         this.exitRow = null;
+        this.winnerMessageRow = null;
 
         this.ui.dispose();
     }
+
+    private getFirstCubeX(cubeCount: number, cubeSize: number, gap: number, anchor: CubeRowAnchor): number {
+        const totalWidth = cubeCount === 0 ? 0 : cubeCount * cubeSize + (cubeCount - 1) * gap;
+
+        switch (anchor) {
+            case "left":
+                return cubeSize / 2;
+
+            case "right":
+                return -totalWidth + cubeSize / 2;
+
+            case "center":
+                return -totalWidth / 2 + cubeSize / 2;
+        }
+    }
+
+    private getCubeXPositions(cubeCount: number, cubeSize: number, gap: number, anchor: CubeRowAnchor): number[] {
+        const firstCubeX = this.getFirstCubeX(cubeCount, cubeSize, gap, anchor);
+        const step = cubeSize + gap;
+        return Array.from({ length: cubeCount }, (_, index) => firstCubeX + index * step);
+    }
+
+
 
 }

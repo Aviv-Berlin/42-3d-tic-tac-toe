@@ -43,12 +43,12 @@ export class GameState {
         this.players.push(player);
     }
 
-    public startGame(): void {
+    public async startGame(): Promise<void> {
         if (this.players.length < this.nPlayers)
             throw new Error("Not enough players");
 
         this.currentPlayerIndex = Math.floor(Math.random() * this.nPlayers);
-        this.ui.playerTitle(this.getCurrentPlayer().name);
+        await this.ui.playerTitle(this.getCurrentPlayer().name);
         this.getCurrentPlayer().yourTurn(this.boardState, this.N, this.getCurrentPlayerState());
     }
 
@@ -75,7 +75,7 @@ export class GameState {
             this.endGameDraw();
             return false;
         }
-        this.switchPlayer();
+        void this.switchPlayer();
         return true;
     }
 
@@ -112,11 +112,11 @@ export class GameState {
         return state;
     }
 
-    private switchPlayer(): void {
+    private async switchPlayer(): Promise<void> {
         this.currentPlayerIndex =
             (this.currentPlayerIndex + 1) % this.players.length;
 
-        this.ui.playerTitle(this.getCurrentPlayer().name);
+        await this.ui.playerTitle(this.getCurrentPlayer().name);
         this.getCurrentPlayer().yourTurn(this.boardState, this.N, this.getCurrentPlayerState());
     }    
 
@@ -131,7 +131,7 @@ export class GameState {
         this.graphics.hidePreview();
         this.graphics.animateWin(winningPositions);
         this.ui.displayWinner(winner.name);
-        this.exitTimeout = setTimeout(() => { this.onExit();}, 5000);
+        this.exitTimeout = setTimeout(() => { this.onExit();}, 3000);
     }
 
     private endGameDraw() {

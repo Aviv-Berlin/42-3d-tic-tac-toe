@@ -28,7 +28,7 @@ const GameSettings = () => {
         </div>
         <p>{`Mode: ${gameMode}`}</p>
         <h1 className="text-2xl font-serif italic">Choose your board size</h1>
-        <div className="flex gap-4">
+        <div className="flex flex-col sm:flex-row gap-4">
           <BoardSizeButton selected={size === 3} onClick={() => setSize(3)}>3x3x3</BoardSizeButton>
           <BoardSizeButton selected={size === 4} onClick={() => setSize(4)}>4x4x4</BoardSizeButton>
           <BoardSizeButton selected={size === 5} onClick={() => setSize(5)}>5x5x5</BoardSizeButton>

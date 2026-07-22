@@ -39,7 +39,7 @@ const Game = () => {
   }
 
   useEffect(() => {
-    if (!isValid) navigate('not-found');
+    if (!isValid) navigate('/not-found');
   }, [isValid]);
 
   const gameStateRef = useRef<GameState | null>(initialGameState);

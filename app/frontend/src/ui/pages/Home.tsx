@@ -8,9 +8,7 @@ const Home = () => {
   const navigate = useNavigate();
 
   const userInfo = useUsername();
-  if (!userInfo) return null;
-  
-  const { username } = userInfo;
+  const username = userInfo ? userInfo.username : "stranger";
 
   const handleClick = (gameMode: GameMode) => {
     navigate(`/game-settings?game-mode=${gameMode}`);

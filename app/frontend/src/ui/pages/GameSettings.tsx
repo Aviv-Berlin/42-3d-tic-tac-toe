@@ -1,5 +1,5 @@
 import { useState } from 'react';
-import { useNavigate } from 'react-router-dom';
+import { useNavigate, useSearchParams } from 'react-router-dom';
 import MainButton from '../components/MainButton'
 import BoardSizeButton from '../components/BoardSizeButton'
 import MainLayout from '../layouts/MainLayout';
@@ -7,6 +7,14 @@ import MainLayout from '../layouts/MainLayout';
 const GameSettings = () => {
   const [size, setSize] = useState(3) 
   const navigate = useNavigate();
+
+  const [searchParams] = useSearchParams();
+
+  const gameMode = searchParams.get('game-mode'); 
+  if (gameMode !== "online" && gameMode !== "ai" && gameMode !== "local") {
+    navigate('/not-found');
+    return null;
+  }
  
   return (
     <MainLayout>
@@ -17,7 +25,7 @@ const GameSettings = () => {
           <BoardSizeButton selected={size === 4} onClick={() => setSize(4)}>4x4x4</BoardSizeButton>
           <BoardSizeButton selected={size === 5} onClick={() => setSize(5)}>5x5x5</BoardSizeButton>
         </div>
-        <MainButton onClick={() => navigate(`/game?size=${size}`)}>CONFIRM</MainButton>
+        <MainButton onClick={() => navigate(`/game?game-mode=${gameMode}&size=${size}`)}>CONFIRM</MainButton>
       </div>
     </MainLayout>
   )

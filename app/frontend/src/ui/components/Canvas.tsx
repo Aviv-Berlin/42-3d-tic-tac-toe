@@ -15,6 +15,8 @@ const Canvas = ({gameState}: CanvasProps) => {
   useEffect(() => {
     if (!canvasRef.current) return;
 
+    //here we need to pass the entire gameState, which means that we need to change the signature of createBabylonGame
+    // NEW SIGNATURE -> function createBabylonGame(canvas: HTMLCanvasElement, gameState: GameState, onExit: () => void)
     const cleanup = createBabylonGame(canvasRef.current, gameState.size, "test", () => navigate('/home')); 
 
     return cleanup;

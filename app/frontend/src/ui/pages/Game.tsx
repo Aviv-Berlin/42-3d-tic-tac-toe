@@ -35,6 +35,8 @@ const Game = () => {
       isFinished: false,
       isDraw: false,
       winner: null,
+      gameStart: 0,
+      gameEnd: 0
     };
   }
 
@@ -48,7 +50,7 @@ const Game = () => {
 
   return (
     <GameLayout>
-      <Canvas GameData={gameStateRef.current}/>
+      <Canvas gameData={gameStateRef.current}/>
     </GameLayout>
   )
 }

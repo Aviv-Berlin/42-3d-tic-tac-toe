@@ -29,7 +29,7 @@ const Login = () => {
     try {
       const response = await auth.login(form)
       const token = response.data.accessToken;
-      console.log(token);
+      window.localStorage.setItem('token', token);
       setUsername(form.username);
       navigate("/home");
     } catch(err) {

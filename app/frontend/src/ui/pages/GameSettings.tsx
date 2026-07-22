@@ -11,6 +11,7 @@ const GameSettings = () => {
   const [searchParams] = useSearchParams();
 
   const gameMode = searchParams.get('game-mode'); 
+
   if (gameMode !== "online" && gameMode !== "ai" && gameMode !== "local") {
     navigate('/not-found');
     return null;

@@ -1,4 +1,5 @@
 import { useState } from 'react'
+import { useNavigate } from 'react-router-dom';
 import { Link } from 'react-router-dom'
 import AuthLayout from '../layouts/AuthLayout'
 import AuthCard from '../components/AuthCard'
@@ -9,6 +10,8 @@ import auth from '../../services/auth'
 const Register = () => {
   const [form, setForm] = useState({username: '', email: '', password: '', confirmPassword: ''});
   const [submit, setSubmit] = useState(false);
+
+  const navigate = useNavigate();
 
   const validate = () => {
     return (
@@ -23,17 +26,19 @@ const Register = () => {
     setSubmit(false);
   }
 
-  const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
+  const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
     setSubmit(true);
     if (!validate()) {
       console.log("invalid form");
       return;
     }
-    auth
-      .register(form)
-      .then(() => console.log("success"))
-      .catch(() => console.log("failure"))
+    try {
+      await auth.register(form)
+      navigate('/login'); 
+    } catch (err) {
+      console.log("failure", err)
+    }
   }
 
   return (

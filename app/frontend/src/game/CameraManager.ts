@@ -18,6 +18,7 @@ export class CameraManager {
         this.canvas = canvas;
         this.camera = new ArcRotateCamera("camera", Math.PI / 3.99, Math.PI / 3, 6, Vector3.Zero(), scene);
         this.camera.attachControl(this.canvas, true);
+        this.camera.minZ = 0.05;
     }
 
     public resetCamera(): void {

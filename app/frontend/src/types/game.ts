@@ -1,5 +1,7 @@
 export type PlayerType = "real" | "ai" | "guest";
 
+export type GameMode = "online" | "ai" | "local";
+
 export interface Player {
   type: PlayerType;
   username: string;

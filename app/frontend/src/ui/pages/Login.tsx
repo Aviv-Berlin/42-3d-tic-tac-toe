@@ -36,7 +36,7 @@ const Login = () => {
 
   return (
     <AuthLayout>
-      <img src="/logo.png" className="w-60 h-auto"/>
+      <img src="/logo.png" className="hidden md:block w-60 h-auto"/>
       <AuthCard>
         <h1 className="text-xl">Log in</h1>
         <form className="flex flex-col" onSubmit={handleSubmit}>

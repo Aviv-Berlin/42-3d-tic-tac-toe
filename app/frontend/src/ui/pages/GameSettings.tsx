@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { useNavigate, useSearchParams } from 'react-router-dom';
 import MainButton from '../components/MainButton'
 import BoardSizeButton from '../components/BoardSizeButton'
@@ -12,11 +12,14 @@ const GameSettings = () => {
 
   const gameMode = searchParams.get('game-mode'); 
 
-  if (gameMode !== "online" && gameMode !== "ai" && gameMode !== "local") {
-    navigate('/not-found');
-    return null;
-  }
- 
+  const isValid = gameMode === "online" || gameMode === "ai" || gameMode === "local";
+
+  useEffect(() => {
+    if (!isValid) navigate('/not-found');
+  }, [isValid]);
+
+  if (!isValid) return null;
+
   return (
     <MainLayout>
       <div className="flex flex-col gap-8 items-center">

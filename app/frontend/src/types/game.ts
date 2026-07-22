@@ -9,7 +9,7 @@ export interface Player {
 
 export type Move = [x: number, y: number, z: number];
 
-export interface GameState {
+export interface GameData {
   player1: Player;
   player2: Player;
   winner: Player | null;
@@ -17,4 +17,6 @@ export interface GameState {
   size: number;
   isFinished: boolean;
   isDraw: boolean;
+  gameStart: number;
+  gameEnd: number;
 }

@@ -23,7 +23,11 @@ const GameSettings = () => {
   return (
     <MainLayout>
       <div className="flex flex-col gap-8 items-center">
-        <h1 className="text-2xl">Choose board size</h1>
+        <div className="self-start">
+          <button className="border border-stone-400 px-2 py-1 hover:bg-stone-200 cursor-pointer" onClick={() => navigate('/home')}>← Back</button>
+        </div>
+        <p>{`Mode: ${gameMode}`}</p>
+        <h1 className="text-2xl font-serif italic">Choose your board size</h1>
         <div className="flex gap-4">
           <BoardSizeButton selected={size === 3} onClick={() => setSize(3)}>3x3x3</BoardSizeButton>
           <BoardSizeButton selected={size === 4} onClick={() => setSize(4)}>4x4x4</BoardSizeButton>

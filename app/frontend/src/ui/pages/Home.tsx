@@ -16,12 +16,12 @@ const Home = () => {
 
   return (
     <MainLayout>
-      <div className="flex flex-col lg:flex-row gap-16 lg:items-end">
+      <div className="flex flex-col gap-16">
         <div className="flex flex-col gap-2">
           <p className="text-lg">{`Welcome back ${username}!`}</p>
           <p className="text-5xl font-serif italic">Ready for a game?</p>
         </div>
-        <div className="flex flex-col sm:flex-row gap-4">
+        <div className="flex flex-col md:flex-row gap-4">
           <MainButton onClick={() => handleClick("online")}>PLAY ONLINE</MainButton>
           <MainButton onClick={() => handleClick("ai")}>PLAY VS AI</MainButton>
           <MainButton onClick={() => handleClick("local")}>PLAY LOCALLY</MainButton>

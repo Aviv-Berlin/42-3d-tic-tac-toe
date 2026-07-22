@@ -18,7 +18,7 @@ const NavDropDown = () => {
         <p className="hidden sm:inline">{username}</p>
         { open ? <ChevronUp /> : <ChevronDown /> }
       </DropDownButton>
-      <div className={`absolute right-0 flex flex-col border border-stone-400 mt-6 w-40 items-center ${open ? "visible" : "invisible"}`}>
+      <div className={`absolute right-0 flex flex-col border rounded-md border-stone-400 mt-6 w-40 items-center ${open ? "visible" : "invisible"}`}>
         <Link to="/profile" className="px-4 py-2 hover:bg-stone-200 cursor-pointer flex gap-2 w-full justify-center">
           Profile
         </Link>

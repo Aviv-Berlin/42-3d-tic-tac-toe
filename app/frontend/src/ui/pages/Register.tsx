@@ -35,7 +35,7 @@ const Register = () => {
     }
     try {
       await auth.register(form)
-      navigate('/login'); 
+      navigate('/register-success'); 
     } catch (err) {
       console.log(err)
     }

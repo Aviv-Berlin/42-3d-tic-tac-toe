@@ -9,6 +9,12 @@ Change to the `frontend` directory:
 cd app/frontend
 ```
 
+Install dependencies:
+
+```bash
+npm install
+```
+
 Run vite through the script:
 
 ```bash
@@ -19,4 +25,24 @@ The web app will be available locally at:
 
 ```bash
 http://localhost:5173
+```
+
+## How to run the backend
+
+Change to the `backend` directory:
+
+```bash
+cd ../backend
+```
+
+Install dependencies:
+
+```bash
+npm install
+```
+
+Run node through the script:
+
+```bash
+npm run dev
 ```

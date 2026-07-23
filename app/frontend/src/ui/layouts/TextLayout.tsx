@@ -1,7 +1,8 @@
 import Navbar from '../components/Navbar'
 import Footer from '../components/Footer'
+import { PropsWithChildren } from 'react'
 
-const TextLayout = ({children}) => {
+const TextLayout = ({children}: PropsWithChildren) => {
   return (
     <div className="min-h-screen flex flex-col">
       <Navbar />

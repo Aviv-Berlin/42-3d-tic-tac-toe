@@ -5,7 +5,10 @@ import Home from './pages/Home'
 import Game from './pages/Game'
 import GameSettings from './pages/GameSettings'
 import Profile from './pages/Profile'
+import Settings from './pages/Settings'
 import PrivacyPolicy from './pages/PrivacyPolicy'
+import TermsOfService from './pages/TermsOfService'
+import NotFound from './pages/NotFound'
 
 const App = () => {
   return (
@@ -17,7 +20,10 @@ const App = () => {
         <Route path="/game-settings" element={<GameSettings />} />
         <Route path="/game" element={<Game />} />
         <Route path="/profile" element={<Profile />} />
+        <Route path="/settings" element={<Settings />} />
         <Route path="/privacy" element={<PrivacyPolicy />} />
+        <Route path="/terms" element={<TermsOfService />} />
+        <Route path="*" element={<NotFound />} />
       </Routes>
   )
 }

@@ -68,6 +68,7 @@ app.post('/v1/auth/login', (request: Request, response: Response) => {
       error: 'bad credentials'
     })}
 
+  //this should return 201
   return response.status(200).json({
     accessToken: 'token123'
   })

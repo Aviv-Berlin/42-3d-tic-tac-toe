@@ -1,6 +1,7 @@
 import Navbar from '../components/Navbar'
+import { PropsWithChildren } from 'react'
 
-const GameLayout = ({children}) => {
+const GameLayout = ({children}: PropsWithChildren) => {
   return (
     <div className="min-h-screen flex flex-col">
       <Navbar />

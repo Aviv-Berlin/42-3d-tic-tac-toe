@@ -10,6 +10,7 @@ import auth from '../../services/auth'
 const Login = () => {
   const [form, setForm] = useState({username: '', password: ''});
   const [submit, setSubmit] = useState(false);
+  const [errorMessage, setErrorMessage] = useState('');
 
   const navigate = useNavigate();
 
@@ -21,6 +22,7 @@ const Login = () => {
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     setForm({...form, [e.target.name]: e.target.value});
     setSubmit(false);
+    setErrorMessage('')
   }
 
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
@@ -34,6 +36,7 @@ const Login = () => {
       navigate("/home");
     } catch(err) {
       console.log(err);
+      setErrorMessage("Invalid credentials");
     }
   }
 
@@ -48,6 +51,7 @@ const Login = () => {
           <SubmitButton>Log in</SubmitButton>
         </form>
         <p className="">Don't have an account? <Link className="hover:underline underline-offset-4" to="/register">Sign up</Link></p>
+        <p className="text-red-400 min-h-[24px]">{errorMessage}</p>
       </AuthCard>
     </AuthLayout>
   )

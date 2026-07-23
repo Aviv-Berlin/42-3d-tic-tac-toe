@@ -10,6 +10,7 @@ import auth from '../../services/auth'
 const Register = () => {
   const [form, setForm] = useState({username: '', email: '', password: '', confirmPassword: ''});
   const [submit, setSubmit] = useState(false);
+  const [errorMessage, setErrorMessage] = useState('');
 
   const navigate = useNavigate();
 
@@ -24,6 +25,7 @@ const Register = () => {
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     setForm({...form, [e.target.name]: e.target.value});
     setSubmit(false);
+    setErrorMessage('');
   }
 
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
@@ -37,7 +39,8 @@ const Register = () => {
       await auth.register(form)
       navigate('/register-success'); 
     } catch (err) {
-      console.log(err)
+      console.log(err);
+      setErrorMessage(err.response?.data?.error || "something went wrong");
     }
   }
 
@@ -56,7 +59,8 @@ const Register = () => {
             validate={() => form.password === form.confirmPassword} message="Passwords don't match" submit={submit}/>
           <SubmitButton>Sign up</SubmitButton>
         </form>
-      <p className="">Already registered? <Link className="hover:underline underline-offset-4" to="/login">Log in</Link></p>
+      <p>Already registered? <Link className="text-black hover:underline underline-offset-4" to="/login">Log in</Link></p>
+      <p className="text-red-400 min-h-[24px]">{errorMessage}</p>
       </AuthCard>
     </AuthLayout>
   )

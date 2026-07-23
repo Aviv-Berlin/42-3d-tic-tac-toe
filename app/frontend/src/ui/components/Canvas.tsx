@@ -4,7 +4,7 @@ import { createBabylonGame } from "../../game/main";
 import { GameData } from "../../types/game";
 
 interface CanvasProps {
-  gameData: GameData;
+  gameData: GameData | undefined;
 }
 
 const Canvas = ({gameData}: CanvasProps) => {
@@ -13,15 +13,17 @@ const Canvas = ({gameData}: CanvasProps) => {
   const navigate = useNavigate();
 
   useEffect(() => {
-    if (!canvasRef.current) return;
+    if (!canvasRef.current || !gameData) return;
 
     //here we need to pass the entire gameState, which means that we need to change the signature of createBabylonGame
     // NEW SIGNATURE -> function createBabylonGame(canvas: HTMLCanvasElement, gameState: GameState, onExit: () => void)
     const cleanup = createBabylonGame(canvasRef.current, gameData, () => navigate('/home')); 
 
     return cleanup;
-  }, []);
+  }, [gameData, navigate]);
 
+  if (!gameData)
+        return <p>Game data is missing.</p>;
   return (
     <canvas
       ref={canvasRef}

@@ -24,7 +24,7 @@ export function createBabylonGame(canvas: HTMLCanvasElement, gameData: GameData,
   const board = new Board(gameData.size, scene, materials);
   const ui = new GameUI(scene, onExit, materials);
   const graphics = new GameGraphics(board, materials, camera);
-  const game = new GameState(gameData.size, ui, graphics, onExit, 2);
+  const game = new GameState(gameData, ui, graphics, onExit, 2);
   const player = new LocalPlayer(gameData.player1.username, game, graphics);
   let player2: Player;
   if (gameData.player2.type === "ai") 

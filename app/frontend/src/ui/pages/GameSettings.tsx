@@ -1,7 +1,7 @@
 import { useState, useEffect } from 'react';
 import { useNavigate, useSearchParams } from 'react-router-dom';
 import MainButton from '../components/MainButton'
-import BoardSizeButton from '../components/BoardSizeButton'
+import GameSettingButton from '../components/GameSettingButton'
 import MainLayout from '../layouts/MainLayout';
 
 const GameSettings = () => {
@@ -31,41 +31,41 @@ const GameSettings = () => {
         <p>{`Mode: ${gameMode}`}</p>
         <h1 className="text-3xl font-serif italic">Choose your board size</h1>
         <div className="flex flex-col sm:flex-row gap-4">
-          <BoardSizeButton selected={size === 3} onClick={() => setSize(3)}>
+          <GameSettingButton selected={size === 3} onClick={() => setSize(3)}>
             <div className="w-full h-full relative flex justify-center items-center">
               <p className="text-xs absolute bottom-2 right-2">3x3x3</p>
             </div>
-          </BoardSizeButton>
-          <BoardSizeButton selected={size === 4} onClick={() => setSize(4)}>
+          </GameSettingButton>
+          <GameSettingButton selected={size === 4} onClick={() => setSize(4)}>
             <div className="w-full h-full relative flex justify-center items-center">
               <p className="text-xs absolute bottom-2 right-2">4x4x4</p>
             </div>
-          </BoardSizeButton>
-          <BoardSizeButton selected={size === 5} onClick={() => setSize(5)}>
+          </GameSettingButton>
+          <GameSettingButton selected={size === 5} onClick={() => setSize(5)}>
             <div className="w-full h-full relative flex justify-center items-center">
               <p className="text-xs absolute bottom-2 right-2">5x5x5</p>
             </div>
-          </BoardSizeButton>
+          </GameSettingButton>
         </div>
         {gameMode === "ai" &&
           <>
             <h1 className="text-3xl font-serif italic">Choose difficulty</h1>
             <div className="flex flex-col sm:flex-row gap-4">
-              <BoardSizeButton selected={level === 1} onClick={() => setLevel(1)}>
+              <GameSettingButton selected={level === 1} onClick={() => setLevel(1)}>
                 <div className="w-full h-full relative flex justify-center items-center">
                   <p className="text-xs absolute bottom-2 right-2">easy</p>
                 </div>
-              </BoardSizeButton>
-              <BoardSizeButton selected={level === 2} onClick={() => setLevel(2)}>
+              </GameSettingButton>
+              <GameSettingButton selected={level === 2} onClick={() => setLevel(2)}>
                 <div className="w-full h-full relative flex justify-center items-center">
                   <p className="text-xs absolute bottom-2 right-2">medium</p>
                 </div>
-              </BoardSizeButton>
-              <BoardSizeButton selected={level === 3} onClick={() => setLevel(3)}>
+              </GameSettingButton>
+              <GameSettingButton selected={level === 3} onClick={() => setLevel(3)}>
                 <div className="w-full h-full relative flex justify-center items-center">
                   <p className="text-xs absolute bottom-2 right-2">hard</p>
                 </div>
-              </BoardSizeButton>
+              </GameSettingButton>
             </div>
           </>
         }

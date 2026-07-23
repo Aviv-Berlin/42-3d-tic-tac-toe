@@ -1,12 +1,12 @@
 import { ReactNode } from 'react'
 
-interface BoardSizeButtonProps {
+interface GameSettingButtonProps {
   selected: boolean;
   children: ReactNode;
   onClick: () => void;
 }
 
-const BoardSizeButton = ({selected, children, onClick}: BoardSizeButtonProps) => {
+const GameSettingButton = ({selected, children, onClick}: GameSettingButtonProps) => {
   return (
     <button 
       className={`border rounded-md h-40 w-40 hover:bg-stone-200 cursor-pointer text-xl ${selected ? 'border-stone-800' : 'border-stone-400'}`}
@@ -16,4 +16,4 @@ const BoardSizeButton = ({selected, children, onClick}: BoardSizeButtonProps) =>
   )
 }
 
-export default BoardSizeButton
+export default GameSettingButton

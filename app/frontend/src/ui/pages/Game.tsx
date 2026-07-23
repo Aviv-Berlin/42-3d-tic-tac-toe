@@ -30,7 +30,8 @@ const Game = () => {
     initialGameState = {
       player1,
       player2,
-      moves: [],
+      level: 0,
+      moves: null,
       size,
       isFinished: false,
       isDraw: false,

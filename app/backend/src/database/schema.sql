@@ -9,13 +9,13 @@ DROP TABLE IF EXISTS users;
 
 CREATE TABLE users(
 	id SERIAL PRIMARY KEY,
-	name TEXT NOT NULL UNIQUE,
+	username TEXT NOT NULL UNIQUE,
 	email TEXT NOT NULL UNIQUE,
 	pw_hash TEXT NOT NULL, -- adjust 
 	last_seen TIMESTAMPTZ DEFAULT NOW()
 );
 
-INSERT INTO users (name, email, pw_hash) VALUES
+INSERT INTO users (username, email, pw_hash) VALUES
 ('Guest', 'guest@example.com', 'trG45Vm');
 
 CREATE TABLE friendships(

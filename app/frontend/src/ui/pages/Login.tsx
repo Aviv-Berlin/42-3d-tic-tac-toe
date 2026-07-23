@@ -30,7 +30,7 @@ const Login = () => {
     setSubmit(true);
     try {
       const response = await auth.login(form)
-      const token = response.data.accessToken;
+      const token = response.data.token;
       window.localStorage.setItem('token', token);
       setUsername(form.username);
       navigate("/home");

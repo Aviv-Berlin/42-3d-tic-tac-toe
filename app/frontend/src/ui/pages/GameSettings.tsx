@@ -2,7 +2,6 @@ import { useState, useEffect } from 'react';
 import { useNavigate, useSearchParams } from 'react-router-dom';
 import MainButton from '../components/MainButton'
 import BoardSizeButton from '../components/BoardSizeButton'
-import BoardPreview from '../components/BoardPreview'
 import MainLayout from '../layouts/MainLayout';
 
 const GameSettings = () => {
@@ -28,7 +27,7 @@ const GameSettings = () => {
           <button className="border rounded-md border-stone-400 px-2 py-1 hover:bg-stone-200 cursor-pointer" onClick={() => navigate('/home')}>← Back</button>
         </div>
         <p>{`Mode: ${gameMode}`}</p>
-        <h1 className="text-2xl font-serif italic">Choose your board size</h1>
+        <h1 className="text-3xl font-serif italic">Choose your board size</h1>
         <div className="flex flex-col sm:flex-row gap-4">
           <BoardSizeButton selected={size === 3} onClick={() => setSize(3)}>
             <div className="w-full h-full relative flex justify-center items-center">

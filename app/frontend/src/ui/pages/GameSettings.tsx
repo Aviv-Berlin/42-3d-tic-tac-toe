@@ -5,7 +5,9 @@ import BoardSizeButton from '../components/BoardSizeButton'
 import MainLayout from '../layouts/MainLayout';
 
 const GameSettings = () => {
-  const [size, setSize] = useState(3) 
+  const [size, setSize] = useState(3);
+  const [level, setLevel] = useState(0);
+
   const navigate = useNavigate();
 
   const [searchParams] = useSearchParams();
@@ -45,7 +47,30 @@ const GameSettings = () => {
             </div>
           </BoardSizeButton>
         </div>
-        <MainButton onClick={() => navigate(`/game?game-mode=${gameMode}&size=${size}`)}>CONFIRM</MainButton>
+        {gameMode === "ai" &&
+          <>
+            <h1 className="text-3xl font-serif italic">Choose difficulty</h1>
+            <div className="flex flex-col sm:flex-row gap-4">
+              <BoardSizeButton selected={level === 1} onClick={() => setLevel(1)}>
+                <div className="w-full h-full relative flex justify-center items-center">
+                  <p className="text-xs absolute bottom-2 right-2">easy</p>
+                </div>
+              </BoardSizeButton>
+              <BoardSizeButton selected={level === 2} onClick={() => setLevel(2)}>
+                <div className="w-full h-full relative flex justify-center items-center">
+                  <p className="text-xs absolute bottom-2 right-2">medium</p>
+                </div>
+              </BoardSizeButton>
+              <BoardSizeButton selected={level === 3} onClick={() => setLevel(3)}>
+                <div className="w-full h-full relative flex justify-center items-center">
+                  <p className="text-xs absolute bottom-2 right-2">hard</p>
+                </div>
+              </BoardSizeButton>
+            </div>
+          </>
+        }
+
+        <MainButton onClick={() => navigate(`/game?game-mode=${gameMode}&size=${size}&level=${level}`)}>CONFIRM</MainButton>
       </div>
     </MainLayout>
   )

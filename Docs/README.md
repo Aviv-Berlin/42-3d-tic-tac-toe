@@ -39,18 +39,18 @@ cd app/backend/src/database
 
 #### Snapshot (schema + all existing data)
 ```bash
-sudo -u postgres psql -d ttt_db < schemaAndData.sql
+sudo psql -U ttt_user -d ttt_db < schemaAndData.sql
 ```
 
 #### Fresh database
 ```bash
-sudo -u postgres psql -d ttt_db < schema.sql
+sudo psql -U ttt_user -d ttt_db < schema.sql
 ```
 
 #### Database with custom seed data
 ```bash
-sudo -u postgres psql -d ttt_db < schema.sql
-sudo -u postgres psql -d ttt_db < seed.sql
+sudo psql -U ttt_user -d ttt_db < schema.sql
+sudo psql -U ttt_user -d ttt_db < seed.sql
 ```
 
 ## Configure .env

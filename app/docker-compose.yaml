@@ -1,0 +1,32 @@
+services:
+  database:
+    build: backend/src/postgres
+    container_name: ttt_database
+    image: ttt_database
+    env_file:
+      - backend/src/postgres/postgres.env
+    secrets:
+    ports:
+      - "5432:5432"
+    volumes:
+      - db_volume:TODO
+    networks:
+      - ttt_network
+    restart:
+      always
+
+secrets:
+    db_password:
+      file: TODO
+
+networks:
+    ttt:
+      name: ttt_network
+      driver: bridge
+
+volumes:
+  db_volume:
+    driver_opts:
+      type: none
+      o: bind
+      device: ./db_volume

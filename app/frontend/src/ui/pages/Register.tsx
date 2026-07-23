@@ -48,7 +48,7 @@ const Register = () => {
     <AuthLayout>
       <img src="/logo.png" className="hidden md:block w-60 h-auto"/>
       <AuthCard>
-        <h1 className="text-xl">Sign up</h1>
+        <h1 className="text-2xl font-serif italic">Sign up</h1>
         <form className="flex flex-col" onSubmit={handleSubmit}>
           <Input name="username" value={form.username} handler={handleChange} submit={submit}/>
           <Input name="email" value={form.email} handler={handleChange}

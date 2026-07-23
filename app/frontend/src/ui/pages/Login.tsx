@@ -44,7 +44,7 @@ const Login = () => {
     <AuthLayout>
       <img src="/logo.png" className="hidden md:block w-60 h-auto"/>
       <AuthCard>
-        <h1 className="text-xl">Log in</h1>
+        <h1 className="text-2xl font-serif italic">Log in</h1>
         <form className="flex flex-col" onSubmit={handleSubmit}>
           <Input name="username" value={form.username} handler={handleChange} submit={submit}/>
           <Input name="password" value={form.password} handler={handleChange} submit={submit}/>

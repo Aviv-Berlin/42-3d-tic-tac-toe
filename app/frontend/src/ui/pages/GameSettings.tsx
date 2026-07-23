@@ -29,7 +29,7 @@ const GameSettings = () => {
           <button className="border rounded-md border-stone-400 px-2 py-1 hover:bg-stone-200 cursor-pointer" onClick={() => navigate('/home')}>← Back</button>
         </div>
         <p>{`Mode: ${gameMode}`}</p>
-        <h1 className="text-3xl font-serif italic">Choose your board size</h1>
+        <h1 className="text-3xl font-serif italic">Board Size:</h1>
         <div className="flex flex-col sm:flex-row gap-4">
           <GameSettingButton selected={size === 3} onClick={() => setSize(3)}>
             <div className="w-full h-full relative flex justify-center items-center">
@@ -49,7 +49,7 @@ const GameSettings = () => {
         </div>
         {gameMode === "ai" &&
           <>
-            <h1 className="text-3xl font-serif italic">Choose difficulty</h1>
+            <h1 className="text-3xl font-serif italic">Difficulty:</h1>
             <div className="flex flex-col sm:flex-row gap-4">
               <GameSettingButton selected={level === 1} onClick={() => setLevel(1)}>
                 <div className="w-full h-full relative flex justify-center items-center">

@@ -33,7 +33,10 @@ export class AiPlayer extends Player {
                 break;
 
             case 2:
-                this.playRandomMove(BoardState, N);
+                if (Math.floor(Math.random() * 3) === 0)
+                    this.playRandomMove(BoardState, N);
+                else
+                    this.playSmartMove(BoardState, N);
                 break;
             
             case 3:

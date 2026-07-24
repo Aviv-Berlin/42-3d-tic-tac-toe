@@ -51,8 +51,7 @@ export class GameState {
         if (this.players.length < this.nPlayers)
             throw new Error("Not enough players");
         this.gameData.gameStart = Date.now();
-        //this.currentPlayerIndex = Math.floor(Math.random() * this.nPlayers);
-        this.currentPlayerIndex = 1;
+        this.currentPlayerIndex = Math.floor(Math.random() * this.nPlayers);
         await this.ui.playerTitle(this.getCurrentPlayer().name);
         this.getCurrentPlayer().yourTurn(this.boardState, this.N, this.getCurrentPlayerState());
     }

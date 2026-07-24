@@ -1,5 +1,5 @@
 import { useState } from 'react'
-import { Link } from 'react-router-dom'
+import { Link, useNavigate } from 'react-router-dom'
 import { useUsername } from '../context/UsernameContext'
 import { ChevronUp, ChevronDown } from 'lucide-react';
 import DropDownButton from './DropDownButton'
@@ -7,10 +7,17 @@ import DropDownButton from './DropDownButton'
 const NavDropDown = () => {
   const [open, setOpen] = useState(false);
 
+  const navigate = useNavigate();
+
   const userInfo = useUsername();
   if (!userInfo) return null;
 
   const { username } = userInfo;
+
+  const handleLogOut = () => {
+    window.localStorage.removeItem('token');
+    navigate('/login');
+  }
 
   return (
     <div className="relative">
@@ -25,9 +32,9 @@ const NavDropDown = () => {
         <Link to="/settings" className="px-4 py-2 hover:bg-stone-200 cursor-pointer flex gap-2 w-full justify-center">
           Settings
         </Link>
-        <Link to="/login" className="px-4 py-2 hover:bg-stone-200 cursor-pointer flex gap-2 w-full justify-center">
+        <button onClick={handleLogOut} className="px-4 py-2 hover:bg-stone-200 cursor-pointer flex gap-2 w-full justify-center">
           Log out
-        </Link>
+        </button>
       </div>
     </div>
   )

@@ -3,7 +3,7 @@ import { checkWin } from "./GameCheckWin";
 import { GameGraphics } from "./GameGraphics";
 import { GridPosition, CellState, PLAYER_STATES} from "./Types";
 import { Player } from "./Player";
-import { GameData } from "../types/game";
+import { GameData, Move } from "../types/game";
 
 
 interface NewPlayer {
@@ -51,6 +51,8 @@ export class GameState {
         if (this.players.length < this.nPlayers)
             throw new Error("Not enough players");
         this.gameData.gameStart = Date.now();
+        if (this.gameData.moves === null)
+            this.gameData.moves = [];
         this.currentPlayerIndex = Math.floor(Math.random() * this.nPlayers);
         await this.ui.playerTitle(this.getCurrentPlayer().name);
         this.getCurrentPlayer().yourTurn(this.boardState, this.N, this.getCurrentPlayerState());
@@ -64,10 +66,12 @@ export class GameState {
         if (!this.isCellEmpty(pos))
             return false;
 
-
         const playerState = this.getCurrentPlayerState();
         this.moveCounter++;
         this.boardState[pos.x][pos.y][pos.z] = playerState;
+        const newMove: Move = { pos: pos, player: playerState };
+        this.gameData.moves ??= [];
+        this.gameData.moves.push(newMove);
         this.graphics.placeSphere(pos, playerState);
 
         const winningPositions = checkWin(this.boardState, pos, playerState, this.N);

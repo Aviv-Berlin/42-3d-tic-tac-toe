@@ -39,6 +39,10 @@ export class Board {
 
                     cube.position = this.getPosition(x, y, z);
                     cube.material = this.materials.cube;
+
+                    cube.enableEdgesRendering();
+                    cube.edgesWidth = 1.0;
+                    cube.edgesColor = new BABYLON.Color4(1, 1, 1, 1);
                     cube.metadata = { gridPosition: { x, y, z}};
                     this.cubes.push(cube);
                 }

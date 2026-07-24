@@ -12,14 +12,14 @@ export class Materials {
     public readonly playerMaterials: StandardMaterial[];
     public readonly previewMaterials: StandardMaterial[];
     private readonly cubeColor = new Color3(0.67, 0.7, 0.71);
-    private readonly cubeAlpha = 0.35;
+    private readonly cubeAlpha = 0;
     private readonly textColor = Color3.White();
     private readonly textFont = "Futura, Arial, sans-serif";
     private scene: Scene;
 
     constructor(scene: Scene) {
         this.scene = scene;
-        //scene.clearColor = new BABYLON.Color4(1, 1, 1, 0);
+        scene.clearColor = new BABYLON.Color4(0.2, 0.2, 0.2, 1);
         const light = new BABYLON.HemisphericLight("light", new BABYLON.Vector3(0, 1, 0), scene);
         light.intensity = 0.7;
 

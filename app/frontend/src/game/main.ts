@@ -28,11 +28,11 @@ export function createBabylonGame(canvas: HTMLCanvasElement, gameData: GameData,
   const player = new LocalPlayer(gameData.player1.username, game, graphics);
   let player2: Player;
   if (gameData.player2.type === "ai") 
-    player2 = new AiPlayer(gameData.player2.username, game, graphics);
+    player2 = new AiPlayer(gameData.player2.username, game, graphics, 3);
   else if (gameData.player2.type === "guest")
     player2 = new LocalPlayer(gameData.player2.username, game, graphics);
   else
-    player2 = new AiPlayer("ai placeholder", game, graphics);
+    player2 = new AiPlayer("ai placeholder", game, graphics, 1);
   const input = new InputManager(game, scene, board, camera);
   input.registerEvents();
   game.register(player);

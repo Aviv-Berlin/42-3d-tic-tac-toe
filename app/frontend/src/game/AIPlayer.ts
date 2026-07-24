@@ -111,12 +111,12 @@ export class AiPlayer extends Player {
                 bestOpponentScore = opponentScore.score;
         }
         console.log("myScore=", myScore, ", emptyScore", emptyScore, ", opponent", bestOpponentScore, ", ", pos.x, ",", pos.y, ",", pos.z);
-        const finalScore = Math.max(myScore.score, emptyScore.score, bestOpponentScore /2);
+        const finalScore = Math.max(myScore.score, emptyScore.score);
         return { score: finalScore, winsGame: myScore.isWinner, blocksWin};
     }
 
 
-    //this function give a score for each position on the board based on how many positions are fromt the same color (and if there are no position already taken by other player)
+    //this function give a score for each position on the board based on how many positions are from the same color (and if there are no position already taken by other player)
     private scorePos(boardState: CellState[][][], pos: GridPosition, player: CellState, N: number): PositionScore {
         let score: number = 0;
         let isWinner = false;

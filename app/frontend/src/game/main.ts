@@ -14,17 +14,18 @@ import { GameData } from "../types/game";
 
 export function createBabylonGame(canvas: HTMLCanvasElement, gameData: GameData, onExit: () => void) {
 
-
+//all these are the visual elements - so running by the browser
   const engine = new BABYLON.Engine(canvas, true);
   const scene = new BABYLON.Scene(engine);
-
   const materials = new Materials(scene);
   const camera = new CameraManager(scene, canvas);
-
   const board = new Board(gameData.size, scene, materials);
   const ui = new GameUI(scene, onExit, materials);
   const graphics = new GameGraphics(board, materials, camera);
+
+  //backend runs the GameState and AiPlayer
   const game = new GameState(gameData, ui, graphics, onExit, 2);
+  //LocalPlayer is frontend
   const player = new LocalPlayer(gameData.player1.username, game, graphics);
   let player2: Player;
   if (gameData.player2.type === "ai") 
@@ -33,6 +34,7 @@ export function createBabylonGame(canvas: HTMLCanvasElement, gameData: GameData,
     player2 = new LocalPlayer(gameData.player2.username, game, graphics);
   else
     player2 = new AiPlayer("ai placeholder", game, graphics, 1);
+  //input manager is also frontend
   const input = new InputManager(game, scene, board, camera);
   input.registerEvents();
   game.register(player);

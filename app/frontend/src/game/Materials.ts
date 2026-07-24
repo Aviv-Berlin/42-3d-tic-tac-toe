@@ -1,25 +1,28 @@
 import * as BABYLON from "@babylonjs/core";
 import type { Scene } from "@babylonjs/core/scene";
 import { StandardMaterial } from "@babylonjs/core/Materials/standardMaterial";
-import { Color3 } from "@babylonjs/core/Maths/math.color";
+import { Color3, Color4 } from "@babylonjs/core/Maths/math.color";
 import { CellState } from "./Types";
 import { playerStateToIndex } from "./Utils";
 
 
 export class Materials {
+    
     public readonly cube: StandardMaterial;
-
     public readonly playerMaterials: StandardMaterial[];
     public readonly previewMaterials: StandardMaterial[];
     private readonly cubeColor = new Color3(0.67, 0.7, 0.71);
+    private cubeEdgeColor = new Color4(1, 1, 1, 1);
+    private sceneBackground = new Color4(0.2, 0.2, 0.2, 1);
     private readonly cubeAlpha = 0;
     private readonly textColor = Color3.White();
     private readonly textFont = "Futura, Arial, sans-serif";
     private scene: Scene;
+    private looks: number = 1;
 
     constructor(scene: Scene) {
         this.scene = scene;
-        scene.clearColor = new BABYLON.Color4(0.2, 0.2, 0.2, 1);
+        scene.clearColor = this.sceneBackground;
         const light = new BABYLON.HemisphericLight("light", new BABYLON.Vector3(0, 1, 0), scene);
         light.intensity = 0.7;
 
@@ -40,6 +43,38 @@ export class Materials {
 
         this.previewMaterials = playerColors.map((color, index) =>
                 this.createPlayerMaterial(scene, `player${index + 1}PreviewMaterial`, color, 0.2));
+    }
+
+    public applyCubeEdges(mesh: BABYLON.AbstractMesh): void {
+        mesh.enableEdgesRendering();
+        mesh.edgesWidth = 5.0;
+        mesh.edgesColor = this.cubeEdgeColor;
+    }
+    
+    public toggleLook(): void {
+        this.looks = (this.looks % 4) + 1;
+        switch (this.looks) {
+            case 1:
+                this.scene.clearColor = new Color4(1,1,1,1); 
+                break;
+
+            case 2:
+                this.scene.clearColor =  new Color4(0,0,0,1);
+                break;
+
+            case 3:
+                this.scene.clearColor =  new Color4(0.2,0.2,0.2,1);
+                break;
+
+            case 3:
+                this.scene.clearColor =  new Color4(0,1,1,1);
+                break;
+            
+            default:
+                this.scene.clearColor = new Color4(0,0,1,1); 
+                break;
+        }
+   
     }
 
     public getPlayerMaterial(playerState: CellState): StandardMaterial {
@@ -102,7 +137,7 @@ export class Materials {
         context.fillText(text, textureSize / 2, textureSize / 2);
         texture.update();
         const material = new StandardMaterial(`${id}Material`, this.scene);
-        material.diffuseColor = Color3.White();
+        material.diffuseColor = new Color3(1,1,1);
         material.diffuseTexture = texture;
         // Use the canvas transparency:
         // translucent background, opaque text.

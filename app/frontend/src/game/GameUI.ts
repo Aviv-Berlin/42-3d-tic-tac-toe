@@ -33,13 +33,13 @@ export class GameUI {
     private ui: GUI.AdvancedDynamicTexture;
     private playerNameRow: BABYLON.TransformNode | null = null;
     private exitRow: BABYLON.TransformNode | null = null;
+    private lookRow: BABYLON.TransformNode | null = null;
     private instructions: GUI.TextBlock | null = null;
     private scene: Scene;
     private onExit: () => void;
     private materials: Materials;
     private winnerMessageRow: BABYLON.TransformNode | null = null;
-    private rowAnimations =
-    new Map<BABYLON.TransformNode, BABYLON.AnimationGroup>();
+    private rowAnimations = new Map<BABYLON.TransformNode, BABYLON.AnimationGroup>();
 
     
     constructor(scene: Scene, onExit: () => void, materials: Materials) {
@@ -48,6 +48,7 @@ export class GameUI {
         this.materials = materials;
         this.ui = GUI.AdvancedDynamicTexture.CreateFullscreenUI("UI", true, scene);
         this.createExitCubeRow();
+        this.createLookCubeRow();
         this.displayInstructions();
     }
 
@@ -70,6 +71,7 @@ export class GameUI {
             cube.metadata = {textCubeIndex: index};
             cube.position.x = cubeXPositions[index];
             cube.material = this.materials.createTextCubeMaterial(cubeName, label);
+            //this.materials.applyCubeEdges(cube);
 
 
             if (options.alwaysOnTop) {
@@ -110,6 +112,24 @@ export class GameUI {
                 alwaysOnTop :true,
                 onClick: () => {
                     this.onExit();
+                }
+            }
+        );
+    }
+
+    private createLookCubeRow(): void {
+        const camera = this.scene.activeCamera;
+        if (!camera)
+            throw new Error("No active camera found");
+        this.disposeTextCubeRow(this.lookRow);
+        this.lookRow = this.createTextCubeRow(Array.from("LOOK"), { name: "look", parent: camera,
+                position: new BABYLON.Vector3(30, -14, 40), cubeSize: 1, gap: 0.25,
+                // Position marks the right edge.
+                // The letters extend toward the left.
+                anchor: "right",
+                alwaysOnTop :true,
+                onClick: () => {
+                    this.materials.toggleLook();
                 }
             }
         );

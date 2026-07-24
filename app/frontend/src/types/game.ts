@@ -19,7 +19,7 @@ export interface GameData {
   player2: PlayerData;
   level: AiLevel;
   winner: PlayerData | null;
-  moves: Move[] | null;
+  moves: Move[];
   size: number;
   isFinished: boolean;
   isDraw: boolean;

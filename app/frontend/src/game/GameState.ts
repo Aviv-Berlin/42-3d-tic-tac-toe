@@ -69,9 +69,7 @@ export class GameState {
         const playerState = this.getCurrentPlayerState();
         this.moveCounter++;
         this.boardState[pos.x][pos.y][pos.z] = playerState;
-        const newMove: Move = { pos: pos, player: playerState };
-        this.gameData.moves ??= [];
-        this.gameData.moves.push(newMove);
+        this.gameData.moves.push({ pos: pos, player: playerState });
         this.graphics.placeSphere(pos, playerState);
 
         const winningPositions = checkWin(this.boardState, pos, playerState, this.N);

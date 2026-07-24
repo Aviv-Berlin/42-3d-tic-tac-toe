@@ -2,9 +2,18 @@ import { GridPosition, CellState, points, PLAYER_STATES } from "./Types"
 import { Player } from "./Player";
 import { GameState } from "./GameState";
 import { GameGraphics} from "./GameGraphics"
-import { checkVector } from "./GameCheckWin";
 import { addGP } from "./Utils";
 
+interface PositionScore {
+    score: number;
+    isWinner: boolean;
+}
+
+interface MoveScore {
+    score: number;
+    winsGame: boolean;
+    blocksWin: boolean;
+}
 
 export class AiPlayer extends Player {
     private IAm: CellState = 0;
@@ -41,7 +50,9 @@ export class AiPlayer extends Player {
 
     private playSmartMove(BoardState: CellState[][][], N: number) {
         let bestScore: number = -1;
-        let bestPos: GridPosition | null = null;
+        const winningPositions: GridPosition[] = [];
+        const blockingPositions: GridPosition[] = [];
+        const bestPositions: GridPosition[] = [];
 
         for (let x = 0; x < N; x++) {
             for (let y = 0; y < N; y++) {
@@ -49,64 +60,112 @@ export class AiPlayer extends Player {
                     if (BoardState[x][y][z] != CellState.Empty)
                         continue;
                     const pos: GridPosition = {x,y,z};
-                    //const score = this.scoreMove(BoardState, pos, N);
-                    const score = this.scoreMove(BoardState, pos, N);
-                    if (score > bestScore) {
-                        bestScore = score;
-                        bestPos = pos;
+                    const result = this.scoreMove(BoardState, pos, N);
+                    if (result.winsGame) {
+                        winningPositions.push(pos);
+                        continue;
                     }
+                    if (result.blocksWin) {
+                        blockingPositions.push(pos);
+                        continue;
+                    }
+                    if (result.score > bestScore) {
+                        bestScore = result.score;
+                        bestPositions.length = 0;
+                        bestPositions.push(pos);
+                    }
+                    else if (result.score === bestScore)
+                        bestPositions.push(pos);
                 }
             }
-        };
-        if (bestPos !== null)
-            this.game.placeMove(bestPos);
+        }
+
+        let candidates: GridPosition[];
+
+        if (winningPositions.length > 0)
+            candidates = winningPositions;
+        else if (blockingPositions.length > 0)
+            candidates = blockingPositions;
+        else
+            candidates = bestPositions;
+        const randomIndex = Math.floor(Math.random() * candidates.length);
+        this.game.placeMove(candidates[randomIndex]);
     }
 
-    private scoreMove(boardState: CellState[][][], pos: GridPosition, N: number): number {
+    private scoreMove(boardState: CellState[][][], pos: GridPosition, N: number): MoveScore {
+        let score = -1;
+        if (boardState[pos.x][pos.y][pos.z] !== CellState.Empty)
+            return { score: -1, winsGame: false, blocksWin: false};
+        
         const myScore = this.scorePos(boardState, pos, this.IAm, N);
         const emptyScore = this.scorePos(boardState, pos, 0, N);
         let bestOpponentScore = 0;
+        let blocksWin = false;
         for (const opponent of PLAYER_STATES) {
-            if (opponent === this.IAm)
+            if (opponent === this.IAm || opponent === CellState.Empty)
                 continue;
             const opponentScore = this.scorePos(boardState, pos, opponent, N);
-            if (opponentScore > bestOpponentScore)
-                 bestOpponentScore = opponentScore;
+            if (opponentScore.isWinner)
+                blocksWin = true;
+            if (opponentScore.score > bestOpponentScore)
+                bestOpponentScore = opponentScore.score;
         }
         console.log("myScore=", myScore, ", emptyScore", emptyScore, ", opponent", bestOpponentScore, ", ", pos.x, ",", pos.y, ",", pos.z);
-        return emptyScore;
+        const finalScore = Math.max(myScore.score, emptyScore.score, bestOpponentScore /2);
+        return { score: finalScore, winsGame: myScore.isWinner, blocksWin};
     }
 
 
     //this function give a score for each position on the board based on how many positions are fromt the same color (and if there are no position already taken by other player)
-    private scorePos(boardState: CellState[][][], pos: GridPosition, player: CellState, N: number): number {
-        let i: number = 0;
+    private scorePos(boardState: CellState[][][], pos: GridPosition, player: CellState, N: number): PositionScore {
         let score: number = 0;
+        let isWinner = false;
 
-        while (i < points.length) {
-            const myColor = checkVector(boardState, pos, player, points[i]).length;
-            const empty = checkVector(boardState, pos, 0, points[i]).length - 1;
-            //console.log("direction", i, "myColor", myColor, ", empty", empty);
-            if (player === 0 && empty === N - 1)
+        for (const vec of points) {
+            const line = this.getFullVector(boardState, pos, vec);
+            if (line.length !== N)
+                continue;
+            if (player === CellState.Empty) {
+                const emptyLine = line.every((linePos) =>
+                boardState[linePos.x][linePos.y][linePos.z] === CellState.Empty);
+                if (emptyLine)
                     score++;
-            else if (player != 0 && myColor > 1 && myColor + empty === N)
-                score += myColor;
-            i++;
+                continue;
+            }
+            let playerCells = 0
+            let lineIsBlocked = false;
+            for (const linePos of line) {
+                const cell = boardState[linePos.x][linePos.y][linePos.z];
+                if (cell === player)
+                    playerCells++;
+                else if (cell !== CellState.Empty) {
+                    lineIsBlocked = true;
+                    break; 
+                }
+            }
+
+            if (lineIsBlocked)
+                continue;
+            //counting also the potential spot we're on
+            playerCells++;
+            if (playerCells === N)
+                isWinner = true;
+            else
+                score += Math.pow(N, playerCells);
         }
-        //console.log("score=", score, ", ", pos.x, ",", pos.y, ",", pos.z);
-        return score;
+        return {score, isWinner};
     }
 
     private getFullVector(boardState: CellState[][][], startPos: GridPosition, vec: GridPosition): GridPosition[] {
         const positions: GridPosition[] = [];
         let checkPos = {...startPos};
         //reach edge in one direction
-        while (boardState[checkPos.x - vec.x]?.[checkPos.y - vec.y]?.[checkPos.y - vec.y] !== undefined) {
-            checkPos ={ x: checkPos.x - vec.x, y: checkPos.y - vec.y, z: checkPos.z - vec.z };
+        while (boardState[checkPos.x - vec.x]?.[checkPos.y - vec.y]?.[checkPos.z - vec.z] !== undefined) {
+            checkPos = { x: checkPos.x - vec.x, y: checkPos.y - vec.y, z: checkPos.z - vec.z };
         }
         //collect all positions from edge until end
-        while(boardState[checkPos.x]?.[checkPos.y]?.[checkPos.y] !== undefined) {
-            positions.push(({...checkPos}));
+        while(boardState[checkPos.x]?.[checkPos.y]?.[checkPos.z] !== undefined) {
+            positions.push({...checkPos});
             checkPos = addGP(checkPos,vec);
         }
         return positions;

@@ -17,7 +17,7 @@ services:
 
 secrets:
     db_password:
-      file: TODO
+      file: ./secrets/postgres-passwd
 
 networks:
     ttt:

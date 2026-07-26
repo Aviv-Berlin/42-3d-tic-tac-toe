@@ -1,26 +1,25 @@
 services:
   database:
     build: backend/src/postgres
-    container_name: ttt_database
     image: ttt_database
     env_file:
       - backend/src/postgres/postgres.env
     secrets:
+      - db_password
     ports:
       - "5432:5432"
     volumes:
-      - db_volume:TODO
+      - db_volume: /var/lib/postgresql/data
     networks:
       - ttt_network
-    restart:
-      always
+    restart: always
 
 secrets:
     db_password:
-      file: ./secrets/postgres-passwd
+      file:./secrets/postgres-passwd
 
 networks:
-    ttt:
+    ttt_network:
       name: ttt_network
       driver: bridge
 

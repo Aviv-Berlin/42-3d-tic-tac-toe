@@ -15,7 +15,7 @@ $ docker run --name some-postgres -e POSTGRES_PASSWORD_FILE=/run/secrets/postgre
 
 To make use of this much more secure option, we now have a `/secrets` directory at same level as the docker-compose.yaml.
 
-For convenience, there is also a `fill_secrets.sh` script that creates the password file with the expected name.
+For convenience, there is also a `fill_secrets.sh` script that creates the password file with the expected name. At some point, we could just have a Makefile that runs this script before docker compose up --build.
 
 ### Interacting with Postgres
 postgres = the database server. This is our base image. Postgres the server has no CLI and can only be interacted with via the client, psql.

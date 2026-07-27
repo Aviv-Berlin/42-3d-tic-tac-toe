@@ -10,10 +10,33 @@ const Lobby = () => {
     { host: "s-gas", size: 3 },
     { host: "tic-tac-toe-master", size: 4 },
   ];
+  //const activeGames: ActiveGame[] = [];
+
+  if (activeGames.length === 0) {
+    return (
+      <MainLayout>
+        <div className="flex flex-col gap-12">
+          <div className="relative flex w-full justify-center items-center">
+            <button
+              className="absolute left-0 border rounded-md border-stone-400 px-2 py-1 hover:bg-stone-200 cursor-pointer"
+              onClick={() => navigate('/home')}
+            >← Back</button>
+            <h1 className="text-xl">Mode: <span className="font-serif italic">Online</span></h1>
+          </div>
+          <div className="flex flex-col gap-4 items-center">
+            <p className="text-xl font-serif italic">There are currently no active games.</p>
+            <MainButton onClick={() => navigate('/game-settings?game-mode=online')}>
+              Create Game
+            </MainButton>
+          </div>
+        </div>
+      </MainLayout>
+    );
+  }
 
   return (
     <MainLayout>
-      <div className="flex flex-col gap-8 w-full">
+      <div className="flex flex-col gap-12">
         <div className="relative flex w-full justify-center items-center">
           <button
             className="absolute left-0 border rounded-md border-stone-400 px-2 py-1 hover:bg-stone-200 cursor-pointer"

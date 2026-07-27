@@ -1,4 +1,4 @@
-import { useState } from 'react'
+import { useState, useRef, useEffect } from 'react'
 import { Link, useNavigate } from 'react-router-dom'
 import { useUsername } from '../context/UsernameContext'
 import { ChevronUp, ChevronDown } from 'lucide-react';
@@ -6,6 +6,8 @@ import DropDownButton from './DropDownButton'
 
 const NavDropDown = () => {
   const [open, setOpen] = useState(false);
+
+  const DropDownRef = useRef<HTMLDivElement>(null);
 
   const navigate = useNavigate();
 
@@ -20,8 +22,21 @@ const NavDropDown = () => {
     navigate('/login');
   }
 
+  const handleClickOutside = (e: MouseEvent) => {
+    if (DropDownRef.current && !DropDownRef.current.contains(e.target as Node)) {
+      setOpen(false);
+    }
+  };
+
+  useEffect(() => {
+    document.addEventListener('mousedown', handleClickOutside);
+    return () => {
+      document.removeEventListener('mousedown', handleClickOutside);
+    };
+  }, [open])
+
   return (
-    <div className="relative">
+    <div ref={DropDownRef} className="relative">
       <DropDownButton onClick={() => setOpen((prev) => !prev)}>
         <p className="hidden sm:inline">{username}</p>
         { open ? <ChevronUp /> : <ChevronDown /> }

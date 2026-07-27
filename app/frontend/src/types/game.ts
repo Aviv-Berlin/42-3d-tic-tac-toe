@@ -9,6 +9,11 @@ export interface PlayerData {
   username: string;
 }
 
+export interface ActiveGame {
+  host: string;
+  size: number;
+}
+
 export interface Move {
   pos: GridPosition;
   player: CellState;

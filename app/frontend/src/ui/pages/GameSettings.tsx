@@ -34,7 +34,7 @@ const GameSettings = () => {
             className="absolute left-0 border rounded-md border-stone-400 px-2 py-1 hover:bg-stone-200 cursor-pointer"
             onClick={() => navigate('/home')}
           >← Back</button>
-          <h2 className="text-xl">Mode: <span className="font-serif italic">{gameMode}</span></h2>
+          <h1 className="text-xl">Mode: <span className="font-serif italic">{gameMode}</span></h1>
         </div>
         <BoardSizeSettings size={size} setSize={setSize}/>
         {gameMode === "AI" && <DifficultySettings level={level} setLevel={setLevel}/>}

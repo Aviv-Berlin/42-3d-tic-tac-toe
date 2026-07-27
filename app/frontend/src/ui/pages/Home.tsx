@@ -1,8 +1,8 @@
 import { useNavigate } from 'react-router-dom';
 import { useUsername } from '../context/UsernameContext'
-import MainLayout from '../layouts/MainLayout';
 import MainButton from '../components/MainButton';
 import { GameMode } from '../../types/game';
+import HomeLayout from '../layouts/HomeLayout';
 
 const Home = () => {
   const navigate = useNavigate();
@@ -19,8 +19,8 @@ const Home = () => {
   };
 
   return (
-    <MainLayout>
-      <div className="flex-1 flex flex-col justify-center gap-16">
+    <HomeLayout>
+      <div className="flex flex-col gap-16">
         <div className="flex flex-col gap-2">
           <p className="text-lg">{`Welcome back ${username}!`}</p>
           <p className="text-5xl font-serif italic">Ready to play?</p>
@@ -31,7 +31,7 @@ const Home = () => {
           <MainButton onClick={() => handleClick("local")}>PLAY LOCALLY</MainButton>
         </div>
       </div>
-    </MainLayout>
+    </HomeLayout>
   );
 };
 

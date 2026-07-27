@@ -6,7 +6,9 @@ const MainLayout = ({children}: PropsWithChildren) => {
   return (
     <div className="min-h-screen flex flex-col">
       <Navbar />
-      <main className="flex-1 p-8">{children}</main>
+      <main className="flex-1 p-8 bg-grid">
+        {children}
+      </main>
       <Footer />
     </div>
   )

@@ -1,6 +1,7 @@
 import { useState, useEffect } from 'react';
 import { useNavigate, useSearchParams } from 'react-router-dom';
 import MainButton from '../components/MainButton'
+import SecondaryButton from '../components/SecondaryButton'
 import MainLayout from '../layouts/MainLayout';
 import BoardSizeSettings from '../components/BoardSizeSettings'
 import DifficultySettings from '../components/DifficultySettings'
@@ -30,10 +31,9 @@ const GameSettings = () => {
     <MainLayout>
       <div className="w-full flex flex-col gap-16 items-center">
         <div className="relative flex w-full justify-center items-center">
-          <button
-            className="absolute left-0 border rounded-md border-stone-400 px-2 py-1 hover:bg-stone-200 cursor-pointer"
-            onClick={() => navigate('/home')}
-          >← Back</button>
+          <div className="absolute left-0">
+            <SecondaryButton onClick={() => navigate('/home')}>← Back</SecondaryButton>
+          </div>
           <h1 className="text-xl">Mode: <span className="font-serif italic">{gameMode}</span></h1>
         </div>
         <BoardSizeSettings size={size} setSize={setSize}/>

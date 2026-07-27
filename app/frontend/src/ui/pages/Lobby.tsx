@@ -2,6 +2,7 @@ import { useNavigate } from "react-router-dom";
 import MainLayout from "../layouts/MainLayout";
 import { ActiveGame } from "../../types/game";
 import MainButton from "../components/MainButton";
+import SecondaryButton from "../components/SecondaryButton";
 
 const Lobby = () => {
   const navigate = useNavigate();
@@ -17,16 +18,15 @@ const Lobby = () => {
       <MainLayout>
         <div className="flex flex-col gap-12">
           <div className="relative flex w-full justify-center items-center">
-            <button
-              className="absolute left-0 border rounded-md border-stone-400 px-2 py-1 hover:bg-stone-200 cursor-pointer"
-              onClick={() => navigate('/home')}
-            >← Back</button>
+            <div className="absolute left-0">
+              <SecondaryButton onClick={() => navigate('/home')}>← Back</SecondaryButton>
+            </div>
             <h1 className="text-xl">Mode: <span className="font-serif italic">Online</span></h1>
           </div>
           <div className="flex flex-col gap-4 items-center">
             <p className="text-xl font-serif italic">There are currently no active games.</p>
             <MainButton onClick={() => navigate('/game-settings?game-mode=online')}>
-              Create Game
+              + Create Game
             </MainButton>
           </div>
         </div>
@@ -38,18 +38,17 @@ const Lobby = () => {
     <MainLayout>
       <div className="flex flex-col gap-12">
         <div className="relative flex w-full justify-center items-center">
-          <button
-            className="absolute left-0 border rounded-md border-stone-400 px-2 py-1 hover:bg-stone-200 cursor-pointer"
-            onClick={() => navigate('/home')}
-          >← Back</button>
+          <div className="absolute left-0">
+            <SecondaryButton onClick={() => navigate('/home')}>← Back</SecondaryButton>
+          </div>
           <h1 className="text-xl">Mode: <span className="font-serif italic">Online</span></h1>
         </div>
         <div className="flex flex-col gap-4">
           <div className="flex justify-between items-center">
             <h2 className="text-3xl font-serif italic">Active Games</h2>
-            <MainButton onClick={() => navigate('/game-settings?game-mode=online')}>
-              Create Game
-            </MainButton>
+            <SecondaryButton onClick={() => navigate('/game-settings?game-mode=online')}>
+              + Create Game
+            </SecondaryButton>
           </div>
           {activeGames.map((game, index) => (
             <div key={index} className="flex flex-col border rounded-md border-stone-400 p-4">

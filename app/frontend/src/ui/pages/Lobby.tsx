@@ -57,10 +57,15 @@ const Lobby = () => {
           </div>
           <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-4">
             {activeGames.map((game, index) => (
-              <div key={index} className="flex flex-col gap-2 border rounded-md border-stone-400 p-4">
-                <h3 className="text-2xl font-serif italic">{game.host}'s game</h3>
-                <span>Host: {game.host}</span>
-                <span>Size: {game.size}x{game.size}x{game.size}</span>
+              <div key={index} className="flex justify-between items-end border rounded-md  border-stone-400 p-4">
+                <div key={index} className="flex flex-col">
+                  <h3 className="text-2xl font-serif italic">{game.host}'s game</h3>
+                  <span>Host: {game.host}</span>
+                  <span>Size: {game.size}x{game.size}x{game.size}</span>
+                </div>
+                <SecondaryButton onClick={() => console.log("click")}>
+                  Join
+                </SecondaryButton>
               </div>
             ))}
           </div>

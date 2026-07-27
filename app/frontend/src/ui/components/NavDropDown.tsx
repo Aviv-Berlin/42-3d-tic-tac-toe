@@ -16,6 +16,7 @@ const NavDropDown = () => {
 
   const handleLogOut = () => {
     window.localStorage.removeItem('token');
+    window.localStorage.removeItem('username');
     navigate('/login');
   }
 

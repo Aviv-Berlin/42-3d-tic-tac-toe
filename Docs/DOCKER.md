@@ -1,10 +1,27 @@
 # DOCKER
 
-## How to Run
-1) from the `app` directory, run
-``` docker compose up --build ```
+# How to Run
+1) From within the `/app` directory, run: `./fill_secrets.sh`
 
-> If you get an error about port already in use, postgres is probably already running on the host. Stop it with `sudo systemctl stop`, then try `docker compose up --build` again.
+2) Update `/app/backend/.env` to match credentials in `/app/backend/postgres/postgres.env`
+- `DB_USER` = `POSTGRES_USER`
+- `DB_NAME` = `POSTGRES_DB`
+- `DB_PASSWORD` = contents of `/secrets/postgres-passwd`
+
+** In the future we can update ./fill_secrets to generate .env in both places. When backend gets containerized, the naming & structure of its .env and secrets may also change.
+
+3) From with the `/app` directory, run: ` docker compose up --build `
+
+> If you get an error about port already in use, postgres is probably already running on the host (the container's host, that is). Stop it with `sudo systemctl stop postgresql`, then try `docker compose up --build` again.
+
+4) Build backend and frontend as usual:
+- from within `/app/frontend`, run `npm run dev`
+- from within `/app/backend`, run `nmp run dev -- --host`
+- access via `http://localhost:5173`
+
+The --host flag is optional, nice to be able to connect from outside a VM, assuming ports 5173 and 30001 are forwarded.
+
+# About the Docker Set-Up
 
 ## Database Dockerfile
 Our Dockerfile for the database uses the [official Postgres image](https://hub.docker.com/_/postgres).

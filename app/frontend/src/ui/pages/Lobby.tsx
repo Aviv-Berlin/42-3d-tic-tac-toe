@@ -11,6 +11,10 @@ const Lobby = () => {
   const activeGames: ActiveGame[] = [
     { host: "s-gas", size: 3 },
     { host: "tic-tac-toe-master", size: 4 },
+    { host: "s-gas", size: 3 },
+    { host: "tic-tac-toe-master", size: 4 },
+    { host: "s-gas", size: 3 },
+    { host: "tic-tac-toe-master", size: 4 },
   ];
   //const activeGames: ActiveGame[] = [];
 
@@ -46,17 +50,20 @@ const Lobby = () => {
         </div>
         <div className="flex flex-col gap-4">
           <div className="flex justify-between items-center">
-            <h2 className="text-3xl font-serif italic">Active Games</h2>
+            <h2 className="text-3xl font-serif italic">Games Lobby</h2>
             <SecondaryButton onClick={() => navigate('/game-settings?game-mode=online')}>
               + Create Game
             </SecondaryButton>
           </div>
-          {activeGames.map((game, index) => (
-            <div key={index} className="flex flex-col border rounded-md border-stone-400 p-4">
-              <span>Host: {game.host}</span>
-              <span>Size: {game.size}x{game.size}x{game.size}</span>
-            </div>
-          ))}
+          <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-4">
+            {activeGames.map((game, index) => (
+              <div key={index} className="flex flex-col gap-2 border rounded-md border-stone-400 p-4">
+                <h3 className="text-2xl font-serif italic">{game.host}'s game</h3>
+                <span>Host: {game.host}</span>
+                <span>Size: {game.size}x{game.size}x{game.size}</span>
+              </div>
+            ))}
+          </div>
         </div>
       </div>
     </MainLayout>

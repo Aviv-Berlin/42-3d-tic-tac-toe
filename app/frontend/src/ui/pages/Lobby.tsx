@@ -7,6 +7,7 @@ import SecondaryButton from "../components/SecondaryButton";
 const Lobby = () => {
   const navigate = useNavigate();
 
+  // this will be replaced with actual active games from the backend once we have an endpoint
   const activeGames: ActiveGame[] = [
     { host: "s-gas", size: 3 },
     { host: "tic-tac-toe-master", size: 4 },

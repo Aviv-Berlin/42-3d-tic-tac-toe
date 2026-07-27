@@ -11,10 +11,10 @@ const Lobby = () => {
   const activeGames: ActiveGame[] = [
     { host: "s-gas", size: 3 },
     { host: "tic-tac-toe-master", size: 4 },
-    { host: "s-gas", size: 3 },
-    { host: "tic-tac-toe-master", size: 4 },
-    { host: "s-gas", size: 3 },
-    { host: "tic-tac-toe-master", size: 4 },
+    { host: "tea_cup", size: 3 },
+    { host: "flowers-99", size: 4 },
+    { host: "candle.candle", size: 3 },
+    { host: "the-magician", size: 4 },
   ];
   //const activeGames: ActiveGame[] = [];
 

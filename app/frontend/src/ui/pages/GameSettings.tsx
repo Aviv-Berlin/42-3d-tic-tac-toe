@@ -5,6 +5,7 @@ import SecondaryButton from '../components/SecondaryButton'
 import MainLayout from '../layouts/MainLayout';
 import BoardSizeSettings from '../components/BoardSizeSettings'
 import DifficultySettings from '../components/DifficultySettings'
+import { normalizeGameMode } from '../../utils/gameMode';
 
 const GameSettings = () => {
   const [size, setSize] = useState(3);
@@ -24,8 +25,7 @@ const GameSettings = () => {
 
   if (!isValid) return null;
 
-  if (gameMode === "ai") gameMode = "AI";
-  else if (gameMode) gameMode = gameMode[0].toUpperCase() + gameMode.slice(1);
+  const gameModeDisplay = normalizeGameMode(gameMode);
 
   return (
     <MainLayout>
@@ -34,10 +34,10 @@ const GameSettings = () => {
           <div className="absolute left-0">
             <SecondaryButton onClick={() => navigate('/home')}>← Back</SecondaryButton>
           </div>
-          <h1 className="text-xl">Mode: <span className="font-serif italic">{gameMode}</span></h1>
+          <h1 className="text-xl">Mode: <span className="font-serif italic">{gameModeDisplay}</span></h1>
         </div>
         <BoardSizeSettings size={size} setSize={setSize}/>
-        {gameMode === "AI" && <DifficultySettings level={level} setLevel={setLevel}/>}
+        {gameMode === "ai" && <DifficultySettings level={level} setLevel={setLevel}/>}
         <MainButton onClick={() => navigate(`/game?game-mode=${gameMode}&size=${size}&level=${level}`)}>CONFIRM</MainButton>
       </div>
     </MainLayout>

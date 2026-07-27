@@ -11,12 +11,16 @@ const Home = () => {
   const username = userInfo ? userInfo.username : "stranger";
 
   const handleClick = (gameMode: GameMode) => {
+    if (gameMode === "online") {
+      navigate('/lobby');
+      return;
+    }
     navigate(`/game-settings?game-mode=${gameMode}`);
   };
 
   return (
     <MainLayout>
-      <div className="flex flex-col gap-16">
+      <div className="flex-1 flex flex-col justify-center gap-16">
         <div className="flex flex-col gap-2">
           <p className="text-lg">{`Welcome back ${username}!`}</p>
           <p className="text-5xl font-serif italic">Ready to play?</p>

@@ -13,7 +13,7 @@ const GameSettings = () => {
 
   const [searchParams] = useSearchParams();
 
-  const gameMode = searchParams.get('game-mode'); 
+  let gameMode = searchParams.get('game-mode');
 
   const isValid = gameMode === "online" || gameMode === "ai" || gameMode === "local";
 
@@ -23,18 +23,21 @@ const GameSettings = () => {
 
   if (!isValid) return null;
 
+  if (gameMode === "ai") gameMode = "AI";
+  else if (gameMode) gameMode = gameMode[0].toUpperCase() + gameMode.slice(1);
+
   return (
     <MainLayout>
-      <div className="flex flex-col gap-8 items-center">
-        <div className="self-start">
-          <button 
-            className="border rounded-md border-stone-400 px-2 py-1 hover:bg-stone-200 cursor-pointer"
+      <div className="w-full flex flex-col gap-16 items-center">
+        <div className="relative flex w-full justify-center items-center">
+          <button
+            className="absolute left-0 border rounded-md border-stone-400 px-2 py-1 hover:bg-stone-200 cursor-pointer"
             onClick={() => navigate('/home')}
           >← Back</button>
+          <h2 className="text-xl">Mode: <span className="font-serif italic">{gameMode}</span></h2>
         </div>
-        <p>{`Mode: ${gameMode}`}</p>
         <BoardSizeSettings size={size} setSize={setSize}/>
-        {gameMode === "ai" && <DifficultySettings level={level} setLevel={setLevel}/>}
+        {gameMode === "AI" && <DifficultySettings level={level} setLevel={setLevel}/>}
         <MainButton onClick={() => navigate(`/game?game-mode=${gameMode}&size=${size}&level=${level}`)}>CONFIRM</MainButton>
       </div>
     </MainLayout>

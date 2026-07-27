@@ -1,4 +1,11 @@
 # DOCKER
+
+## How to Run
+1) from the `app` directory, run
+``` docker compose up --build ```
+
+> If you get an error about port already in use, postgres is probably already running on the host. Stop it with `sudo systemctl stop`, then try `docker compose up --build` again.
+
 ## Database Dockerfile
 Our Dockerfile for the database uses the [official Postgres image](https://hub.docker.com/_/postgres).
 

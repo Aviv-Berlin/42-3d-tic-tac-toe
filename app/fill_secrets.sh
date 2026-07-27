@@ -12,10 +12,10 @@ if [ ! -s ./backend/postgres/postgres.env ]
 then
 	touch ${env_file}
 	printf "postgres.env file created\n"
-	read -p "Enter POSTGRES_USER (new postgres user, will own database): " postgres_user
-	echo -n "POSTGRES_USER=${postgres_user}\n" >> ${env_file}
+	read -p "Enter POSTGRES_USER (new postgres user, owns the database): " postgres_user
+	echo "POSTGRES_USER=${postgres_user}\n" >> ${env_file}
 	read -p "Enter POSTGRES_DB (database name): " postgres_db
-	echo -n "POSTGRES_DB=${postgres_db}\n" >> ${env_file}
+	echo "POSTGRES_DB=${postgres_db}\n" >> ${env_file}
 
 else
 	printf "Found existing file postgres.env.\n\n"

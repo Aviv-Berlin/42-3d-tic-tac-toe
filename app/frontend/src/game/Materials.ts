@@ -55,7 +55,8 @@ export class Materials {
         this.looks = (this.looks % 4) + 1;
         switch (this.looks) {
             case 1:
-                this.scene.clearColor = new Color4(1,1,1,1); 
+                this.scene.clearColor = new Color4(1,1,1,1);
+                this.cubeEdgeColor = new Color4(0,0,0,1);
                 break;
 
             case 2:

@@ -1,6 +1,11 @@
 import GameSettingButton from '../components/GameSettingButton'
 
-const DifficultySettings = ({level, setLevel}) => {
+interface DifficultySettingsProps {
+  level: number;
+  setLevel: React.Dispatch<React.SetStateAction<number>>;
+}
+
+const DifficultySettings = ({level, setLevel}: DifficultySettingsProps) => {
   return (
     <div className="flex flex-col items-center gap-4">
       <h1 className="text-3xl font-serif italic">Difficulty:</h1>

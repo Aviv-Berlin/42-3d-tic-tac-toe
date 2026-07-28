@@ -9,7 +9,9 @@ interface UsernameContextType {
 const UsernameContext = createContext<UsernameContextType | null>(null);
 
 const UsernameProvider = ({children}: PropsWithChildren) => {
-  const [username, setUsername] = useState<string | null>(null);
+  const [username, setUsername] = useState<string | null>(() => {
+    return window.localStorage.getItem('username') ?? null;
+  });
 
   return (
     <UsernameContext.Provider value={{ username, setUsername }}>

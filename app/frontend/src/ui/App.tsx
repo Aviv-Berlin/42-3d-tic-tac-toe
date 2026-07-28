@@ -11,6 +11,7 @@ import PrivacyPolicy from './pages/PrivacyPolicy'
 import TermsOfService from './pages/TermsOfService'
 import NotFound from './pages/NotFound'
 import ProtectedRoute from './routes/ProtectedRoute'
+import Lobby from './pages/Lobby'
 
 const App = () => {
   return (
@@ -22,6 +23,7 @@ const App = () => {
         <Route element={<ProtectedRoute />}>
           <Route path="/home" element={<Home />} />
           <Route path="/game-settings" element={<GameSettings />} />
+          <Route path="/lobby" element={<Lobby />} />
           <Route path="/game" element={<Game />} />
           <Route path="/profile" element={<Profile />} />
           <Route path="/settings" element={<Settings />} />

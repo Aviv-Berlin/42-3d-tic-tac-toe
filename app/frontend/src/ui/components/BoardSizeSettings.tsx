@@ -1,6 +1,11 @@
 import GameSettingButton from '../components/GameSettingButton'
 
-const BoardSizeSettings = ({size, setSize}) => {
+interface BoardSizeSettingsProps {
+  size: number;
+  setSize: React.Dispatch<React.SetStateAction<number>>;
+}
+
+const BoardSizeSettings = ({size, setSize}: BoardSizeSettingsProps) => {
   return (
     <div className="flex flex-col items-center gap-4">
       <h1 className="text-3xl font-serif italic">Board Size:</h1>

@@ -1,12 +1,12 @@
-import { Player, GameMode } from '../types/game';
+import { PlayerData, GameMode } from '../types/game';
 
-const createPlayers = (username: string, gameMode: GameMode): Player[] => {
-  const player1: Player = {
+const createPlayers = (username: string, gameMode: GameMode): PlayerData[] => {
+  const player1: PlayerData = {
     type: "real",
     username,
   }
 
-  let player2: Player;
+  let player2: PlayerData;
   if (gameMode === "online") {
     player2 = {
       type: "real",

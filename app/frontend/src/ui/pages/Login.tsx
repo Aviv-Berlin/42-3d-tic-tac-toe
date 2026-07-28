@@ -17,7 +17,7 @@ const Login = () => {
   const userInfo = useUsername();
   if (!userInfo) return null;
 
-  const { setUsername } = userInfo; 
+  const { setUsername } = userInfo;
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     setForm({...form, [e.target.name]: e.target.value});
@@ -31,8 +31,10 @@ const Login = () => {
     try {
       const response = await auth.login(form)
       const token = response.data.token;
+      const username = response.data.username;
       window.localStorage.setItem('token', token);
-      setUsername(form.username);
+      window.localStorage.setItem('username', username);
+      setUsername(username);
       navigate("/home");
     } catch(err) {
       console.log(err);
@@ -50,8 +52,8 @@ const Login = () => {
           <Input name="password" value={form.password} handler={handleChange} submit={submit}/>
           <SubmitButton>Log in</SubmitButton>
         </form>
-        <p className="">Don't have an account? <Link className="hover:underline underline-offset-4" to="/register">Sign up</Link></p>
-        <p className="text-red-400 min-h-[24px]">{errorMessage}</p>
+        <p className="">Don&apos;t have an account? <Link className="hover:underline underline-offset-4" to="/register">Sign up</Link></p>
+        <p className="text-red-400 min-h-6">{errorMessage}</p>
       </AuthCard>
     </AuthLayout>
   )

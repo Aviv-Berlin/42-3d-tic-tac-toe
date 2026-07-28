@@ -74,7 +74,7 @@ export class Board {
 
         sphere.position = this.getPosition(pos.x, pos.y, pos.z);
         sphere.material = material;
-        sphere.renderingGroupId = 1;
+        sphere.renderingGroupId = 0;
         sphere.isPickable = false;
 
         this.spheres.push(sphere);

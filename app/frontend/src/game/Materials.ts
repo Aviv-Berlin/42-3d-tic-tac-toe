@@ -13,12 +13,11 @@ export class Materials {
     public readonly previewMaterials: StandardMaterial[];
     private readonly cubeColor = new Color3(0.67, 0.7, 0.71);
     private cubeEdgeColor = new Color4(1, 1, 1, 1);
-    private sceneBackground = new Color4(0.2, 0.2, 0.2, 1);
-    private readonly cubeAlpha = 0;
+    private sceneBackground = new Color4(0.3, 0.27, 0.3, 1);
+    private cubeAlpha = 0.3;
     private readonly textColor = Color3.White();
     private readonly textFont = "Futura, Arial, sans-serif";
     private scene: Scene;
-    private looks: number = 1;
 
     constructor(scene: Scene) {
         this.scene = scene;
@@ -51,32 +50,36 @@ export class Materials {
         mesh.edgesColor = this.cubeEdgeColor;
     }
     
-    public toggleLook(): void {
-        this.looks = (this.looks % 4) + 1;
-        switch (this.looks) {
-            case 1:
-                this.scene.clearColor = new Color4(1,1,1,1);
-                this.cubeEdgeColor = new Color4(0,0,0,1);
-                break;
+public applyLook(look: number): boolean {
+    switch (look) {
+        case 1:
+            this.scene.clearColor = new Color4(1, 1, 1, 1);
+            this.cubeEdgeColor = new Color4(0, 0, 0, 1);
+            this.cube.alpha = 0;
+            return true;
 
-            case 2:
-                this.scene.clearColor =  new Color4(0,0,0,1);
-                break;
+        case 2:
+            this.scene.clearColor = new Color4(0, 0, 0, 1);
+            this.cubeEdgeColor = new Color4(1, 1, 1, 1);
+            this.cube.alpha = 0;
+            return true;
 
-            case 3:
-                this.scene.clearColor =  new Color4(0.2,0.2,0.2,1);
-                break;
+        case 3:
+            this.scene.clearColor = new Color4(0.2, 0.2, 0.2, 1);
+            this.cube.alpha = 0.12;
+            return false;
 
-            case 3:
-                this.scene.clearColor =  new Color4(0,1,1,1);
-                break;
-            
-            default:
-                this.scene.clearColor = new Color4(0,0,1,1); 
-                break;
-        }
-   
+        case 4:
+            // Same values used when Materials is constructed.
+            this.scene.clearColor = this.sceneBackground.clone();
+            this.cube.diffuseColor = this.cubeColor.clone();
+            this.cube.alpha = this.cubeAlpha;
+            return false;
+
+        default:
+            throw new Error(`Unknown look: ${look}`);
     }
+}
 
     public getPlayerMaterial(playerState: CellState): StandardMaterial {
         const index = playerStateToIndex(playerState);

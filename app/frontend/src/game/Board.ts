@@ -31,6 +31,7 @@ export class Board {
     }
 
     private createCubes(): void {
+
         for (let x = 0; x < this.N; x++) {
             for (let y = 0; y < this.N; y++) {
                 for (let z = 0; z < this.N; z++) {
@@ -39,12 +40,19 @@ export class Board {
 
                     cube.position = this.getPosition(x, y, z);
                     cube.material = this.materials.cube;
-
-                    this.materials.applyCubeEdges(cube);
                     cube.metadata = { gridPosition: { x, y, z}};
                     this.cubes.push(cube);
                 }
             }
+        }
+    }
+
+    public toggleCubeEdges(renderEdges: boolean): void {
+        for (const cube of this.cubes) {
+            if (renderEdges)
+                this.materials.applyCubeEdges(cube);
+            else
+                cube.disableEdgesRendering();
         }
     }
 

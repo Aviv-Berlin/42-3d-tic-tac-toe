@@ -2,6 +2,7 @@ import * as BABYLON from "@babylonjs/core";
 import type { AbstractMesh, Scene, StandardMaterial, Mesh, Material } from "@babylonjs/core";
 import * as GUI from "@babylonjs/gui";
 import { Materials } from "./Materials"
+import { Board } from "./Board"
 
 type CubeRowAnchor = "left" | "center" | "right";
 
@@ -40,12 +41,15 @@ export class GameUI {
     private materials: Materials;
     private winnerMessageRow: BABYLON.TransformNode | null = null;
     private rowAnimations = new Map<BABYLON.TransformNode, BABYLON.AnimationGroup>();
+    private looks: number = 4;
+    private board: Board;
 
     
-    constructor(scene: Scene, onExit: () => void, materials: Materials) {
+    constructor(scene: Scene, onExit: () => void, materials: Materials, board: Board) {
         this.scene = scene;
         this.onExit = onExit;
         this.materials = materials;
+        this.board = board;
         this.ui = GUI.AdvancedDynamicTexture.CreateFullscreenUI("UI", true, scene);
         this.createExitCubeRow();
         this.createLookCubeRow();
@@ -129,10 +133,17 @@ export class GameUI {
                 anchor: "right",
                 alwaysOnTop :true,
                 onClick: () => {
-                    this.materials.toggleLook();
+                    this.toggleLook();
                 }
             }
         );
+    }
+
+    private toggleLook(): void {
+        this.looks = (this.looks % 4) + 1;
+
+        const renderEdges = this.materials.applyLook(this.looks);
+        this.board.toggleCubeEdges(renderEdges);
     }
 
     private displayInstructions() {

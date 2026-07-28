@@ -10,27 +10,19 @@ services:
       - db_password
     ports:
       - "5432:5432"
-  #  volumes:
-   #   - db_volume:/var/lib/postgresql/data
-    networks:
-      - ttt_network
+      # only exposed as long as postgres is the only container
+    volumes:
+      - ./volumes/db_volume:/var/lib/postgresql/data
+    #networks:
+    #  - ttt_network
     restart: always
 
 secrets:
     db_password:
       file: ./secrets/postgres-passwd
 
-networks:
-    ttt_network:
-      name: ttt_network
-      driver: bridge
-
-#volumes:
- # db_volume:
-  #  name: ttt_db_volume
-  #  driver_opts:
-   #   type: none
-   #   o: bind
-    #  device: ${PWD}/backend/db_volume
-      # PWD will only work as long as we're running docker compose from this dir
-      # if using Makefile, will need to define variable differently.
+# network will not be in use until backend is containerized
+#networks:
+#    ttt_network:
+#      name: ttt_network
+#      driver: bridge

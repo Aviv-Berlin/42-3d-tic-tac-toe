@@ -1,14 +1,10 @@
 # DOCKER
 
-# How to Run
-1) From within the `/app` directory, run: `./fill_secrets.sh`
+# How to Run with Containerized Postgres
+1) Make sure that `/app/backend/.env` exists and contains all required vars (see Docs/README.md)
+2) From within the `/app` directory, run: `./fill_secrets.sh`.
 
-2) Update `/app/backend/.env` to match credentials in `/app/backend/postgres/postgres.env`
-- `DB_USER` = `POSTGRES_USER`
-- `DB_NAME` = `POSTGRES_DB`
-- `DB_PASSWORD` = contents of `/secrets/postgres-passwd`
-
-** In the future we can update ./fill_secrets to generate .env in both places. When backend gets containerized, the naming & structure of its .env and secrets may also change.
+	- Password here should match the password in `/app/backend/.env`
 
 3) From with the `/app` directory, run: ` docker compose up --build `
 

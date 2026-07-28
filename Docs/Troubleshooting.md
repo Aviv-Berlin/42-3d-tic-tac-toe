@@ -1,8 +1,8 @@
 # Troubleshooting
 
-Some issues encountered & how to solve:
+Issues encountered & how to solve:
 
-## Postgres / psql
+# Postgres / psql
 
 **Problem:** You've been running postgres using Docker. Now you want to go back to running postgres on the host machine. ```sudo -u postgres createdb ...``` results in error about a bad path.
 

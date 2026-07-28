@@ -3,7 +3,7 @@ import { useEffect, useRef } from 'react';
 import { useUsername } from '../context/UsernameContext'
 import GameLayout from '../layouts/GameLayout';
 import Canvas from '../components/Canvas';
-import { GameData, GameMode } from '../../types/game';
+import { GameData, GameMode, AiLevel } from '../../types/game';
 import createPlayers from '../../utils/players';
 
 const Game = () => {
@@ -15,22 +15,25 @@ const Game = () => {
   
   const gameModeParam = searchParams.get('game-mode');
   const sizeParam = searchParams.get('size');
+  const levelParam = searchParams.get('level');
 
   const isValid = (gameModeParam === "online" || gameModeParam === "ai" || gameModeParam === "local") &&
-                  (sizeParam === "3" || sizeParam === "4" || sizeParam === "5");
+                  (sizeParam === "3" || sizeParam === "4" || sizeParam === "5") &&
+                  (levelParam === "0" || levelParam === "1" || levelParam === "2" || levelParam === "3");
 
   let initialGameState: GameData | null = null;
 
   if (isValid) {
     const size = Number(sizeParam);
     const gameMode = gameModeParam as GameMode;
+    const level = Number(levelParam) as AiLevel;
 
     const [player1, player2] = createPlayers(username, gameMode);
 
     initialGameState = {
       player1,
       player2,
-      level: 0,
+      level,
       moves: null,
       size,
       isFinished: false,

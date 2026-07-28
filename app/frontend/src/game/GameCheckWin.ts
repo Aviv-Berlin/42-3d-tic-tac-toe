@@ -5,7 +5,7 @@ function checkForward(boardState: CellState[][][], startPos: GridPosition, playe
 	const positions: GridPosition[] = [];
 	//let count: number = 0;
 	let checkPos: GridPosition = addGP(startPos, vec);
-	while (boardState[checkPos.x]?.[checkPos.y]?.[checkPos.z] == player) {
+	while (boardState[checkPos.x]?.[checkPos.y]?.[checkPos.z] === player) {
 		//count++;
 		positions.push(checkPos);
 		checkPos = addGP(checkPos, vec);

@@ -1,8 +1,8 @@
 import { useNavigate } from 'react-router-dom';
 import { useUsername } from '../context/UsernameContext'
-import MainLayout from '../layouts/MainLayout';
 import MainButton from '../components/MainButton';
 import { GameMode } from '../../types/game';
+import HomeLayout from '../layouts/HomeLayout';
 
 const Home = () => {
   const navigate = useNavigate();
@@ -11,11 +11,15 @@ const Home = () => {
   const username = userInfo ? userInfo.username : "stranger";
 
   const handleClick = (gameMode: GameMode) => {
+    if (gameMode === "online") {
+      navigate('/lobby');
+      return;
+    }
     navigate(`/game-settings?game-mode=${gameMode}`);
   };
 
   return (
-    <MainLayout>
+    <HomeLayout>
       <div className="flex flex-col gap-16">
         <div className="flex flex-col gap-2">
           <p className="text-lg">{`Welcome back ${username}!`}</p>
@@ -27,7 +31,7 @@ const Home = () => {
           <MainButton onClick={() => handleClick("local")}>PLAY LOCALLY</MainButton>
         </div>
       </div>
-    </MainLayout>
+    </HomeLayout>
   );
 };
 

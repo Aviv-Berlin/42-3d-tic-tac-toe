@@ -13,10 +13,10 @@ const TermsOfService = () => {
 
       <h2 className="text-2xl mt-4">Acceptable use</h2>
         <p> - Do not use the app for any unlawful purpose.</p>
-        <p> - Do not attempt to hack, disrupt, or reverse-engineer the app's authentication, servers, or gameplay logic.</p>
+        <p> - Do not attempt to hack, disrupt, or reverse-engineer the app&apos;s authentication, servers, or gameplay logic.</p>
         <p> - Do not use bots, scripts, or automated tools to play games on your behalf.</p>
         <p> - Do not harass, abuse, or impersonate other users, including through the messaging feature.</p>
-        <p> - Do not attempt to access another user's account or data without authorization.</p>
+        <p> - Do not attempt to access another user&apos;s account or data without authorization.</p>
 
       <h2 className="text-2xl mt-4">Social features</h2>
         <p> - The app lets you add friends and exchange messages with other users. Message content is visible to your conversation partner and may be retained as part of their account history even if you delete your own account.</p>

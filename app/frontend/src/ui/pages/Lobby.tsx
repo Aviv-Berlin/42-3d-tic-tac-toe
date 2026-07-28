@@ -59,7 +59,7 @@ const Lobby = () => {
             {activeGames.map((game, index) => (
               <div key={index} className="flex justify-between items-end border rounded-md  border-stone-400 p-4 bg-white">
                 <div key={index} className="flex flex-col">
-                  <h3 className="text-2xl font-serif italic">{game.host}'s game</h3>
+                  <h3 className="text-2xl font-serif italic">{game.host}&apos;s game</h3>
                   <span>Host: {game.host}</span>
                   <span>Size: {game.size}x{game.size}x{game.size}</span>
                 </div>

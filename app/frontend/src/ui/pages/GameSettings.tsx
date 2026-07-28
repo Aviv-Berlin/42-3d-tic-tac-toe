@@ -15,7 +15,7 @@ const GameSettings = () => {
 
   const [searchParams] = useSearchParams();
 
-  let gameMode = searchParams.get('game-mode');
+  const gameMode = searchParams.get('game-mode');
 
   const isValid = gameMode === "online" || gameMode === "ai" || gameMode === "local";
 

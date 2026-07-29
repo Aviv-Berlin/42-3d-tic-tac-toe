@@ -30,4 +30,5 @@ export interface GameData {
   isDraw: boolean;
   gameStart: number;
   gameEnd: number;
+  gameID: string;
 }

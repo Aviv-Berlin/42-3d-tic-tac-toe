@@ -5,6 +5,7 @@ import cors from "cors";
 import http from "http";
 import { WebSocketServer } from "ws";
 import { GameState } from "./game/GameState.ts";
+import { WsMessage } from "../../shared/messages.ts"
 
 
 const app = express();
@@ -19,17 +20,27 @@ app.use("/v1/auth", authRoutes);
 
 const server = http.createServer(app);
 
+const games: GameState[] = [];
 
 const wss = new WebSocketServer({ server });
 
 wss.on('connection', (ws) => {
 
-	ws.on('message', (data: any) => {
-		console.log(`Received message: ${data}`);
+	ws.on('message', (message: WsMessage) => {
+		console.log(`Received message: ${message}`);
+		switch (message.type) {
+			case "join-game":
+				const data = message.payload;
+				games.push(new GameState(data.gameData, 2))
+				break;
+			case "move":
+				break;
+			default:
+				console.log(`Unknown messaage: ${message}`);
+		}
 	})
 
 	ws.send(JSON.stringify(`Hello from server.ts!`));
-	const game = new GameState(gameData, ui, graphics, onExit, 2);
 });
 
 server.listen(process.env.PORT, () => {

@@ -10,6 +10,7 @@ import { Player } from "./Player"
 import { AiPlayer } from "../../../backend/src/game/AIPlayer"
 import { LocalPlayer } from "./LocalPlayer"
 import { GameData } from "../types/game";
+import { WsMessage } from "../../../shared/messages"
 
 interface ServerMessage {
   message: string;
@@ -60,9 +61,9 @@ export function createBabylonGame(canvas: HTMLCanvasElement, gameData: GameData,
   //input manager is also frontend
   const input = new InputManager(game, scene, board, camera);
   input.registerEvents();
-  game.register(player);
-  game.register(player2);
-  game.startGame();
+  // game.register(player);
+  // game.register(player2);
+  // game.startGame();
 
   engine.runRenderLoop(() => {
     scene.render();

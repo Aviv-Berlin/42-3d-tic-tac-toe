@@ -1,6 +1,6 @@
-import { GameUI } from "../../../frontend/src/game/GameUI.ts";
+// import { GameUI } from "../../../frontend/src/game/GameUI.ts";
 import { checkWin } from "./GameCheckWin.ts";
-import { GameGraphics } from "../../../frontend/src/game/GameGraphics.ts";
+// import { GameGraphics } from "../../../frontend/src/game/GameGraphics.ts";
 import { GridPosition, CellState, PLAYER_STATES} from "../../../frontend/src/game/Types.ts";
 import { Player } from "../../../frontend/src/game/Player.ts";
 import { GameData } from "../../../frontend/src/types/game.ts";
@@ -15,18 +15,18 @@ interface NewPlayer {
 export class GameState {
     private boardState: CellState [][][] = [];
     private N: number;
-    private ui: GameUI;
+    // private ui: GameUI;
     private players: Player[] = [];
     private currentPlayerIndex: number = 0;
     private nPlayers: number;
     private moveCounter: number = 0;
-    private graphics: GameGraphics;
+    // private graphics: GameGraphics;
     private gameOver: boolean = false;
-    private onExit: () => void; //this is a function that is called when game is
+    // private onExit: () => void; //this is a function that is called when game is
     private exitTimeout: ReturnType<typeof setTimeout> | null = null;
     private gameData: GameData;
 
-    constructor(gameData: GameData, ui: GameUI, graphics: GameGraphics, onExit: () => void, nPlayers: number) {
+    constructor(gameData: GameData, nPlayers: number) {
         if (nPlayers < 2 || nPlayers > 4)
             throw new Error("The game supports between 2 and 4 players");
         this.gameData = gameData;
@@ -34,9 +34,9 @@ export class GameState {
         this.gameData.winner = null;
         this.gameData.isDraw = false;
         this.N = gameData.size;
-        this.ui = ui;
-        this.graphics = graphics;
-        this.onExit = onExit;
+        // this.ui = ui;
+        // this.graphics = graphics;
+        // this.onExit = onExit;
         this.nPlayers = nPlayers;
         this.initBoard();
     }
@@ -52,7 +52,7 @@ export class GameState {
             throw new Error("Not enough players");
         this.gameData.gameStart = Date.now();
         this.currentPlayerIndex = Math.floor(Math.random() * this.nPlayers);
-        await this.ui.playerTitle(this.getCurrentPlayer().name);
+        // await this.ui.playerTitle(this.getCurrentPlayer().name);
         this.getCurrentPlayer().yourTurn(this.boardState, this.N, this.getCurrentPlayerState());
     }
 
@@ -68,7 +68,7 @@ export class GameState {
         const playerState = this.getCurrentPlayerState();
         this.moveCounter++;
         this.boardState[pos.x][pos.y][pos.z] = playerState;
-        this.graphics.placeSphere(pos, playerState);
+        // this.graphics.placeSphere(pos, playerState);
 
         const winningPositions = checkWin(this.boardState, pos, playerState, this.N);
         if (winningPositions) {
@@ -120,7 +120,7 @@ export class GameState {
         this.currentPlayerIndex =
             (this.currentPlayerIndex + 1) % this.players.length;
 
-        await this.ui.playerTitle(this.getCurrentPlayer().name);
+        // await this.ui.playerTitle(this.getCurrentPlayer().name);
         this.getCurrentPlayer().yourTurn(this.boardState, this.N, this.getCurrentPlayerState());
     }
 
@@ -132,9 +132,9 @@ export class GameState {
 
     private finishGame(winner: Player, winningPositions: GridPosition[]): void {
         this.gameOver = true;
-        this.graphics.hidePreview();
-        this.graphics.animateWin(winningPositions);
-        this.ui.displayWinner(winner.name);
+        // this.graphics.hidePreview();
+        // this.graphics.animateWin(winningPositions);
+        // this.ui.displayWinner(winner.name);
         this.gameData.isFinished = true;
         if (winner.name === this.gameData.player1.username)
             this.gameData.winner = this.gameData.player1;
@@ -145,8 +145,8 @@ export class GameState {
 
     private endGameDraw() {
         this.gameOver = true;
-        this.graphics.hidePreview();
-        this.ui.displayWinner("No One");
+        // this.graphics.hidePreview();
+        // this.ui.displayWinner("No One");
         this.gameData.isFinished = true;
         this.gameData.isDraw = true;
         this.gameData.gameEnd = Date.now();

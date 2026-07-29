@@ -1,5 +1,6 @@
 import { useNavigate } from 'react-router-dom';
 import { useUsername } from '../context/UsernameContext'
+import { useGameData } from '../context/GameDataContext'
 import MainButton from '../components/MainButton';
 import { GameMode } from '../../types/game';
 import HomeLayout from '../layouts/HomeLayout';
@@ -17,6 +18,10 @@ const Home = () => {
     }
     navigate(`/game-settings?game-mode=${gameMode}`);
   };
+
+  const gameData = useGameData();
+
+  console.log(gameData)
 
   return (
     <HomeLayout>

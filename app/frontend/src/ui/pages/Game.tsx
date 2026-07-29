@@ -34,7 +34,7 @@ const Game = () => {
       player1,
       player2,
       level,
-      moves: null,
+      moves: [],
       size,
       isFinished: false,
       isDraw: false,

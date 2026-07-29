@@ -29,7 +29,8 @@ export class Materials {
         this.cube = new StandardMaterial("cubeMat", scene);
         this.cube.diffuseColor = this.cubeColor.clone();
         this.cube.alpha = this.cubeAlpha;
-        this.cube.needDepthPrePass = true;
+        this.cube.needDepthPrePass = false;
+        this.cube.disableDepthWrite = true;
 
         const playerColors: readonly Color3[] = [
             new Color3(1, 0.16, 0.01),  // Player 1: orange/red
@@ -74,18 +75,36 @@ export class Materials {
             case 3:
                 this.scene.clearColor = new Color4(0.4, 0.4, 1, 1);
                 this.cube.alpha = 0.12;
-                this.cube.needDepthPrePass = true;
-                this.cube.disableDepthWrite = false;
+                this.cube.needDepthPrePass = false;
+                this.cube.disableDepthWrite = true;
                 this.textColor = new Color3(1,1,0);
                 return false;
 
             case 4:
+                this.scene.clearColor = this.sceneBackground.clone();
+                this.cube.diffuseColor = this.cubeColor.clone();
+                this.cube.alpha = 0.4;
+                this.cube.needDepthPrePass = false;
+                this.cube.disableDepthWrite = true;
+                this.textColor = this.defaultTextColor.clone();
+                return false;
+
+            case 5:
+                this.scene.clearColor = this.sceneBackground.clone();
+                this.cube.diffuseColor = this.cubeColor.clone();
+                this.cube.alpha = 0.4;
+                this.cube.needDepthPrePass = false;
+                this.cube.disableDepthWrite = true;
+                this.textColor = this.defaultTextColor.clone();
+                return false;
+            
+            case 6:
                 // Same values used when Materials is constructed.
                 this.scene.clearColor = this.sceneBackground.clone();
                 this.cube.diffuseColor = this.cubeColor.clone();
-                this.cube.alpha = this.cubeAlpha;
-                this.cube.needDepthPrePass = true;
-                this.cube.disableDepthWrite = false;
+                this.cube.alpha = 0.4;
+                this.cube.needDepthPrePass = false;
+                this.cube.disableDepthWrite = true;
                 this.textColor = this.defaultTextColor.clone();
                 return false;
 
@@ -121,7 +140,8 @@ export class Materials {
         material.diffuseColor = color.clone();
         material.alpha = alpha;
         if (alpha < 1) {
-            material.needDepthPrePass = true;
+            material.needDepthPrePass = false;
+            material.disableDepthWrite = true;
         }
         return material;
     }

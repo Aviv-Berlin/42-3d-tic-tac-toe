@@ -41,7 +41,7 @@ export class GameUI {
     private materials: Materials;
     private winnerMessageRow: BABYLON.TransformNode | null = null;
     private rowAnimations = new Map<BABYLON.TransformNode, BABYLON.AnimationGroup>();
-    private looks: number = 4;
+    private looks: number = 6;
     private renderEdges: boolean = false;
     private board: Board;
 
@@ -159,9 +159,10 @@ export class GameUI {
     }
 
     private toggleLook(): void {
-        this.looks = (this.looks % 4) + 1;
+        this.looks = (this.looks % 6) + 1;
 
         this.renderEdges = this.materials.applyLook(this.looks);
+        this.board.createBoard(this.looks);
         this.board.toggleCubeEdges(this.renderEdges);
         this.applyLookToTextRows();
     }

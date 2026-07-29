@@ -1,6 +1,7 @@
 import HomeLayout from '../layouts/HomeLayout'
 import { useGameData } from '../context/GameDataContext'
 import { useUsername } from '../context/UsernameContext'
+import MainButton from '../components/MainButton'
 const GameEnd = () => {
 
   const gameDataContext = useGameData();
@@ -22,7 +23,10 @@ const GameEnd = () => {
 
   return (
     <HomeLayout>
-      <h1 className="text-5xl font-serif italic">{message}</h1>
+      <div className="flex flex-col items-center gap-8">
+        <h1 className="text-5xl font-serif italic">{message}</h1>
+        <MainButton onClick={() => console.log("play again")}>Play Again</MainButton>
+      </div>
     </HomeLayout>
   )
 }

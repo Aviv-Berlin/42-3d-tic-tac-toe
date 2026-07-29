@@ -20,7 +20,7 @@ const Canvas = ({gameData}: CanvasProps) => {
 
     return createBabylonGame(canvasRef.current, gameData, () => {
       gameDataContext?.setGameData(gameData);
-      navigate('/home');
+      navigate('/game-end');
     });
   }, [gameData, navigate]);
 

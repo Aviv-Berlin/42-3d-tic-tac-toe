@@ -1,18 +1,17 @@
-import { GameState } from "./GameState";
 import { GameGraphics} from "./GameGraphics"
 import { CellState, GridPosition } from "./Types"
 
 export abstract class Player {
     public name;
-    protected game;
+    protected gameID;
     protected graphics;
 
-    constructor(name: string, game: GameState, graphics: GameGraphics) {
+    constructor(name: string, gameID: string, graphics: GameGraphics) {
         this.name = name;
-        this.game = game;
+        this.gameID = gameID;
         this.graphics = graphics;
     }
-    
+
     abstract yourTurn(BoardState: CellState[][][], N: number, youAre: CellState): boolean;
     abstract moveCursor(direction: boolean, plane:  "x" | "y" | "z"): void;
     abstract choosePos(): void;

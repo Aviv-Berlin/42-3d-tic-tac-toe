@@ -1,8 +1,8 @@
-import { GridPosition, CellState, points, PLAYER_STATES } from "./Types"
-import { Player } from "./Player";
-import { GameState } from "./GameState";
-import { GameGraphics} from "./GameGraphics"
-import { addGP } from "./Utils";
+import { GridPosition, CellState, points, PLAYER_STATES } from "../../../frontend/src/game/Types.ts"
+import { Player } from "../../../frontend/src/game/Player.ts";
+import { GameState } from "./GameState.ts";
+import { GameGraphics} from "../../../frontend/src/game/GameGraphics.ts"
+import { addGP } from "../../../frontend/src/game/Utils.ts";
 
 interface PositionScore {
     score: number;
@@ -18,12 +18,12 @@ interface MoveScore {
 export class AiPlayer extends Player {
     private IAm: CellState = 0;
     private level: number;
-    
-    constructor(name: string, game: GameState, graphics: GameGraphics, level: number) {
-        super (name, game, graphics);
+
+    constructor(name: string, gameID: string, graphics: GameGraphics, level: number) {
+        super (name, gameID, graphics);
         this.level = level;
     }
-    
+
     public yourTurn(BoardState: CellState[][][], N: number, youAre: CellState): boolean {
         this.IAm = youAre;
         setTimeout(() => {
@@ -38,15 +38,15 @@ export class AiPlayer extends Player {
                 else
                     this.playSmartMove(BoardState, N);
                 break;
-            
+
             case 3:
                 this.playSmartMove(BoardState, N);
                 break;
-            
+
             default:
                 this.playRandomMove(BoardState, N);
                 break;
-           } 
+           }
         }, 500);
         return true;
     }
@@ -99,7 +99,7 @@ export class AiPlayer extends Player {
         let score = -1;
         if (boardState[pos.x][pos.y][pos.z] !== CellState.Empty)
             return { score: -1, winsGame: false, blocksWin: false};
-        
+
         const myScore = this.scorePos(boardState, pos, this.IAm, N);
         const emptyScore = this.scorePos(boardState, pos, 0, N);
         let bestOpponentScore = 0;
@@ -143,7 +143,7 @@ export class AiPlayer extends Player {
                     playerCells++;
                 else if (cell !== CellState.Empty) {
                     lineIsBlocked = true;
-                    break; 
+                    break;
                 }
             }
 

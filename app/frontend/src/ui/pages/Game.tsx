@@ -6,13 +6,14 @@ import Canvas from '../components/Canvas';
 import { GameData, GameMode, AiLevel } from '../../types/game';
 import createPlayers from '../../utils/players';
 
+
 const Game = () => {
   const [searchParams] = useSearchParams();
   const navigate = useNavigate();
-  
+
   const userInfo = useUsername();
   const username = userInfo?.username ?? "stranger";
-  
+
   const gameModeParam = searchParams.get('game-mode');
   const sizeParam = searchParams.get('size');
   const levelParam = searchParams.get('level');

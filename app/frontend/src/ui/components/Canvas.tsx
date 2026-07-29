@@ -19,10 +19,11 @@ const Canvas = ({gameData}: CanvasProps) => {
     if (!canvasRef.current || !gameData) return;
 
     return createBabylonGame(canvasRef.current, gameData, () => {
+      window.localStorage.setItem("gameData", JSON.stringify(gameData))
       gameDataContext?.setGameData(gameData);
       navigate('/game-end');
     });
-  }, [gameData, navigate]);
+  }, []);
 
   return (
     <canvas

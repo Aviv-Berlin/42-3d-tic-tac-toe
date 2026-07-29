@@ -1,12 +1,46 @@
 #!/bin/bash
-# TODO if this script is going to be run from another dir, paths will need a to be constructed
-# using a variable for the directory in which script is located 
+
+# This is a script for easy first-time set-up of Docker requirements,
+# including secrets, ENV and volume path.
+
+# Right now it sets postgres.env
+# from an existing /backend/.env (which is used by the rest of the backend),
+# since everyone already has this file.
+
+# It will prompt you to enter a password manually, which should also
+# match what you have in /backend/.env.
+
+# As we add more pieces to Docker, the script will likely change to
+# also set /backend/.env (or its equivalent) and more.
+
+# Eventually the script could be initialized or replaced entirely by a Makefile.
 
 set -euo pipefail
 
+# TODO if this script is going to be run from another dir, paths will need
+# to be constructed using a var for the directory in which script is located 
+
+printf "\nVOLUMES\n"
+if [ ! -e "/home/${USER}/3d_ttt_data" ]
+then
+	mkdir "/home/${USER}/3d_ttt_data"
+	printf "Created new directory /home/${USER}/3d_ttt_data\n"
+	printf "Your volumes will live here.\n"
+else
+	printf "Found existing directory /home/${USER}/3d_ttt_data.\n"
+	printf "This is where your volumes live.\n"
+fi
+
+if [ ! -e "/home/${USER}/3d_ttt_data/postgres" ]
+then
+	mkdir "/home/${USER}/3d_ttt_data/postgres"
+	printf "Created new directory /home/${USER}/3d_ttt_data/postgres\n"
+fi
+
+printf "\n"
+
 # For the smoothest transition to using Docker for postgres,
 # we will fill Postgres's required ENV from the backend .env
-
 # First checking that the file exists
 if [ ! -s "./backend/.env" ]
 then
@@ -39,7 +73,7 @@ then
 	touch ${postgres_env_file}
 	printf "postgres.env file created\n"
 
-	# May return to this approach at a later date
+	# May return to this approach at a later date:
 	#read -p "Enter POSTGRES_USER (new postgres user, owns the database): " postgres_user
 	#echo "POSTGRES_USER=${postgres_user}" >> ${postgres_env_file}
 	#read -p "Enter POSTGRES_DB (database name): " postgres_db
@@ -48,10 +82,9 @@ then
 	echo "POSTGRES_DB=${DB_NAME}" >> ${postgres_env_file}
 	echo "POSTGRES_USER=${DB_USER}" >> ${postgres_env_file}
 else
-	printf "Found existing postgres.env file.\n\n"
+	printf "Found existing postgres.env file.\n"
 	printf "The contents will be used by Docker Compose for your database ENV.\n\n"
 fi
-
 
 # SECRETS for Postgres
 printf "SECRETS:\n"

@@ -1,0 +1,126 @@
+# DOCKER
+
+# How to Run with Containerized Postgres
+1) Make sure that `/app/backend/.env` exists and contains all required vars (see Docs/README.md)
+2) IF setting up Tic-Tac-Toe Docker for the first time ... From within the `/app` directory, run the `./setup_docker.sh` script. Password entered here should match the password in `/app/backend/.env`
+	```
+	./setup_docker.sh
+	```
+
+3) Stop Postgres from running outside the container, so that Postgres inside the container can have its port.
+
+	```
+	sudo systemctl stop postgresql
+	```
+
+3) From with the `/app` directory, run:
+	```
+	docker compose up --build
+	```
+4) Build backend and frontend as usual:
+	- from within `/app/frontend`, run:
+		- `npm install` (only necessary if something has changed)
+		-  `npm run dev`
+	- from within `/app/backend`, run
+		- `npm install` (again, only needed after changes or a merge)
+		- `nmp run dev -- --host`
+		* The "-- --host" flag is optional. If you're working on a VM, this allows you to connect to the web app using your host's browser, assuming ports 5173 and 3001 are forwarded by your VM settings.
+	- access via `http://localhost:5173`
+
+All of these steps above may be combined with a Makefile command in the future.
+
+### Data Persistence
+
+Now, try creating a new signup. Thanks to the volume storage, your new user and their data will still be there after you've powered the container down and back up again. From the `/app` directory...
+
+To power down:
+```
+docker compose down
+```
+
+To power down AND delete your volume contents:
+```
+docker compose down -v
+```
+To power up again (and if you changed the Dockerfile, use flag --build):
+```
+docker compose up
+```
+
+### Volumes vs. Inititalizing the Database with Previous Database Dump
+Before we started using Docker with the database, the way to save and restore database instances was via database dumps ("schemaAndData.sql"). This is still possible, and by altering one line the Dockerfile (see comments there), we can pull in a file like schemaAndData.sql to use for initialization. Note that initialization will only happen if the database is empty -- Either, the container is brand new, or its volumes have been wiped.
+
+With Docker, another option for saving and revisiting multiple database versions is by having multiple Docker compose project instances, each with a separate volume. This can be done easily by using the `-p <project name>` option with compose.
+
+Create a project with a name:
+```
+docker compose -p version_0 up
+```
+Before you create another project, you will need to stop the previous container, because both are configured to use the same port:
+```
+docker stop version_0-database-1
+```
+Create another project:
+```
+docker compose -p version_0 up
+```
+
+See your two projects:
+```
+docker ps -a
+```
+
+See your two volumes:
+```
+docker volume ls
+```
+```
+hallison:~/42-3d-tic-tac-toe/app$ docker volume ls
+DRIVER    VOLUME NAME
+local     test_postgres_volume
+local     version_0_postgres_volume
+```
+
+# About the Docker Set-Up
+
+## Database Dockerfile
+Our Dockerfile for the database uses the [official Postgres image](https://hub.docker.com/_/postgres).
+
+Lots of info here: [official Postgres image repo on Github](https://github.com/docker-library/docs/blob/master/postgres/README.md)
+
+### Postgres Environment Variables & Secrets
+
+The official Postgres image *requires* passing in at least one environment variable (which can also be set using secrets):
+
+- `POSTGRES_PASSWORD` : sets superuser password for PostgreSQL
+
+We're also making use of these default environment variables, which will be read and processed by the official image's entrypoint script:
+
+- `POSTGRES_DB` : the name of the our database
+
+- `POSTGRES_USER` : the user which will own POSTGRES_DB (and has superuser privileges, within postgres)
+
+---
+
+> More optional environment variables, which we are currently leaving empty / as default:
+>
+>- `PGDATA` : where database data is stored.
+>	- defaults to /var/lib/postgresql/data for postgres version 17 and below
+>
+>- `POSTGRES_HOST_AUTH_METHOD` : controls the auth-method for host connections
+>	- defaults to scram-sha-256 password authentication (prevents password sniffing and supports storing passwords on the server in a hashed format)
+>
+>- `POSTGRES_INITDB_ARGS` : can be used to send args to postgres initdb
+
+---
+
+### Our Handling of ENV and Secrets
+
+There is a built-in option for setting the required Postgres password using a Docker secret. By using `POSTGRES_PASSWORD_FILE` instead of `POSTGRES_PASSWORD`, we can copy the password file path instead of the password contents. This keeps the password contents out of logs.
+
+```
+$ docker run --name some-postgres -e POSTGRES_PASSWORD_FILE=/run/secrets/postgres-passwd -d postgres
+```
+
+For this purpose we have a `/secrets` directory at same level as the docker-compose.yaml, and a password file is created here when you run `setup_docker.sh`
+

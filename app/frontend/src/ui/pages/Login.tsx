@@ -1,11 +1,11 @@
 import { useState } from 'react'
 import { Link, useNavigate } from 'react-router-dom'
-import { useUsername } from '../context/UsernameContext'
 import AuthLayout from '../layouts/AuthLayout'
 import AuthCard from '../components/AuthCard'
 import Input from '../components/Input'
 import SubmitButton from '../components/SubmitButton'
 import auth from '../../services/auth'
+import { useSetUsername } from '../../store/username'
 
 const Login = () => {
   const [form, setForm] = useState({username: '', password: ''});
@@ -14,10 +14,7 @@ const Login = () => {
 
   const navigate = useNavigate();
 
-  const userInfo = useUsername();
-  if (!userInfo) return null;
-
-  const { setUsername } = userInfo;
+  const setUsername = useSetUsername();
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     setForm({...form, [e.target.name]: e.target.value});

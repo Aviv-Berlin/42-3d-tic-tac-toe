@@ -1,15 +1,13 @@
 import { useRef, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import GameLayout from "../layouts/GameLayout";
-import { useGameData } from "../context/GameDataContext";
 import { replyGame } from "../../game/Reply";
-
+import { useGameData } from "../../store/gameData";
 
 const Replay = () => {
   const navigate = useNavigate();
 
-  const gameDataContext = useGameData();
-  const gameData = gameDataContext?.gameData;
+  const gameData = useGameData();
 
   const canvasRef = useRef<HTMLCanvasElement | null>(null);
 

@@ -1,18 +1,14 @@
 import CenteredLayout from '../layouts/CenteredLayout'
-import { useGameData } from '../context/GameDataContext'
-import { useUsername } from '../context/UsernameContext'
 import MainButton from '../components/MainButton'
 import SecondaryButton from '../components/SecondaryButton'
 import { useNavigate } from 'react-router-dom'
 import { getGameEndMessage } from '../../utils/gameData'
-
+import { useGameData } from '../../store/gameData'
+import { useUsername } from '../../store/username'
 
 const GameEnd = () => {
-  const gameDataContext = useGameData();
-  const gameData = gameDataContext?.gameData;
-
-  const usernameContext = useUsername();
-  const username = usernameContext?.username;
+  const gameData = useGameData();
+  const username = useUsername();
 
   const navigate = useNavigate();
 

@@ -1,8 +1,8 @@
 import { useState, useRef, useEffect } from 'react'
 import { Link, useNavigate } from 'react-router-dom'
-import { useUsername } from '../context/UsernameContext'
 import { ChevronUp, ChevronDown } from 'lucide-react';
 import DropDownButton from './DropDownButton'
+import { useUsername } from '../../store/username'
 
 const NavDropDown = () => {
   const [open, setOpen] = useState(false);
@@ -11,10 +11,7 @@ const NavDropDown = () => {
 
   const navigate = useNavigate();
 
-  const userInfo = useUsername();
-  if (!userInfo) return null;
-
-  const { username } = userInfo;
+  const username = useUsername();
 
   const handleLogOut = () => {
     window.localStorage.removeItem('token');

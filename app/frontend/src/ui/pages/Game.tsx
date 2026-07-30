@@ -40,7 +40,7 @@ const Game = () => {
       isDraw: false,
       winner: null,
       gameStart: 0,
-      gameEnd: 0
+      gameEnd: 0,
     };
   }
 

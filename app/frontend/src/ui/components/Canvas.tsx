@@ -9,7 +9,7 @@ interface CanvasProps {
 }
 
 const Canvas = ({gameData}: CanvasProps) => {
-  const canvasRef = useRef(null);
+  const canvasRef = useRef<HTMLCanvasElement | null>(null);
 
   const navigate = useNavigate();
 

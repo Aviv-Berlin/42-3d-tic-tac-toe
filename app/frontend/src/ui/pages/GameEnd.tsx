@@ -21,15 +21,22 @@ const GameEnd = () => {
 
   let message;
 
+  console.log(gameData)
+
   if (gameData?.isDraw) message = "IT'S A DRAW";
   else if (gameData?.winner?.username === username) message = "YOU WIN";
   else message = "YOU LOSE";
+
+  const handleBackToHome = () => {
+    window.localStorage.removeItem('gameData');
+    navigate('/');
+  }
 
   return (
     <CenteredLayout>
       <div className="flex flex-col items-center gap-8">
         <div className="flex gap-4">
-          <SecondaryButton onClick={() => navigate("/")}>Back to Home</SecondaryButton>
+          <SecondaryButton onClick={handleBackToHome}>Back to Home</SecondaryButton>
           <SecondaryButton onClick={() => navigate("/replay")}>View Replay</SecondaryButton>
         </div>
         <h1 className="text-5xl font-serif italic">{message}</h1>

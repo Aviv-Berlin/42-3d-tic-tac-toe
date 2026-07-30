@@ -9,10 +9,10 @@ import createPlayers from '../../utils/players';
 const Game = () => {
   const [searchParams] = useSearchParams();
   const navigate = useNavigate();
-  
+
   const userInfo = useUsername();
   const username = userInfo?.username ?? "stranger";
-  
+
   const gameModeParam = searchParams.get('game-mode');
   const sizeParam = searchParams.get('size');
   const levelParam = searchParams.get('level');
@@ -21,7 +21,7 @@ const Game = () => {
                   (sizeParam === "3" || sizeParam === "4" || sizeParam === "5") &&
                   (levelParam === "0" || levelParam === "1" || levelParam === "2" || levelParam === "3");
 
-  let initialGameState: GameData | null = null;
+  let initialGameData: GameData | null = null;
 
   if (isValid) {
     const size = Number(sizeParam);
@@ -30,7 +30,7 @@ const Game = () => {
 
     const [player1, player2] = createPlayers(username, gameMode);
 
-    initialGameState = {
+    initialGameData = {
       player1,
       player2,
       level,
@@ -40,7 +40,7 @@ const Game = () => {
       isDraw: false,
       winner: null,
       gameStart: 0,
-      gameEnd: 0
+      gameEnd: 0,
     };
   }
 
@@ -48,13 +48,13 @@ const Game = () => {
     if (!isValid) navigate('/not-found');
   }, [isValid]);
 
-  const gameStateRef = useRef<GameData | null>(initialGameState);
+  const gameDataRef = useRef<GameData | null>(initialGameData);
 
-  if (!isValid || !gameStateRef.current) return null;
+  if (!isValid || !gameDataRef.current) return null;
 
   return (
     <GameLayout>
-      <Canvas gameData={gameStateRef.current}/>
+      <Canvas gameData={gameDataRef.current}/>
     </GameLayout>
   )
 }

@@ -37,7 +37,7 @@ const Register = () => {
     }
     try {
       await auth.register(form)
-      navigate('/register-success'); 
+      navigate('/register-success');
     } catch (err) {
       console.log(err);
       setErrorMessage(err.response?.data?.error || "something went wrong");
@@ -60,7 +60,7 @@ const Register = () => {
           <SubmitButton>Sign up</SubmitButton>
         </form>
       <p>Already registered? <Link className="text-black hover:underline underline-offset-4" to="/login">Log in</Link></p>
-      <p className="text-red-400 min-h-[24px]">{errorMessage}</p>
+      <p className="text-red-400 min-h-6">{errorMessage}</p>
       </AuthCard>
     </AuthLayout>
   )

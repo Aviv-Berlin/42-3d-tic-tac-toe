@@ -1,9 +1,11 @@
+import CenteredLayout from "../layouts/CenteredLayout"
+
 const NotFound = () => {
   return (
-      <div className="min-h-screen flex flex-col justify-center items-center">
-        <h1>404</h1>
-        <p>Page not found</p>
-      </div>
+    <CenteredLayout>
+      <h1 className="text-5xl font-serif italic">404</h1>
+      <p className="text-xl font-serif italic">Page not found :(</p>
+    </CenteredLayout>
   )
 }
 

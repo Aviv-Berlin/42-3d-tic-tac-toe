@@ -1,0 +1,51 @@
+import CenteredLayout from '../layouts/CenteredLayout'
+import { useGameData } from '../context/GameDataContext'
+import { useUsername } from '../context/UsernameContext'
+import MainButton from '../components/MainButton'
+import SecondaryButton from '../components/SecondaryButton'
+import { useNavigate } from 'react-router-dom'
+import { getGameEndMessage } from '../../utils/gameData'
+
+
+const GameEnd = () => {
+  const gameDataContext = useGameData();
+  const gameData = gameDataContext?.gameData;
+
+  const usernameContext = useUsername();
+  const username = usernameContext?.username;
+
+  const navigate = useNavigate();
+
+  if (!gameData || !username) {
+    console.log("missing gameData or username");
+    return null;
+  }
+
+  const message = getGameEndMessage(gameData, username);
+  const numMoves = gameData.moves.length;
+
+  const handleBackToHome = () => {
+    window.localStorage.removeItem('gameData');
+    navigate('/');
+  }
+
+  return (
+    <CenteredLayout>
+      <div className="flex flex-col items-center gap-8">
+        <div className="flex gap-4">
+          <SecondaryButton onClick={handleBackToHome}>Back to Home</SecondaryButton>
+          <SecondaryButton onClick={() => navigate("/replay")}>View Replay</SecondaryButton>
+        </div>
+        <h1 className="text-5xl font-serif italic">{message}</h1>
+        <MainButton onClick={() => console.log("play again")}>Play Again</MainButton>
+        <div className="flex flex-col gap-2">
+          <h2 className="text-2xl font-serif italic">Stats</h2>
+          <p>Number of moves: {numMoves}</p>
+          <p>Game duration: 42 seconds</p>
+        </div>
+      </div>
+    </CenteredLayout>
+  )
+}
+
+export default GameEnd

@@ -17,28 +17,6 @@
 
 set -euo pipefail
 
-# TODO if this script is going to be run from another dir, paths will need
-# to be constructed using a var for the directory in which script is located 
-
-printf "\nVOLUMES\n"
-if [ ! -e "/home/${USER}/3d_ttt_data" ]
-then
-	mkdir "/home/${USER}/3d_ttt_data"
-	printf "Created new directory /home/${USER}/3d_ttt_data\n"
-	printf "Your volumes will live here.\n"
-else
-	printf "Found existing directory /home/${USER}/3d_ttt_data.\n"
-	printf "This is where your volumes live.\n"
-fi
-
-if [ ! -e "/home/${USER}/3d_ttt_data/postgres" ]
-then
-	mkdir "/home/${USER}/3d_ttt_data/postgres"
-	printf "Created new directory /home/${USER}/3d_ttt_data/postgres\n"
-fi
-
-printf "\n"
-
 # For the smoothest transition to using Docker for postgres,
 # we will fill Postgres's required ENV from the backend .env
 # First checking that the file exists
@@ -78,7 +56,7 @@ then
 	#echo "POSTGRES_USER=${postgres_user}" >> ${postgres_env_file}
 	#read -p "Enter POSTGRES_DB (database name): " postgres_db
 	#echo "POSTGRES_DB=${postgres_db}" >> ${postgres_env_file}
-	
+
 	echo "POSTGRES_DB=${DB_NAME}" >> ${postgres_env_file}
 	echo "POSTGRES_USER=${DB_USER}" >> ${postgres_env_file}
 else
@@ -99,7 +77,7 @@ then
 else
 	printf "Found existing file at /secrets/postgres-passwd.\n"
 	printf "The contents will be used by Docker Compose for your database password.\n"
-	# TODO 
+	# TODO
 	# should also check that file does not contain ""
 	# and even better, that password follows certain rules for minimum security
 fi

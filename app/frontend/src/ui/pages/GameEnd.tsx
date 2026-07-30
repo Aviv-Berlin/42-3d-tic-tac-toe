@@ -4,8 +4,10 @@ import { useUsername } from '../context/UsernameContext'
 import MainButton from '../components/MainButton'
 import SecondaryButton from '../components/SecondaryButton'
 import { useNavigate } from 'react-router-dom'
-const GameEnd = () => {
+import { getGameEndMessage } from '../../utils/gameData'
 
+
+const GameEnd = () => {
   const gameDataContext = useGameData();
   const gameData = gameDataContext?.gameData;
 
@@ -19,13 +21,8 @@ const GameEnd = () => {
     return null;
   }
 
-  let message;
-
-  console.log(gameData)
-
-  if (gameData?.isDraw) message = "IT'S A DRAW";
-  else if (gameData?.winner?.username === username) message = "YOU WIN";
-  else message = "YOU LOSE";
+  const message = getGameEndMessage(gameData, username);
+  const numMoves = gameData.moves.length;
 
   const handleBackToHome = () => {
     window.localStorage.removeItem('gameData');
@@ -40,8 +37,12 @@ const GameEnd = () => {
           <SecondaryButton onClick={() => navigate("/replay")}>View Replay</SecondaryButton>
         </div>
         <h1 className="text-5xl font-serif italic">{message}</h1>
-        <p>Number of moves: 4</p>
         <MainButton onClick={() => console.log("play again")}>Play Again</MainButton>
+        <div className="flex flex-col gap-2 border border-stone-400 rounded-md p-4">
+          <h2 className="text-2xl font-serif italic">Stats</h2>
+          <p>Number of moves: {numMoves}</p>
+          <p>Game duration: 42 seconds</p>
+        </div>
       </div>
     </CenteredLayout>
   )

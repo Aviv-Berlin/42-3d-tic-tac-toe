@@ -2,7 +2,7 @@ import { useRef, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import GameLayout from "../layouts/GameLayout";
 import { useGameData } from "../context/GameDataContext";
-import { replyGame } from "../../game/Reply";
+import { replayGame } from "../../game/Replay";
 
 
 const Replay = () => {
@@ -17,7 +17,7 @@ const Replay = () => {
 
     if (!canvasRef.current || !gameData) return;
 
-    return replyGame(canvasRef.current, gameData, () => {
+    return replayGame(canvasRef.current, gameData, () => {
       navigate('/game-end');
     });
   }, []);

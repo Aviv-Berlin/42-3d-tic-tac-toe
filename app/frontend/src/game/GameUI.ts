@@ -59,7 +59,7 @@ export class GameUI {
         this.createExitCubeRow();
         this.createLookCubeRow();
         this.displayInstructions();
-        this.createLogo();
+        //this.createLogo();
     }
 
     public createLogo(): void {

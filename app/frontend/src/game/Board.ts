@@ -55,13 +55,15 @@ export class Board {
     }
 
     public createBoard(looks: number): void {
-
+        const scale = this.cubesShrink ? 0.25 : 1;
         this.boardMeshes.forEach(mesh => mesh.dispose());
         this.boardMeshes = [];        
+
         for (let x = 0; x < this.N; x++) {
             for (let y = 0; y < this.N; y++) {
                 for (let z = 0; z < this.N; z++) {
                     const finalMesh = this.createBoardMesh(looks);
+                    finalMesh.scaling.set(scale, scale, scale);
                     finalMesh.position = this.getPosition(x, y, z);
                     finalMesh.material = this.materials.cube;
                     finalMesh.metadata = { gridPosition: { x, y, z}};

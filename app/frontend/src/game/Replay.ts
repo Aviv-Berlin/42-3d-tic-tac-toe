@@ -21,7 +21,7 @@ export function replayGame(canvas: HTMLCanvasElement, gameData: GameData, onExit
 
   //backend runs the GameState and AiPlayer
   const game = new GameState(gameData, ui, graphics, onExit, 2);
-  game.startReply();
+  game.startReplay();
 
   engine.runRenderLoop(() => {
     scene.render();

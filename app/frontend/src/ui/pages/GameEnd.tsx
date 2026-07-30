@@ -23,6 +23,7 @@ const GameEnd = () => {
 
   const message = getGameEndMessage(gameData, username);
   const numMoves = gameData.moves.length;
+  const gameLength = (gameData.gameEnd - gameData.gameStart) / 1000;
 
   const handleBackToHome = () => {
     window.localStorage.removeItem('gameData');
@@ -41,7 +42,7 @@ const GameEnd = () => {
         <div className="flex flex-col gap-2">
           <h2 className="text-2xl font-serif italic">Stats</h2>
           <p>Number of moves: {numMoves}</p>
-          <p>Game duration: 42 seconds</p>
+          <p>Game duration: {gameLength}</p>
         </div>
       </div>
     </CenteredLayout>

@@ -105,6 +105,30 @@ export class InputManager {
             case "h":
                 cameraDir = this.camera.getCameraDir(back);
                 break;
+            
+            case "d":
+                cameraDir = this.camera.getCameraDir(right);
+                break;
+            
+            case "a":
+                cameraDir = this.camera.getCameraDir(left);
+                break;
+
+            case "e":
+                cameraDir = this.camera.getCameraDir(up);
+                break;
+            
+            case "q":
+                cameraDir = this.camera.getCameraDir(down);
+                break;
+            
+            case "w":
+                cameraDir = this.camera.getCameraDir(front);
+                break;
+            
+            case "s":
+                cameraDir = this.camera.getCameraDir(back);
+                break;
         }
 
         if (cameraDir.equals(right))

@@ -8,7 +8,7 @@ import { CameraManager } from "./CameraManager";
 import { GameData } from "../types/game";
 
 
-export function replyGame(canvas: HTMLCanvasElement, gameData: GameData, onExit: () => void) {
+export function replayGame(canvas: HTMLCanvasElement, gameData: GameData, onExit: () => void) {
 
 //all these are the visual elements - so running by the browser
   const engine = new BABYLON.Engine(canvas, true);

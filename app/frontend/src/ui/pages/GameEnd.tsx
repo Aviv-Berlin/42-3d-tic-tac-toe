@@ -38,7 +38,7 @@ const GameEnd = () => {
         </div>
         <h1 className="text-5xl font-serif italic">{message}</h1>
         <MainButton onClick={() => console.log("play again")}>Play Again</MainButton>
-        <div className="flex flex-col gap-2 border border-stone-400 rounded-md p-4">
+        <div className="flex flex-col gap-2">
           <h2 className="text-2xl font-serif italic">Stats</h2>
           <p>Number of moves: {numMoves}</p>
           <p>Game duration: 42 seconds</p>

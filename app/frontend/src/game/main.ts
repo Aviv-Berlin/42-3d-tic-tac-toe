@@ -10,9 +10,32 @@ import { Player } from "./Player"
 import { AiPlayer } from "../../../shared/game/AIPlayer"
 import { LocalPlayer } from "./LocalPlayer"
 import { GameData } from "../types/game";
+import { WsMessage } from "../../../shared/messages"
 
+interface ServerMessage {
+  message: string;
+  timestamp: number;
+}
 
 export function createBabylonGame(canvas: HTMLCanvasElement, gameData: GameData, onExit: () => void) {
+
+  const ws = new WebSocket("ws://localhost:3001");
+  ws.onopen = () => {
+    console.log(`client connected to server.`);
+    ws.send(`Hi from the client.`);
+  };
+  ws.onmessage = (event) => {
+    const data: ServerMessage = JSON.parse(event.data);
+    console.log(`Received message from server: ${data}`);
+  };
+
+  ws.onclose = () => {
+    console.log('Disconnected from the server');
+  };
+
+  ws.onerror = (error) => {
+    console.error('WebSocket error:', error);
+  };
 
 //all these are the visual elements - so running by the browser
   const engine = new BABYLON.Engine(canvas, true);

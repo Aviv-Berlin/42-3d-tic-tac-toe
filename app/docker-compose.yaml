@@ -29,8 +29,3 @@ secrets:
 
 volumes:
   postgres_volume:
-    name: ttt_postgres_volume
-    driver_opts:
-      type: none
-      o: bind
-      device: /home/${USER}/3d_ttt_data/postgres

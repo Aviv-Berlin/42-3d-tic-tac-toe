@@ -48,15 +48,38 @@ docker compose up
 ```
 
 ### Volumes vs. Inititalizing the Database with Previous Database Dump
-For many cases, the use of volumes could replace the previous method of initializing a database on startup with a database dump ("schemaAndData.sql").
+Before we started using Docker with the database, the way to save and restore database instances was via database dumps ("schemaAndData.sql"). This is still possible, and by altering one line the Dockerfile (see comments there), we can pull in a file like schemaAndData.sql to use for initialization. Note that initialization will only happen if the database is empty -- Either, the container is brand new, or its volumes have been wiped.
 
-However, there might still be cases where we want to initialize the container with a dumped database, and in this case, we can alter the Dockerfile to pull in that database. To do this...
+With Docker, another option for saving and revisiting multiple database versions is by having multiple Docker compose project instances, each with a separate volume. This can be done easily by using the `-p <project name>` option with compose.
 
-First delete or move the contents of your volume data, so you're starting with an empty database on the next build. It's `docker compose down -v` to simply wipe the contents. If you want to copy the contents somewhere... your volume lives at `/home/$USER/3d_ttt_data/postgres`, and because postgres owns this directory, you will need to `su root` to interact with it manually.
+Create a project with a name:
+```
+docker compose -p version_0 up
+```
+Before you create another project, you will need to stop the previous container, because both are configured to use the same port:
+```
+docker stop version_0-database-1
+```
+Create another project:
+```
+docker compose -p version_0 up
+```
 
-Now to initialize with a dumped database on the next build, see comments in the Dockerfile -- it's simple.
+See your two projects:
+```
+docker ps -a
+```
 
-More thoughts on volumes and data persistence near the bottom of this doc.
+See your two volumes:
+```
+docker volume ls
+```
+```
+hallison:~/42-3d-tic-tac-toe/app$ docker volume ls
+DRIVER    VOLUME NAME
+local     test_postgres_volume
+local     version_0_postgres_volume
+```
 
 # About the Docker Set-Up
 
@@ -101,21 +124,3 @@ $ docker run --name some-postgres -e POSTGRES_PASSWORD_FILE=/run/secrets/postgre
 
 For this purpose we have a `/secrets` directory at same level as the docker-compose.yaml, and a password file is created here when you run `setup_docker.sh`
 
-### Our Handling of Volumes
-We're used Docker-managed volumes which live in a `/home/$USER/3d_ttt_data` directory. This directory is created by the setup script. This is exactly how we handled volumes in Inception, and based on trial-and-error, I believe this approach is the one that will cause us the least annoyance.
-
-Why not put the volumes in the repo directory, and just gitignore the contents?
-1. Docker compose requires an absolute path for Docker-managed volumes, which is tricky to make portable
-2. Regardless, and even if we switch to a bind-mount (which does allow a relative path)... git will constantly complain about not being able to access the directory once it's own by postgres, despite inclusion in gitignore.
-
-Why use Docker-managed volumes instead of a bind mount?
-- It's nice to be able to delete the volume with a simple "-v" command, instead of switching to root to manually force remove directory contents.
-
-Why not let Docker choose the location?
-- When we want to do something with the data, it's nice to already know where it lives.
-
-
-
-### The Possibility of Multiple Volumes
-
-It occurs to me that what might be even more useful is the possibility of multiple volumes with different database contents (similar to multiple database dumps), each of which could be named, saved and loaded to test different sets of users. I believe this is something that could be added in the future, if we decide it's worth the time spent & a bit more complexity.

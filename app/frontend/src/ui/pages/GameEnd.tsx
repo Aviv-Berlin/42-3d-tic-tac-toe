@@ -32,7 +32,7 @@ const GameEnd = () => {
           <SecondaryButton onClick={handleBackToHome}>Back to Home</SecondaryButton>
           <SecondaryButton onClick={() => navigate("/replay")}>View Replay</SecondaryButton>
         </div>
-        <h1 className="text-5xl font-serif italic">{message}</h1>
+        <h1 className="text-5xl font-serif italic text-center">{message}</h1>
         <MainButton onClick={() => console.log("play again")}>Play Again</MainButton>
         <div className="flex flex-col gap-2">
           <h2 className="text-2xl font-serif italic">Stats</h2>

@@ -30,7 +30,6 @@ const Login = () => {
       const token = response.data.token;
       const username = response.data.username;
       window.localStorage.setItem('token', token);
-      window.localStorage.setItem('username', username);
       setUsername(username);
       navigate("/home");
     } catch(err) {

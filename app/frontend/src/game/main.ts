@@ -2,12 +2,12 @@ import * as BABYLON from "@babylonjs/core";
 import { Materials } from "./Materials";
 import { Board } from "./Board";
 import { GameUI } from "./GameUI";
-import { GameState } from "./GameState";
+import { GameState } from "../../../shared/game/GameState";
 import { InputManager } from "./InputManager";
 import { GameGraphics } from "./GameGraphics";
 import { CameraManager } from "./CameraManager";
 import { Player } from "./Player"
-import { AiPlayer } from "./AIPlayer"
+import { AiPlayer } from "../../../shared/game/AIPlayer"
 import { LocalPlayer } from "./LocalPlayer"
 import { GameData } from "../types/game";
 
@@ -28,7 +28,7 @@ export function createBabylonGame(canvas: HTMLCanvasElement, gameData: GameData,
   //LocalPlayer is frontend
   const player = new LocalPlayer(gameData.player1.username, game, graphics);
   let player2: Player;
-  if (gameData.player2.type === "ai") 
+  if (gameData.player2.type === "ai")
     player2 = new AiPlayer(gameData.player2.username, game, graphics, gameData.level);
   else if (gameData.player2.type === "guest")
     player2 = new LocalPlayer(gameData.player2.username, game, graphics);

@@ -1,10 +1,10 @@
-import { GameUI } from "./GameUI";
+import { GameUI } from "../../frontend/src/game/GameUI";
 import { checkWin } from "./GameCheckWin";
-import { GameGraphics } from "./GameGraphics";
+import { GameGraphics } from "../../frontend/src/game/GameGraphics";
 import { GridPosition, CellState, PLAYER_STATES} from "./Types";
-import { Player } from "./Player";
-import { LocalPlayer } from "./LocalPlayer";
-import { GameData, Move } from "../types/game";
+import { Player } from "../../frontend/src/game/Player";
+import { LocalPlayer } from "../../frontend/src/game/LocalPlayer";
+import { GameData, Move } from "../../frontend/src/types/game";
 
 
 interface NewPlayer {
@@ -23,7 +23,7 @@ export class GameState {
     private moveCounter: number = 0;
     private graphics: GameGraphics;
     private gameOver: boolean = false;
-    private onExit: () => void; //this is a function that is called when game is 
+    private onExit: () => void; //this is a function that is called when game is
     private exitTimeout: ReturnType<typeof setTimeout> | null = null;
     private gameData: GameData;
 
@@ -143,7 +143,7 @@ export class GameState {
 
         await this.ui.playerTitle(this.getCurrentPlayer().name);
         this.getCurrentPlayer().yourTurn(this.boardState, this.N, this.getCurrentPlayerState());
-    }    
+    }
 
     public getCell(pos: GridPosition): CellState {
         return this.boardState[pos.x][pos.y][pos.z];
@@ -178,10 +178,10 @@ export class GameState {
         if (this.exitTimeout !== null) {
             clearTimeout(this.exitTimeout);
             this.exitTimeout = null;
-        }  
+        }
     }
 
-     
+
 
 
 }

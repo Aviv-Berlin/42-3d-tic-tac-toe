@@ -1,8 +1,8 @@
-import { GameState } from "./GameState"
+import { GameState } from "../../../shared/game/GameState"
 import { Vector3} from "@babylonjs/core/Maths/math.vector";
 import * as BABYLON from "@babylonjs/core";
 import { Scene, Observer,PointerInfo } from "@babylonjs/core";
-import type { GridPosition } from "./Types"
+import type { GridPosition } from "../../../shared/game/Types"
 import { Board } from "./Board"
 import { CameraManager } from "./CameraManager"
 
@@ -58,7 +58,7 @@ export class InputManager {
             if (player.selectPos(pos))
                 player.choosePos();
         }
-        
+
     }
 
 
@@ -77,15 +77,15 @@ export class InputManager {
             case "Enter":
                 this.game.getCurrentPlayer().choosePos();
                 break;
-            
+
             case "1":
                 this.board.toggleCubeSize();
                 break;
-            
+
             case "l":
                 cameraDir = this.camera.getCameraDir(right);
                 break;
-            
+
             case "j":
                 cameraDir = this.camera.getCameraDir(left);
                 break;
@@ -93,23 +93,23 @@ export class InputManager {
             case "i":
                 cameraDir = this.camera.getCameraDir(up);
                 break;
-            
+
             case "m":
                 cameraDir = this.camera.getCameraDir(down);
                 break;
-            
+
             case "u":
                 cameraDir = this.camera.getCameraDir(front);
                 break;
-            
+
             case "h":
                 cameraDir = this.camera.getCameraDir(back);
                 break;
-            
+
             case "d":
                 cameraDir = this.camera.getCameraDir(right);
                 break;
-            
+
             case "a":
                 cameraDir = this.camera.getCameraDir(left);
                 break;
@@ -117,15 +117,15 @@ export class InputManager {
             case "e":
                 cameraDir = this.camera.getCameraDir(up);
                 break;
-            
+
             case "q":
                 cameraDir = this.camera.getCameraDir(down);
                 break;
-            
+
             case "w":
                 cameraDir = this.camera.getCameraDir(front);
                 break;
-            
+
             case "s":
                 cameraDir = this.camera.getCameraDir(back);
                 break;

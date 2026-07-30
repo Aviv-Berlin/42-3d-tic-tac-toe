@@ -2,12 +2,12 @@ import * as BABYLON from "@babylonjs/core";
 import type { Scene } from "@babylonjs/core/scene";
 import { StandardMaterial } from "@babylonjs/core/Materials/standardMaterial";
 import { Color3, Color4 } from "@babylonjs/core/Maths/math.color";
-import { CellState } from "./Types";
-import { playerStateToIndex } from "./Utils";
+import { CellState } from "../../../shared/game/Types";
+import { playerStateToIndex } from "../../../shared/game/Utils";
 
 
 export class Materials {
-    
+
     public readonly cube: StandardMaterial;
     public readonly playerMaterials: StandardMaterial[];
     public readonly previewMaterials: StandardMaterial[];
@@ -51,7 +51,7 @@ export class Materials {
         mesh.edgesWidth = 2.0;
         mesh.edgesColor = this.cubeEdgeColor;
     }
-    
+
     public applyLook(look: number): boolean {
         switch (look) {
             case 1:
@@ -97,7 +97,7 @@ export class Materials {
                 this.cube.disableDepthWrite = true;
                 this.textColor = this.defaultTextColor.clone();
                 return false;
-            
+
             case 6:
                 // Same values used when Materials is constructed.
                 this.scene.clearColor = this.sceneBackground.clone();
@@ -211,7 +211,7 @@ export class Materials {
             if (texture instanceof BABYLON.DynamicTexture && label !== undefined)
                 this.drawTextCubeTexture(texture, label);
         }
-        if (renderEdges) 
+        if (renderEdges)
             this.applyCubeEdges(mesh);
         else
             mesh.disableEdgesRendering();

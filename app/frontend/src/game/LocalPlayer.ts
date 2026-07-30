@@ -1,5 +1,5 @@
 import { Player } from "./Player";
-import { CellState, GridPosition } from "./Types"
+import { CellState, GridPosition } from "../../../shared/game/Types"
 
 export class LocalPlayer extends Player {
     private myTurn: boolean = false;

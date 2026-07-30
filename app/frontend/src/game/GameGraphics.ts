@@ -2,7 +2,7 @@ import * as BABYLON from "@babylonjs/core";
 import { Board } from "./Board";
 import { Materials } from "./Materials";
 import { StandardMaterial } from "@babylonjs/core/Materials/standardMaterial";
-import { CellState, type GridPosition } from "./Types";
+import { CellState, type GridPosition } from "../../../shared/game/Types";
 import { CameraManager } from "./CameraManager";
 
 

@@ -1,7 +1,7 @@
 import * as BABYLON from "@babylonjs/core";
 import type { AbstractMesh, Scene, StandardMaterial, Mesh, Material } from "@babylonjs/core";
 import { Materials } from "./Materials";
-import { GridPosition } from "./Types";
+import { GridPosition } from "../../../shared/game/Types";
 
 export class Board {
     scene: Scene;
@@ -57,7 +57,7 @@ export class Board {
     public createBoard(looks: number): void {
 
         this.boardMeshes.forEach(mesh => mesh.dispose());
-        this.boardMeshes = [];        
+        this.boardMeshes = [];
         for (let x = 0; x < this.N; x++) {
             for (let y = 0; y < this.N; y++) {
                 for (let z = 0; z < this.N; z++) {

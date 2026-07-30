@@ -2,7 +2,7 @@ import { Vector3} from "@babylonjs/core/Maths/math.vector";
 import { ArcRotateCamera, Axis } from "@babylonjs/core"
 import { Scene } from "@babylonjs/core"
 import { Animation } from "@babylonjs/core/Animations/animation";
-import { GridPosition } from "./Types";
+import { GridPosition } from "../../../shared/game/Types";
 
 
 export class CameraManager {
@@ -22,7 +22,7 @@ export class CameraManager {
     }
 
     public resetCamera(): void {
-    
+
     this.camera.detachControl();
     Animation.CreateAndStartAnimation("alphaAnim", this.camera, "alpha", 60, 30,
         this.camera.alpha, this.initialAlpha, Animation.ANIMATIONLOOPMODE_CONSTANT);
@@ -40,7 +40,7 @@ export class CameraManager {
         this.camera.attachControl(this.canvas, true);
     }, 500);
     }
-    
+
     public getCamera(): ArcRotateCamera {
         return this.camera;
     }

@@ -1,6 +1,6 @@
-import { GameState } from "./GameState";
+import { GameState } from "../../../shared/game/GameState";
 import { GameGraphics} from "./GameGraphics"
-import { CellState, GridPosition } from "./Types"
+import { CellState, GridPosition } from "../../../shared/game/Types"
 
 export abstract class Player {
     public name;
@@ -12,7 +12,7 @@ export abstract class Player {
         this.game = game;
         this.graphics = graphics;
     }
-    
+
     abstract yourTurn(BoardState: CellState[][][], N: number, youAre: CellState): boolean;
     abstract moveCursor(direction: boolean, plane:  "x" | "y" | "z"): void;
     abstract choosePos(): void;

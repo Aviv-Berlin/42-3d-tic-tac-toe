@@ -17,7 +17,7 @@ import GameEnd from './pages/GameEnd'
 const App = () => {
   return (
       <Routes>
-        <Route path="/" element={<Navigate to="/login" />} />
+        <Route path="/" element={<Navigate to="/home" />} />
         <Route path="/register" element={<Register />} />
         <Route path="/register-success" element={<RegisterSuccess />} />
         <Route path="/login" element={<Login />} />

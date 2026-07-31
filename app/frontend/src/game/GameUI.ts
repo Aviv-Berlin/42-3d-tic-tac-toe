@@ -41,7 +41,7 @@ export class GameUI {
     private onExit: () => void;
     private materials: Materials;
     private winnerMessageRow: BABYLON.TransformNode | null = null;
-    private looks: number = 6;
+    private looks: number = 7;
     private renderEdges: boolean = false;
     private board: Board;
     private readonly textCubeFactory: TextCubeFactory;
@@ -58,13 +58,9 @@ export class GameUI {
         this.createExitCubeRow();
         this.createLookCubeRow();
         this.displayInstructions();
-        //this.createLogo();
     }
 
-    public createLogo(): void {
-        const cube = this.textCubeFactory.createTextCube("T", { name: 'logoCube',  size: 3 });
-        cube.position = new BABYLON.Vector3(0,0,0);
-    }
+
     
     private createTextCubeRow(labels: readonly string[], options: TextCubeRowOptions): BABYLON.TransformNode {
         const cubeSize = options.cubeSize ?? 2;
@@ -137,7 +133,7 @@ export class GameUI {
     }
 
     private toggleLook(): void {
-        this.looks = (this.looks % 6) + 1;
+        this.looks = (this.looks % 7) + 1;
 
         this.renderEdges = this.materials.applyLook(this.looks);
         this.board.createBoard(this.looks);

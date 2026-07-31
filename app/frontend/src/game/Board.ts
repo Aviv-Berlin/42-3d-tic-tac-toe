@@ -48,6 +48,12 @@ export class Board {
                 return cylinders;
             }
 
+            case 6: {
+                const plane = BABYLON.MeshBuilder.CreatePlane("smallPlane", {width: this.smallSize, height: this.smallSize, sideOrientation: BABYLON.Mesh.DOUBLESIDE}, this.scene);
+                plane.rotation.x = BABYLON.Tools.ToRadians(90);
+                return plane;
+            }
+
             default:
                 return BABYLON.MeshBuilder.CreateBox("smallCube", { size: this.smallSize },  this.scene);
         }

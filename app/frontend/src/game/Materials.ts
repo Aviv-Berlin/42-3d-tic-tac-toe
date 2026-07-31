@@ -99,6 +99,15 @@ export class Materials {
                 return false;
             
             case 6:
+                this.scene.clearColor = this.sceneBackground.clone();
+                this.cube.diffuseColor = this.cubeColor.clone();
+                this.cube.alpha = 0.4;
+                this.cube.needDepthPrePass = false;
+                this.cube.disableDepthWrite = true;
+                this.textColor = this.defaultTextColor.clone();
+                return false;
+            
+            case 7:
                 // Same values used when Materials is constructed.
                 this.scene.clearColor = this.sceneBackground.clone();
                 this.cube.diffuseColor = this.cubeColor.clone();

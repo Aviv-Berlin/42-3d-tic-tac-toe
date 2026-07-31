@@ -26,8 +26,6 @@ export class Board {
         this.step = this.smallSize + this.gap;
         this.offset = (this.N - 1) / 2;
         this.sphereMeshes = Array.from({ length: N }, () => Array.from({ length: N }, () => Array<AbstractMesh | null>(N).fill(null))); //intialize sphereMeshes to null
-        this.createBoard(this.N, 1);
-
     }
 
     private createBoardMesh(looks: number): BABYLON.Mesh {
@@ -55,16 +53,14 @@ export class Board {
         }
     }
 
-    public createBoard(N: number, looks: number): void {
-        if (N === -1)
-            N = this.N;
+    public createBoard(looks: number): void {
         const scale = this.cubesShrink ? 0.25 : 1;
         this.boardMeshes.forEach(mesh => mesh.dispose());
         this.boardMeshes = [];        
 
-        for (let x = 0; x < N; x++) {
-            for (let y = 0; y < N; y++) {
-                for (let z = 0; z < N; z++) {
+        for (let x = 0; x < this.N; x++) {
+            for (let y = 0; y < this.N; y++) {
+                for (let z = 0; z < this.N; z++) {
                     const finalMesh = this.createBoardMesh(looks);
                     finalMesh.scaling.set(scale, scale, scale);
                     finalMesh.position = this.getPosition(x, y, z);

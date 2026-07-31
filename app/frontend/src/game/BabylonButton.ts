@@ -27,15 +27,15 @@ export function babylonButton(canvas: HTMLCanvasElement, type: BabylonButtonType
   switch (type) {
     
     case "three":
-      board.createBoard(3, 1);
+      board.createBoard(1);
       break;
 
     case "four":
-      board.createBoard(4, 1);
+      board.createBoard(1);
       break;
 
     case "five":
-      board.createBoard(5, 1);
+      board.createBoard(1);
       break;
 
     case "easy":
@@ -43,11 +43,11 @@ export function babylonButton(canvas: HTMLCanvasElement, type: BabylonButtonType
       break;
 
     case "medium":
-      board.createBoard(2, 1);
+      board.createStack(2, 1);
       break;
 
     case "hard":
-      board.createBoard(3, 1);
+      board.createStack(3, 1);
       break;
 
   }

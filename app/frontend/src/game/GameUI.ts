@@ -140,7 +140,7 @@ export class GameUI {
         this.looks = (this.looks % 6) + 1;
 
         this.renderEdges = this.materials.applyLook(this.looks);
-        this.board.createBoard(this.looks);
+        this.board.createBoard(-1, this.looks);
         this.board.toggleCubeEdges(this.renderEdges);
         this.applyLookToTextRows();
     }

@@ -26,7 +26,7 @@ export class Board {
         this.step = this.smallSize + this.gap;
         this.offset = (this.N - 1) / 2;
         this.sphereMeshes = Array.from({ length: N }, () => Array.from({ length: N }, () => Array<AbstractMesh | null>(N).fill(null))); //intialize sphereMeshes to null
-        this.createBoard(1);
+        this.createBoard(this.N, 1);
 
     }
 
@@ -55,14 +55,16 @@ export class Board {
         }
     }
 
-    public createBoard(looks: number): void {
+    public createBoard(N: number, looks: number): void {
+        if (N === -1)
+            N = this.N;
         const scale = this.cubesShrink ? 0.25 : 1;
         this.boardMeshes.forEach(mesh => mesh.dispose());
         this.boardMeshes = [];        
 
-        for (let x = 0; x < this.N; x++) {
-            for (let y = 0; y < this.N; y++) {
-                for (let z = 0; z < this.N; z++) {
+        for (let x = 0; x < N; x++) {
+            for (let y = 0; y < N; y++) {
+                for (let z = 0; z < N; z++) {
                     const finalMesh = this.createBoardMesh(looks);
                     finalMesh.scaling.set(scale, scale, scale);
                     finalMesh.position = this.getPosition(x, y, z);
@@ -71,6 +73,19 @@ export class Board {
                     this.boardMeshes.push(finalMesh);
                 }
             }
+        }
+    }
+
+    public createStack(N: number, looks: number): void {
+        this.boardMeshes.forEach(mesh => mesh.dispose());
+        this.boardMeshes = [];
+
+        for (let y = 0; y < N; y++) {
+            const finalMesh = this.createBoardMesh(looks);
+            finalMesh.position = this.getPosition(1, y, 1);
+            finalMesh.material = this.materials.cube;
+            finalMesh.metadata = { gridPosition: { x: 1, y, z: 1}};
+            this.boardMeshes.push(finalMesh);
         }
     }
 

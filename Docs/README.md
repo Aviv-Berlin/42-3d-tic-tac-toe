@@ -20,9 +20,6 @@ After installing PostgreSQL, set up the database:
 sudo -u postgres createuser ttt_user --pwprompt
 ```
 
-> [!NOTE]
-> Enter the same password that will be used in DB_PASSWORD.
-
 ### Create Database Owned by Database User
 
 ```bash
@@ -69,7 +66,6 @@ DB_HOST=localhost
 DB_PORT=5432
 DB_NAME=ttt_db
 DB_USER=ttt_user
-DB_PASSWORD=
 ```
 
 ## Install dependencies and run application

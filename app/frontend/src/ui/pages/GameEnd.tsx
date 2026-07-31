@@ -23,7 +23,7 @@ const GameEnd = () => {
 
   const message = getGameEndMessage(gameData, username);
   const numMoves = gameData.moves.length;
-  const gameLength = (gameData.gameEnd - gameData.gameStart) / 1000;
+  const gameLength = Math.floor((gameData.gameEnd - gameData.gameStart) / 1000);
 
   const handleBackToHome = () => {
     window.localStorage.removeItem('gameData');

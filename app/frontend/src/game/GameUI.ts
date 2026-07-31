@@ -41,7 +41,6 @@ export class GameUI {
     private onExit: () => void;
     private materials: Materials;
     private winnerMessageRow: BABYLON.TransformNode | null = null;
-    private rowAnimations = new Map<BABYLON.TransformNode, BABYLON.AnimationGroup>();
     private looks: number = 6;
     private renderEdges: boolean = false;
     private board: Board;
@@ -312,12 +311,7 @@ export class GameUI {
     private disposeTextCubeRow(row: BABYLON.TransformNode | null) : void {
         if (!row)
             return;
-        const animation = this.rowAnimations.get(row);
-        if (animation) {
-            animation.stop();
-            animation.dispose();
-            this.rowAnimations.delete(row);
-        }
+
         const cubes = row.getChildMeshes();
         for (const cube of cubes) {
             cube.actionManager?.dispose();
@@ -334,12 +328,14 @@ export class GameUI {
         row.dispose();
     }
 
-    public displayWinner(winner: string): void {
+    public async displayWinner(winner: string): Promise<void> {
         const camera = this.scene.activeCamera;
         if (!camera)
             throw new Error("No active camera found");
-        this.animateCubeRow(this.playerNameRow, { position: new BABYLON.Vector3(0, 3, 30), scale: 2, anchor: "center"}, false, 30, 3);
-        setTimeout(() => {
+        await this.playerTitle(winner);
+        await this.animateCubeRow(this.playerNameRow, { position: new BABYLON.Vector3(0, 3, 30), scale: 2, anchor: "center"}, false, 30, 3);
+        await new Promise<void>((resolve) => { setTimeout(resolve, 500); });
+
         this.winnerMessageRow = this.createTextCubeRow(
             Array.from("wins!"),
             {
@@ -349,11 +345,38 @@ export class GameUI {
                 anchor: "center",
                 alwaysOnTop :true
             });
-        this.animateCubeRow(this.winnerMessageRow, { position: new BABYLON.Vector3(-30, -14, 30), scale: 0.5, anchor: "left"}, true, 30, 3);
-        }, 500);
+        await this.animateCubeRow(this.winnerMessageRow, { position: new BABYLON.Vector3(-30, -14, 30), scale: 0.5, anchor: "left"}, true, 30, 3);
 
     }
 
+    public async displayDraw(): Promise<void> {
+        const camera = this.scene.activeCamera;
+        if (!camera)
+            throw new Error("No active camera found");
+        const previousRow = this.playerNameRow;
+        if (previousRow) {
+            await this.animateCubeRow( previousRow,
+                { position: new BABYLON.Vector3(-30, -20, 40), scale: 1,  anchor: "left" }, false, 30, 3 );
+            this.disposeTextCubeRow(previousRow);
+            if (this.playerNameRow === previousRow)
+                this.playerNameRow = null;
+        }
+
+        this.winnerMessageRow = this.createTextCubeRow(Array.from("DRAW"),
+            {
+                name: "drawMessage",
+                parent: camera,
+                position: new BABYLON.Vector3(0, 0, 30),
+                cubeSize: 4,
+                gap: 0.375,
+                anchor: "center",
+                alwaysOnTop: true
+            }
+        );
+
+        await this.animateCubeRow(this.winnerMessageRow,
+            { position: new BABYLON.Vector3(0, 18, 30), scale: 1, anchor: "center" }, true, 30, 3);
+    }
 
     public dispose(): void {
         this.disposeTextCubeRow(this.playerNameRow);

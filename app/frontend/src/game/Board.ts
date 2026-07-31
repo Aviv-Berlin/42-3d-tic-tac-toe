@@ -39,6 +39,7 @@ export class Board {
                 const cylinder1 = BABYLON.MeshBuilder.CreateCylinder("smallCylinderY", { height: this.smallSize * 1.05, diameter: this.smallSize / 5}, this.scene);
                 const cylinder2 = BABYLON.MeshBuilder.CreateCylinder("smallCylinderX", { height: this.smallSize * 1.05, diameter: this.smallSize / 5}, this.scene);
                 const cylinder3 = BABYLON.MeshBuilder.CreateCylinder("smallCylinderZ", { height: this.smallSize * 1.05, diameter: this.smallSize / 5}, this.scene);
+
                 cylinder2.rotation.x = BABYLON.Tools.ToRadians(90);
                 cylinder3.rotation.z = BABYLON.Tools.ToRadians(90);
                 const cylinders = BABYLON.Mesh.MergeMeshes([cylinder1, cylinder2, cylinder3], true);

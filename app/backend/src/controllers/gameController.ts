@@ -84,7 +84,7 @@ export async function createMatch(request: Request, response: Response) {
 	matches.set(body.host, newMatch);
 
 	// Broadcast the new match to all clients in the lobby
-	broadcast('new-match', newMatch);
+	broadcast('lobby-update', {type: "created", match: newMatch});
 
 	return response.status(201).json({
 		message: 'match created',
@@ -94,6 +94,24 @@ export async function createMatch(request: Request, response: Response) {
 
 // export async function joinMatch(request: Request, response: Response) {
 // 	const body = request.body;
+// 	...
+// 	// Broadcast the updated match to all clients in the lobby
+// 	if (match.players.length === match.requiredPlayers) {
+// 		newMatch.status = "ready";
+// 		broadcast('lobby-update', {
+// 			type: "removed", 
+// 			match: match
+// 		});
+// 	else {
+// 		broadcast('lobby-update', {
+// 			type: "updated",
+// 			match: match
+// 		});
+// 	}
+// 	return response.status(200).json({
+// 		message: 'joined match',
+// 		match: match
+// 	});
 // }
 
 export default {
@@ -101,3 +119,31 @@ export default {
 	createMatch,
 	// joinMatch
 };
+
+// needs to be added in frontend
+// const eventSource = new EventSource(
+//   "http://localhost:3001/v1/game/online/lobby" / "http://localhost:3001/v1/lobby"
+// );
+
+// eventSource.addEventListener("lobby-update", (event) => {
+//	const update = JSON.parse(event.data);
+//
+//	switch (update.type) {
+//		case "created":
+//			addMatch(update.match);
+//			console.log("new match:", match);
+//			break;
+//		case "updated":
+//			updateMatch(update.match);
+//			console.log("update match:", match);
+//			break;
+//		case "removed":
+//			removeMatch(update.match);
+//			console.log("removed match:", match);
+//			break;
+//	}
+//eventSource.onerror = (error) => {
+//   console.error("SSE error:", error);
+// };
+
+// check the how to transform from http to websocket connection!!!!

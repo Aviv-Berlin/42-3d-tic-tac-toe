@@ -8,8 +8,7 @@ import { replayGame } from "../../game/Replay";
 const Replay = () => {
   const navigate = useNavigate();
 
-  const gameDataContext = useGameData();
-  const gameData = gameDataContext?.gameData;
+  const gameData = useGameData();
 
   const canvasRef = useRef<HTMLCanvasElement | null>(null);
 

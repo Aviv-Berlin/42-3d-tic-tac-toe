@@ -2,7 +2,7 @@ import { useEffect, useRef } from "react";
 import { useNavigate } from "react-router-dom";
 import { createBabylonGame } from "../../game/main";
 import { GameData } from "../../types/game";
-import { useGameData } from "../context/GameDataContext";
+import { useSetGameData } from "../../store/gameData"
 
 interface CanvasProps {
   gameData: GameData | undefined;
@@ -13,14 +13,13 @@ const Canvas = ({gameData}: CanvasProps) => {
 
   const navigate = useNavigate();
 
-  const gameDataContext = useGameData();
+  const setGameData = useSetGameData();
 
   useEffect(() => {
     if (!canvasRef.current || !gameData) return;
 
     return createBabylonGame(canvasRef.current, gameData, () => {
-      window.localStorage.setItem("gameData", JSON.stringify(gameData))
-      gameDataContext?.setGameData(gameData);
+      setGameData(gameData);
       navigate('/game-end');
     });
   }, []);

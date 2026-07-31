@@ -3,14 +3,10 @@ import { checkWin } from "./GameCheckWin";
 import { GameGraphics } from "./GameGraphics";
 import { GridPosition, CellState, PLAYER_STATES} from "./Types";
 import { Player } from "./Player";
-import { LocalPlayer } from "./LocalPlayer";
-import { GameData, Move } from "../types/game";
+import { GameData } from "../types/game";
 
 
-interface NewPlayer {
-    name: string;
-    yourTurn(BoardState: CellState[][][], N: number): boolean;
-}
+
 
 
 export class GameState {
@@ -55,29 +51,11 @@ export class GameState {
         if (this.gameData.moves === null)
             this.gameData.moves = [];
         this.currentPlayerIndex = Math.floor(Math.random() * this.nPlayers);
+        console.log("Starting player:", this.currentPlayerIndex, this.getCurrentPlayer().name);
         await this.ui.playerTitle(this.getCurrentPlayer().name);
         this.getCurrentPlayer().yourTurn(this.boardState, this.N, this.getCurrentPlayerState());
     }
 
-    public async startReply(): Promise<void> {
-        for (let i = 0; i < this.gameData.moves.length; i++) {
-            if (i % 2 === 0) {
-                await this.ui.playerTitle(this.gameData.player1.username);
-            } else {
-                await this.ui.playerTitle(this.gameData.player2.username);
-            }
-            this.boardState[this.gameData.moves[i].pos.x][this.gameData.moves[i].pos.y][this.gameData.moves[i].pos.z] = this.gameData.moves[i].player;
-            setTimeout(() => { this.graphics.placeSphere(this.gameData.moves[i].pos, this.gameData.moves[i].player);}, 500);
-        }
-        const winningPositions = checkWin(this.boardState, this.gameData.moves[this.gameData.moves.length -1].pos, this.gameData.moves[this.gameData.moves.length -1].player, this.N);
-        if (winningPositions)
-            this.graphics.animateWin(winningPositions);
-        if (this.gameData.moves[this.gameData.moves.length -1].player === CellState.Player1)
-            this.ui.displayWinner(this.gameData.player1.username);
-        else
-            this.ui.displayWinner(this.gameData.player2.username);
-         this.exitTimeout = setTimeout(() => { this.onExit();}, 3000);
-    }
 
     public placeMove(pos: GridPosition): boolean {
         if (this.gameOver)
@@ -157,6 +135,7 @@ export class GameState {
         this.graphics.animateWin(winningPositions);
         this.ui.displayWinner(winner.name);
         this.gameData.isFinished = true;
+        this.gameData.gameEnd = Date.now();
         if (winner.name === this.gameData.player1.username)
             this.gameData.winner = this.gameData.player1;
         else
@@ -167,7 +146,7 @@ export class GameState {
     private endGameDraw() {
         this.gameOver = true;
         this.graphics.hidePreview();
-        this.ui.displayWinner("No One");
+        this.ui.displayDraw();
         this.gameData.isFinished = true;
         this.gameData.isDraw = true;
         this.gameData.gameEnd = Date.now();

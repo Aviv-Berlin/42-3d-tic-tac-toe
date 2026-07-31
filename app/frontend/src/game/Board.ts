@@ -26,8 +26,6 @@ export class Board {
         this.step = this.smallSize + this.gap;
         this.offset = (this.N - 1) / 2;
         this.sphereMeshes = Array.from({ length: N }, () => Array.from({ length: N }, () => Array<AbstractMesh | null>(N).fill(null))); //intialize sphereMeshes to null
-        this.createBoard(1);
-
     }
 
     private createBoardMesh(looks: number): BABYLON.Mesh {
@@ -39,6 +37,7 @@ export class Board {
                 const cylinder1 = BABYLON.MeshBuilder.CreateCylinder("smallCylinderY", { height: this.smallSize * 1.05, diameter: this.smallSize / 5}, this.scene);
                 const cylinder2 = BABYLON.MeshBuilder.CreateCylinder("smallCylinderX", { height: this.smallSize * 1.05, diameter: this.smallSize / 5}, this.scene);
                 const cylinder3 = BABYLON.MeshBuilder.CreateCylinder("smallCylinderZ", { height: this.smallSize * 1.05, diameter: this.smallSize / 5}, this.scene);
+
                 cylinder2.rotation.x = BABYLON.Tools.ToRadians(90);
                 cylinder3.rotation.z = BABYLON.Tools.ToRadians(90);
                 const cylinders = BABYLON.Mesh.MergeMeshes([cylinder1, cylinder2, cylinder3], true);
@@ -55,19 +54,34 @@ export class Board {
     }
 
     public createBoard(looks: number): void {
-
+        const scale = this.cubesShrink ? 0.25 : 1;
         this.boardMeshes.forEach(mesh => mesh.dispose());
         this.boardMeshes = [];        
+
         for (let x = 0; x < this.N; x++) {
             for (let y = 0; y < this.N; y++) {
                 for (let z = 0; z < this.N; z++) {
                     const finalMesh = this.createBoardMesh(looks);
+                    finalMesh.scaling.set(scale, scale, scale);
                     finalMesh.position = this.getPosition(x, y, z);
                     finalMesh.material = this.materials.cube;
                     finalMesh.metadata = { gridPosition: { x, y, z}};
                     this.boardMeshes.push(finalMesh);
                 }
             }
+        }
+    }
+
+    public createStack(N: number, looks: number): void {
+        this.boardMeshes.forEach(mesh => mesh.dispose());
+        this.boardMeshes = [];
+
+        for (let y = 0; y < N; y++) {
+            const finalMesh = this.createBoardMesh(looks);
+            finalMesh.position = this.getPosition(1, y, 1);
+            finalMesh.material = this.materials.cube;
+            finalMesh.metadata = { gridPosition: { x: 1, y, z: 1}};
+            this.boardMeshes.push(finalMesh);
         }
     }
 

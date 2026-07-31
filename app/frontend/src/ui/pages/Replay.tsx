@@ -1,8 +1,9 @@
 import { useRef, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import GameLayout from "../layouts/GameLayout";
-import { replyGame } from "../../game/Reply";
-import { useGameData } from "../../store/gameData";
+import { useGameData } from "../context/GameDataContext";
+import { replayGame } from "../../game/Replay";
+
 
 const Replay = () => {
   const navigate = useNavigate();
@@ -15,7 +16,7 @@ const Replay = () => {
 
     if (!canvasRef.current || !gameData) return;
 
-    return replyGame(canvasRef.current, gameData, () => {
+    return replayGame(canvasRef.current, gameData, () => {
       navigate('/game-end');
     });
   }, []);

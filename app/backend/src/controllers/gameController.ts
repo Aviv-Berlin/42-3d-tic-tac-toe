@@ -1,6 +1,6 @@
-import userQueries from "../database/userQueries.ts";
+//import userQueries from "../database/userQueries.ts";
 import { type Request, type Response } from 'express';
-import jwt from 'jsonwebtoken';
+//import jwt from 'jsonwebtoken';
 
 // Store connected clients
 const clients = new Set<Response>();
@@ -92,9 +92,12 @@ export async function createMatch(request: Request, response: Response) {
 	});
 }
 
-export async function joinMatch(request: Request, response: Response) {
-	const body = request.body;
+// export async function joinMatch(request: Request, response: Response) {
+// 	const body = request.body;
+// }
 
 export default {
-	lobby
+	lobby,
+	createMatch,
+	// joinMatch
 };

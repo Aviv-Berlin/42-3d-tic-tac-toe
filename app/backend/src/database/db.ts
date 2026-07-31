@@ -1,4 +1,16 @@
 import { Pool } from "pg";
+import { readFile } from 'node:fs/promises';
+import path from 'node:path';
+
+const filePath = path.join(import.meta.dirname, '../../../secrets/postgres-passwd')
+
+// source https://www.xjavascript.com/blog/typescript-read-file/
+// what is an async function https://www.theodinproject.com/lessons/node-path-javascript-async-and-await
+// why would we want this to be asyncronous, as recommended by first source
+
+async function readPostGresPassword(): Promise<void> {
+
+}
 
 console.log({
 	DB_USER: process.env.DB_USER,

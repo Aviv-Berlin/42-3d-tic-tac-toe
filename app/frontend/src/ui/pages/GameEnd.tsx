@@ -38,7 +38,7 @@ const GameEnd = () => {
         <div className="flex flex-col gap-2">
           <h2 className="text-2xl font-serif italic">Stats</h2>
           <p>Number of moves: {numMoves}</p>
-          <p>Game duration: {gameLength}</p>
+          <p>Game duration: {gameLength} seconds</p>
         </div>
       </div>
     </CenteredLayout>

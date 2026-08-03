@@ -7,6 +7,7 @@ import { Player } from "../../../frontend/src/game/Player.ts";
 import { GameData, Move } from "../../../shared/game.js";
 import { WebSocket } from "ws";
 import { log } from "node:console";
+import { WsMessage, JoinGameMessage, MoveMessage, GameStartMessage, createGameStartMessage } from "../../../shared/messages.ts"
 
 
 interface NewPlayer {
@@ -51,8 +52,10 @@ export class GameState {
     }
 
     public async startGame(): Promise<void> {
-        if (this.players.length < this.nPlayers)
-            throw new Error("Not enough players");
+        if (this.players.length < this.nPlayers) {
+            let msg = createGameStartMessage(this.gameData.gameID);
+            this.players.forEach(ws => ws.send(JSON.stringify(msg)))
+        }
         this.gameData.gameStart = Date.now();
         if (this.gameData.moves === null)
             this.gameData.moves = [];

@@ -11,11 +11,7 @@ import { AiPlayer } from "../../../backend/src/game/AIPlayer"
 import { LocalPlayer } from "./LocalPlayer"
 import { GameData } from "../../../shared/game";
 import { WsMessage } from "../../../shared/messages"
-
-interface ServerMessage {
-  message: string;
-  timestamp: number;
-}
+import { handleMessage } from "./socketHandlersFE";
 
 export function createBabylonGame(canvas: HTMLCanvasElement, gameData: GameData, onExit: () => void) {
 
@@ -25,8 +21,9 @@ export function createBabylonGame(canvas: HTMLCanvasElement, gameData: GameData,
     ws.send(`Hi from the client.`);
   };
   ws.onmessage = (event) => {
-    const data: ServerMessage = JSON.parse(event.data);
+    const data: WsMessage = JSON.parse(event.data);
     console.log(`Received message from server: ${data}`);
+    handleMessage(data, )
   };
 
   ws.onclose = () => {

@@ -6,7 +6,7 @@ import http from "http";
 import { WebSocketServer } from "ws";
 import { GameState } from "./game/GameState.ts";
 import { WsMessage } from "../../shared/messages.ts"
-import { handleMessage } from "./game/socketHandlers.ts";
+import { handleMessage } from "./game/socketHandlersBE.ts";
 
 const app = express();
 

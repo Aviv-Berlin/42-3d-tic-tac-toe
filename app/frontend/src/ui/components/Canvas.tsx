@@ -1,7 +1,7 @@
 import { useEffect, useRef } from "react";
 import { useNavigate } from "react-router-dom";
 import { createBabylonGame } from "../../game/main";
-import { GameData } from "../../types/game";
+import { GameData } from "../../../../shared/game";
 import { useGameData } from "../context/GameDataContext";
 
 interface CanvasProps {

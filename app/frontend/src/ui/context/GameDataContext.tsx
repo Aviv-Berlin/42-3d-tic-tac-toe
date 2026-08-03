@@ -1,6 +1,6 @@
 import { createContext, useContext, useState } from 'react'
 import { PropsWithChildren } from 'react'
-import { GameData } from '../../types/game'
+import { GameData } from '../../../../shared/game'
 
 interface GameDataContextType {
   gameData: GameData | null;

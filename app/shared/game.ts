@@ -1,4 +1,4 @@
-import { GridPosition, CellState } from "../game/Types";
+import { GridPosition, CellState } from "./game/Types";
 
 export type PlayerType = "real" | "ai" | "guest";
 export type GameMode = "online" | "ai" | "local";
@@ -30,4 +30,5 @@ export interface GameData {
   isDraw: boolean;
   gameStart: number;
   gameEnd: number;
+  gameID: string;
 }

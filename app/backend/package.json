@@ -6,9 +6,9 @@
   "author": "",
   "type": "module",
   "scripts": {
-    "dev": "concurrently \"tsc --watch\" \"node --watch src/server.ts\"",
+    "dev": "tsx watch src/server.ts",
     "multiply": "tsc && node multiplier.ts",
-    "start": "node src/server.ts",
+    "start": "tsx src/server.ts",
     "test": "\\\"echo \\\\\\\"Error: no test specified\\\\\\\" && exit 1\\\"",
     "tsc": "tsc"
   },
@@ -21,6 +21,7 @@
     "@types/pg": "^8.15.0",
     "@types/ws": "^8.18.1",
     "concurrently": "^9.2.4",
+    "tsx": "^4.23.5",
     "typescript": "^7.0.2"
   },
   "dependencies": {

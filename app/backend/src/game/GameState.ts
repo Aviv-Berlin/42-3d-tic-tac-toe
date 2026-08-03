@@ -1,10 +1,12 @@
 // import { GameUI } from "../../frontend/src/game/GameUI";
-import { checkWin } from "./GameCheckWin";
+import { checkWin } from "./GameCheckWin.ts";
 // import { GameGraphics } from "../../frontend/src/game/GameGraphics";
-import { GridPosition, CellState, PLAYER_STATES} from "./Types";
-import { Player } from "../../frontend/src/game/Player";
+import { GridPosition, CellState, PLAYER_STATES} from "../../../shared/game/Types.ts";
+import { Player } from "../../../frontend/src/game/Player.ts";
 // import { LocalPlayer } from "../../frontend/src/game/LocalPlayer";
-import { GameData, Move } from "../../frontend/src/types/game";
+import { GameData, Move } from "../../../shared/game.js";
+import { WebSocket } from "ws";
+import { log } from "node:console";
 
 
 interface NewPlayer {
@@ -17,17 +19,17 @@ export class GameState {
     private boardState: CellState [][][] = [];
     private N: number;
     // private ui: GameUI;
-    private players: Player[] = [];
+    private players: WebSocket[] = [];
     private currentPlayerIndex: number = 0;
     private nPlayers: number;
     private moveCounter: number = 0;
     // private graphics: GameGraphics;
     private gameOver: boolean = false;
-    private onExit: () => void; //this is a function that is called when game is
+    // private onExit: () => void; //this is a function that is called when game is
     private exitTimeout: ReturnType<typeof setTimeout> | null = null;
     private gameData: GameData;
 
-    constructor(gameData: GameData, /*ui: GameUI, graphics: GameGraphics,*/ onExit: () => void, nPlayers: number) {
+    constructor(gameData: GameData, /*ui: GameUI, graphics: GameGraphics, onExit: () => void,*/ nPlayers: number) {
         if (nPlayers < 2 || nPlayers > 4)
             throw new Error("The game supports between 2 and 4 players");
         this.gameData = gameData;
@@ -37,7 +39,7 @@ export class GameState {
         this.N = gameData.size;
         // this.ui = ui;
         // this.graphics = graphics;
-        this.onExit = onExit;
+        // this.onExit = onExit;
         this.nPlayers = nPlayers;
         this.initBoard();
     }
@@ -45,7 +47,7 @@ export class GameState {
     public register(player: Player): void {
         if (this.players.length >= this.nPlayers)
             throw new Error("Too many players were registered");
-        this.players.push(player);
+        // this.players.push(player);
     }
 
     public async startGame(): Promise<void> {
@@ -56,7 +58,7 @@ export class GameState {
             this.gameData.moves = [];
         this.currentPlayerIndex = Math.floor(Math.random() * this.nPlayers);
         // await this.ui.playerTitle(this.getCurrentPlayer().name);
-        this.getCurrentPlayer().yourTurn(this.boardState, this.N, this.getCurrentPlayerState());
+        // this.getCurrentPlayer().yourTurn(this.boardState, this.N, this.getCurrentPlayerState());
     }
 
     public async startReply(): Promise<void> {
@@ -79,7 +81,7 @@ export class GameState {
         else
             console.log(`Player2 wins`);
             // this.ui.displayWinner(this.gameData.player2.username);
-         this.exitTimeout = setTimeout(() => { this.onExit();}, 3000);
+         this.exitTimeout = setTimeout(() => { ;}, 3000);
     }
 
     public placeMove(pos: GridPosition): boolean {
@@ -96,7 +98,9 @@ export class GameState {
 
         const winningPositions = checkWin(this.boardState, pos, playerState, this.N);
         if (winningPositions) {
-            this.finishGame(this.getCurrentPlayer(), winningPositions);
+            // this.finishGame(this.getCurrentPlayer(), winningPositions);
+            console.log(`game won!`);
+
             return true;
         }
         if (this.moveCounter >= this.N * this.N * this.N) {
@@ -122,7 +126,7 @@ export class GameState {
         return this.boardState[pos.x][pos.y][pos.z] === CellState.Empty;
     }
 
-    public getCurrentPlayer(): Player {
+    public getCurrentPlayer(): WebSocket {
         const player = this.players[this.currentPlayerIndex];
         if (player === undefined) {
             throw new Error("Current player has not been registered");
@@ -145,7 +149,7 @@ export class GameState {
             (this.currentPlayerIndex + 1) % this.players.length;
 
         // await this.ui.playerTitle(this.getCurrentPlayer().name);
-        this.getCurrentPlayer().yourTurn(this.boardState, this.N, this.getCurrentPlayerState());
+        // this.getCurrentPlayer().yourTurn(this.boardState, this.N, this.getCurrentPlayerState());
     }
 
     public getCell(pos: GridPosition): CellState {
@@ -164,7 +168,7 @@ export class GameState {
             this.gameData.winner = this.gameData.player1;
         else
             this.gameData.winner = this.gameData.player2;
-        this.exitTimeout = setTimeout(() => { this.onExit();}, 3000);
+        this.exitTimeout = setTimeout(() => { ;}, 3000);
     }
 
     private endGameDraw() {
@@ -174,7 +178,7 @@ export class GameState {
         this.gameData.isFinished = true;
         this.gameData.isDraw = true;
         this.gameData.gameEnd = Date.now();
-        this.exitTimeout = setTimeout(() => { this.onExit();}, 2000);
+        this.exitTimeout = setTimeout(() => { ;}, 2000);
     }
 
     public dispose(): void {
@@ -184,7 +188,11 @@ export class GameState {
         }
     }
 
+    public getID() {
+        return this.gameData.gameID;
+    }
 
-
-
+    public addPlayer(player: WebSocket) {
+        this.players.push(player);
+    }
 }

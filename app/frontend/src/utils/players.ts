@@ -1,4 +1,4 @@
-import { PlayerData, GameMode } from '../types/game';
+import { PlayerData, GameMode } from '../../../shared/game';
 
 const createPlayers = (username: string, gameMode: GameMode): PlayerData[] => {
   const player1: PlayerData = {

@@ -2,10 +2,10 @@ import * as BABYLON from "@babylonjs/core";
 import { Materials } from "./Materials";
 import { Board } from "./Board";
 import { GameUI } from "./GameUI";
-import { GameState } from "../../../shared/game/GameState";
+import { GameState } from "../../../backend/src/game/GameState";
 import { GameGraphics } from "./GameGraphics";
 import { CameraManager } from "./CameraManager";
-import { GameData } from "../types/game";
+import { GameData } from "../../../shared/game";
 
 
 export function replyGame(canvas: HTMLCanvasElement, gameData: GameData, onExit: () => void) {

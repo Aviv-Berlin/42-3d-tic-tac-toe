@@ -1,5 +1,5 @@
 import { GridPosition, CellState, PLAYER_STATES} from "./game/Types";
-import { GameData} from "../frontend/src/types/game";
+import { GameData} from "./game";
 
 export type WsMessage =
   | { type: "join-game";

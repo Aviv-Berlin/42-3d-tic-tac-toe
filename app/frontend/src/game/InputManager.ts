@@ -1,25 +1,30 @@
-import { GameState } from "../../../shared/game/GameState"
+import { GameState } from "../../../backend/src/game/GameState"
 import { Vector3} from "@babylonjs/core/Maths/math.vector";
 import * as BABYLON from "@babylonjs/core";
 import { Scene, Observer,PointerInfo } from "@babylonjs/core";
 import type { GridPosition } from "../../../shared/game/Types"
 import { Board } from "./Board"
 import { CameraManager } from "./CameraManager"
+import { Player } from "./Player";
+import { LocalPlayer } from "./LocalPlayer";
 
 
 
 export class InputManager {
-    private game: GameState;
+    // private game: GameState;
     private scene: Scene;
     private mouse: Observer<PointerInfo> | null = null
     private board: Board;
     private camera: CameraManager;
+    private players: Player[];
 
-    constructor(game: GameState, scene: Scene, board: Board, camera: CameraManager) {
-        this.game = game;
+    constructor(/*game: GameState,*/player1: LocalPlayer, scene: Scene, board: Board, camera: CameraManager) {
+        // this.game = game;
         this.scene = scene;
         this.board = board;
         this.camera = camera;
+        this.players = [];
+        this.players.push(player1);
     }
 
     public registerEvents(): void {
@@ -51,7 +56,7 @@ export class InputManager {
         const pos = this.getClickedPos(mouse);
         if (pos === null)
             return;
-        const player = this.game.getCurrentPlayer();
+        const player = this.players[0];//this.game.getCurrentPlayer();
         if (mouse.type === BABYLON.PointerEventTypes.POINTERTAP)
             player.selectPos(pos);
         else if (mouse.type === BABYLON.PointerEventTypes.POINTERDOUBLETAP) {
@@ -75,7 +80,7 @@ export class InputManager {
 
         switch (event.key) {
             case "Enter":
-                this.game.getCurrentPlayer().choosePos();
+                this.players[0].choosePos();
                 break;
 
             case "1":
@@ -132,16 +137,16 @@ export class InputManager {
         }
 
         if (cameraDir.equals(right))
-            this.game.getCurrentPlayer().moveCursor(true, "x");
+            this.players[0].moveCursor(true, "x");
         else if (cameraDir.equals(left))
-            this.game.getCurrentPlayer().moveCursor(false, "x");
+            this.players[0].moveCursor(false, "x");
         else if (cameraDir.equals(up))
-            this.game.getCurrentPlayer().moveCursor(true, "y");
+            this.players[0].moveCursor(true, "y");
         else if (cameraDir.equals(down))
-            this.game.getCurrentPlayer().moveCursor(false, "y");
+            this.players[0].moveCursor(false, "y");
         else if (cameraDir.equals(front))
-            this.game.getCurrentPlayer().moveCursor(true, "z");
+            this.players[0].moveCursor(true, "z");
         else if (cameraDir.equals(back))
-            this.game.getCurrentPlayer().moveCursor(false, "z");
+            this.players[0].moveCursor(false, "z");
     };
 }

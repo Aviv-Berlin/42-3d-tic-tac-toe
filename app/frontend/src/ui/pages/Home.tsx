@@ -1,7 +1,7 @@
 import { useNavigate } from 'react-router-dom';
 import { useUsername } from '../context/UsernameContext'
 import MainButton from '../components/MainButton';
-import { GameMode } from '../../types/game';
+import { GameMode } from '../../../../shared/game';
 import CenteredLayout from '../layouts/CenteredLayout';
 
 const Home = () => {

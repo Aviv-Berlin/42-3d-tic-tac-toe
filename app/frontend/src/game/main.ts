@@ -2,14 +2,14 @@ import * as BABYLON from "@babylonjs/core";
 import { Materials } from "./Materials";
 import { Board } from "./Board";
 import { GameUI } from "./GameUI";
-import { GameState } from "../../../shared/game/GameState";
+import { GameState } from "../../../backend/src/game/GameState";
 import { InputManager } from "./InputManager";
 import { GameGraphics } from "./GameGraphics";
 import { CameraManager } from "./CameraManager";
 import { Player } from "./Player"
-import { AiPlayer } from "../../../shared/game/AIPlayer"
+import { AiPlayer } from "../../../backend/src/game/AIPlayer"
 import { LocalPlayer } from "./LocalPlayer"
-import { GameData } from "../types/game";
+import { GameData } from "../../../shared/game";
 import { WsMessage } from "../../../shared/messages"
 
 interface ServerMessage {
@@ -47,22 +47,22 @@ export function createBabylonGame(canvas: HTMLCanvasElement, gameData: GameData,
   const graphics = new GameGraphics(board, materials, camera);
 
   //backend runs the GameState and AiPlayer
-  const game = new GameState(gameData, ui, graphics, onExit, 2);
+  // const game = new GameState(gameData, ui, graphics, onExit, 2);
   //LocalPlayer is frontend
-  const player = new LocalPlayer(gameData.player1.username, game, graphics);
-  let player2: Player;
-  if (gameData.player2.type === "ai")
-    player2 = new AiPlayer(gameData.player2.username, game, graphics, gameData.level);
-  else if (gameData.player2.type === "guest")
-    player2 = new LocalPlayer(gameData.player2.username, game, graphics);
-  else
-    player2 = new AiPlayer("ai placeholder", game, graphics, 1);
+  const player = new LocalPlayer(gameData.player1.username, graphics);
+  // let player2: Player;
+  // if (gameData.player2.type === "ai")
+  //   player2 = new AiPlayer(gameData.player2.username, game, graphics, gameData.level);
+  // else if (gameData.player2.type === "guest")
+  //   player2 = new LocalPlayer(gameData.player2.username, game, graphics);
+  // else
+  //   player2 = new AiPlayer("ai placeholder", game, graphics, 1);
   //input manager is also frontend
-  const input = new InputManager(game, scene, board, camera);
+  const input = new InputManager(player, scene, board, camera);
   input.registerEvents();
-  game.register(player);
-  game.register(player2);
-  game.startGame();
+  // game.register(player);
+  // game.register(player2);
+  // game.startGame();
 
   engine.runRenderLoop(() => {
     scene.render();
@@ -76,7 +76,7 @@ export function createBabylonGame(canvas: HTMLCanvasElement, gameData: GameData,
   window.addEventListener("resize", handleResize);
 
   return () => {
-    game.dispose();
+    // game.dispose();
     ui.dispose();
     input.unregisterEvents();
     window.removeEventListener("resize", handleResize);

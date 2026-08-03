@@ -1,8 +1,8 @@
-import { GridPosition, CellState, points, PLAYER_STATES } from "./Types"
-import { Player } from "../../frontend/src/game/Player";
-import { GameState } from "./GameState";
-import { GameGraphics} from "../../frontend/src/game/GameGraphics"
-import { addGP } from "./Utils";
+import { GridPosition, CellState, points, PLAYER_STATES } from "../../../shared/game/Types.ts"
+import { Player } from "../../../frontend/src/game/Player.ts";
+import { GameState } from "./GameState.ts";
+import { GameGraphics} from "../../../frontend/src/game/GameGraphics.ts"
+import { addGP } from "../../../shared/game/Utils.ts";
 
 interface PositionScore {
     score: number;
@@ -20,7 +20,7 @@ export class AiPlayer extends Player {
     private level: number;
 
     constructor(name: string, game: GameState, graphics: GameGraphics, level: number) {
-        super (name, game, graphics);
+        super (name, /*game,*/ graphics);
         this.level = level;
     }
 
@@ -92,7 +92,7 @@ export class AiPlayer extends Player {
         else
             candidates = bestPositions;
         const randomIndex = Math.floor(Math.random() * candidates.length);
-        this.game.placeMove(candidates[randomIndex]);
+        // this.game.placeMove(candidates[randomIndex]);
     }
 
     private scoreMove(boardState: CellState[][][], pos: GridPosition, N: number): MoveScore {
@@ -175,7 +175,7 @@ export class AiPlayer extends Player {
     }
 
     private playRandomMove(BoardState: CellState[][][], N: number) {
-        this.game.placeMove(this.getRandomEmptyCell(BoardState, N));
+        // this.game.placeMove(this.getRandomEmptyCell(BoardState, N));
     }
 
     //these methods dont do anything, they are here in case input manager calls the ai player.

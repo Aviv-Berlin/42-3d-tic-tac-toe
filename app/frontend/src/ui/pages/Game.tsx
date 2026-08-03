@@ -3,7 +3,7 @@ import { useEffect, useRef } from 'react';
 import { useUsername } from '../context/UsernameContext'
 import GameLayout from '../layouts/GameLayout';
 import Canvas from '../components/Canvas';
-import { GameData, GameMode, AiLevel } from '../../types/game';
+import { GameData, GameMode, AiLevel } from '../../../../shared/game';
 import createPlayers from '../../utils/players';
 
 const Game = () => {

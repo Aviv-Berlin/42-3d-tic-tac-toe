@@ -16,8 +16,8 @@ export function babylonButton(canvas: HTMLCanvasElement, type: string): () => vo
   const engine = new BABYLON.Engine(canvas, true);
   const scene = new BABYLON.Scene(engine);
   const materials = new Materials(scene);
-  const renderEdges = materials.applyLook(1);
-  new CameraManager(scene, canvas);
+  materials.applyLook(1);
+  const camera = new CameraManager(scene, canvas);
   let board: Board; 
   switch (type) {
     
@@ -38,17 +38,17 @@ export function babylonButton(canvas: HTMLCanvasElement, type: string): () => vo
 
     case "easy":
       board= new Board(3, scene, materials);  
-      board.createStack(1, 1);
+      board.createStack(1);
       break;
 
     case "medium":
       board= new Board(3, scene, materials);  
-      board.createStack(2, 1);
+      board.createStack(2);
       break;
 
     case "hard":
       board= new Board(3, scene, materials);  
-      board.createStack(3, 1);
+      board.createStack(3);
       break;
 
     default:
@@ -57,6 +57,7 @@ export function babylonButton(canvas: HTMLCanvasElement, type: string): () => vo
       break;
   }
 
+  camera.spinCamera(1);
 
   engine.runRenderLoop(() => {
     scene.render();

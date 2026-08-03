@@ -21,19 +21,19 @@ export function babylonButton(canvas: HTMLCanvasElement, type: string): () => vo
   let board: Board; 
   switch (type) {
     
-    case "3":
+    case "three":
       board= new Board(3, scene, materials);  
-      board.createBoard(1);
+      board.createBoardButton(3);
       break;
 
-    case "4":
+    case "four":
       board= new Board(4, scene, materials);  
-      board.createBoard(1);
+      board.createBoardButton(4);
       break;
 
-    case "5":
+    case "five":
       board= new Board(5, scene, materials);  
-      board.createBoard(1);
+      board.createBoardButton(5);
       break;
 
     case "easy":
@@ -51,9 +51,12 @@ export function babylonButton(canvas: HTMLCanvasElement, type: string): () => vo
       board.createStack(3, 1);
       break;
 
+    default:
+      board= new Board(3, scene, materials);  
+      board.createBoardButton(3);
+      break;
   }
 
-    board.toggleCubeEdges(renderEdges);
 
   engine.runRenderLoop(() => {
     scene.render();

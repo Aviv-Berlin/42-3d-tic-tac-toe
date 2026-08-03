@@ -78,6 +78,30 @@ export class Board {
         }
     }
 
+    public createBoardButton(N: number): void {
+        this.smallSize = 2 / N;
+        this.boardMeshes.forEach(mesh => mesh.dispose());
+        this.boardMeshes = [];
+        const cubeMaterial = new BABYLON.StandardMaterial("cubeMat", this.scene);
+        cubeMaterial.diffuseColor = new BABYLON.Color3(1, 1, 1);
+        cubeMaterial.alpha = 1;
+
+        for (let x = 0; x < N; x++) {
+            for (let y = 0; y < N; y++) {
+                for (let z = 0; z < N; z++) {
+                    const finalMesh = BABYLON.MeshBuilder.CreateBox("smallCube", { size: this.smallSize },  this.scene);
+                    finalMesh.position = new BABYLON.Vector3((x - this.offset) * this.smallSize, (y - this.offset) * this.smallSize, (z - this.offset) * this.smallSize);
+                    finalMesh.material = cubeMaterial;
+                    finalMesh.enableEdgesRendering();
+                    finalMesh.edgesWidth = 10.0;
+                    finalMesh.edgesColor = new BABYLON.Color4(1, 1, 1, 1);
+                    finalMesh.metadata = { gridPosition: { x, y, z}};
+                    this.boardMeshes.push(finalMesh);
+                }
+            }
+        }
+    }
+
     public createStack(N: number, looks: number): void {
         this.boardMeshes.forEach(mesh => mesh.dispose());
         this.boardMeshes = [];

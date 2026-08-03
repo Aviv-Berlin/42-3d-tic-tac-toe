@@ -52,6 +52,8 @@ export class Materials {
         mesh.edgesColor = this.cubeEdgeColor;
     }
     
+    
+
     public applyLook(look: number): boolean {
         switch (look) {
             case 1:

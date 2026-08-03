@@ -9,51 +9,51 @@ import { GameData } from "../types/game";
 import { delay } from "./Utils";
 import { checkWin } from "./GameCheckWin";
 
-export type BabylonButtonType =
-    | "three"
-    | "four"
-    | "five"
-    | "easy"
-    | "medium"
-    | "hard";
 
-export function babylonButton(canvas: HTMLCanvasElement, type: BabylonButtonType): () => void {
+
+export function babylonButton(canvas: HTMLCanvasElement, type: string): () => void {
 
   const engine = new BABYLON.Engine(canvas, true);
   const scene = new BABYLON.Scene(engine);
   const materials = new Materials(scene);
-  //const camera = new CameraManager(scene, canvas);
-  const board = new Board(3, scene, materials);
+  const renderEdges = materials.applyLook(1);
+  new CameraManager(scene, canvas);
+  let board: Board; 
   switch (type) {
     
-    case "three":
+    case "3":
+      board= new Board(3, scene, materials);  
       board.createBoard(1);
       break;
 
-    case "four":
+    case "4":
+      board= new Board(4, scene, materials);  
       board.createBoard(1);
       break;
 
-    case "five":
+    case "5":
+      board= new Board(5, scene, materials);  
       board.createBoard(1);
       break;
 
     case "easy":
+      board= new Board(3, scene, materials);  
       board.createStack(1, 1);
       break;
 
     case "medium":
+      board= new Board(3, scene, materials);  
       board.createStack(2, 1);
       break;
 
     case "hard":
+      board= new Board(3, scene, materials);  
       board.createStack(3, 1);
       break;
 
   }
-  //const board = new Board(gameData.size, scene, materials);
 
-
+    board.toggleCubeEdges(renderEdges);
 
   engine.runRenderLoop(() => {
     scene.render();

@@ -9,6 +9,7 @@ const BabylonImage = ({type}: BabylonImageProps) => {
   const canvasRef = useRef<HTMLCanvasElement | null>(null);
 
   useEffect(() => {
+    if (!canvasRef.current) return;
     return babylonButton(canvasRef.current, type);
   }, [])
 

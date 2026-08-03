@@ -9,6 +9,7 @@ import { playerStateToIndex } from "./Utils";
 export class Materials {
     
     public readonly cube: StandardMaterial;
+    public readonly buttonCube: StandardMaterial;
     public readonly playerMaterials: StandardMaterial[];
     public readonly previewMaterials: StandardMaterial[];
     private readonly cubeColor = new Color3(0.67, 0.7, 0.71);
@@ -31,6 +32,10 @@ export class Materials {
         this.cube.alpha = this.cubeAlpha;
         this.cube.needDepthPrePass = false;
         this.cube.disableDepthWrite = true;
+
+        this.buttonCube = new StandardMaterial("buttonCube", scene);
+        this.buttonCube.diffuseColor = new BABYLON.Color3(0, 0, 0);
+        this.buttonCube.alpha = 1;
 
         const playerColors: readonly Color3[] = [
             new Color3(1, 0.16, 0.01),  // Player 1: orange/red

@@ -69,7 +69,7 @@ export class Board {
                 for (let z = 0; z < this.N; z++) {
                     const finalMesh = this.createBoardMesh(looks);
                     finalMesh.scaling.set(scale, scale, scale);
-                    finalMesh.position = this.getPosition(x, y, z);
+                    finalMesh.position = this.getPosition(x, y, z, true);
                     finalMesh.material = this.materials.cube;
                     finalMesh.metadata = { gridPosition: { x, y, z}};
                     this.boardMeshes.push(finalMesh);
@@ -82,18 +82,15 @@ export class Board {
         this.smallSize = 2 / N;
         this.boardMeshes.forEach(mesh => mesh.dispose());
         this.boardMeshes = [];
-        const cubeMaterial = new BABYLON.StandardMaterial("cubeMat", this.scene);
-        cubeMaterial.diffuseColor = new BABYLON.Color3(1, 1, 1);
-        cubeMaterial.alpha = 1;
 
         for (let x = 0; x < N; x++) {
             for (let y = 0; y < N; y++) {
                 for (let z = 0; z < N; z++) {
                     const finalMesh = BABYLON.MeshBuilder.CreateBox("smallCube", { size: this.smallSize },  this.scene);
-                    finalMesh.position = new BABYLON.Vector3((x - this.offset) * this.smallSize, (y - this.offset) * this.smallSize, (z - this.offset) * this.smallSize);
-                    finalMesh.material = cubeMaterial;
+                    finalMesh.position = this.getPosition(x, y, z, false);
+                    finalMesh.material = this.materials.buttonCube;
                     finalMesh.enableEdgesRendering();
-                    finalMesh.edgesWidth = 10.0;
+                    finalMesh.edgesWidth = 15.0;
                     finalMesh.edgesColor = new BABYLON.Color4(1, 1, 1, 1);
                     finalMesh.metadata = { gridPosition: { x, y, z}};
                     this.boardMeshes.push(finalMesh);
@@ -102,16 +99,19 @@ export class Board {
         }
     }
 
-    public createStack(N: number, looks: number): void {
+    public createStack(N: number): void {
         this.boardMeshes.forEach(mesh => mesh.dispose());
         this.boardMeshes = [];
 
         for (let y = 0; y < N; y++) {
-            const finalMesh = this.createBoardMesh(looks);
-            finalMesh.position = this.getPosition(1, y, 1);
-            finalMesh.material = this.materials.cube;
-            finalMesh.metadata = { gridPosition: { x: 1, y, z: 1}};
-            this.boardMeshes.push(finalMesh);
+                    const finalMesh = BABYLON.MeshBuilder.CreateBox("smallCube", { size: this.smallSize },  this.scene);
+                    finalMesh.position = this.getPosition(1, y, 1, false);
+                    finalMesh.material = this.materials.buttonCube;
+                    finalMesh.enableEdgesRendering();
+                    finalMesh.edgesWidth = 15.0;
+                    finalMesh.edgesColor = new BABYLON.Color4(1, 1, 1, 1);
+                    finalMesh.metadata = { gridPosition: { x: 1, y, z: 1}};
+                    this.boardMeshes.push(finalMesh);
         }
     }
 
@@ -131,16 +131,21 @@ export class Board {
         this.cubesShrink = !this.cubesShrink;
     }
 
-    private getPosition(x: number, y: number, z: number): BABYLON.Vector3 {
+    private getPosition(x: number, y: number, z: number, withGap: boolean): BABYLON.Vector3 {
+        if (withGap) {
         return new BABYLON.Vector3
 			((x - this.offset) * this.step, (y - this.offset) * this.step, (z - this.offset) * this.step);
+        } else {
+            return new BABYLON.Vector3
+			    ((x - this.offset) * this.smallSize, (y - this.offset) * this.smallSize, (z - this.offset) * this.smallSize);
+        }
     }
 
     putSphere(pos: GridPosition, material: Material, storeMove: boolean): Mesh {
         const sphere = BABYLON.MeshBuilder.CreateSphere
             ("moveSphere", { diameter: this.smallSize * 0.7 }, this.scene);
 
-        sphere.position = this.getPosition(pos.x, pos.y, pos.z);
+        sphere.position = this.getPosition(pos.x, pos.y, pos.z, true);
         sphere.material = material;
         sphere.renderingGroupId = 0;
         sphere.isPickable = false;

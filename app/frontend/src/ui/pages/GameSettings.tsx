@@ -29,7 +29,7 @@ const GameSettings = () => {
 
   const handleConfirm = () => {
     if (gameMode === "online") {
-      navigate('/waiting-room?size=${size}')
+      navigate(`/waiting-room?size=${size}`)
     } else {
       navigate(`/game?game-mode=${gameMode}&size=${size}&level=${level}`)
     }

@@ -13,7 +13,8 @@ const WaitingRoom = () => {
     <CenteredLayout>
       <h1 className="text-5xl font-serif italic">WAITING ROOM</h1>
       <p>{numPlayers}/2 players joined</p>
-      <MainButton onClick={handlePlay}>PLAY</MainButton>
+      {numPlayers === 2 && <MainButton onClick={handlePlay}>PLAY</MainButton>}
+      {numPlayers !== 2 && <MainButton disabled={true}>PLAY</MainButton>}
     </CenteredLayout>
   )
 }

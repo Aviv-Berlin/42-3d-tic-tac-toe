@@ -14,6 +14,7 @@ import ProtectedRoute from './routes/ProtectedRoute'
 import Lobby from './pages/Lobby'
 import GameEnd from './pages/GameEnd'
 import Replay from './pages/Replay'
+import WaitingRoom from './pages/WaitingRoom'
 
 const App = () => {
   return (
@@ -29,6 +30,7 @@ const App = () => {
           <Route path="/game" element={<Game />} />
           <Route path="/game-end" element={<GameEnd />} />
           <Route path="/replay" element={<Replay />} />
+          <Route path="/waiting-room" element={<WaitingRoom />} />
           <Route path="/profile" element={<Profile />} />
           <Route path="/settings" element={<Settings />} />
         </Route>

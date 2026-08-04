@@ -27,6 +27,14 @@ const GameSettings = () => {
 
   const gameModeDisplay = normalizeGameMode(gameMode);
 
+  const handleConfirm = () => {
+    if (gameMode === "online") {
+      navigate(`/waiting-room?size=${size}`)
+    } else {
+      navigate(`/game?game-mode=${gameMode}&size=${size}&level=${level}`)
+    }
+  }
+
   return (
     <MainLayout>
       <div className="w-full flex flex-col gap-16 items-center">
@@ -38,7 +46,7 @@ const GameSettings = () => {
         </div>
         <BoardSizeSettings size={size} setSize={setSize}/>
         {gameMode === "ai" && <DifficultySettings level={level} setLevel={setLevel}/>}
-        <MainButton onClick={() => navigate(`/game?game-mode=${gameMode}&size=${size}&level=${level}`)}>CONFIRM</MainButton>
+        <MainButton onClick={handleConfirm}>CONFIRM</MainButton>
       </div>
     </MainLayout>
   )

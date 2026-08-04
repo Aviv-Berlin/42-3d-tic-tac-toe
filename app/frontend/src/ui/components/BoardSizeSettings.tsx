@@ -1,4 +1,5 @@
-import GameSettingButton from '../components/GameSettingButton'
+import GameSettingButton from './GameSettingButton'
+import BabylonImage from './BabylonImage'
 
 interface BoardSizeSettingsProps {
   size: number;
@@ -12,17 +13,17 @@ const BoardSizeSettings = ({size, setSize}: BoardSizeSettingsProps) => {
       <div className="flex flex-col sm:flex-row gap-4">
         <GameSettingButton selected={size === 3} onClick={() => setSize(3)}>
           <div className="w-full h-full relative flex justify-center items-center">
-            <p className="text-xs absolute bottom-2 right-2">3x3x3</p>
+            <BabylonImage type={"three"} />
           </div>
         </GameSettingButton>
         <GameSettingButton selected={size === 4} onClick={() => setSize(4)}>
           <div className="w-full h-full relative flex justify-center items-center">
-            <p className="text-xs absolute bottom-2 right-2">4x4x4</p>
+            <BabylonImage type={"four"} />
           </div>
         </GameSettingButton>
         <GameSettingButton selected={size === 5} onClick={() => setSize(5)}>
           <div className="w-full h-full relative flex justify-center items-center">
-            <p className="text-xs absolute bottom-2 right-2">5x5x5</p>
+            <BabylonImage type={"five"} />
           </div>
         </GameSettingButton>
       </div>

@@ -12,18 +12,19 @@ import { LocalPlayer } from "./LocalPlayer"
 import { GameData } from "../../../shared/game";
 import { WsMessage } from "../../../shared/messages"
 import { handleMessage } from "./socketHandlersFE";
+import { createJoinGameMessage } from "../../../shared/messages"
 
 export function createBabylonGame(canvas: HTMLCanvasElement, gameData: GameData, onExit: () => void) {
 
   const ws = new WebSocket("ws://localhost:3001");
   ws.onopen = () => {
     console.log(`client connected to server.`);
-    ws.send(`Hi from the client.`);
+    ws.send(JSON.stringify(createJoinGameMessage(gameData)));
   };
   ws.onmessage = (event) => {
     const data: WsMessage = JSON.parse(event.data);
     console.log(`Received message from server: ${data}`);
-    handleMessage(data, )
+    handleMessage(data)
   };
 
   ws.onclose = () => {

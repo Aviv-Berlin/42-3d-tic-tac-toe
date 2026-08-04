@@ -21,10 +21,12 @@ function joinGame(message: JoinGameMessage, ws: WebSocket, games: GameState[]) {
 }
 
 export function handleMessage(message: WsMessage, ws: WebSocket, games: GameState[]) {
-	console.log(`Received message: ${message}`);
-		switch (message.type) {
+	//console.log(`Received message: ${message}`);
+	console.log(`TYPE: ${message.type} \n`)	
+	switch (message.type) {
 			case "join-game":
 				joinGame(message, ws, games);
+				console.log(`Received join-game msg: ${message}`);
 				break;
 			case "move":
 				break;

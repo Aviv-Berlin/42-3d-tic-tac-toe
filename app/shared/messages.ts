@@ -6,9 +6,15 @@ export type JoinGameMessage =
 	{ type: "join-game";
 		payload: {
 			gameData: GameData,
-			player: string
 		}
 	}
+
+export function createJoinGameMessage(gameData: GameData): JoinGameMessage {
+	return {
+		type: "join-game",
+		payload: { gameData }
+	}
+}
 
 //server -> client
 export type GameStartMessage =

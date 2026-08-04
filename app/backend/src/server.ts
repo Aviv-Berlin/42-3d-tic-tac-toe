@@ -26,7 +26,8 @@ const wss = new WebSocketServer({ server });
 
 wss.on('connection', (ws) => {
 
-	ws.on('message', (message: WsMessage) => {
+	ws.on('message', (event) => {
+    const message: WsMessage = JSON.parse(event.toString());
 		handleMessage(message, ws, games);
 
 	})

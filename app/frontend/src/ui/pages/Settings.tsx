@@ -43,17 +43,20 @@ const Settings = () => {
 
   const handleSubmitChangeUsername = (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
-    //here we send the new username to the backend with a PUT request
+    // here we send the new username to the backend with a PUT request
   }
 
   const handleSubmitChangePassword = (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
-    //here we send the new password to the backend with a PUT request
+    // here we send the new and the old password to the backend with a PUT request
+    // check if the old password matches with what stored in the db
+    // if it matches update with the new password
   }
 
   const handleSubmitDeleteAccount = (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
-    //here we delete the account with a DELETE request
+    // here we delete the account with a DELETE request
+    // check if the password matches with what stored in the db
   }
 
   const handleChangeUsername = (e: React.ChangeEvent<HTMLInputElement>) => {

@@ -1,21 +1,21 @@
-import { GameState } from "./GameState"
+import { GameController } from "./GameController"
 import { Vector3} from "@babylonjs/core/Maths/math.vector";
 import * as BABYLON from "@babylonjs/core";
 import { Scene, Observer,PointerInfo } from "@babylonjs/core";
-import type { GridPosition } from "./Types"
+import type { GridPosition } from "../../../shared/game/Types"
 import { Board } from "./Board"
 import { CameraManager } from "./CameraManager"
 
 
 
 export class InputManager {
-    private game: GameState;
+    private game: GameController;
     private scene: Scene;
     private mouse: Observer<PointerInfo> | null = null
     private board: Board;
     private camera: CameraManager;
 
-    constructor(game: GameState, scene: Scene, board: Board, camera: CameraManager) {
+    constructor(game: GameController, scene: Scene, board: Board, camera: CameraManager) {
         this.game = game;
         this.scene = scene;
         this.board = board;

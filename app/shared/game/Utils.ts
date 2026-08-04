@@ -1,5 +1,8 @@
 import { GridPosition, CellState, PLAYER_STATES } from "./Types"
 
+export function delay(milliseconds: number): Promise<void> {
+    return new Promise(resolve => setTimeout(resolve, milliseconds));
+}
 
 export function addGP(a: GridPosition, b: GridPosition): GridPosition {
     return {

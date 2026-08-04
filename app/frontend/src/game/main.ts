@@ -2,7 +2,7 @@ import * as BABYLON from "@babylonjs/core";
 import { Materials } from "./Materials";
 import { Board } from "./Board";
 import { GameUI } from "./GameUI";
-import { GameState } from "../../../backend/src/game/GameState";
+import { GameController } from "./GameController";
 import { InputManager } from "./InputManager";
 import { GameGraphics } from "./GameGraphics";
 import { CameraManager } from "./CameraManager";
@@ -46,9 +46,7 @@ export function createBabylonGame(canvas: HTMLCanvasElement, gameData: GameData,
   };
 
 
-  //backend runs the GameState and AiPlayer
-  // const game = new GameState(gameData, ui, graphics, onExit, 2);
-  //LocalPlayer is frontend
+  const localGame = new GameController(gameData, ui, graphics, 2);
   const player = new LocalPlayer(gameData.player1.username, graphics);
   // let player2: Player;
   // if (gameData.player2.type === "ai")

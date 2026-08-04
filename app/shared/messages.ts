@@ -20,7 +20,7 @@ export function createJoinGameMessage(gameData: GameData): JoinGameMessage {
 export type GameStartMessage =
 	{ type: "game-start";
 		payload: {
-			gameID: string
+			gameID: string,
 		}
 	};
 

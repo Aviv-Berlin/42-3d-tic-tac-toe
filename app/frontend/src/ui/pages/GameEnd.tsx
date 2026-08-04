@@ -1,18 +1,14 @@
 import CenteredLayout from '../layouts/CenteredLayout'
-import { useGameData } from '../context/GameDataContext'
-import { useUsername } from '../context/UsernameContext'
 import MainButton from '../components/MainButton'
 import SecondaryButton from '../components/SecondaryButton'
 import { useNavigate } from 'react-router-dom'
 import { getGameEndMessage } from '../../utils/gameData'
-
+import { useGameData } from '../../store/gameData'
+import { useUsername } from '../../store/username'
 
 const GameEnd = () => {
-  const gameDataContext = useGameData();
-  const gameData = gameDataContext?.gameData;
-
-  const usernameContext = useUsername();
-  const username = usernameContext?.username;
+  const gameData = useGameData();
+  const username = useUsername();
 
   const navigate = useNavigate();
 
@@ -23,6 +19,7 @@ const GameEnd = () => {
 
   const message = getGameEndMessage(gameData, username);
   const numMoves = gameData.moves.length;
+  const gameLength = Math.floor((gameData.gameEnd - gameData.gameStart) / 1000);
 
   const handleBackToHome = () => {
     window.localStorage.removeItem('gameData');
@@ -36,12 +33,12 @@ const GameEnd = () => {
           <SecondaryButton onClick={handleBackToHome}>Back to Home</SecondaryButton>
           <SecondaryButton onClick={() => navigate("/replay")}>View Replay</SecondaryButton>
         </div>
-        <h1 className="text-5xl font-serif italic">{message}</h1>
+        <h1 className="text-5xl font-serif italic text-center">{message}</h1>
         <MainButton onClick={() => console.log("play again")}>Play Again</MainButton>
         <div className="flex flex-col gap-2">
           <h2 className="text-2xl font-serif italic">Stats</h2>
           <p>Number of moves: {numMoves}</p>
-          <p>Game duration: 42 seconds</p>
+          <p>Game duration: {gameLength} seconds</p>
         </div>
       </div>
     </CenteredLayout>

@@ -1,6 +1,6 @@
 import { useNavigate } from "react-router-dom";
 import MainLayout from "../layouts/MainLayout";
-import { ActiveGame } from "../../../../shared/game";
+import { ActiveGame } from "../../types/game";
 import MainButton from "../components/MainButton";
 import SecondaryButton from "../components/SecondaryButton";
 

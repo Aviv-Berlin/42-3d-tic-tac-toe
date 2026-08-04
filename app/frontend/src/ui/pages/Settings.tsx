@@ -3,11 +3,9 @@ import MainLayout from '../layouts/MainLayout';
 import { useNavigate } from 'react-router-dom';
 import { useState } from 'react';
 import Input from '../components/Input';
-import { useUsername } from '../../store/username';
 import SubmitButton from '../components/SubmitButton';
 
 const Settings = () => {
-  const username = useUsername();
   const [submit, setSubmit] = useState(false);
   const [newUsername, setNewUsername] = useState("");
   const [oldPassword, setOldPassword] = useState("");
@@ -47,6 +45,7 @@ const Settings = () => {
     e.preventDefault();
     setSubmit(true);
     // here we send the new username to the backend with a PUT request
+    // ofc we need to check that the username is not already taken
   }
 
   const handleSubmitChangePassword = (e: React.FormEvent<HTMLFormElement>) => {

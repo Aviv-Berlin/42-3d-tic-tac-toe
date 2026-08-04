@@ -1,58 +1,62 @@
 import * as BABYLON from "@babylonjs/core";
 import { Materials } from "./Materials";
 import { Board } from "./Board";
-import { GameUI } from "./GameUI";
-import { CellState, PLAYER_STATES, GridPosition } from "./Types";
-import { GameGraphics } from "./GameGraphics";
 import { CameraManager } from "./CameraManager";
-import { GameData } from "../types/game";
-import { delay } from "./Utils";
-import { checkWin } from "./GameCheckWin";
 
-export type BabylonButtonType =
-    | "three"
-    | "four"
-    | "five"
-    | "easy"
-    | "medium"
-    | "hard";
 
-export function babylonButton(canvas: HTMLCanvasElement, type: BabylonButtonType): () => void {
+
+
+export function babylonButton(canvas: HTMLCanvasElement, type: string): () => void {
 
   const engine = new BABYLON.Engine(canvas, true);
   const scene = new BABYLON.Scene(engine);
   const materials = new Materials(scene);
-  //const camera = new CameraManager(scene, canvas);
-  const board = new Board(3, scene, materials);
+  materials.applyLook(1);
+  const camera = new CameraManager(scene, canvas);
+  let board: Board; 
   switch (type) {
     
     case "three":
-      board.createBoard(1);
+      board= new Board(3, scene, materials);  
+      board.createBoardButton(3);
+      camera.spinCamera(1);
       break;
 
     case "four":
-      board.createBoard(1);
+      board= new Board(4, scene, materials);  
+      board.createBoardButton(4);
+      camera.spinCamera(1);
       break;
 
     case "five":
-      board.createBoard(1);
+      board= new Board(5, scene, materials);  
+      board.createBoardButton(5);
+      camera.spinCamera(1);
       break;
 
     case "easy":
-      board.createStack(1, 1);
+      board= new Board(3, scene, materials);  
+      board.createStack(1);
+      camera.spinCamera(1);
       break;
 
     case "medium":
-      board.createStack(2, 1);
+      board= new Board(3, scene, materials);  
+      board.createStack(2);
+      camera.spinCamera(2);
       break;
 
     case "hard":
-      board.createStack(3, 1);
+      board= new Board(3, scene, materials);  
+      board.createStack(3);
+      camera.spinCamera(2);
       break;
 
+    default:
+      board= new Board(3, scene, materials);  
+      board.createBoardButton(4);
+      break;
   }
-  //const board = new Board(gameData.size, scene, materials);
-
 
 
   engine.runRenderLoop(() => {

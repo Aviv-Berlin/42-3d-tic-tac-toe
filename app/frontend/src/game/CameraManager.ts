@@ -1,8 +1,6 @@
 import { Vector3} from "@babylonjs/core/Maths/math.vector";
-import { ArcRotateCamera, Axis } from "@babylonjs/core"
-import { Scene } from "@babylonjs/core"
+import { ArcRotateCamera, Axis, Observer, Scene } from "@babylonjs/core";
 import { Animation } from "@babylonjs/core/Animations/animation";
-import { GridPosition } from "./Types";
 
 
 export class CameraManager {
@@ -13,12 +11,35 @@ export class CameraManager {
 
     private camera: ArcRotateCamera;
     private canvas: HTMLCanvasElement;
+    private spinObserver: Observer<Scene> | null = null;
 
     constructor(scene: Scene, canvas: HTMLCanvasElement) {
         this.canvas = canvas;
         this.camera = new ArcRotateCamera("camera", Math.PI / 3.99, Math.PI / 3, 6, Vector3.Zero(), scene);
         this.camera.attachControl(this.canvas, true);
         this.camera.minZ = 0.05;
+    }
+
+    public spinCamera(speed: number = 0.3): void {
+        this.camera.detachControl();
+        if (this.spinObserver !== null)
+            return;
+
+        const scene = this.camera.getScene();
+        this.spinObserver = scene.onBeforeRenderObservable.add(() => {
+            const deltaTime = scene.getEngine().getDeltaTime() / 1000;
+            this.camera.alpha += speed * deltaTime;
+        });
+    }
+
+    public stopCameraSpin(): void {
+        if (this.spinObserver === null)
+            return;
+
+        const scene = this.camera.getScene();
+
+        scene.onBeforeRenderObservable.remove(this.spinObserver);
+        this.spinObserver = null;
     }
 
     public resetCamera(): void {

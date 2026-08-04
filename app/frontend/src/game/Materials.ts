@@ -2,13 +2,14 @@ import * as BABYLON from "@babylonjs/core";
 import type { Scene } from "@babylonjs/core/scene";
 import { StandardMaterial } from "@babylonjs/core/Materials/standardMaterial";
 import { Color3, Color4 } from "@babylonjs/core/Maths/math.color";
-import { CellState } from "../../../shared/game/Types";
-import { playerStateToIndex } from "../../../shared/game/Utils";
+import { CellState } from "./Types";
+import { playerStateToIndex } from "./Utils";
 
 
 export class Materials {
-
+    
     public readonly cube: StandardMaterial;
+    public readonly buttonCube: StandardMaterial;
     public readonly playerMaterials: StandardMaterial[];
     public readonly previewMaterials: StandardMaterial[];
     private readonly cubeColor = new Color3(0.67, 0.7, 0.71);
@@ -32,6 +33,10 @@ export class Materials {
         this.cube.needDepthPrePass = false;
         this.cube.disableDepthWrite = true;
 
+        this.buttonCube = new StandardMaterial("buttonCube", scene);
+        this.buttonCube.diffuseColor = new BABYLON.Color3(0, 0, 0);
+        this.buttonCube.alpha = 1;
+
         const playerColors: readonly Color3[] = [
             new Color3(1, 0.16, 0.01),  // Player 1: orange/red
             new Color3(0.01, 0.89, 1),  // Player 2: cyan
@@ -51,6 +56,8 @@ export class Materials {
         mesh.edgesWidth = 2.0;
         mesh.edgesColor = this.cubeEdgeColor;
     }
+    
+    
 
     public applyLook(look: number): boolean {
         switch (look) {
@@ -97,8 +104,17 @@ export class Materials {
                 this.cube.disableDepthWrite = true;
                 this.textColor = this.defaultTextColor.clone();
                 return false;
-
+            
             case 6:
+                this.scene.clearColor = this.sceneBackground.clone();
+                this.cube.diffuseColor = this.cubeColor.clone();
+                this.cube.alpha = 0.4;
+                this.cube.needDepthPrePass = false;
+                this.cube.disableDepthWrite = true;
+                this.textColor = this.defaultTextColor.clone();
+                return false;
+            
+            case 7:
                 // Same values used when Materials is constructed.
                 this.scene.clearColor = this.sceneBackground.clone();
                 this.cube.diffuseColor = this.cubeColor.clone();
@@ -211,7 +227,7 @@ export class Materials {
             if (texture instanceof BABYLON.DynamicTexture && label !== undefined)
                 this.drawTextCubeTexture(texture, label);
         }
-        if (renderEdges)
+        if (renderEdges) 
             this.applyCubeEdges(mesh);
         else
             mesh.disableEdgesRendering();

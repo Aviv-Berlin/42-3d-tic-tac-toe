@@ -1,30 +1,25 @@
-import { GameState } from "../../../backend/src/game/GameState"
+import { GameState } from "./GameState"
 import { Vector3} from "@babylonjs/core/Maths/math.vector";
 import * as BABYLON from "@babylonjs/core";
 import { Scene, Observer,PointerInfo } from "@babylonjs/core";
-import type { GridPosition } from "../../../shared/game/Types"
+import type { GridPosition } from "./Types"
 import { Board } from "./Board"
 import { CameraManager } from "./CameraManager"
-import { Player } from "./Player";
-import { LocalPlayer } from "./LocalPlayer";
 
 
 
 export class InputManager {
-    // private game: GameState;
+    private game: GameState;
     private scene: Scene;
     private mouse: Observer<PointerInfo> | null = null
     private board: Board;
     private camera: CameraManager;
-    private players: Player[];
 
-    constructor(/*game: GameState,*/player1: LocalPlayer, scene: Scene, board: Board, camera: CameraManager) {
-        // this.game = game;
+    constructor(game: GameState, scene: Scene, board: Board, camera: CameraManager) {
+        this.game = game;
         this.scene = scene;
         this.board = board;
         this.camera = camera;
-        this.players = [];
-        this.players.push(player1);
     }
 
     public registerEvents(): void {
@@ -56,14 +51,14 @@ export class InputManager {
         const pos = this.getClickedPos(mouse);
         if (pos === null)
             return;
-        const player = this.players[0];//this.game.getCurrentPlayer();
+        const player = this.game.getCurrentPlayer();
         if (mouse.type === BABYLON.PointerEventTypes.POINTERTAP)
             player.selectPos(pos);
         else if (mouse.type === BABYLON.PointerEventTypes.POINTERDOUBLETAP) {
             if (player.selectPos(pos))
                 player.choosePos();
         }
-
+        
     }
 
 
@@ -80,17 +75,17 @@ export class InputManager {
 
         switch (event.key) {
             case "Enter":
-                this.players[0].choosePos();
+                this.game.getCurrentPlayer().choosePos();
                 break;
-
+            
             case "1":
                 this.board.toggleCubeSize();
                 break;
-
+            
             case "l":
                 cameraDir = this.camera.getCameraDir(right);
                 break;
-
+            
             case "j":
                 cameraDir = this.camera.getCameraDir(left);
                 break;
@@ -98,23 +93,23 @@ export class InputManager {
             case "i":
                 cameraDir = this.camera.getCameraDir(up);
                 break;
-
+            
             case "m":
                 cameraDir = this.camera.getCameraDir(down);
                 break;
-
+            
             case "u":
                 cameraDir = this.camera.getCameraDir(front);
                 break;
-
+            
             case "h":
                 cameraDir = this.camera.getCameraDir(back);
                 break;
-
+            
             case "d":
                 cameraDir = this.camera.getCameraDir(right);
                 break;
-
+            
             case "a":
                 cameraDir = this.camera.getCameraDir(left);
                 break;
@@ -122,31 +117,31 @@ export class InputManager {
             case "e":
                 cameraDir = this.camera.getCameraDir(up);
                 break;
-
+            
             case "q":
                 cameraDir = this.camera.getCameraDir(down);
                 break;
-
+            
             case "w":
                 cameraDir = this.camera.getCameraDir(front);
                 break;
-
+            
             case "s":
                 cameraDir = this.camera.getCameraDir(back);
                 break;
         }
 
         if (cameraDir.equals(right))
-            this.players[0].moveCursor(true, "x");
+            this.game.getCurrentPlayer().moveCursor(true, "x");
         else if (cameraDir.equals(left))
-            this.players[0].moveCursor(false, "x");
+            this.game.getCurrentPlayer().moveCursor(false, "x");
         else if (cameraDir.equals(up))
-            this.players[0].moveCursor(true, "y");
+            this.game.getCurrentPlayer().moveCursor(true, "y");
         else if (cameraDir.equals(down))
-            this.players[0].moveCursor(false, "y");
+            this.game.getCurrentPlayer().moveCursor(false, "y");
         else if (cameraDir.equals(front))
-            this.players[0].moveCursor(true, "z");
+            this.game.getCurrentPlayer().moveCursor(true, "z");
         else if (cameraDir.equals(back))
-            this.players[0].moveCursor(false, "z");
+            this.game.getCurrentPlayer().moveCursor(false, "z");
     };
 }

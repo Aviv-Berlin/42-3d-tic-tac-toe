@@ -53,8 +53,7 @@ export class LocalPlayer extends Player {
     public choosePos(): void {
         if (!this.myTurn)
             return;
-        if (this.game.placeMove(this.cursor))
-    //         this.myTurn = false;
+        this.game.placeMove(this.cursor);
     }
 
 

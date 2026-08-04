@@ -82,5 +82,6 @@ export function createBabylonGame(canvas: HTMLCanvasElement, gameData: GameData,
     window.removeEventListener("resize", handleResize);
     scene.dispose();
     engine.dispose();
+    ws.close();
   };
 }

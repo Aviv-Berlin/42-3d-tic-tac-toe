@@ -70,6 +70,8 @@ export class GameState {
         this.gameData.gameStart = Date.now();
         if (this.gameData.moves === null)
             this.gameData.moves = [];
+
+
         // await this.ui.playerTitle(this.getCurrentPlayer().name);
         // this.getCurrentPlayer().yourTurn(this.boardState, this.N, this.getCurrentPlayerState());
     }
@@ -160,6 +162,7 @@ export class GameState {
     private async switchPlayer(): Promise<void> {
         this.currentPlayerIndex =
             (this.currentPlayerIndex + 1) % this.players.length;
+        // if (this.gameData.gameMode === "ai")
 
         // await this.ui.playerTitle(this.getCurrentPlayer().name);
         // this.getCurrentPlayer().yourTurn(this.boardState, this.N, this.getCurrentPlayerState());

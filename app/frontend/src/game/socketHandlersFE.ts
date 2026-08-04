@@ -23,7 +23,7 @@ export function handleMessage(message: WsMessage) {
 	console.log(`Received message: ${message}`);
 	switch (message.type) {
 		case "game-start":
-			console.log(`Game ${message.payload.gameID} started`)
+			console.log(`Game ${message.payload.gameID} started`);
 			break;
 		case "move":
 			break;

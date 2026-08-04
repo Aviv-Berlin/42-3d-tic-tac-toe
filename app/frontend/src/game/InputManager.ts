@@ -52,16 +52,16 @@ export class InputManager {
         if (pos === null)
             return;
         const player = this.game.getCurrentPlayer();
-        if (mouse.type === BABYLON.PointerEventTypes.POINTERTAP)
-            player.selectPos(pos);
-        else if (mouse.type === BABYLON.PointerEventTypes.POINTERDOUBLETAP) {
-            if (player.selectPos(pos))
-                player.choosePos();
+        if (player) {
+            if (mouse.type === BABYLON.PointerEventTypes.POINTERTAP)
+                player.selectPos(pos);
+            else if (mouse.type === BABYLON.PointerEventTypes.POINTERDOUBLETAP) {
+                if (player.selectPos(pos))
+                    player.choosePos();
+            }
         }
         
     }
-
-
 
     private handleKeyDown = (event: KeyboardEvent): void => {
 
@@ -72,10 +72,12 @@ export class InputManager {
         const down = new Vector3(0,-1,0);
         const front = new Vector3(0,0,1);
         const back = new Vector3(0,0,-1);
-
+        const player = this.game.getCurrentPlayer();
+        if (!player)
+            return;
         switch (event.key) {
             case "Enter":
-                this.game.getCurrentPlayer().choosePos();
+                player.choosePos();
                 break;
             
             case "1":
@@ -130,18 +132,18 @@ export class InputManager {
                 cameraDir = this.camera.getCameraDir(back);
                 break;
         }
-
         if (cameraDir.equals(right))
-            this.game.getCurrentPlayer().moveCursor(true, "x");
+            player.moveCursor(true, "x");
         else if (cameraDir.equals(left))
-            this.game.getCurrentPlayer().moveCursor(false, "x");
+            player.moveCursor(false, "x");
         else if (cameraDir.equals(up))
-            this.game.getCurrentPlayer().moveCursor(true, "y");
+            player.moveCursor(true, "y");
         else if (cameraDir.equals(down))
-            this.game.getCurrentPlayer().moveCursor(false, "y");
+            player.moveCursor(false, "y");
         else if (cameraDir.equals(front))
-            this.game.getCurrentPlayer().moveCursor(true, "z");
+            player.moveCursor(true, "z");
         else if (cameraDir.equals(back))
-            this.game.getCurrentPlayer().moveCursor(false, "z");
+            player.moveCursor(false, "z");
+
     };
 }

@@ -2,27 +2,50 @@ import SecondaryButton from '../components/SecondaryButton';
 import MainLayout from '../layouts/MainLayout';
 import { useNavigate } from 'react-router-dom';
 import { useState } from 'react';
+import Input from '../components/Input';
+import { useUsername } from '../../store/username';
+import SubmitButton from '../components/SubmitButton';
 
 const Settings = () => {
-  const [changeUsername, setChangeUsername] = useState(false);
-  const [changePassword, setChangePassword] = useState(false);
-  const [deleteAccount, setDeleteAccount] = useState(false);
+  const username = useUsername();
+  const [newUsername, setNewUsername] = useState(username)
+  const [triggerChangeUsername, setTriggerChangeUsername] = useState(false);
+  const [triggerChangePassword, setTriggerChangePassword] = useState(false);
+  const [triggerDeleteAccount, setTriggerDeleteAccount] = useState(false);
 
   const navigate = useNavigate();
 
-  const handleChangeUsername = () => {
+  const reset = () => {
+    setTriggerChangeUsername(false);
+    setTriggerChangePassword(false);
+    setTriggerDeleteAccount(false);
+  }
+
+  const handleTriggerChangeUsername = () => {
     console.log("change username");
-    setChangeUsername(true);
+    reset();
+    setTriggerChangeUsername(true);
   }
 
-  const handleChangePassword = () => {
+  const handleTriggerChangePassword = () => {
     console.log("change password");
-    setChangePassword(true);
+    reset();
+    setTriggerChangePassword(true);
   }
 
-  const handleDeleteAccount = () => {
+  const handleTriggerDeleteAccount = () => {
     console.log("delete account");
-    setDeleteAccount(true);
+    reset();
+    setTriggerDeleteAccount(true);
+  }
+
+  const handleSubmitUsername = (e: React.FormEvent<HTMLFormElement>) => {
+    e.preventDefault();
+  }
+
+  const handleChangeUsername = (e: React.ChangeEvent<HTMLInputElement>) => {
+    setNewUsername(e.target.value);
+    console.log(e.target.value);
   }
 
   return (
@@ -31,10 +54,30 @@ const Settings = () => {
         <div className="sm:absolute sm:left-0">
           <SecondaryButton onClick={() => navigate('/home')}>← Back</SecondaryButton>
         </div>
-        <h1 className="text-3xl font-serif italic">Settings</h1>
-        <SecondaryButton onClick={handleChangeUsername}>Change username</SecondaryButton>
-        <SecondaryButton onClick={handleChangePassword}>Change password</SecondaryButton>
-        <SecondaryButton onClick={handleDeleteAccount}>Delete account</SecondaryButton>
+        <h1 className="text-4xl font-serif italic mb-8">Settings</h1>
+        {triggerChangeUsername &&
+          <>
+            <SecondaryButton onClick={reset}>Cancel</SecondaryButton>
+            <h2 className="text-2xl font-serif italic">Change username</h2>
+            <form className="flex flex-col gap" onSubmit={handleSubmitUsername}>
+              <Input name="new username" value={newUsername} handler={handleChangeUsername} />
+              <SubmitButton>Change username</SubmitButton>
+            </form>
+          </>
+        }
+        {triggerChangePassword &&
+          <SecondaryButton onClick={reset}>Cancel</SecondaryButton>
+        }
+        {triggerDeleteAccount &&
+          <SecondaryButton onClick={reset}>Cancel</SecondaryButton>
+        }
+        {!triggerChangeUsername && !triggerChangePassword && !triggerDeleteAccount &&
+          <>
+            <SecondaryButton onClick={handleTriggerChangeUsername}>Change username</SecondaryButton>
+            <SecondaryButton onClick={handleTriggerChangePassword}>Change password</SecondaryButton>
+            <SecondaryButton onClick={handleTriggerDeleteAccount}>Delete account</SecondaryButton>
+          </>
+        }
       </div>
     </MainLayout>
   )

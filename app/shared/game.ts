@@ -23,6 +23,7 @@ export interface GameData {
   player1: PlayerData;
   player2: PlayerData;
   level: AiLevel;
+  gameMode: GameMode;
   winner: PlayerData | null;
   moves: Move[];
   size: number;

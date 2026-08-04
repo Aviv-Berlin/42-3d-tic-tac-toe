@@ -8,6 +8,7 @@ import SubmitButton from '../components/SubmitButton';
 
 const Settings = () => {
   const username = useUsername();
+  const [submit, setSubmit] = useState(false);
   const [newUsername, setNewUsername] = useState("");
   const [oldPassword, setOldPassword] = useState("");
   const [newPassword, setNewPassword] = useState("");
@@ -18,6 +19,7 @@ const Settings = () => {
   const navigate = useNavigate();
 
   const reset = () => {
+    setSubmit(false);
     setTriggerChangeUsername(false);
     setTriggerChangePassword(false);
     setTriggerDeleteAccount(false);
@@ -43,11 +45,13 @@ const Settings = () => {
 
   const handleSubmitChangeUsername = (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
+    setSubmit(true);
     // here we send the new username to the backend with a PUT request
   }
 
   const handleSubmitChangePassword = (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
+    setSubmit(true);
     // here we send the new and the old password to the backend with a PUT request
     // check if the old password matches with what stored in the db
     // if it matches update with the new password
@@ -55,22 +59,26 @@ const Settings = () => {
 
   const handleSubmitDeleteAccount = (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
+    setSubmit(true);
     // here we delete the account with a DELETE request
     // check if the password matches with what stored in the db
   }
 
   const handleChangeUsername = (e: React.ChangeEvent<HTMLInputElement>) => {
     setNewUsername(e.target.value);
+    setSubmit(false);
     console.log(e.target.value);
   }
 
   const handleChangeOldPassword = (e: React.ChangeEvent<HTMLInputElement>) => {
     setOldPassword(e.target.value);
+    setSubmit(false);
     console.log(e.target.value);
   }
 
   const handleChangeNewPassword = (e: React.ChangeEvent<HTMLInputElement>) => {
     setNewPassword(e.target.value);
+    setSubmit(false);
     console.log(e.target.value);
   }
 
@@ -86,7 +94,8 @@ const Settings = () => {
             <SecondaryButton onClick={reset}>Cancel</SecondaryButton>
             <h2 className="text-2xl font-serif italic">Change username</h2>
             <form className="flex flex-col gap" onSubmit={handleSubmitChangeUsername}>
-              <Input name="new username" value={newUsername} handler={handleChangeUsername} />
+              <Input name="new username" value={newUsername} handler={handleChangeUsername} submit={submit}
+                validate={() => newUsername.length > 0} message="Username cannot be empty"/>
               <SubmitButton>Change username</SubmitButton>
             </form>
           </div>
@@ -96,8 +105,9 @@ const Settings = () => {
             <SecondaryButton onClick={reset}>Cancel</SecondaryButton>
             <h2 className="text-2xl font-serif italic">Change password</h2>
             <form className="flex flex-col gap" onSubmit={handleSubmitChangePassword}>
-              <Input name="old password" value={oldPassword} handler={handleChangeOldPassword} />
-              <Input name="new password" value={newPassword} handler={handleChangeNewPassword} />
+              <Input name="old password" value={oldPassword} handler={handleChangeOldPassword}/>
+              <Input name="new password" value={newPassword} handler={handleChangeNewPassword} submit={submit}
+                validate={() => newPassword.length >= 8} message="Passwords must be at least 8 characters long" />
               <SubmitButton>Change password</SubmitButton>
             </form>
           </div>
@@ -108,7 +118,7 @@ const Settings = () => {
             <h2 className="text-2xl font-serif italic">Delete account</h2>
             <p>Deleting your account will remove your information from our database. This is not reversible.</p>
             <form className="flex flex-col gap" onSubmit={handleSubmitDeleteAccount}>
-              <Input name="password" value={oldPassword} handler={handleChangeOldPassword} />
+              <Input name="password" value={oldPassword} handler={handleChangeOldPassword} submit={submit} />
               <SubmitButton>Delete account</SubmitButton>
             </form>
           </div>

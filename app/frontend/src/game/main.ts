@@ -56,7 +56,7 @@ export function createBabylonGame(canvas: HTMLCanvasElement, gameData: GameData,
   // else
   //   player2 = new AiPlayer("ai placeholder", game, graphics, 1);
   //input manager is also frontend
-  const input = new InputManager(player, scene, board, camera);
+  const input = new InputManager(localGame, scene, board, camera);
   input.registerEvents();
   // game.register(player);
   // game.register(player2);

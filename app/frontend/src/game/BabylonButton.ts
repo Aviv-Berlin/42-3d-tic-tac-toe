@@ -49,7 +49,7 @@ export function babylonButton(canvas: HTMLCanvasElement, type: string): () => vo
     case "hard":
       board= new Board(3, scene, materials);  
       board.createStack(3);
-      camera.spinCamera(2);
+      camera.spinCamera(4);
       break;
 
     default:

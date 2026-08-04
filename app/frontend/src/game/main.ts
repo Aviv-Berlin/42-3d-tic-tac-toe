@@ -1,4 +1,5 @@
 import * as BABYLON from "@babylonjs/core";
+import { WebSocket } from "ws";
 import { Materials } from "./Materials";
 import { Board } from "./Board";
 import { GameUI } from "./GameUI";
@@ -27,24 +28,46 @@ export function createBabylonGame(canvas: HTMLCanvasElement, gameData: GameData,
 
 
   const ws = new WebSocket("ws://localhost:3001");
+  ws.on('open', () => {
+    console.log('Client connected to the server');
+    ws.send(JSON.stringify(createJoinGameMessage(gameData)));
+  });
+  //Previously
+  /*
   ws.onopen = () => {
     console.log(`client connected to server.`);
     ws.send(JSON.stringify(createJoinGameMessage(gameData)));
   };
+  */
+  ws.on('message', (message) => {
+    const data: WsMessage = JSON.parse(event.data);
+    console.log(`Received from server: ${message}`);
+    handleMessage(data)
+  });
+/*
   ws.onmessage = (event) => {
     const data: WsMessage = JSON.parse(event.data);
     console.log(`Received message from server: ${data}`);
     handleMessage(data)
   };
+*/
+  ws.on('close', () => {
+    console.log('Disconnected from the server');
+  });
 
+  /*
   ws.onclose = () => {
     console.log('Disconnected from the server');
   };
-
+  */
+  ws.on('error', (error) => {
+    console.error('WebSocket error:', error);
+  });
+  /*
   ws.onerror = (error) => {
     console.error('WebSocket error:', error);
   };
-
+*/
 
   const localGame = new GameController(gameData, ui, graphics, 2);
   const player = new LocalPlayer(gameData.player1.username, graphics);

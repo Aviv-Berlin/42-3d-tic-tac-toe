@@ -26,11 +26,14 @@ export function makeMove(message: MoveMessage, ws: WebSocket, games: GameState[]
 	if (!game) {
 		console.log(`Invalid gameID ${data.gameID}`);
 		ws.send(JSON.stringify(`Invalid gameID ${data.gameID}`));
+		return ;
 	}
-	if (validPosition(data.position)) {
-		// const msg = createMoveMessage(data.gameID, data.player, )
-		game.broadcastMessage(message);
+	if (game.placeMove(data.position, data.player)) {
+		// yourTurn();
+		return ;
 	}
+	// const msg = createMoveMessage(data.gameID, data.player, )
+	game.broadcastMessage(message);
 
 }
 

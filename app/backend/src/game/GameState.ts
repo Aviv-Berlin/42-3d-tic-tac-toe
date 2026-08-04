@@ -88,13 +88,13 @@ export class GameState {
          this.exitTimeout = setTimeout(() => { ;}, 3000);
     }
 
-    public placeMove(pos: GridPosition): boolean {
+    public placeMove(pos: GridPosition, playerState: CellState): boolean {
         if (this.gameOver)
             return false;
         if (!this.isCellEmpty(pos))
             return false;
 
-        const playerState = this.getCurrentPlayerState();
+        // const playerState = this.getCurrentPlayerState();
         this.moveCounter++;
         this.boardState[pos.x][pos.y][pos.z] = playerState;
         this.gameData.moves.push({ pos: pos, player: playerState });
@@ -158,6 +158,12 @@ export class GameState {
 
     public getCell(pos: GridPosition): CellState {
         return this.boardState[pos.x][pos.y][pos.z];
+    }
+
+    public broadcastMessage(msg: WsMessage) {
+        this.players.forEach(ws =>
+            ws.send(JSON.stringify(msg))
+        );
     }
 
 

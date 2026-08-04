@@ -30,55 +30,52 @@ export class LocalPlayer extends Player {
         for (let i = 0; i < this.N; i++) {
             nextPos = this.loopPlacement(originalPos + movement, this.N);
             const nextCursor: GridPosition = { ...this.cursor, [plane]: nextPos };
-            // if (this.game.isCellEmpty(nextCursor)) {
-                this.cursor = nextCursor;
-                this.graphics.showPreview(this.cursor, this.IAm);
-                return;
+            if (this.boardState) {
+                if (this.boardState[nextCursor.x][nextCursor.y][nextCursor.z] === CellState.Empty) {
+                    this.cursor = nextCursor;
+                    this.graphics.showPreview(this.cursor, this.IAm);
+                    return;
+                }
             }
-        // }
-        //preivew will only move if there is a free cell in that direction.
-
+        }
     }
 
     public selectPos(pos: GridPosition): boolean {
         if (!this.myTurn)
             return false;
-
-        // if (!this.game.isCellEmpty(pos))
-        //     return false;
-
+        if (this.boardState && this.boardState[pos.x][pos.y][pos.z] !== CellState.Empty)
+             return false;
         this.cursor = { ...pos };
         this.graphics.showPreview(this.cursor, this.IAm);
-
         return true;
     }
 
     public choosePos(): void {
         if (!this.myTurn)
             return;
-    //     if (this.game.placeMove(this.cursor))
-    //         this.myTurn = false;
+        this.game.placeMove(this.cursor);
     }
 
 
     private placeCursor(): void {
-        // while(!this.boardState.isCellEmpty(this.cursor)){
-        //     this.cursor.x--;
+        while(this.boardState && this.boardState && this.boardState[this.cursor.x][this.cursor.y][this.cursor.z] !== CellState.Empty){
+            this.cursor.x--;
 
-        //     if (this.cursor.x < 0) {
-        //         this.cursor.x =  this.N - 1;
-        //         this.cursor.y--;
-        //     }
+            if (this.cursor.x < 0) {
+                this.cursor.x =  this.N - 1;
+                this.cursor.y--;
+            }
 
-        //     if (this.cursor.y < 0) {
-        //         this.cursor.y = this.N - 1;
-        //         this.cursor.z--;
-        //     }
+            if (this.cursor.y < 0) {
+                this.cursor.y = this.N - 1;
+                this.cursor.z--;
+            }
 
-        //     if (this.cursor.z < 0) {
-        //         this.cursor.z = this.N - 1;
-        //     }
-        // }
+            if (this.cursor.z < 0) {
+                this.cursor.z = this.N - 1;
+            }
+        }
+
     }
 
     private loopPlacement(value: number, N: number): number {

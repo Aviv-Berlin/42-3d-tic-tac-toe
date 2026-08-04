@@ -22,9 +22,13 @@ export function createBabylonGame(canvas: HTMLCanvasElement, gameData: GameData,
     const materials = new Materials(scene);
     const camera = new CameraManager(scene, canvas);
     const board = new Board(gameData.size, scene, materials);
+    board.createBoard(1);
     const ui = new GameUI(scene, onExit, materials, board);
     const graphics = new GameGraphics(board, materials, camera);
 
+  const gameController = new GameController(gameData, ui, graphics, 2);
+  const player = new LocalPlayer(gameData.player1.username, gameController, graphics);
+  gameController.register(player);
 
   const ws = new WebSocket("ws://localhost:3001");
   ws.onopen = () => {
@@ -34,7 +38,7 @@ export function createBabylonGame(canvas: HTMLCanvasElement, gameData: GameData,
   ws.onmessage = (event) => {
     const data: WsMessage = JSON.parse(event.data);
     console.log(`Received message from server: ${data}`);
-    handleMessage(data)
+    gameController.handleMessage(data);
   };
 
   ws.onclose = () => {
@@ -46,10 +50,6 @@ export function createBabylonGame(canvas: HTMLCanvasElement, gameData: GameData,
   };
 
 
-  //backend runs the GameState and AiPlayer
-  // const game = new GameState(gameData, ui, graphics, onExit, 2);
-  //LocalPlayer is frontend
-  const player = new LocalPlayer(gameData.player1.username, graphics);
   // let player2: Player;
   // if (gameData.player2.type === "ai")
   //   player2 = new AiPlayer(gameData.player2.username, game, graphics, gameData.level);
@@ -58,7 +58,7 @@ export function createBabylonGame(canvas: HTMLCanvasElement, gameData: GameData,
   // else
   //   player2 = new AiPlayer("ai placeholder", game, graphics, 1);
   //input manager is also frontend
-  const input = new InputManager(player, scene, board, camera);
+  const input = new InputManager(gameController, scene, board, camera);
   input.registerEvents();
   // game.register(player);
   // game.register(player2);

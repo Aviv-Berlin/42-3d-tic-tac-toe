@@ -21,13 +21,23 @@ export type GameStartMessage =
 	{ type: "game-start";
 		payload: {
 			gameID: string,
+			playerNames: string[],
+			nPlayers: number,
+			firstPlayer: number,
+			youAre: number
 		}
 	};
 
-export function createGameStartMessage(gameID: string): GameStartMessage {
+export function createGameStartMessage(gameID: string, playerNames: string[],
+		 nPlayers: number, firstPlayer: number, youAre: number): GameStartMessage {
 	return {
 		type: "game-start",
-		payload: { gameID }
+		payload: {
+			gameID,
+			playerNames,
+			nPlayers,
+			firstPlayer,
+			youAre }
 	}
 }
 

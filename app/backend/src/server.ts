@@ -10,9 +10,21 @@ import { handleMessage } from "./game/socketHandlersBE.ts";
 
 const app = express();
 
+const allowedOrigins = new Set([
+    "http://localhost:5173",
+    "http://localhost:5174",
+    "http://localhost:3000"
+]);
+
 app.use(cors({
-	origin: "http://localhost:5173"
+    origin: (origin, callback) => {
+        callback(null, !origin || allowedOrigins.has(origin));
+    }
 }));
+// app.use(cors({
+// 	origin: "http://localhost:5173"
+
+// }));
 
 app.use(express.json());
 

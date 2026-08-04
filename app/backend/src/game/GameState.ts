@@ -53,9 +53,10 @@ export class GameState {
 
     public async startGame(): Promise<void> {
         if (this.players.length < this.nPlayers) {
-            let msg = createGameStartMessage(this.gameData.gameID);
-            this.players.forEach(ws => ws.send(JSON.stringify(msg)))
+            throw new Error("Still waiting for players");
         }
+        let msg = createGameStartMessage(this.gameData.gameID);
+        this.players.forEach(ws => ws.send(JSON.stringify(msg)));
         this.gameData.gameStart = Date.now();
         if (this.gameData.moves === null)
             this.gameData.moves = [];

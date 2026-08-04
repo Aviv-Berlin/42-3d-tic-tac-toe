@@ -20,15 +20,31 @@ function joinGame(message: JoinGameMessage, ws: WebSocket, games: GameState[]) {
 	game.startGame();
 }
 
+export function makeMove(message: MoveMessage, ws: WebSocket, games: GameState[]) {
+	const data = message.payload;
+	let game = games.find(game => game.getID() === data.gameID);
+	if (!game) {
+		console.log(`Invalid gameID ${data.gameID}`);
+		ws.send(JSON.stringify(`Invalid gameID ${data.gameID}`));
+	}
+	if (validPosition(data.position)) {
+		// const msg = createMoveMessage(data.gameID, data.player, )
+		game.broadcastMessage(message);
+	}
+
+}
+
+
 export function handleMessage(message: WsMessage, ws: WebSocket, games: GameState[]) {
 	//console.log(`Received message: ${message}`);
-	console.log(`TYPE: ${message.type} \n`)	
+	console.log(`TYPE: ${message.type} \n`)
 	switch (message.type) {
 			case "join-game":
 				joinGame(message, ws, games);
 				console.log(`Received join-game msg: ${message}`);
 				break;
 			case "move":
+				makeMove(message, ws, games);
 				break;
 			default:
 				console.log(`Unknown message: ${message}`);

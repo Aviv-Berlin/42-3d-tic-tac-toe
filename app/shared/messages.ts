@@ -41,11 +41,24 @@ export type MoveMessage =
 		}
 	};
 
+export function createMoveMessage(gameID: string, player: CellState, position: GridPosition): MoveMessage {
+	return {
+		type: "move",
+		payload: {
+			gameID,
+			player,
+			position
+		}
+	};
+}
+
 export type WsMessage =
   JoinGameMessage
-  | MoveMessage
   | GameStartMessage
+  | MoveMessage
 
-  export default {
-	createGameStartMessage
+export default {
+	createGameStartMessage,
+	createJoinGameMessage,
+	createMoveMessage
   }

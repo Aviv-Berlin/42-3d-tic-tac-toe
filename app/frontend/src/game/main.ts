@@ -16,6 +16,16 @@ import { createJoinGameMessage } from "../../../shared/messages"
 
 export function createBabylonGame(canvas: HTMLCanvasElement, gameData: GameData, onExit: () => void) {
 
+  //all these are the visual elements - so running by the browser
+    const engine = new BABYLON.Engine(canvas, true);
+    const scene = new BABYLON.Scene(engine);
+    const materials = new Materials(scene);
+    const camera = new CameraManager(scene, canvas);
+    const board = new Board(gameData.size, scene, materials);
+    const ui = new GameUI(scene, onExit, materials, board);
+    const graphics = new GameGraphics(board, materials, camera);
+
+
   const ws = new WebSocket("ws://localhost:3001");
   ws.onopen = () => {
     console.log(`client connected to server.`);
@@ -35,14 +45,6 @@ export function createBabylonGame(canvas: HTMLCanvasElement, gameData: GameData,
     console.error('WebSocket error:', error);
   };
 
-//all these are the visual elements - so running by the browser
-  const engine = new BABYLON.Engine(canvas, true);
-  const scene = new BABYLON.Scene(engine);
-  const materials = new Materials(scene);
-  const camera = new CameraManager(scene, canvas);
-  const board = new Board(gameData.size, scene, materials);
-  const ui = new GameUI(scene, onExit, materials, board);
-  const graphics = new GameGraphics(board, materials, camera);
 
   //backend runs the GameState and AiPlayer
   // const game = new GameState(gameData, ui, graphics, onExit, 2);

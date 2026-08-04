@@ -1,13 +1,8 @@
 import * as BABYLON from "@babylonjs/core";
 import { Materials } from "./Materials";
 import { Board } from "./Board";
-import { GameUI } from "./GameUI";
-import { CellState, PLAYER_STATES, GridPosition } from "./Types";
-import { GameGraphics } from "./GameGraphics";
 import { CameraManager } from "./CameraManager";
-import { GameData } from "../types/game";
-import { delay } from "./Utils";
-import { checkWin } from "./GameCheckWin";
+
 
 
 
@@ -24,40 +19,45 @@ export function babylonButton(canvas: HTMLCanvasElement, type: string): () => vo
     case "three":
       board= new Board(3, scene, materials);  
       board.createBoardButton(3);
+      camera.spinCamera(1);
       break;
 
     case "four":
       board= new Board(4, scene, materials);  
       board.createBoardButton(4);
+      camera.spinCamera(1);
       break;
 
     case "five":
       board= new Board(5, scene, materials);  
       board.createBoardButton(5);
+      camera.spinCamera(1);
       break;
 
     case "easy":
       board= new Board(3, scene, materials);  
       board.createStack(1);
+      camera.spinCamera(1);
       break;
 
     case "medium":
       board= new Board(3, scene, materials);  
       board.createStack(2);
+      camera.spinCamera(2);
       break;
 
     case "hard":
       board= new Board(3, scene, materials);  
       board.createStack(3);
+      camera.spinCamera(2);
       break;
 
     default:
       board= new Board(3, scene, materials);  
-      board.createBoardButton(3);
+      board.createBoardButton(4);
       break;
   }
 
-  camera.spinCamera(1);
 
   engine.runRenderLoop(() => {
     scene.render();

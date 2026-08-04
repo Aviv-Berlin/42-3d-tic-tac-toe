@@ -4,6 +4,7 @@ import { Materials } from "./Materials";
 export interface TextCubeOptions {
     name?: string;
     size?: number;
+    letterFace?: number;
     renderEdges?: boolean;
     alwaysOnTop?: boolean;
     onClick?: () => void;
@@ -30,7 +31,7 @@ export class TextCubeFactory {
         const multiMaterial = new BABYLON.MultiMaterial(`${name}MultiMaterial`, this.scene);
         multiMaterial.subMaterials = [ plainMaterial, textMaterial ];
         cube.material = multiMaterial;
-        this.createFaceSubMeshes(cube);
+        this.createFaceSubMeshes(cube, options.letterFace ?? 1);
         this.materials.applyTextCubeLook(cube, renderEdges);
 
         if (options.alwaysOnTop) {
@@ -43,15 +44,17 @@ export class TextCubeFactory {
         return cube;
     }
 
-    private createFaceSubMeshes(cube: BABYLON.Mesh): void {
+    private createFaceSubMeshes(cube: BABYLON.Mesh, letterFace: number): void {
         cube.subMeshes = [];
 
         const vertexCount = cube.getTotalVertices();
 
         for (let face = 0; face < 6; face++) {
             let materialIndex: number;
-            if (face === 1)
+            if (face === letterFace)
                 materialIndex = 1; // front face: text
+            else if (letterFace === 6)
+                materialIndex = 1;
             else
                 materialIndex = 0; // other faces: plain
             new BABYLON.SubMesh(materialIndex, 0, vertexCount, face * 6, 6, cube);

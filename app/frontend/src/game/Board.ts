@@ -2,6 +2,7 @@ import * as BABYLON from "@babylonjs/core";
 import type { AbstractMesh, Scene, StandardMaterial, Mesh, Material } from "@babylonjs/core";
 import { Materials } from "./Materials";
 import { GridPosition } from "./Types";
+import { TextCubeFactory } from "./TextCubeFactory";
 
 export class Board {
     scene: Scene;
@@ -98,6 +99,30 @@ export class Board {
             }
         }
     }
+
+    public createLogo(N: number): void {
+        this.smallSize = 2 / N;
+        this.boardMeshes.forEach(mesh => mesh.dispose());
+        this.boardMeshes = [];
+        const Factory = new TextCubeFactory(this.scene, this.materials);
+
+        for (let x = 0; x < N; x++) {
+            for (let y = 0; y < N; y++) {
+                for (let z = 0; z < N; z++) {
+                    const finalMesh = Factory.createTextCube("T");
+                    finalMesh.position = this.getPosition(x, y, z, false);
+                    finalMesh.material = this.materials.cube;
+                    //finalMesh.enableEdgesRendering();
+                    finalMesh.edgesWidth = 15.0;
+                    finalMesh.edgesColor = new BABYLON.Color4(1, 1, 1, 1);
+                    finalMesh.metadata = { gridPosition: { x, y, z}};
+                    this.boardMeshes.push(finalMesh);
+                }
+            }
+        }
+    }
+
+
 
     public createStack(N: number): void {
         this.boardMeshes.forEach(mesh => mesh.dispose());

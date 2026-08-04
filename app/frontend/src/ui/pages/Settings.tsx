@@ -8,7 +8,9 @@ import SubmitButton from '../components/SubmitButton';
 
 const Settings = () => {
   const username = useUsername();
-  const [newUsername, setNewUsername] = useState(username)
+  const [newUsername, setNewUsername] = useState(username);
+  const [oldPassword, setOldPassword] = useState("");
+  const [newPassword, setNewPassword] = useState("");
   const [triggerChangeUsername, setTriggerChangeUsername] = useState(false);
   const [triggerChangePassword, setTriggerChangePassword] = useState(false);
   const [triggerDeleteAccount, setTriggerDeleteAccount] = useState(false);
@@ -41,10 +43,26 @@ const Settings = () => {
 
   const handleSubmitUsername = (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
+    //here we send the new username to the backend with a PUT request
+  }
+
+  const handleSubmitPassword = (e: React.FormEvent<HTMLFormElement>) => {
+    e.preventDefault();
+    //here we send the new username to the backend with a PUT request
   }
 
   const handleChangeUsername = (e: React.ChangeEvent<HTMLInputElement>) => {
     setNewUsername(e.target.value);
+    console.log(e.target.value);
+  }
+
+  const handleChangeOldPassword = (e: React.ChangeEvent<HTMLInputElement>) => {
+    setOldPassword(e.target.value);
+    console.log(e.target.value);
+  }
+
+  const handleChangeNewPassword = (e: React.ChangeEvent<HTMLInputElement>) => {
+    setNewPassword(e.target.value);
     console.log(e.target.value);
   }
 
@@ -66,7 +84,15 @@ const Settings = () => {
           </>
         }
         {triggerChangePassword &&
-          <SecondaryButton onClick={reset}>Cancel</SecondaryButton>
+          <>
+            <SecondaryButton onClick={reset}>Cancel</SecondaryButton>
+            <h2 className="text-2xl font-serif italic">Change password</h2>
+            <form className="flex flex-col gap" onSubmit={handleSubmitPassword}>
+              <Input name="old password" value={oldPassword} handler={handleChangeOldPassword} />
+              <Input name="new password" value={newPassword} handler={handleChangeNewPassword} />
+              <SubmitButton>Change password</SubmitButton>
+            </form>
+          </>
         }
         {triggerDeleteAccount &&
           <SecondaryButton onClick={reset}>Cancel</SecondaryButton>

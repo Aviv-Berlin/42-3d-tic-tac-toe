@@ -8,7 +8,7 @@ import SubmitButton from '../components/SubmitButton';
 
 const Settings = () => {
   const username = useUsername();
-  const [newUsername, setNewUsername] = useState(username);
+  const [newUsername, setNewUsername] = useState("");
   const [oldPassword, setOldPassword] = useState("");
   const [newPassword, setNewPassword] = useState("");
   const [triggerChangeUsername, setTriggerChangeUsername] = useState(false);
@@ -21,34 +21,39 @@ const Settings = () => {
     setTriggerChangeUsername(false);
     setTriggerChangePassword(false);
     setTriggerDeleteAccount(false);
+    setNewUsername("");
+    setOldPassword("");
+    setNewPassword("");
   }
 
   const handleTriggerChangeUsername = () => {
-    console.log("change username");
     reset();
     setTriggerChangeUsername(true);
   }
 
   const handleTriggerChangePassword = () => {
-    console.log("change password");
     reset();
     setTriggerChangePassword(true);
   }
 
   const handleTriggerDeleteAccount = () => {
-    console.log("delete account");
     reset();
     setTriggerDeleteAccount(true);
   }
 
-  const handleSubmitUsername = (e: React.FormEvent<HTMLFormElement>) => {
+  const handleSubmitChangeUsername = (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
     //here we send the new username to the backend with a PUT request
   }
 
-  const handleSubmitPassword = (e: React.FormEvent<HTMLFormElement>) => {
+  const handleSubmitChangePassword = (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
-    //here we send the new username to the backend with a PUT request
+    //here we send the new password to the backend with a PUT request
+  }
+
+  const handleSubmitDeleteAccount = (e: React.FormEvent<HTMLFormElement>) => {
+    e.preventDefault();
+    //here we delete the account with a DELETE request
   }
 
   const handleChangeUsername = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -74,35 +79,43 @@ const Settings = () => {
         </div>
         <h1 className="text-4xl font-serif italic mb-8">Settings</h1>
         {triggerChangeUsername &&
-          <>
+          <div className="w-80 flex flex-col gap-4">
             <SecondaryButton onClick={reset}>Cancel</SecondaryButton>
             <h2 className="text-2xl font-serif italic">Change username</h2>
-            <form className="flex flex-col gap" onSubmit={handleSubmitUsername}>
+            <form className="flex flex-col gap" onSubmit={handleSubmitChangeUsername}>
               <Input name="new username" value={newUsername} handler={handleChangeUsername} />
               <SubmitButton>Change username</SubmitButton>
             </form>
-          </>
+          </div>
         }
         {triggerChangePassword &&
-          <>
+          <div className="w-80 flex flex-col gap-4">
             <SecondaryButton onClick={reset}>Cancel</SecondaryButton>
             <h2 className="text-2xl font-serif italic">Change password</h2>
-            <form className="flex flex-col gap" onSubmit={handleSubmitPassword}>
+            <form className="flex flex-col gap" onSubmit={handleSubmitChangePassword}>
               <Input name="old password" value={oldPassword} handler={handleChangeOldPassword} />
               <Input name="new password" value={newPassword} handler={handleChangeNewPassword} />
               <SubmitButton>Change password</SubmitButton>
             </form>
-          </>
+          </div>
         }
         {triggerDeleteAccount &&
-          <SecondaryButton onClick={reset}>Cancel</SecondaryButton>
+          <div className="w-80 flex flex-col gap-4">
+            <SecondaryButton onClick={reset}>Cancel</SecondaryButton>
+            <h2 className="text-2xl font-serif italic">Delete account</h2>
+            <p>Deleting your account will remove your information from our database. This is not reversible.</p>
+            <form className="flex flex-col gap" onSubmit={handleSubmitDeleteAccount}>
+              <Input name="password" value={oldPassword} handler={handleChangeOldPassword} />
+              <SubmitButton>Delete account</SubmitButton>
+            </form>
+          </div>
         }
         {!triggerChangeUsername && !triggerChangePassword && !triggerDeleteAccount &&
-          <>
+          <div className="w-60 flex flex-col gap-8">
             <SecondaryButton onClick={handleTriggerChangeUsername}>Change username</SecondaryButton>
             <SecondaryButton onClick={handleTriggerChangePassword}>Change password</SecondaryButton>
             <SecondaryButton onClick={handleTriggerDeleteAccount}>Delete account</SecondaryButton>
-          </>
+          </div>
         }
       </div>
     </MainLayout>

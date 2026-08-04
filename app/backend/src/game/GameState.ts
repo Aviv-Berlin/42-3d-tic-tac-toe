@@ -21,6 +21,7 @@ export class GameState {
     private N: number;
     // private ui: GameUI;
     private players: WebSocket[] = [];
+    private playerNames: string[] = [];
     private currentPlayerIndex: number = 0;
     private nPlayers: number;
     private moveCounter: number = 0;
@@ -52,15 +53,23 @@ export class GameState {
     }
 
     public async startGame(): Promise<void> {
+        let numPlayers = this.nPlayers;
+        if (this.gameData.gameMode !== "online")
+            numPlayers = 1;
         if (this.players.length < this.nPlayers) {
-            throw new Error("Still waiting for players");
+            console.log(`Still waiting for players`);
+            return ;
         }
-        let msg = createGameStartMessage(this.gameData.gameID);
-        this.players.forEach(ws => ws.send(JSON.stringify(msg)));
+        this.currentPlayerIndex = Math.floor(Math.random() * this.nPlayers);
+        let msg = createGameStartMessage(this.gameData.gameID, this.playerNames, this.nPlayers, this.currentPlayerIndex, 0);
+        let i = 0;
+        while (i < numPlayers) {
+            msg.payload.youAre = i;
+            this.players.forEach(ws => ws.send(JSON.stringify(msg)));
+        }
         this.gameData.gameStart = Date.now();
         if (this.gameData.moves === null)
             this.gameData.moves = [];
-        this.currentPlayerIndex = Math.floor(Math.random() * this.nPlayers);
         // await this.ui.playerTitle(this.getCurrentPlayer().name);
         // this.getCurrentPlayer().yourTurn(this.boardState, this.N, this.getCurrentPlayerState());
     }
@@ -202,7 +211,8 @@ export class GameState {
         return this.gameData.gameID;
     }
 
-    public addPlayer(player: WebSocket) {
+    public addPlayer(player: WebSocket, name: string) {
         this.players.push(player);
+        this.playerNames.push(name);
     }
 }

@@ -2,7 +2,7 @@ import { useSearchParams, useNavigate } from 'react-router-dom';
 import { useEffect, useRef } from 'react';
 import GameLayout from '../layouts/GameLayout';
 import Canvas from '../components/Canvas';
-import { GameData, GameMode, AiLevel } from '../../types/game';
+import { GameData, GameMode, AiLevel } from '../../../../shared/game';
 import createPlayers from '../../utils/players';
 import { useUsername } from '../../store/username';
 
@@ -33,6 +33,7 @@ const Game = () => {
       player1,
       player2,
       level,
+      gameMode,
       moves: [],
       size,
       isFinished: false,
@@ -40,6 +41,7 @@ const Game = () => {
       winner: null,
       gameStart: 0,
       gameEnd: 0,
+      gameID: "genericGameID"
     };
   }
 

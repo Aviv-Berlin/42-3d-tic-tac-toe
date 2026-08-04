@@ -1,6 +1,6 @@
 import { useNavigate } from 'react-router-dom';
 import MainButton from '../components/MainButton';
-import { GameMode } from '../../types/game';
+import { GameMode } from '../../../../shared/game';
 import CenteredLayout from '../layouts/CenteredLayout';
 import { useUsername } from '../../store/username';
 

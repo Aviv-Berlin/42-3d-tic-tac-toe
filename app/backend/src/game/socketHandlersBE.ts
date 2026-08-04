@@ -8,12 +8,12 @@ function joinGame(message: JoinGameMessage, ws: WebSocket, games: GameState[]) {
 	const data = message.payload.gameData;
 	let game = games.find(game => game.getID() === data.gameID);
 	if (game) {
-		game.addPlayer(ws);
+		game.addPlayer(ws, data.player1.username);
 		console.log(`Added player to game ${data.gameID}`);
 	}
 	else {
 		game = new GameState(data, 2);
-		game.addPlayer(ws);
+		game.addPlayer(ws, data.player1.username);
 		games.push(game);
 		console.log(`Game ${data.gameID} created`);
 	}

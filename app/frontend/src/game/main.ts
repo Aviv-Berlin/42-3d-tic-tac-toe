@@ -1,9 +1,8 @@
 import * as BABYLON from "@babylonjs/core";
-import { WebSocket } from "ws";
 import { Materials } from "./Materials";
 import { Board } from "./Board";
 import { GameUI } from "./GameUI";
-import { GameController } from "./GameController";
+import { GameState } from "../../../backend/src/game/GameState";
 import { InputManager } from "./InputManager";
 import { GameGraphics } from "./GameGraphics";
 import { CameraManager } from "./CameraManager";
@@ -28,48 +27,28 @@ export function createBabylonGame(canvas: HTMLCanvasElement, gameData: GameData,
 
 
   const ws = new WebSocket("ws://localhost:3001");
-  ws.on('open', () => {
-    console.log('Client connected to the server');
-    ws.send(JSON.stringify(createJoinGameMessage(gameData)));
-  });
-  //Previously
-  /*
   ws.onopen = () => {
     console.log(`client connected to server.`);
     ws.send(JSON.stringify(createJoinGameMessage(gameData)));
   };
-  */
-  ws.on('message', (message) => {
-    const data: WsMessage = JSON.parse(event.data);
-    console.log(`Received from server: ${message}`);
-    handleMessage(data)
-  });
-/*
   ws.onmessage = (event) => {
     const data: WsMessage = JSON.parse(event.data);
     console.log(`Received message from server: ${data}`);
     handleMessage(data)
   };
-*/
-  ws.on('close', () => {
-    console.log('Disconnected from the server');
-  });
 
-  /*
   ws.onclose = () => {
     console.log('Disconnected from the server');
   };
-  */
-  ws.on('error', (error) => {
-    console.error('WebSocket error:', error);
-  });
-  /*
+
   ws.onerror = (error) => {
     console.error('WebSocket error:', error);
   };
-*/
 
-  const localGame = new GameController(gameData, ui, graphics, 2);
+
+  //backend runs the GameState and AiPlayer
+  // const game = new GameState(gameData, ui, graphics, onExit, 2);
+  //LocalPlayer is frontend
   const player = new LocalPlayer(gameData.player1.username, graphics);
   // let player2: Player;
   // if (gameData.player2.type === "ai")
@@ -79,7 +58,7 @@ export function createBabylonGame(canvas: HTMLCanvasElement, gameData: GameData,
   // else
   //   player2 = new AiPlayer("ai placeholder", game, graphics, 1);
   //input manager is also frontend
-  const input = new InputManager(localGame, scene, board, camera);
+  const input = new InputManager(player, scene, board, camera);
   input.registerEvents();
   // game.register(player);
   // game.register(player2);

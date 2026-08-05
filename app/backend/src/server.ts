@@ -41,6 +41,7 @@ wss.on('connection', (ws) => {
 	ws.on('message', (event) => {
     const message: WsMessage = JSON.parse(event.toString());
 		handleMessage(message, ws, games);
+    	console.log(`Got `);
 
 	})
 	//ws.send(JSON.stringify(`Hello from server.ts!`));

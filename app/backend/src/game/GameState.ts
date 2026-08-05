@@ -70,9 +70,10 @@ export class GameState {
         this.gameData.gameStart = Date.now();
         if (this.gameData.moves === null)
             this.gameData.moves = [];
-        // await this.ui.playerTitle(this.getCurrentPlayer().name);
-        // this.getCurrentPlayer().yourTurn(this.boardState, this.N, this.getCurrentPlayerState());
-    }
+		
+    	this.getCurrentPlayer(ws => ws.send(JSON.stringify(msg)));
+		ws	
+	}
 
     public async startReply(): Promise<void> {
         for (let i = 0; i < this.gameData.moves.length; i++) {

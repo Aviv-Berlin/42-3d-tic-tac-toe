@@ -50,7 +50,8 @@ const Register = () => {
       <AuthCard>
         <h1 className="text-2xl font-serif italic">Sign up</h1>
         <form className="flex flex-col" onSubmit={handleSubmit}>
-          <Input name="username" value={form.username} handler={handleChange} submit={submit}/>
+          <Input name="username" value={form.username} handler={handleChange} submit={submit}
+            validate={() => form.username.length > 0} message="Username cannot be empty"/>
           <Input name="email" value={form.email} handler={handleChange}
             validate={() => form.email.includes('@')} message="Invalid email" submit={submit} />
           <Input name="password" value={form.password} handler={handleChange}

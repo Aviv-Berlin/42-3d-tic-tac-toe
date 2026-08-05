@@ -78,11 +78,12 @@ export function createBabylonGame(canvas: HTMLCanvasElement, gameData: GameData,
 
   return () => {
     // game.dispose();
-    ws.close();
+    //ws.close();
     ui.dispose();
     input.unregisterEvents();
     window.removeEventListener("resize", handleResize);
     scene.dispose();
     engine.dispose();
+    ws.close();
   };
 }

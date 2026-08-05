@@ -1,4 +1,4 @@
-import { WsMessage, JoinGameMessage, MoveMessage } from "../../../shared/messages.ts"
+import { WsMessage, JoinGameMessage, MoveMessage, createMoveMessage } from "../../../shared/messages.ts"
 import { WebSocket } from "ws";
 import { GameState } from "./GameState.ts";
 
@@ -18,6 +18,12 @@ function joinGame(message: JoinGameMessage, ws: WebSocket, games: GameState[]) {
 		console.log(`Game ${data.gameID} created`);
 	}
 	game.startGame();
+
+//dummy move
+	let msg = createMoveMessage(data.gameID, 1, {x:1, y:1, z:1});
+	ws.send(JSON.stringify(msg));
+	msg = createMoveMessage(data.gameID, 2, {x:2, y:2, z:1});
+	ws.send(JSON.stringify(msg));
 }
 
 export function makeMove(message: MoveMessage, ws: WebSocket, games: GameState[]) {

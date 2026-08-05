@@ -7,7 +7,7 @@ import { Player } from "../../../frontend/src/game/Player.ts";
 import { GameData, Move } from "../../../shared/game.js";
 import { WebSocket } from "ws";
 import { log } from "node:console";
-import { WsMessage, JoinGameMessage, MoveMessage, GameStartMessage, createGameStartMessage } from "../../../shared/messages.ts"
+import { WsMessage, JoinGameMessage, MoveMessage, GameStartMessage, createGameStartMessage, CreateYourTurnMessage } from "../../../shared/messages.ts"
 
 
 interface NewPlayer {
@@ -70,9 +70,7 @@ export class GameState {
         this.gameData.gameStart = Date.now();
         if (this.gameData.moves === null)
             this.gameData.moves = [];
-		
-    	this.getCurrentPlayer(ws => ws.send(JSON.stringify(msg)));
-		ws	
+		this.players[this.currentPlayerIndex].send(JSON.stringify(CreateYourTurnMessage(this.gameData.gameID, 0)));
 	}
 
     public async startReply(): Promise<void> {
@@ -161,6 +159,7 @@ export class GameState {
     private async switchPlayer(): Promise<void> {
         this.currentPlayerIndex =
             (this.currentPlayerIndex + 1) % this.players.length;
+        // if (this.gameData.gameMode === "ai")
 
         // await this.ui.playerTitle(this.getCurrentPlayer().name);
         // this.getCurrentPlayer().yourTurn(this.boardState, this.N, this.getCurrentPlayerState());

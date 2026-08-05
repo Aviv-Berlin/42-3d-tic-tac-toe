@@ -6,6 +6,7 @@ const Profile = () => {
 
   // this array will need to be fetched from the backend
   // im using the same interface that gets passed to babylon
+  // send only the last 5 games
   const games: GameData[] = [
     {
       player1: {
@@ -23,6 +24,48 @@ const Profile = () => {
       },
       moves: [],
       size: 3,
+      isFinished: true,
+      isDraw: false,
+      gameStart: 0,
+      gameEnd: 0,
+    },
+    {
+      player1: {
+        type: "real",
+        username: "s-gas",
+      },
+      player2: {
+        type: "real",
+        username: "a_random_player",
+      },
+      level: 0,
+      winner: {
+        type: "real",
+        username: "a_random_player",
+      },
+      moves: [],
+      size: 3,
+      isFinished: true,
+      isDraw: false,
+      gameStart: 0,
+      gameEnd: 0,
+    },
+    {
+      player1: {
+        type: "real",
+        username: "s-gas",
+      },
+      player2: {
+        type: "ai",
+        username: "ai",
+      },
+      level: 0,
+      winner: {
+        type: "real",
+        username: "s-gas",
+      },
+      moves: [],
+      size: 4,
       isFinished: true,
       isDraw: false,
       gameStart: 0,

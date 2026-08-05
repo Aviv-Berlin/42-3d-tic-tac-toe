@@ -1,4 +1,6 @@
+import { useUsername } from '../../store/username'
 import { GameData } from '../../types/game'
+import { getGameEndMessage } from '../../utils/gameData'
 import SecondaryButton from './SecondaryButton'
 
 interface GameRecapProps {
@@ -6,13 +8,18 @@ interface GameRecapProps {
   gameData: GameData,
 }
 
+// to be fixed once real data is fetched
 const GameRecap = ({ gameData }: GameRecapProps) => {
+  const username = useUsername();
+  const result = getGameEndMessage(gameData, username)
   return (
-    <div className="border rounded-md border-stone-400 p-4 flex gap-4">
-      <p>WIN</p>
-      <p>against AI</p>
-      <p>Board size: 3x3x3</p>
-      <SecondaryButton>REPLAY</SecondaryButton>
+    <div className="border rounded-md border-stone-400 px-8 py-4 flex justify-between items-center">
+      <p className="text-xl">{result}</p>
+      <div className="flex gap-8">
+        <p className="text-sm">against AI</p>
+        <p className="text-sm">Board size: 3x3x3</p>
+      </div>
+      <SecondaryButton onClick={() => console.log("click")}>REPLAY</SecondaryButton>
     </div>
   )
 }

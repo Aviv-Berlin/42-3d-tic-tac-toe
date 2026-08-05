@@ -43,8 +43,7 @@ wss.on('connection', (ws) => {
 		handleMessage(message, ws, games);
 
 	})
-
-	ws.send(JSON.stringify(`Hello from server.ts!`));
+	//ws.send(JSON.stringify(`Hello from server.ts!`));
 });
 
 const PORT = Number(process.env.PORT) || 3001;

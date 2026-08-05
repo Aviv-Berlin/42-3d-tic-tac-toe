@@ -31,7 +31,7 @@ export function createBabylonGame(canvas: HTMLCanvasElement, gameData: GameData,
   const player = new LocalPlayer(gameData.player1.username, gameController, graphics);
   gameController.register(player);
 
-  const ws = new WebSocket("ws://localhost:3001");
+  const ws = new WebSocket(`ws://${window.location.hostname}:3001`);
   ws.onopen = () => {
     console.log(`client connected to server.`);
     ws.send(JSON.stringify(createJoinGameMessage(gameData)));

@@ -43,6 +43,8 @@ export function createBabylonGame(canvas: HTMLCanvasElement, gameData: GameData,
 
   ws.onclose = () => {
     console.log('Disconnected from the server');
+    cleanup();
+    // onExit();
   };
 
   ws.onerror = (error) => {
@@ -75,13 +77,16 @@ export function createBabylonGame(canvas: HTMLCanvasElement, gameData: GameData,
 
   window.addEventListener("resize", handleResize);
 
-  return () => {
-    // game.dispose();
+  const cleanup = () => {
     ui.dispose();
     input.unregisterEvents();
     window.removeEventListener("resize", handleResize);
     scene.dispose();
     engine.dispose();
     ws.close();
+  }
+
+  return () => {
+    cleanup();
   };
 }

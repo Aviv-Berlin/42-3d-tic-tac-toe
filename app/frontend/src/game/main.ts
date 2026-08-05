@@ -2,6 +2,7 @@ import * as BABYLON from "@babylonjs/core";
 import { Materials } from "./Materials";
 import { Board } from "./Board";
 import { GameUI } from "./GameUI";
+import { GameController } from "./GameController";
 import { GameState } from "../../../backend/src/game/GameState";
 import { InputManager } from "./InputManager";
 import { GameGraphics } from "./GameGraphics";

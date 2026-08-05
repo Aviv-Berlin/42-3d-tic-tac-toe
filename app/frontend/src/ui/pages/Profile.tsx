@@ -1,4 +1,5 @@
 import ProfileLayout from '../layouts/ProfileLayout';
+import GameRecap from '../components/GameRecap';
 import { GameData } from '../../types/game'
 
 const Profile = () => {
@@ -34,11 +35,7 @@ const Profile = () => {
       <div className="border-r border-stone-400 p-8 flex flex-col gap-4">
         <h2 className="text-2xl font-serif italic">Recent Games</h2>
         {games.map((game, i) => (
-          <div key={i} className="border rounded-md border-stone-400 p-4 flex gap-4">
-            <p>WIN</p>
-            <p>against AI</p>
-            <p>Board size: 3x3x3</p>
-          </div>
+          <GameRecap key={i} gameData={game} />
         ))}
       </div>
       <div className="p-8">

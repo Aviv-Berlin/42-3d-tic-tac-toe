@@ -49,6 +49,8 @@ export class GameController {
                 this.gameID = message.payload.gameID;
                 this.startGame(message);
                 break;
+			case "your-turn":
+				console.log('It\'s your turn');
             case "move":
                 this.graphics.placeSphere(message.payload.position, message.payload.player);
                 this.boardState[message.payload.position.x][message.payload.position.y][message.payload.position.z] = message.payload.player;

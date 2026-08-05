@@ -41,12 +41,14 @@ wss.on('connection', (ws) => {
 	ws.on('message', (event) => {
     const message: WsMessage = JSON.parse(event.toString());
 		handleMessage(message, ws, games);
+    	console.log(`Got `);
 
 	})
-
-	ws.send(JSON.stringify(`Hello from server.ts!`));
+	//ws.send(JSON.stringify(`Hello from server.ts!`));
 });
 
-server.listen(process.env.PORT, () => {
+const PORT = Number(process.env.PORT) || 3001;
+
+server.listen(PORT, '0.0.0.0', () => {
 	  console.log(`Server running on port ${process.env.PORT}`);
 });

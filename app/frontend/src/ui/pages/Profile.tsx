@@ -76,13 +76,34 @@ const Profile = () => {
   return (
     <ProfileLayout>
       <div className="border-r border-stone-400 p-8 flex flex-col gap-4">
-        <h2 className="text-2xl font-serif italic">Recent Games</h2>
+        <h2 className="text-3xl font-serif italic">Recent Games</h2>
         {games.map((game, i) => (
           <GameRecap key={i} gameData={game} />
         ))}
       </div>
-      <div className="p-8">
-        <h2 className="text-2xl font-serif italic">Stats</h2>
+      <div className="flex flex-col p-8 gap-4">
+        <h2 className="text-3xl font-serif italic">Stats</h2>
+        <div className="flex gap-2 items-baseline">
+          <p className="text-xl">Rank:</p>
+          <p className="text-2xl font-serif italic">1234</p>
+        </div>
+        <div className="flex gap-2 items-baseline">
+          <p className="text-xl">Games:</p>
+          <p className="text-2xl font-serif italic">42</p>
+        </div>
+        <div className="flex gap-2 items-baseline">
+          <p className="text-xl">Wins:</p>
+          <p className="text-2xl font-serif italic">30</p>
+        </div>
+        <div className="flex gap-2 items-baseline">
+          <p className="text-xl">Draws:</p>
+          <p className="text-2xl font-serif italic">3</p>
+        </div>
+        <div className="flex gap-2 items-baseline">
+          <p className="text-xl">Losses:</p>
+          <p className="text-2xl font-serif italic">9</p>
+        </div>
+
       </div>
     </ProfileLayout>
   )

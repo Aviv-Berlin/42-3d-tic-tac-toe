@@ -15,7 +15,7 @@ const GameRecap = ({ gameData }: GameRecapProps) => {
   return (
     <div className="border rounded-md border-stone-400 px-8 py-4 flex justify-between items-center">
       <p className="text-xl">{result}</p>
-      <div className="flex gap-8">
+      <div className="flex flex-col md:flex-row gap-2 md:gap-8">
         <p className="text-sm">against AI</p>
         <p className="text-sm">Board size: 3x3x3</p>
       </div>

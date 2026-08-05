@@ -70,6 +70,7 @@ export class GameState {
         this.gameData.gameStart = Date.now();
         if (this.gameData.moves === null)
             this.gameData.moves = [];
+        console.log(`handing yourTurn to player`);
 		this.players[this.currentPlayerIndex].send(JSON.stringify(CreateYourTurnMessage(this.gameData.gameID, 0)));
 	}
 

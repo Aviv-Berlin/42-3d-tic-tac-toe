@@ -1,0 +1,100 @@
+Issue: a gazillion messages are being sent via sockets,
+until javascript heap runs out of memory.
+
+Backend looks like:
+```
+
+Server running on port 3001
+TYPE: join-game 
+
+Game genericGameID created
+Still waiting for players
+Received join-game msg: [object Object]
+TYPE: join-game 
+
+Added player to game genericGameID
+
+<--- Last few GCs --->
+
+[36553:0x70e3000]    46857 ms: Scavenge (interleaved) 4091.7 (4096.2) -> 4090.9 (4100.7) MB, pooled: 0 MB, 3.45 / 0.00 ms  (average mu = 0.329, current mu = 0.310) allocation failure; 
+[36553:0x70e3000]    47236 ms: Mark-Compact (reduce) 4094.3 (4100.7) -> 4092.1 (4094.9) MB, pooled: 0 MB, 267.95 / 0.00 ms  (+ 4.1 ms in 55 steps since start of marking, biggest step 2.9 ms, walltime since start of marking 279 ms) (average mu = 0.318, cur
+FATAL ERROR: Ineffective mark-compacts near heap limit Allocation failed - JavaScript heap out of memory
+----- Native stack trace -----
+
+ 1: 0x74eae8 node::OOMErrorHandler(char const*, v8::OOMDetails const&) [/home/hallison/.nvm/versions/node/v24.18.1/bin/node]
+ 2: 0xc43660  [/home/hallison/.nvm/versions/node/v24.18.1/bin/node]
+ 3: 0xc4374f  [/home/hallison/.nvm/versions/node/v24.18.1/bin/node]
+ 4: 0xee6fa5  [/home/hallison/.nvm/versions/node/v24.18.1/bin/node]
+ 5: 0xee6fd2  [/home/hallison/.nvm/versions/node/v24.18.1/bin/node]
+ 6: 0xee72ca  [/home/hallison/.nvm/versions/node/v24.18.1/bin/node]
+ 7: 0xef7fca  [/home/hallison/.nvm/versions/node/v24.18.1/bin/node]
+ 8: 0xefc370  [/home/hallison/.nvm/versions/node/v24.18.1/bin/node]
+ 9: 0x198e911  [/home/hallison/.nvm/versions/node/v24.18.1/bin/node]
+
+```
+
+Console looks like:
+```
+Game genericGameID started
+main.ts:40 Received message from server: [object Object]
+GameController.ts:41 Received message: [object Object]
+GameController.ts:44 Game genericGameID started
+main.ts:40 Received message from server: [object Object]
+GameController.ts:41 Received message: [object Object]
+GameController.ts:44 Game genericGameID started
+main.ts:40 Received message from server: [object Object]
+GameController.ts:41 Received message: [object Object]
+GameController.ts:44 Game genericGameID started
+main.ts:40 Received message from server: [object Object]
+GameController.ts:41 Received message: [object Object]
+GameController.ts:44 Game genericGameID started
+main.ts:40 Received message from server: [object Object]
+GameController.ts:41 Received message: [object Object]
+GameController.ts:44 Game genericGameID started
+main.ts:40 Received message from server: [object Object]
+GameController.ts:41 Received message: [object Object]
+GameController.ts:44 Game genericGameID started
+main.ts:40 Received message from server: [object Object]
+GameController.ts:41 Received message: [object Object]
+GameController.ts:44 Game genericGameID started
+```
+
+Tracing what's happening:
+frontend/src/game/main.ts:40
+```
+38	ws.onmessage = (event) => {
+39	const data: WsMessage = JSON.parse(event.data);
+40	console.log(`Received message from server: ${data}`);
+41	gameController.handleMessage(data);
+  };
+```
+
+Here, client receives a message from the server
+and calls gameController.handleMessage(data)...
+which is in frontend/src/game/GameController.ts.
+This is the source of the
+"Received message: [object Object]	GameController.ts:41"
+
+```
+public handleMessage(message: WsMessage) {
+        console.log(`Received message: ${message}`);
+        switch (message.type) {
+            case "game-start":
+                console.log(`Game ${message.payload.gameID} started`);
+                this.playerNames = message.payload.playerNames;
+                this.nPlayers = message.payload.nPlayers;
+                this.currentPlayerIndex = message.payload.firstPlayer;
+                this.localPlayerIndex = message.payload.youAre;
+                this.gameID = message.payload.gameID;
+                this.startGame(message);
+                break;
+            case "move":
+                this.graphics.placeSphere(message.payload.position, message.payload.player);
+                this.boardState[message.payload.position.x][message.payload.position.y][message.payload.position.z] = message.payload.player;
+                this.switchPlayer();
+                break;
+            default:
+                console.log(`Unknown message: ${message}`);
+        }
+    }
+```

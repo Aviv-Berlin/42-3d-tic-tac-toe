@@ -47,7 +47,6 @@ export class GameController {
                 this.currentPlayerIndex = message.payload.firstPlayer;
                 this.localPlayerIndex = message.payload.youAre;
                 this.gameID = message.payload.gameID;
-                this.startGame(message);
                 break;
             case "move":
                 this.graphics.placeSphere(message.payload.position, message.payload.player);

@@ -108,6 +108,7 @@ export class GameUI {
                 anchor: "right",
                 alwaysOnTop :true,
                 onClick: () => {
+                    //close the websockets?
                     this.onExit();
                 }
             }

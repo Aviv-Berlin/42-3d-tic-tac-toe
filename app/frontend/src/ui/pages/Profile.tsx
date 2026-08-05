@@ -103,6 +103,10 @@ const Profile = () => {
           <p className="text-xl">Losses:</p>
           <p className="text-2xl font-serif italic">9</p>
         </div>
+        <div className="flex gap-2 items-baseline justify-between">
+          <p className="text-xl">Win ratio:</p>
+          <p className="text-2xl font-serif italic">68%</p>
+        </div>
 
       </div>
     </ProfileLayout>

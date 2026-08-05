@@ -3,6 +3,7 @@ import { Materials } from "./Materials";
 import { Board } from "./Board";
 import { GameUI } from "./GameUI";
 import { GameController } from "./GameController";
+import { GameState } from "../../../backend/src/game/GameState";
 import { InputManager } from "./InputManager";
 import { GameGraphics } from "./GameGraphics";
 import { CameraManager } from "./CameraManager";
@@ -30,7 +31,7 @@ export function createBabylonGame(canvas: HTMLCanvasElement, gameData: GameData,
   const player = new LocalPlayer(gameData.player1.username, gameController, graphics);
   gameController.register(player);
 
-  const ws = new WebSocket("ws://localhost:3001");
+  const ws = new WebSocket(`ws://${window.location.hostname}:3001`);
   ws.onopen = () => {
     console.log(`client connected to server.`);
     ws.send(JSON.stringify(createJoinGameMessage(gameData)));
@@ -43,6 +44,8 @@ export function createBabylonGame(canvas: HTMLCanvasElement, gameData: GameData,
 
   ws.onclose = () => {
     console.log('Disconnected from the server');
+    cleanup();
+    // onExit();
   };
 
   ws.onerror = (error) => {
@@ -77,11 +80,17 @@ export function createBabylonGame(canvas: HTMLCanvasElement, gameData: GameData,
 
   return () => {
     // game.dispose();
+    //ws.close();
+  const cleanup = () => {
     ui.dispose();
     input.unregisterEvents();
     window.removeEventListener("resize", handleResize);
     scene.dispose();
     engine.dispose();
     ws.close();
+  }
+
+  return () => {
+    cleanup();
   };
 }

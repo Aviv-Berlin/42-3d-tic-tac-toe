@@ -17,6 +17,23 @@ export function createJoinGameMessage(gameData: GameData): JoinGameMessage {
 }
 
 //server -> client
+export type yourTurnMessage =
+	{ type: "your-turn";
+		payload: {
+			gameID: string,
+			youAre: number
+		}
+	};
+
+export function CreateYourTurnMessage(gameID: string, youAre: number): yourTurnMessage {
+	return {
+		type: "your-turn",
+		payload: {
+			gameID,
+			youAre }
+	}
+}
+
 export type GameStartMessage =
 	{ type: "game-start";
 		payload: {
@@ -66,6 +83,7 @@ export type WsMessage =
   JoinGameMessage
   | GameStartMessage
   | MoveMessage
+  | yourTurnMessage
 
 export default {
 	createGameStartMessage,

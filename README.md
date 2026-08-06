@@ -27,6 +27,18 @@ The web app will be available locally at:
 http://localhost:5173
 ```
 
+To run a second instance on a different port:
+
+```bash
+npm run dev:alt
+```
+
+Available at:
+
+```bash
+http://localhost:5174
+```
+
 ## How to run the backend
 
 Change to the `backend` directory:

@@ -42,8 +42,8 @@ const Lobby = () => {
   return (
     <MainLayout>
       <div className="flex flex-col gap-12">
-        <div className="relative flex w-full justify-center items-center">
-          <div className="absolute left-0">
+        <div className="relative flex flex-col sm:flex-row w-full justify-center items-center gap-4">
+          <div className="sm:absolute sm:left-0">
             <SecondaryButton onClick={() => navigate('/home')}>← Back</SecondaryButton>
           </div>
           <h1 className="text-xl">Mode: <span className="font-serif italic">Online</span></h1>

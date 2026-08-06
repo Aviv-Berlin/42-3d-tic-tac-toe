@@ -20,40 +20,52 @@ export class GameController {
     private N: number;
     private ui: GameUI;
     private playerNames: string[] = [];
+    private localPlayer!: LocalPlayer;
+    private guestPlayer!: LocalPlayer;
+    private localPlayerIndex: number = -1;
+    private guestPlayerIndex: number = -1;
     private players: Player[] = [];
     private currentPlayerIndex: number = 0;
     private nPlayers: number;
     private graphics: GameGraphics;
     private gameData: GameData;
-    private localPlayerIndex: number = 0;
     private gameID!: string;
+    private ws: WebSocket;
 
-    constructor(gameData: GameData, ui: GameUI, graphics: GameGraphics, nPlayers: number) {
+    constructor(gameData: GameData, ui: GameUI, graphics: GameGraphics, nPlayers: number, ws: WebSocket) {
         this.gameData = gameData;
         this.N = gameData.size;
         this.ui = ui;
         this.graphics = graphics;
         this.nPlayers = nPlayers;
+        this.ws = ws;
         this.initBoard();
     }
     
-    public handleMessage(message: WsMessage) {
-        console.log(`Received message: ${message}`);
+    public async handleMessage(message: WsMessage) {
+        console.log("Received message:", message);
         switch (message.type) {
             case "game-start":
                 console.log(`Game ${message.payload.gameID} started`);
                 this.playerNames = message.payload.playerNames;
                 this.nPlayers = message.payload.nPlayers;
-                this.currentPlayerIndex = message.payload.firstPlayer;
-                this.localPlayerIndex = message.payload.youAre;
+                if (this.playerNames[message.payload.youAre] === "guest")
+                    this.guestPlayerIndex = message.payload.youAre;
+                else
+                    this.localPlayerIndex = message.payload.youAre;
                 this.gameID = message.payload.gameID;
                 break;
-			case "your-turn":
+			case "turn":
 				console.log('It\'s your turn');
+                await this.ui.playerTitle(this.playerNames[message.payload.PlaysNow]);
+                if (message.payload.PlaysNow === this.localPlayerIndex)
+                    this.localPlayer.yourTurn(this.boardState, this.N, PLAYER_STATES[this.localPlayerIndex]);
+                if (message.payload.PlaysNow === this.guestPlayerIndex)
+                    this.guestPlayer.yourTurn(this.boardState, this.N, PLAYER_STATES[this.localPlayerIndex]);
+                break;
             case "move":
                 this.graphics.placeSphere(message.payload.position, message.payload.player);
                 this.boardState[message.payload.position.x][message.payload.position.y][message.payload.position.z] = message.payload.player;
-                this.switchPlayer();
                 break;
             default:
                 console.log(`Unknown message: ${message}`);
@@ -68,9 +80,13 @@ export class GameController {
             this.players[0].yourTurn(this.boardState, this.N, PLAYER_STATES[this.localPlayerIndex]);
     }
 
-    public register(player: Player): void {
+    public register(player: LocalPlayer): void {
         if (this.players.length >= this.nPlayers)
             throw new Error("Too many players were registered");
+        if (player.name === "guest")
+            this.guestPlayer = player;
+        else
+            this.localPlayer = player;
         this.players.push(player);
     }
 
@@ -80,8 +96,11 @@ export class GameController {
     }
 
 
-    public placeMove(pos: GridPosition): boolean {
-        createMoveMessage(this.gameID, PLAYER_STATES[this.currentPlayerIndex], pos);
+    public placeMove(pos: GridPosition, IAm: LocalPlayer): boolean {
+        if (IAm === this.localPlayer)
+            this.ws.send(JSON.stringify(createMoveMessage(this.gameID, PLAYER_STATES[this.localPlayerIndex], pos)));
+        else if (IAm === this.guestPlayer)
+            this.ws.send(JSON.stringify(createMoveMessage(this.gameID, PLAYER_STATES[this.guestPlayerIndex], pos)));
         return true;
     }
 

@@ -4,13 +4,10 @@ import { CellState, GridPosition } from "../../../shared/game/Types"
 
 export abstract class Player {
     public name;
-    protected game;
-    protected graphics;
 
-    constructor(name: string, gameController: GameController, graphics: GameGraphics) {
+
+    constructor(name: string) {
         this.name = name;
-        this.game = gameController;
-        this.graphics = graphics;
     }
 
     abstract yourTurn(BoardState: CellState[][][], N: number, youAre: CellState): boolean;

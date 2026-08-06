@@ -17,6 +17,8 @@ import { createJoinGameMessage } from "../../../shared/messages"
 
 export function createBabylonGame(canvas: HTMLCanvasElement, gameData: GameData, onExit: () => void) {
 
+  const instanceID = crypto.randomUUID().slice(0, 8);
+  console.log(`[Babylon ${instanceID}] CREATE`);
   //all these are the visual elements - so running by the browser
     const engine = new BABYLON.Engine(canvas, true);
     const scene = new BABYLON.Scene(engine);
@@ -27,11 +29,13 @@ export function createBabylonGame(canvas: HTMLCanvasElement, gameData: GameData,
     const ui = new GameUI(scene, onExit, materials, board);
     const graphics = new GameGraphics(board, materials, camera);
 
-  const gameController = new GameController(gameData, ui, graphics, 2);
-  const player = new LocalPlayer(gameData.player1.username, gameController, graphics);
-  gameController.register(player);
+
 
   const ws = new WebSocket(`ws://${window.location.hostname}:3001`);
+  const gameController = new GameController(gameData, ui, graphics, 2, ws);
+  const player = new LocalPlayer(gameData.player1.username, gameController, graphics);
+  gameController.register(player);
+  
   ws.onopen = () => {
     console.log(`client connected to server.`);
     ws.send(JSON.stringify(createJoinGameMessage(gameData)));
@@ -43,9 +47,7 @@ export function createBabylonGame(canvas: HTMLCanvasElement, gameData: GameData,
   };
 
   ws.onclose = () => {
-    console.log('Disconnected from the server');
-    cleanup();
-    // onExit();
+    console.log("Disconnected from the server");
   };
 
   ws.onerror = (error) => {
@@ -78,19 +80,38 @@ export function createBabylonGame(canvas: HTMLCanvasElement, gameData: GameData,
 
   window.addEventListener("resize", handleResize);
 
-  return () => {
-    // game.dispose();
-    //ws.close();
+  let disposed = false;
+
   const cleanup = () => {
-    ui.dispose();
+    if (disposed)
+      return;
+    console.log(`[Babylon ${instanceID}] CLEANUP`);
+    disposed = true;
+
+    console.log("Cleaning up Babylon game");
+
     input.unregisterEvents();
     window.removeEventListener("resize", handleResize);
+
+    engine.stopRenderLoop();
+
+    // Remove the handlers before closing the socket.
+    ws.onopen = null;
+    ws.onmessage = null;
+    ws.onclose = null;
+    ws.onerror = null;
+
+    if (
+      ws.readyState === WebSocket.OPEN ||
+      ws.readyState === WebSocket.CONNECTING
+    ) {
+      ws.close();
+    }
+
+    ui.dispose();
     scene.dispose();
     engine.dispose();
-    ws.close();
-  }
-
-  return () => {
-    cleanup();
   };
+
+  return cleanup;
 }

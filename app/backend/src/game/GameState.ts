@@ -1,13 +1,11 @@
-// import { GameUI } from "../../frontend/src/game/GameUI";
 import { checkWin } from "./GameCheckWin.ts";
-// import { GameGraphics } from "../../frontend/src/game/GameGraphics";
 import { GridPosition, CellState, PLAYER_STATES} from "../../../shared/game/Types.ts";
 import { Player } from "../../../frontend/src/game/Player.ts";
-// import { LocalPlayer } from "../../frontend/src/game/LocalPlayer";
 import { GameData, Move } from "../../../shared/game.js";
 import { WebSocket } from "ws";
+import { AiPlayer } from "./AIPlayer.ts"
 import { log } from "node:console";
-import { WsMessage, JoinGameMessage, MoveMessage, GameStartMessage, createGameStartMessage, CreateYourTurnMessage } from "../../../shared/messages.ts"
+import { WsMessage, JoinGameMessage, MoveMessage, GameStartMessage, createGameStartMessage, CreateTurnMessage } from "../../../shared/messages.ts"
 
 
 interface NewPlayer {
@@ -15,23 +13,34 @@ interface NewPlayer {
     yourTurn(BoardState: CellState[][][], N: number): boolean;
 }
 
+interface RemotePlayer {
+  type: "remote";
+  name: string;
+  socket: WebSocket;
+}
+
+interface AiGamePlayer {
+  type: "ai";
+  name: string;
+  ai: AiPlayer;
+}
+
+type GamePlayer = RemotePlayer | AiGamePlayer;
 
 export class GameState {
     private boardState: CellState [][][] = [];
     private N: number;
-    // private ui: GameUI;
-    private players: WebSocket[] = [];
+    private players: GamePlayer[] = [];
     private playerNames: string[] = [];
     private currentPlayerIndex: number = 0;
     private nPlayers: number;
     private moveCounter: number = 0;
-    // private graphics: GameGraphics;
     private gameOver: boolean = false;
     // private onExit: () => void; //this is a function that is called when game is
     private exitTimeout: ReturnType<typeof setTimeout> | null = null;
     private gameData: GameData;
 
-    constructor(gameData: GameData, /*ui: GameUI, graphics: GameGraphics, onExit: () => void,*/ nPlayers: number) {
+    constructor(gameData: GameData, nPlayers: number) {
         if (nPlayers < 2 || nPlayers > 4)
             throw new Error("The game supports between 2 and 4 players");
         this.gameData = gameData;
@@ -39,40 +48,42 @@ export class GameState {
         this.gameData.winner = null;
         this.gameData.isDraw = false;
         this.N = gameData.size;
-        // this.ui = ui;
-        // this.graphics = graphics;
-        // this.onExit = onExit;
         this.nPlayers = nPlayers;
         this.initBoard();
     }
 
-    public register(player: Player): void {
-        if (this.players.length >= this.nPlayers)
-            throw new Error("Too many players were registered");
-        // this.players.push(player);
-    }
+
 
     public async startGame(): Promise<void> {
-        let numPlayers = this.nPlayers;
-        if (this.gameData.gameMode !== "online")
-            numPlayers = 1;
         if (this.players.length < this.nPlayers) {
             console.log(`Still waiting for players`);
             return ;
         }
-        this.currentPlayerIndex = Math.floor(Math.random() * this.nPlayers);
-        let msg = createGameStartMessage(this.gameData.gameID, this.playerNames, this.nPlayers, this.currentPlayerIndex, 0);
-        let i = 0;
-        while (i < numPlayers) {
-            msg.payload.youAre = i;
-            this.players.forEach(ws => ws.send(JSON.stringify(msg)));
-        }
+        let msg = createGameStartMessage(this.gameData.gameID, this.playerNames, this.nPlayers, 0);
+        console.log("Sending game-start messages");
+        this.disributeMessage(msg);
+        console.log("Finished sending game-start messages");
+
         this.gameData.gameStart = Date.now();
         if (this.gameData.moves === null)
             this.gameData.moves = [];
         console.log(`handing yourTurn to player`);
-		this.players[this.currentPlayerIndex].send(JSON.stringify(CreateYourTurnMessage(this.gameData.gameID, 0)));
+        this.currentPlayerIndex = Math.floor(Math.random() * this.players.length);
+        this.disributeMessage(CreateTurnMessage(this.gameData.gameID, this.currentPlayerIndex));
 	}
+
+    private disributeMessage(msg: WsMessage) {
+        for (let i = 0; i < this.players.length; i++) {
+            let outgoingMessage: WsMessage = msg;
+            if (msg.type === "game-start")
+                outgoingMessage = { ...msg, payload: { ...msg.payload, youAre: i, }, };
+            const player = this.players[i];
+            if (player.type === "remote")
+                player.socket.send(JSON.stringify(outgoingMessage));
+            else
+                player.ai.handleMessage(outgoingMessage);
+        }
+    }
 
     public async startReply(): Promise<void> {
         for (let i = 0; i < this.gameData.moves.length; i++) {
@@ -139,13 +150,7 @@ export class GameState {
         return this.boardState[pos.x][pos.y][pos.z] === CellState.Empty;
     }
 
-    public getCurrentPlayer(): WebSocket {
-        const player = this.players[this.currentPlayerIndex];
-        if (player === undefined) {
-            throw new Error("Current player has not been registered");
-        }
-        return player;
-    }
+
 
     public getCurrentPlayerState(): CellState {
         const state = PLAYER_STATES[this.currentPlayerIndex];
@@ -170,11 +175,7 @@ export class GameState {
         return this.boardState[pos.x][pos.y][pos.z];
     }
 
-    public broadcastMessage(msg: WsMessage) {
-        this.players.forEach(ws =>
-            ws.send(JSON.stringify(msg))
-        );
-    }
+
 
 
 
@@ -212,8 +213,17 @@ export class GameState {
         return this.gameData.gameID;
     }
 
-    public addPlayer(player: WebSocket, name: string) {
-        this.players.push(player);
+    public addPlayer(socket: WebSocket, name: string) {
+        this.players.push({ type: "remote", name, socket });
         this.playerNames.push(name);
+    }
+
+    public addAiPlayer(ai: AiPlayer, name: string): void {
+        this.players.push({ type: "ai", name, ai, });
+        this.playerNames.push(name);
+    }
+
+    public getBoardState(): CellState [][][] {
+        return this.boardState;
     }
 }

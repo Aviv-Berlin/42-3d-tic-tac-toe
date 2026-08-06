@@ -1,7 +1,7 @@
 import { GridPosition, CellState, points, PLAYER_STATES } from "../../../shared/game/Types.ts"
 import { Player } from "../../../frontend/src/game/Player.ts";
 import { GameState } from "./GameState.ts";
-import { GameGraphics} from "../../../frontend/src/game/GameGraphics.ts"
+import { WsMessage, JoinGameMessage, MoveMessage, GameStartMessage, createGameStartMessage, CreateYourTurnMessage } from "../../../shared/messages.ts"
 import { addGP } from "../../../shared/game/Utils.ts";
 
 interface PositionScore {
@@ -15,13 +15,37 @@ interface MoveScore {
     blocksWin: boolean;
 }
 
-export class AiPlayer extends Player {
-    private IAm: CellState = 0;
+export class AiPlayer {
+    private IAm: number = -1;
     private level: number;
+    private game: GameState
+    private name: string;
+    private N: number;
 
-    constructor(name: string, game: GameState, graphics: GameGraphics, level: number) {
-        super (name, /*game,*/ graphics);
+    constructor(name: string, game: GameState, level: number, N: number) {
+        this.name = name;
         this.level = level;
+        this.game = game;
+        this.N = N;
+    }
+
+    public handleMessage(message: WsMessage) {
+        console.log("Received message:", message);
+        switch (message.type) {
+            case "game-start":
+                this.IAm = message.payload.youAre;
+                break;
+			case "turn":
+				if (this.IAm === message.payload.PlaysNow)
+                    this.yourTurn(this.game.getBoardState(),this.N, PLAYER_STATES[this.IAm]);
+                break;
+            case "move":
+
+                //this.switchPlayer();
+                break;
+            default:
+                console.log(`Unknown message: ${message}`);
+        }
     }
 
     public yourTurn(BoardState: CellState[][][], N: number, youAre: CellState): boolean {
@@ -92,13 +116,13 @@ export class AiPlayer extends Player {
         else
             candidates = bestPositions;
         const randomIndex = Math.floor(Math.random() * candidates.length);
-        // this.game.placeMove(candidates[randomIndex]);
+        this.game.placeMove(candidates[randomIndex]);
     }
 
     private scoreMove(boardState: CellState[][][], pos: GridPosition, N: number): MoveScore {
         let score = -1;
         if (boardState[pos.x][pos.y][pos.z] !== CellState.Empty)
-            return { score: -1, winsGame: false, blocksWin: false};
+            return { score, winsGame: false, blocksWin: false};
 
         const myScore = this.scorePos(boardState, pos, this.IAm, N);
         const emptyScore = this.scorePos(boardState, pos, 0, N);

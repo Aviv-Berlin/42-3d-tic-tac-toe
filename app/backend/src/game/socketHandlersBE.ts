@@ -1,12 +1,14 @@
 import { WsMessage, JoinGameMessage, MoveMessage, createMoveMessage } from "../../../shared/messages.ts"
 import { WebSocket } from "ws";
 import { GameState } from "./GameState.ts";
+import { AiPlayer } from "./AIPlayer.ts";
 
 
 
 function joinGame(message: JoinGameMessage, ws: WebSocket, games: GameState[]) {
 	const data = message.payload.gameData;
 	let game = games.find(game => game.getID() === data.gameID);
+
 	if (game) {
 		game.addPlayer(ws, data.player1.username);
 		console.log(`Added player to game ${data.gameID}`);
@@ -17,13 +19,13 @@ function joinGame(message: JoinGameMessage, ws: WebSocket, games: GameState[]) {
 		games.push(game);
 		console.log(`Game ${data.gameID} created`);
 	}
+	if (data.player2.type === "ai") {
+		const ai = new AiPlayer(data.player2.username, game, data.level, data.size);
+		game.addAiPlayer(ai, "ai");
+	}
 	game.startGame();
 
-//dummy move
-	let msg = createMoveMessage(data.gameID, 1, {x:1, y:1, z:1});
-	ws.send(JSON.stringify(msg));
-	msg = createMoveMessage(data.gameID, 2, {x:2, y:2, z:1});
-	ws.send(JSON.stringify(msg));
+
 }
 
 export function makeMove(message: MoveMessage, ws: WebSocket, games: GameState[]) {
@@ -35,7 +37,6 @@ export function makeMove(message: MoveMessage, ws: WebSocket, games: GameState[]
 		return ;
 	}
 	if (game.placeMove(data.position, data.player)) {
-		// yourTurn();
 		return ;
 	}
 	// const msg = createMoveMessage(data.gameID, data.player, )

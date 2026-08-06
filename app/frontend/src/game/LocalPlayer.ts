@@ -1,5 +1,8 @@
 import { Player } from "./Player";
 import { CellState, GridPosition } from "../../../shared/game/Types"
+import { GameController } from "./GameController";
+import { GameGraphics} from "./GameGraphics"
+
 
 export class LocalPlayer extends Player {
     private myTurn: boolean = false;
@@ -7,7 +10,14 @@ export class LocalPlayer extends Player {
     private boardState: CellState[][][] | null = null;
     private N: number = 0;
     private IAm: CellState = CellState.Empty;
+    private game: GameController;
+    private graphics: GameGraphics;
 
+    constructor(name: string, game: GameController, graphics: GameGraphics) {
+        super (name);
+        this.game = game;
+        this.graphics = graphics;
+    }
 
     public yourTurn(boardState: CellState[][][], N: number, youAre: CellState): boolean {
         this.boardState = boardState;
@@ -53,7 +63,7 @@ export class LocalPlayer extends Player {
     public choosePos(): void {
         if (!this.myTurn)
             return;
-        this.game.placeMove(this.cursor);
+        this.game.placeMove(this.cursor, this);
     }
 
 

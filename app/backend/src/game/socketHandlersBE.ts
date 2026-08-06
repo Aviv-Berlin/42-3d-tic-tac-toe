@@ -23,6 +23,8 @@ function joinGame(message: JoinGameMessage, ws: WebSocket, games: GameState[]) {
 		const ai = new AiPlayer(game, data.level, data.size);
 		game.addAiPlayer(ai, "ai");
 	}
+	else if (data.player2.type === "guest")
+		game.addPlayer(ws, "guest");
 	game.startGame();
 }
 

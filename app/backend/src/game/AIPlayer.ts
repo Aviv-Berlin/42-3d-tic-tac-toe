@@ -68,7 +68,7 @@ export class AiPlayer {
                 this.playRandomMove(BoardState, N);
                 break;
            }
-        }, 2000);
+        }, 1000);
         return true;
     }
 

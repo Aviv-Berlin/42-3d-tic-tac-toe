@@ -31,14 +31,16 @@ export class GameController {
     private gameData: GameData;
     private gameID!: string;
     private ws: WebSocket;
+    private onExit: () => void;
 
-    constructor(gameData: GameData, ui: GameUI, graphics: GameGraphics, nPlayers: number, ws: WebSocket) {
+    constructor(gameData: GameData, ui: GameUI, graphics: GameGraphics, nPlayers: number, ws: WebSocket, onExit: () => void) {
         this.gameData = gameData;
         this.N = gameData.size;
         this.ui = ui;
         this.graphics = graphics;
         this.nPlayers = nPlayers;
         this.ws = ws;
+        this.onExit = onExit;
         this.initBoard();
     }
     
@@ -55,17 +57,21 @@ export class GameController {
                     this.localPlayerIndex = message.payload.youAre;
                 this.gameID = message.payload.gameID;
                 break;
-			case "turn":
+			
+            case "turn":
+                this.currentPlayerIndex = message.payload.PlaysNow;
                 await this.ui.playerTitle(this.playerNames[message.payload.PlaysNow]);
                 if (message.payload.PlaysNow === this.localPlayerIndex)
                     this.localPlayer.yourTurn(this.boardState, this.N, PLAYER_STATES[this.localPlayerIndex]);
                 if (message.payload.PlaysNow === this.guestPlayerIndex)
-                    this.guestPlayer.yourTurn(this.boardState, this.N, PLAYER_STATES[this.localPlayerIndex]);
+                    this.guestPlayer.yourTurn(this.boardState, this.N, PLAYER_STATES[this.guestPlayerIndex]);
                 break;
+            
             case "move":
                 this.graphics.placeSphere(message.payload.position, message.payload.player);
                 this.boardState[message.payload.position.x][message.payload.position.y][message.payload.position.z] = message.payload.player;
                 break;
+            
             case "end":
                 this.gameData = message.payload.gameData;
                 this.graphics.hidePreview();
@@ -74,9 +80,11 @@ export class GameController {
                 else {
                     this.graphics.animateWin(message.payload.winningPos);
                     if (this.gameData.winner)
-                        this.ui.displayWinner(this.gameData.winner.username);    
+                        await this.ui.displayWinner(this.gameData.winner.username);    
                 }
+                setTimeout(() => {this.onExit();}, 3000);
                 break;
+            
             default:
                 console.log(`Unknown message: ${message}`);
         }
@@ -107,7 +115,9 @@ export class GameController {
 
     public getCurrentPlayer(): Player | null {
             if (this.currentPlayerIndex === this.localPlayerIndex)
-                return this.players[0];
+                return this.localPlayer;
+            else if (this.currentPlayerIndex === this.guestPlayerIndex)
+                return this.guestPlayer;
             else
                 return null;
     }

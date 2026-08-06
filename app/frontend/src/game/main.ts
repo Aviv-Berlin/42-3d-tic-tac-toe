@@ -32,7 +32,7 @@ export function createBabylonGame(canvas: HTMLCanvasElement, gameData: GameData,
 
 
   const ws = new WebSocket(`ws://${window.location.hostname}:3001`);
-  const gameController = new GameController(gameData, ui, graphics, 2, ws);
+  const gameController = new GameController(gameData, ui, graphics, 2, ws, onExit);
   const player = new LocalPlayer(gameData.player1.username, gameController, graphics);
   gameController.register(player);
   if (gameData.player2.type === "guest") {
@@ -59,19 +59,10 @@ export function createBabylonGame(canvas: HTMLCanvasElement, gameData: GameData,
   };
 
 
-  // let player2: Player;
-  // if (gameData.player2.type === "ai")
-  //   player2 = new AiPlayer(gameData.player2.username, game, graphics, gameData.level);
-  // else if (gameData.player2.type === "guest")
-  //   player2 = new LocalPlayer(gameData.player2.username, game, graphics);
-  // else
-  //   player2 = new AiPlayer("ai placeholder", game, graphics, 1);
   //input manager is also frontend
   const input = new InputManager(gameController, scene, board, camera);
   input.registerEvents();
-  // game.register(player);
-  // game.register(player2);
-  // game.startGame();
+
 
   engine.runRenderLoop(() => {
     scene.render();

@@ -64,7 +64,7 @@ export class GameServerConnection {
                 break;
             
             case "end":
-                this.gameData = message.payload.gameData;
+                Object.assign(this.gameData, message.payload.gameData);
                 this.graphics.hidePreview();
                 if (this.gameData.isDraw)
                     this.ui.displayWinner("No one wins"); 

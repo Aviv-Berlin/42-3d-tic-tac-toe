@@ -1,20 +1,20 @@
-import { Player } from "./Player";
 import { CellState, GridPosition } from "../../../shared/game/Types"
-import { GameController } from "./GameController";
+import { GameServerConnection } from "./GameServerConnection";
 import { GameGraphics} from "./GameGraphics"
 
 
-export class LocalPlayer extends Player {
+export class LocalPlayer {
     private myTurn: boolean = false;
     private cursor: GridPosition = {x: 0, y: 0, z: 0};
     private boardState: CellState[][][] | null = null;
     private N: number = 0;
     private IAm: CellState = CellState.Empty;
-    private game: GameController;
+    private game: GameServerConnection;
     private graphics: GameGraphics;
+    public readonly name: string;
 
-    constructor(name: string, game: GameController, graphics: GameGraphics) {
-        super (name);
+    constructor(name: string, game: GameServerConnection, graphics: GameGraphics) {
+        this.name = name;
         this.game = game;
         this.graphics = graphics;
     }

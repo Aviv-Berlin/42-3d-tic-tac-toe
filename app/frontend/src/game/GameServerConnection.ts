@@ -1,21 +1,12 @@
-import * as BABYLON from "@babylonjs/core";
-import { Materials } from "./Materials";
-import { Board } from "./Board";
 import { GameUI } from "./GameUI";
-import { GameState } from "../../../backend/src/game/GameState";
-import { InputManager } from "./InputManager";
 import { GameGraphics } from "./GameGraphics";
-import { CameraManager } from "./CameraManager";
-import { Player } from "./Player"
-import { AiPlayer } from "../../../backend/src/game/AIPlayer"
 import { LocalPlayer } from "./LocalPlayer"
 import { GameData } from "../../../shared/game";
 import { GridPosition, CellState, PLAYER_STATES } from "../../../shared/game/Types"
 import { WsMessage } from "../../../shared/messages"
-import { handleMessage } from "./socketHandlersFE";
-import { createJoinGameMessage, createMoveMessage } from "../../../shared/messages"
+import { createMoveMessage } from "../../../shared/messages"
 
-export class GameController {
+export class GameServerConnection {
     private boardState: CellState [][][] = [];
     private N: number;
     private ui: GameUI;
@@ -24,7 +15,7 @@ export class GameController {
     private guestPlayer!: LocalPlayer;
     private localPlayerIndex: number = -1;
     private guestPlayerIndex: number = -1;
-    private players: Player[] = [];
+    private players: LocalPlayer[] = [];
     private currentPlayerIndex: number = 0;
     private nPlayers: number;
     private graphics: GameGraphics;
@@ -113,7 +104,7 @@ export class GameController {
         return true;
     }
 
-    public getCurrentPlayer(): Player | null {
+    public getCurrentPlayer(): LocalPlayer | null {
             if (this.currentPlayerIndex === this.localPlayerIndex)
                 return this.localPlayer;
             else if (this.currentPlayerIndex === this.guestPlayerIndex)

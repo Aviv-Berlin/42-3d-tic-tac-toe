@@ -1,4 +1,4 @@
-import { GameController } from "./GameController"
+import { GameServerConnection } from "./GameServerConnection"
 import { Vector3} from "@babylonjs/core/Maths/math.vector";
 import * as BABYLON from "@babylonjs/core";
 import { Scene, Observer,PointerInfo } from "@babylonjs/core";
@@ -9,13 +9,13 @@ import { CameraManager } from "./CameraManager"
 
 
 export class InputManager {
-    private game: GameController;
+    private game: GameServerConnection;
     private scene: Scene;
     private mouse: Observer<PointerInfo> | null = null
     private board: Board;
     private camera: CameraManager;
 
-    constructor(game: GameController, scene: Scene, board: Board, camera: CameraManager) {
+    constructor(game: GameServerConnection, scene: Scene, board: Board, camera: CameraManager) {
         this.game = game;
         this.scene = scene;
         this.board = board;

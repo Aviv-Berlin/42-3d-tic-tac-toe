@@ -5,7 +5,7 @@ import { GameUI } from "./GameUI";
 import { CellState, PLAYER_STATES, GridPosition } from "../../../shared/game/Types";
 import { GameGraphics } from "./GameGraphics";
 import { CameraManager } from "./CameraManager";
-import { GameData } from "../types/game";
+import { GameData } from "../../../shared/game";
 import { delay } from "../../../shared/game/Utils";
 import { checkWin } from "../../../backend/src/game/GameCheckWin";
 

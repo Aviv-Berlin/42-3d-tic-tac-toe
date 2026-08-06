@@ -3,16 +3,12 @@ import { Materials } from "./Materials";
 import { Board } from "./Board";
 import { GameUI } from "./GameUI";
 import { GameController } from "./GameController";
-import { GameState } from "../../../backend/src/game/GameState";
 import { InputManager } from "./InputManager";
 import { GameGraphics } from "./GameGraphics";
 import { CameraManager } from "./CameraManager";
-import { Player } from "./Player"
-import { AiPlayer } from "../../../backend/src/game/AIPlayer"
 import { LocalPlayer } from "./LocalPlayer"
 import { GameData } from "../../../shared/game";
 import { WsMessage } from "../../../shared/messages"
-import { handleMessage } from "./socketHandlersFE";
 import { createJoinGameMessage } from "../../../shared/messages"
 
 export function createBabylonGame(canvas: HTMLCanvasElement, gameData: GameData, onExit: () => void) {

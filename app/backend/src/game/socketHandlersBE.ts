@@ -20,12 +20,10 @@ function joinGame(message: JoinGameMessage, ws: WebSocket, games: GameState[]) {
 		console.log(`Game ${data.gameID} created`);
 	}
 	if (data.player2.type === "ai") {
-		const ai = new AiPlayer(data.player2.username, game, data.level, data.size);
+		const ai = new AiPlayer(game, data.level, data.size);
 		game.addAiPlayer(ai, "ai");
 	}
 	game.startGame();
-
-
 }
 
 export function makeMove(message: MoveMessage, ws: WebSocket, games: GameState[]) {
@@ -40,7 +38,7 @@ export function makeMove(message: MoveMessage, ws: WebSocket, games: GameState[]
 		return ;
 	}
 	// const msg = createMoveMessage(data.gameID, data.player, )
-	game.broadcastMessage(message);
+	//game.broadcastMessage(message);
 
 }
 

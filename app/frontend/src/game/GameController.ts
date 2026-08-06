@@ -56,7 +56,6 @@ export class GameController {
                 this.gameID = message.payload.gameID;
                 break;
 			case "turn":
-				console.log('It\'s your turn');
                 await this.ui.playerTitle(this.playerNames[message.payload.PlaysNow]);
                 if (message.payload.PlaysNow === this.localPlayerIndex)
                     this.localPlayer.yourTurn(this.boardState, this.N, PLAYER_STATES[this.localPlayerIndex]);
@@ -67,18 +66,23 @@ export class GameController {
                 this.graphics.placeSphere(message.payload.position, message.payload.player);
                 this.boardState[message.payload.position.x][message.payload.position.y][message.payload.position.z] = message.payload.player;
                 break;
+            case "end":
+                this.gameData = message.payload.gameData;
+                this.graphics.hidePreview();
+                if (this.gameData.isDraw)
+                    this.ui.displayWinner("No one wins"); 
+                else {
+                    this.graphics.animateWin(message.payload.winningPos);
+                    if (this.gameData.winner)
+                        this.ui.displayWinner(this.gameData.winner.username);    
+                }
+                break;
             default:
                 console.log(`Unknown message: ${message}`);
         }
     }
     
-    private async switchPlayer(): Promise<void> {
-        this.currentPlayerIndex = (this.currentPlayerIndex + 1) % this.players.length;
 
-        await this.ui.playerTitle(this.playerNames[this.currentPlayerIndex]);
-        if (this.currentPlayerIndex === this.localPlayerIndex)
-            this.players[0].yourTurn(this.boardState, this.N, PLAYER_STATES[this.localPlayerIndex]);
-    }
 
     public register(player: LocalPlayer): void {
         if (this.players.length >= this.nPlayers)
@@ -90,17 +94,14 @@ export class GameController {
         this.players.push(player);
     }
 
-    private startGame(message: WsMessage) {
-        if (this.currentPlayerIndex === this.localPlayerIndex)
-            this.players[0].yourTurn(this.boardState, this.N, PLAYER_STATES[this.localPlayerIndex]);
-    }
+
 
 
     public placeMove(pos: GridPosition, IAm: LocalPlayer): boolean {
         if (IAm === this.localPlayer)
-            this.ws.send(JSON.stringify(createMoveMessage(this.gameID, PLAYER_STATES[this.localPlayerIndex], pos)));
+            this.ws.send(JSON.stringify(createMoveMessage(this.gameID, PLAYER_STATES[this.localPlayerIndex], this.localPlayerIndex, pos)));
         else if (IAm === this.guestPlayer)
-            this.ws.send(JSON.stringify(createMoveMessage(this.gameID, PLAYER_STATES[this.guestPlayerIndex], pos)));
+            this.ws.send(JSON.stringify(createMoveMessage(this.gameID, PLAYER_STATES[this.guestPlayerIndex], this.guestPlayerIndex, pos)));
         return true;
     }
 

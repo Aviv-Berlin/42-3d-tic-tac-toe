@@ -35,7 +35,11 @@ export function createBabylonGame(canvas: HTMLCanvasElement, gameData: GameData,
   const gameController = new GameController(gameData, ui, graphics, 2, ws);
   const player = new LocalPlayer(gameData.player1.username, gameController, graphics);
   gameController.register(player);
-  
+  if (gameData.player2.type === "guest") {
+    const guestPlayer = new LocalPlayer("guest", gameController, graphics);
+    gameController.register(guestPlayer);
+  }
+
   ws.onopen = () => {
     console.log(`client connected to server.`);
     ws.send(JSON.stringify(createJoinGameMessage(gameData)));

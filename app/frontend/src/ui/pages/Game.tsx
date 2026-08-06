@@ -28,6 +28,7 @@ const Game = () => {
     const level = Number(levelParam) as AiLevel;
 
     const [player1, player2] = createPlayers(username, gameMode);
+    const uniqueGameName = globalThis.crypto.randomUUID();
 
     initialGameData = {
       player1,
@@ -41,7 +42,7 @@ const Game = () => {
       winner: null,
       gameStart: 0,
       gameEnd: 0,
-      gameID: "genericGameID"
+      gameID: uniqueGameName
     };
   }
 

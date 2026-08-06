@@ -1,11 +1,10 @@
 import { checkWin } from "./GameCheckWin.ts";
 import { GridPosition, CellState, PLAYER_STATES} from "../../../shared/game/Types.ts";
-import { Player } from "../../../frontend/src/game/Player.ts";
-import { GameData, Move } from "../../../shared/game.js";
+import { GameData, PlayerData } from "../../../shared/game.js";
 import { WebSocket } from "ws";
 import { AiPlayer } from "./AIPlayer.ts"
 import { log } from "node:console";
-import { WsMessage, JoinGameMessage, MoveMessage, GameStartMessage, createGameStartMessage, CreateTurnMessage } from "../../../shared/messages.ts"
+import { WsMessage, createEndMessage, createGameStartMessage, CreateTurnMessage, createMoveMessage } from "../../../shared/messages.ts"
 
 
 interface NewPlayer {
@@ -36,7 +35,6 @@ export class GameState {
     private nPlayers: number;
     private moveCounter: number = 0;
     private gameOver: boolean = false;
-    // private onExit: () => void; //this is a function that is called when game is
     private exitTimeout: ReturnType<typeof setTimeout> | null = null;
     private gameData: GameData;
 
@@ -114,24 +112,22 @@ export class GameState {
         if (!this.isCellEmpty(pos))
             return false;
 
-        // const playerState = this.getCurrentPlayerState();
         this.moveCounter++;
         this.boardState[pos.x][pos.y][pos.z] = playerState;
         this.gameData.moves.push({ pos: pos, player: playerState });
-        // this.graphics.placeSphere(pos, playerState);
-
+        this.disributeMessage(createMoveMessage(this.gameData.gameID, playerState, this.currentPlayerIndex, pos));
         const winningPositions = checkWin(this.boardState, pos, playerState, this.N);
         if (winningPositions) {
-            // this.finishGame(this.getCurrentPlayer(), winningPositions);
+            this.finishGame(this.currentPlayerIndex, winningPositions);
             console.log(`game won!`);
-
             return true;
         }
         if (this.moveCounter >= this.N * this.N * this.N) {
             this.endGameDraw();
             return false;
         }
-        void this.switchPlayer();
+        this.currentPlayerIndex = (this.currentPlayerIndex + 1) % this.players.length;
+        this.disributeMessage(CreateTurnMessage(this.gameData.gameID, this.currentPlayerIndex));
         return true;
     }
 
@@ -162,14 +158,7 @@ export class GameState {
         return state;
     }
 
-    private async switchPlayer(): Promise<void> {
-        this.currentPlayerIndex =
-            (this.currentPlayerIndex + 1) % this.players.length;
-        // if (this.gameData.gameMode === "ai")
 
-        // await this.ui.playerTitle(this.getCurrentPlayer().name);
-        // this.getCurrentPlayer().yourTurn(this.boardState, this.N, this.getCurrentPlayerState());
-    }
 
     public getCell(pos: GridPosition): CellState {
         return this.boardState[pos.x][pos.y][pos.z];
@@ -179,27 +168,30 @@ export class GameState {
 
 
 
-    private finishGame(winner: Player, winningPositions: GridPosition[]): void {
+    private finishGame(winner: number, winningPositions: GridPosition[]): void {
         this.gameOver = true;
-        // this.graphics.hidePreview();
-        // this.graphics.animateWin(winningPositions);
-        // this.ui.displayWinner(winner.name);
         this.gameData.isFinished = true;
-        if (winner.name === this.gameData.player1.username)
-            this.gameData.winner = this.gameData.player1;
-        else
-            this.gameData.winner = this.gameData.player2;
-        this.exitTimeout = setTimeout(() => { ;}, 3000);
+        const winningPlayer = this.players[winner];
+        const winnerData: PlayerData = {
+            username: this.playerNames[winner],
+            type:
+                winningPlayer.type === "ai"
+                    ? "ai"
+                    : this.playerNames[winner] === "guest"
+                        ? "guest"
+                        : "real",
+        };
+        this.gameData.winner = winnerData;
+        this.gameData.gameEnd = Date.now();
+        this.disributeMessage(createEndMessage(this.gameData, winningPositions));
     }
 
     private endGameDraw() {
         this.gameOver = true;
-        // this.graphics.hidePreview();
-        // this.ui.displayWinner("No One");
         this.gameData.isFinished = true;
         this.gameData.isDraw = true;
         this.gameData.gameEnd = Date.now();
-        this.exitTimeout = setTimeout(() => { ;}, 2000);
+        this.disributeMessage(createEndMessage(this.gameData, null));
     }
 
     public dispose(): void {

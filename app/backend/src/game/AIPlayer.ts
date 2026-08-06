@@ -1,7 +1,6 @@
 import { GridPosition, CellState, points, PLAYER_STATES } from "../../../shared/game/Types.ts"
-import { Player } from "../../../frontend/src/game/Player.ts";
 import { GameState } from "./GameState.ts";
-import { WsMessage, JoinGameMessage, MoveMessage, GameStartMessage, createGameStartMessage, CreateYourTurnMessage } from "../../../shared/messages.ts"
+import { WsMessage } from "../../../shared/messages.ts"
 import { addGP } from "../../../shared/game/Utils.ts";
 
 interface PositionScore {
@@ -16,14 +15,12 @@ interface MoveScore {
 }
 
 export class AiPlayer {
-    private IAm: number = -1;
-    private level: number;
+    private playerIndex: number = -1;
+    private IAm: CellState = CellState.Empty;    private level: number;
     private game: GameState
-    private name: string;
     private N: number;
 
-    constructor(name: string, game: GameState, level: number, N: number) {
-        this.name = name;
+    constructor(game: GameState, level: number, N: number) {
         this.level = level;
         this.game = game;
         this.N = N;
@@ -33,11 +30,12 @@ export class AiPlayer {
         console.log("Received message:", message);
         switch (message.type) {
             case "game-start":
-                this.IAm = message.payload.youAre;
+                this.playerIndex = message.payload.youAre;
+                this.IAm = PLAYER_STATES[this.playerIndex];
                 break;
 			case "turn":
-				if (this.IAm === message.payload.PlaysNow)
-                    this.yourTurn(this.game.getBoardState(),this.N, PLAYER_STATES[this.IAm]);
+				if (this.playerIndex === message.payload.PlaysNow)
+                    this.yourTurn(this.game.getBoardState(),this.N);
                 break;
             case "move":
 
@@ -48,8 +46,7 @@ export class AiPlayer {
         }
     }
 
-    public yourTurn(BoardState: CellState[][][], N: number, youAre: CellState): boolean {
-        this.IAm = youAre;
+    public yourTurn(BoardState: CellState[][][], N: number): boolean {
         setTimeout(() => {
            switch(this.level) {
             case 1:
@@ -71,7 +68,7 @@ export class AiPlayer {
                 this.playRandomMove(BoardState, N);
                 break;
            }
-        }, 500);
+        }, 2000);
         return true;
     }
 
@@ -116,7 +113,7 @@ export class AiPlayer {
         else
             candidates = bestPositions;
         const randomIndex = Math.floor(Math.random() * candidates.length);
-        this.game.placeMove(candidates[randomIndex]);
+        this.game.placeMove(candidates[randomIndex], this.IAm);
     }
 
     private scoreMove(boardState: CellState[][][], pos: GridPosition, N: number): MoveScore {
@@ -199,18 +196,25 @@ export class AiPlayer {
     }
 
     private playRandomMove(BoardState: CellState[][][], N: number) {
-        // this.game.placeMove(this.getRandomEmptyCell(BoardState, N));
+        this.game.placeMove(this.getRandomEmptyCell(BoardState, N), this.IAm);
     }
 
-    //these methods dont do anything, they are here in case input manager calls the ai player.
-    public moveCursor(direction: boolean, plane:  "x" | "y" | "z"): void {
-        return;
+    private getRandomEmptyCell(boardState: CellState[][][], N: number): GridPosition {
+        const emptyCells: GridPosition[] = [];
+
+        for (let x = 0; x < N; x++) {
+            for (let y = 0; y < N; y++) {
+                for (let z = 0; z < N; z++) {
+                    const pos: GridPosition = {x,y,z};
+                    if (boardState[x][y][z] === CellState.Empty)
+                        emptyCells.push(pos);
+                }
+            }
+        };
+        const randomNumber = Math.floor(Math.random() * emptyCells.length);
+        return emptyCells[randomNumber];
     }
-    public choosePos(): void {
-        return;
-    }
-    public selectPos(pos: GridPosition): boolean {
-        return false;
-    }
+
+
 
 }

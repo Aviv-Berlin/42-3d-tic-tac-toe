@@ -2,6 +2,8 @@ import { GridPosition, CellState, PLAYER_STATES} from "./game/Types";
 import { GameData} from "./game";
 
 //client -> server
+
+
 export type JoinGameMessage =
 	{ type: "join-game";
 		payload: {
@@ -56,22 +58,40 @@ export function createGameStartMessage(gameID: string, playerNames: string[],
 	}
 }
 
+export type EndMessage = 
+	{ type: "end";
+		payload: {
+			gameData: GameData;
+			winningPos: GridPosition [];
+		}
+	}
+export function createEndMessage(gameData: GameData, winningPos: GridPosition[] | null): EndMessage {
+	return {
+		type: "end",
+			payload: {
+				gameData,
+				winningPos
+			}
+	}
+}
 //shared
 export type MoveMessage =
 	{ type: "move";
 		payload: {
 			gameID: string
-			player: CellState,
+			player: CellState
+			playerIndex: number
 			position: GridPosition
 		}
 	};
 
-export function createMoveMessage(gameID: string, player: CellState, position: GridPosition): MoveMessage {
+export function createMoveMessage(gameID: string, player: CellState, playerIndex: number, position: GridPosition): MoveMessage {
 	return {
 		type: "move",
 		payload: {
 			gameID,
 			player,
+			playerIndex,
 			position
 		}
 	};
@@ -82,6 +102,7 @@ export type WsMessage =
   | GameStartMessage
   | MoveMessage
   | TurnMessage
+  | EndMessage
 
 export default {
 	createGameStartMessage,

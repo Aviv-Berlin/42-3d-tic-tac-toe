@@ -2,6 +2,7 @@ import * as BABYLON from "@babylonjs/core";
 import type { AbstractMesh, Scene, StandardMaterial, Mesh, Material } from "@babylonjs/core";
 import * as GUI from "@babylonjs/gui";
 import { Materials } from "./Materials"
+import { Board } from "./Board"
 
 type CubeRowAnchor = "left" | "center" | "right";
 
@@ -33,21 +34,26 @@ export class GameUI {
     private ui: GUI.AdvancedDynamicTexture;
     private playerNameRow: BABYLON.TransformNode | null = null;
     private exitRow: BABYLON.TransformNode | null = null;
+    private lookRow: BABYLON.TransformNode | null = null;
     private instructions: GUI.TextBlock | null = null;
     private scene: Scene;
     private onExit: () => void;
     private materials: Materials;
     private winnerMessageRow: BABYLON.TransformNode | null = null;
-    private rowAnimations =
-    new Map<BABYLON.TransformNode, BABYLON.AnimationGroup>();
+    private rowAnimations = new Map<BABYLON.TransformNode, BABYLON.AnimationGroup>();
+    private looks: number = 6;
+    private renderEdges: boolean = false;
+    private board: Board;
 
     
-    constructor(scene: Scene, onExit: () => void, materials: Materials) {
+    constructor(scene: Scene, onExit: () => void, materials: Materials, board: Board) {
         this.scene = scene;
         this.onExit = onExit;
         this.materials = materials;
+        this.board = board;
         this.ui = GUI.AdvancedDynamicTexture.CreateFullscreenUI("UI", true, scene);
         this.createExitCubeRow();
+        this.createLookCubeRow();
         this.displayInstructions();
     }
 
@@ -67,10 +73,29 @@ export class GameUI {
         labels.forEach((label, index) => { const cubeName = `${options.name}Cube${index}`;
             const cube = BABYLON.MeshBuilder.CreateBox(cubeName, { size: cubeSize }, this.scene);
             cube.parent = root;
-            cube.metadata = {textCubeIndex: index};
+            cube.metadata = {textCubeIndex: index, textCubeLabel: label };
             cube.position.x = cubeXPositions[index];
-            cube.material = this.materials.createTextCubeMaterial(cubeName, label);
 
+            const plainMaterial = this.materials.createPlainCubeMaterial(`${cubeName}PlainMaterial`);
+            const textMaterial = this.materials.createTextCubeMaterial(`${cubeName}TextMaterial`, label);
+            const multiMaterial = new BABYLON.MultiMaterial(`${cubeName}MultiMaterial`, this.scene);
+
+            multiMaterial.subMaterials = [
+                plainMaterial, // material index 0
+                textMaterial   // material index 1
+            ];
+            cube.material = multiMaterial;
+            // Replace the default submesh with one submesh per cube face.
+            cube.subMeshes = [];
+            const vertexCount = cube.getTotalVertices();
+
+            for (let face = 0; face < 6; face++) {
+                const materialIndex = face === 1
+                    ? 1  // front face: letter
+                    : 0; // all other faces: plain
+                new BABYLON.SubMesh(materialIndex, 0, vertexCount, face * 6, 6, cube);
+            }
+            this.materials.applyTextCubeLook(cube, this.renderEdges);
 
             if (options.alwaysOnTop) {
                 cube.renderingGroupId = 2;
@@ -115,6 +140,33 @@ export class GameUI {
         );
     }
 
+    private createLookCubeRow(): void {
+        const camera = this.scene.activeCamera;
+        if (!camera)
+            throw new Error("No active camera found");
+        this.disposeTextCubeRow(this.lookRow);
+        this.lookRow = this.createTextCubeRow(Array.from("LOOK"), { name: "look", parent: camera,
+                position: new BABYLON.Vector3(30, -14, 40), cubeSize: 1, gap: 0.25,
+                // Position marks the right edge.
+                // The letters extend toward the left.
+                anchor: "right",
+                alwaysOnTop :true,
+                onClick: () => {
+                    this.toggleLook();
+                }
+            }
+        );
+    }
+
+    private toggleLook(): void {
+        this.looks = (this.looks % 6) + 1;
+
+        this.renderEdges = this.materials.applyLook(this.looks);
+        this.board.createBoard(this.looks);
+        this.board.toggleCubeEdges(this.renderEdges);
+        this.applyLookToTextRows();
+    }
+
     private displayInstructions() {
         this.instructions = new GUI.TextBlock();
         this.instructions.color = "gray";
@@ -125,7 +177,7 @@ export class GameUI {
         this.instructions.verticalAlignment = GUI.Control.VERTICAL_ALIGNMENT_BOTTOM;
         this.instructions.paddingLeft = "40px";
         this.instructions.paddingBottom = "40px";
-        this.instructions.text = "click on cube to place preview, double click or enter to place move\n1 to toggle cube sizes, mouse drag to rotate board, move with j,l,i,m,u,h";
+        this.instructions.text = "click on cube to place preview, double click or enter to place move\n1 to toggle cube sizes, mouse drag to rotate board, move with a,d,w,s,e,q";
         this.ui.addControl(this.instructions);
     }
 
@@ -328,6 +380,8 @@ export class GameUI {
         this.disposeTextCubeRow(this.playerNameRow);
         this.disposeTextCubeRow(this.exitRow);
         this.disposeTextCubeRow(this.winnerMessageRow);
+        this.disposeTextCubeRow(this.lookRow);
+
 
         this.playerNameRow = null;
         this.exitRow = null;
@@ -357,6 +411,14 @@ export class GameUI {
         return Array.from({ length: cubeCount }, (_, index) => firstCubeX + index * step);
     }
 
+    private applyLookToTextRows(): void { 
+        const rows: Array<BABYLON.TransformNode | null> = [this.playerNameRow, this.exitRow,  this.lookRow, this.winnerMessageRow];
 
-
+        for (const row of rows) {
+            if (!row)
+                continue;
+            for (const cube of row.getChildMeshes())
+                this.materials.applyTextCubeLook(cube, this.renderEdges);
+        }
+    }
 }

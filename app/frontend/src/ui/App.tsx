@@ -11,18 +11,26 @@ import PrivacyPolicy from './pages/PrivacyPolicy'
 import TermsOfService from './pages/TermsOfService'
 import NotFound from './pages/NotFound'
 import ProtectedRoute from './routes/ProtectedRoute'
+import Lobby from './pages/Lobby'
+import GameEnd from './pages/GameEnd'
+import Replay from './pages/Replay'
+import WaitingRoom from './pages/WaitingRoom'
 
 const App = () => {
   return (
       <Routes>
-        <Route path="/" element={<Navigate to="/login" />} />
+        <Route path="/" element={<Navigate to="/home" />} />
         <Route path="/register" element={<Register />} />
         <Route path="/register-success" element={<RegisterSuccess />} />
         <Route path="/login" element={<Login />} />
         <Route element={<ProtectedRoute />}>
           <Route path="/home" element={<Home />} />
           <Route path="/game-settings" element={<GameSettings />} />
-          <Route path="/game" element={<Game />} />
+          <Route path="/lobby" element={<Lobby />} />
+          <Route path="/waiting/:matchId" element={<WaitingRoom />} />
+          <Route path="/game/:matchId" element={<Game />} />
+          <Route path="/game-end" element={<GameEnd />} />
+          <Route path="/replay" element={<Replay />} />
           <Route path="/profile" element={<Profile />} />
           <Route path="/settings" element={<Settings />} />
         </Route>

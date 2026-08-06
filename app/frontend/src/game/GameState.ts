@@ -3,7 +3,8 @@ import { checkWin } from "./GameCheckWin";
 import { GameGraphics } from "./GameGraphics";
 import { GridPosition, CellState, PLAYER_STATES} from "./Types";
 import { Player } from "./Player";
-import { GameData } from "../types/game";
+import { LocalPlayer } from "./LocalPlayer";
+import { GameData, Move } from "../types/game";
 
 
 interface NewPlayer {
@@ -51,12 +52,32 @@ export class GameState {
         if (this.players.length < this.nPlayers)
             throw new Error("Not enough players");
         this.gameData.gameStart = Date.now();
+        if (this.gameData.moves === null)
+            this.gameData.moves = [];
         this.currentPlayerIndex = Math.floor(Math.random() * this.nPlayers);
         await this.ui.playerTitle(this.getCurrentPlayer().name);
         this.getCurrentPlayer().yourTurn(this.boardState, this.N, this.getCurrentPlayerState());
     }
 
-
+    public async startReply(): Promise<void> {
+        for (let i = 0; i < this.gameData.moves.length; i++) {
+            if (i % 2 === 0) {
+                await this.ui.playerTitle(this.gameData.player1.username);
+            } else {
+                await this.ui.playerTitle(this.gameData.player2.username);
+            }
+            this.boardState[this.gameData.moves[i].pos.x][this.gameData.moves[i].pos.y][this.gameData.moves[i].pos.z] = this.gameData.moves[i].player;
+            setTimeout(() => { this.graphics.placeSphere(this.gameData.moves[i].pos, this.gameData.moves[i].player);}, 500);
+        }
+        const winningPositions = checkWin(this.boardState, this.gameData.moves[this.gameData.moves.length -1].pos, this.gameData.moves[this.gameData.moves.length -1].player, this.N);
+        if (winningPositions)
+            this.graphics.animateWin(winningPositions);
+        if (this.gameData.moves[this.gameData.moves.length -1].player === CellState.Player1)
+            this.ui.displayWinner(this.gameData.player1.username);
+        else
+            this.ui.displayWinner(this.gameData.player2.username);
+         this.exitTimeout = setTimeout(() => { this.onExit();}, 3000);
+    }
 
     public placeMove(pos: GridPosition): boolean {
         if (this.gameOver)
@@ -64,10 +85,10 @@ export class GameState {
         if (!this.isCellEmpty(pos))
             return false;
 
-
         const playerState = this.getCurrentPlayerState();
         this.moveCounter++;
         this.boardState[pos.x][pos.y][pos.z] = playerState;
+        this.gameData.moves.push({ pos: pos, player: playerState });
         this.graphics.placeSphere(pos, playerState);
 
         const winningPositions = checkWin(this.boardState, pos, playerState, this.N);

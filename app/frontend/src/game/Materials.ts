@@ -1,32 +1,36 @@
 import * as BABYLON from "@babylonjs/core";
 import type { Scene } from "@babylonjs/core/scene";
 import { StandardMaterial } from "@babylonjs/core/Materials/standardMaterial";
-import { Color3 } from "@babylonjs/core/Maths/math.color";
+import { Color3, Color4 } from "@babylonjs/core/Maths/math.color";
 import { CellState } from "./Types";
 import { playerStateToIndex } from "./Utils";
 
 
 export class Materials {
+    
     public readonly cube: StandardMaterial;
-
     public readonly playerMaterials: StandardMaterial[];
     public readonly previewMaterials: StandardMaterial[];
     private readonly cubeColor = new Color3(0.67, 0.7, 0.71);
-    private readonly cubeAlpha = 0.35;
-    private readonly textColor = Color3.White();
+    private cubeEdgeColor = new Color4(1, 1, 1, 1);
+    private sceneBackground = new Color4(0.33, 0.30, 0.35, 1);
+    private cubeAlpha = 0.4;
+    private readonly defaultTextColor = new Color3(0.85,0.85,0.85);
+    private textColor = this.defaultTextColor.clone();
     private readonly textFont = "Futura, Arial, sans-serif";
     private scene: Scene;
 
     constructor(scene: Scene) {
         this.scene = scene;
-        //scene.clearColor = new BABYLON.Color4(1, 1, 1, 0);
+        scene.clearColor = this.sceneBackground;
         const light = new BABYLON.HemisphericLight("light", new BABYLON.Vector3(0, 1, 0), scene);
         light.intensity = 0.7;
 
         this.cube = new StandardMaterial("cubeMat", scene);
         this.cube.diffuseColor = this.cubeColor.clone();
         this.cube.alpha = this.cubeAlpha;
-        this.cube.needDepthPrePass = true;
+        this.cube.needDepthPrePass = false;
+        this.cube.disableDepthWrite = true;
 
         const playerColors: readonly Color3[] = [
             new Color3(1, 0.16, 0.01),  // Player 1: orange/red
@@ -40,6 +44,73 @@ export class Materials {
 
         this.previewMaterials = playerColors.map((color, index) =>
                 this.createPlayerMaterial(scene, `player${index + 1}PreviewMaterial`, color, 0.2));
+    }
+
+    public applyCubeEdges(mesh: BABYLON.AbstractMesh): void {
+        mesh.enableEdgesRendering();
+        mesh.edgesWidth = 2.0;
+        mesh.edgesColor = this.cubeEdgeColor;
+    }
+    
+    public applyLook(look: number): boolean {
+        switch (look) {
+            case 1:
+                this.scene.clearColor = new Color4(1, 1, 1, 1);
+                this.cubeEdgeColor = new Color4(0, 0, 0, 1);
+                this.cube.alpha = 0;
+                this.cube.needDepthPrePass = false;
+                this.cube.disableDepthWrite = true;
+                this.textColor = new Color3(0,0,0);
+                return true;
+
+            case 2:
+                this.scene.clearColor = new Color4(0, 0, 0, 1);
+                this.cubeEdgeColor = new Color4(1, 1, 1, 1);
+                this.cube.alpha = 0;
+                this.cube.needDepthPrePass = false;
+                this.cube.disableDepthWrite = true;
+                this.textColor = new Color3(1,1,1);
+                return true;
+
+            case 3:
+                this.scene.clearColor = new Color4(0.4, 0.4, 1, 1);
+                this.cube.alpha = 0.12;
+                this.cube.needDepthPrePass = false;
+                this.cube.disableDepthWrite = true;
+                this.textColor = new Color3(1,1,0);
+                return false;
+
+            case 4:
+                this.scene.clearColor = this.sceneBackground.clone();
+                this.cube.diffuseColor = this.cubeColor.clone();
+                this.cube.alpha = 0.4;
+                this.cube.needDepthPrePass = false;
+                this.cube.disableDepthWrite = true;
+                this.textColor = this.defaultTextColor.clone();
+                return false;
+
+            case 5:
+                this.scene.clearColor = this.sceneBackground.clone();
+                this.cube.diffuseColor = this.cubeColor.clone();
+                this.cube.alpha = 0.4;
+                this.cube.needDepthPrePass = false;
+                this.cube.disableDepthWrite = true;
+                this.textColor = this.defaultTextColor.clone();
+                return false;
+            
+            case 6:
+                // Same values used when Materials is constructed.
+                this.scene.clearColor = this.sceneBackground.clone();
+                this.cube.diffuseColor = this.cubeColor.clone();
+                this.cube.alpha = 0.4;
+                this.cube.needDepthPrePass = false;
+                this.cube.disableDepthWrite = true;
+                this.textColor = this.defaultTextColor.clone();
+                return false;
+
+            default:
+                throw new Error(`Unknown look: ${look}`);
+        }
     }
 
     public getPlayerMaterial(playerState: CellState): StandardMaterial {
@@ -69,28 +140,26 @@ export class Materials {
         material.diffuseColor = color.clone();
         material.alpha = alpha;
         if (alpha < 1) {
-            material.needDepthPrePass = true;
+            material.needDepthPrePass = false;
+            material.disableDepthWrite = true;
         }
         return material;
     }
 
-    public createTextCubeMaterial(id: string, text: string): StandardMaterial {
+    private drawTextCubeTexture(texture: BABYLON.DynamicTexture, text: string): void {
         const textureSize = 512;
-        const texture = new BABYLON.DynamicTexture(`${id}Texture`,
-            { width: textureSize, height: textureSize}, this.scene, true);
-        texture.hasAlpha = true;
         const context = texture.getContext() as CanvasRenderingContext2D;
-        // Same background color and transparency as the board cubes.
-        context.fillStyle = this.colorToCss(this.cubeColor, 1);
+        context.clearRect(0, 0, textureSize, textureSize);
+        // Cube background follows the current board-cube alpha.
+        context.fillStyle = this.colorToCss(this.cubeColor, this.cube.alpha);
         context.fillRect(0, 0, textureSize, textureSize);
         const maxTextWidth = textureSize * 0.72;
         const maximumFontSize = 340;
         const minimumFontSize = 40;
         let fontSize = maximumFontSize;
         while (fontSize > minimumFontSize) {
-            context.font =`bold ${fontSize}px ${this.textFont}`;
-            const textWidth = context.measureText(text).width;
-            if (textWidth <= maxTextWidth)
+            context.font = `bold ${fontSize}px ${this.textFont}`;
+            if (context.measureText(text).width <= maxTextWidth)
                 break;
             fontSize -= 10;
         }
@@ -101,11 +170,17 @@ export class Materials {
         context.textBaseline = "middle";
         context.fillText(text, textureSize / 2, textureSize / 2);
         texture.update();
+    }
+
+    public createTextCubeMaterial(id: string, text: string): StandardMaterial {
+        const textureSize = 512;
+        const texture = new BABYLON.DynamicTexture(`${id}Texture`,
+            { width: textureSize, height: textureSize }, this.scene, true);
+        texture.hasAlpha = true;
+        this.drawTextCubeTexture(texture, text);
         const material = new StandardMaterial(`${id}Material`, this.scene);
         material.diffuseColor = Color3.White();
         material.diffuseTexture = texture;
-        // Use the canvas transparency:
-        // translucent background, opaque text.
         material.useAlphaFromDiffuseTexture = true;
         material.needDepthPrePass = true;
         return material;
@@ -116,6 +191,38 @@ export class Materials {
         const green = Math.round(color.g * 255);
         const blue = Math.round(color.b * 255);
         return `rgba(${red}, ${green}, ${blue}, ${alpha})`;
+    }
+
+    public applyTextCubeLook(mesh: BABYLON.AbstractMesh,renderEdges: boolean): void {
+        const multiMaterial = mesh.material;
+        if (!(multiMaterial instanceof BABYLON.MultiMaterial))
+            return;
+        const plainMaterial = multiMaterial.subMaterials[0];
+        const textMaterial = multiMaterial.subMaterials[1];
+        if (plainMaterial instanceof StandardMaterial) {
+            plainMaterial.diffuseColor.copyFrom(this.cube.diffuseColor);
+            plainMaterial.alpha = this.cube.alpha;
+        }
+
+        if (textMaterial instanceof StandardMaterial) {
+            const texture = textMaterial.diffuseTexture;
+            const label = mesh.metadata?.textCubeLabel as string | undefined;
+
+            if (texture instanceof BABYLON.DynamicTexture && label !== undefined)
+                this.drawTextCubeTexture(texture, label);
+        }
+        if (renderEdges) 
+            this.applyCubeEdges(mesh);
+        else
+            mesh.disableEdgesRendering();
+    }
+
+    public createPlainCubeMaterial(id: string): StandardMaterial {
+        const material = new StandardMaterial(id, this.scene);
+        material.diffuseColor = this.cube.diffuseColor.clone();
+        material.alpha = this.cube.alpha;
+        material.needDepthPrePass = true;
+        return material;
     }
 
 }

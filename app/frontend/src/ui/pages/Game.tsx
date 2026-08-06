@@ -5,24 +5,33 @@ import GameLayout from '../layouts/GameLayout';
 import Canvas from '../components/Canvas';
 import { GameData, GameMode, AiLevel } from '../../types/game';
 import createPlayers from '../../utils/players';
+import { openSocket, closeSocket, sendMessage, getSocket } from "../../websocket";
+
 
 const Game = () => {
   const [searchParams] = useSearchParams();
   const navigate = useNavigate();
-  
+
+  const socket = getSocket()
+  console.log("socket: ", socket);
+
   const userInfo = useUsername();
   const username = userInfo?.username ?? "stranger";
-  
+
   const gameModeParam = searchParams.get('game-mode');
   const sizeParam = searchParams.get('size');
   const levelParam = searchParams.get('level');
 
-  const isValid = (gameModeParam === "online" || gameModeParam === "ai" || gameModeParam === "local") &&
+  const isValid =  (
+                  (gameModeParam === "online" || gameModeParam === "ai" || gameModeParam === "local") &&
                   (sizeParam === "3" || sizeParam === "4" || sizeParam === "5") &&
-                  (levelParam === "0" || levelParam === "1" || levelParam === "2" || levelParam === "3");
+                  (levelParam === "0" || levelParam === "1" || levelParam === "2" || levelParam === "3")
+				);
 
-  let initialGameState: GameData | null = null;
+  let initialGameData: GameData | null = null;
 
+  if (!isValid)
+	console.log("none valid value");
   if (isValid) {
     const size = Number(sizeParam);
     const gameMode = gameModeParam as GameMode;
@@ -30,17 +39,17 @@ const Game = () => {
 
     const [player1, player2] = createPlayers(username, gameMode);
 
-    initialGameState = {
+    initialGameData = {
       player1,
       player2,
       level,
-      moves: null,
+      moves: [],
       size,
       isFinished: false,
       isDraw: false,
       winner: null,
       gameStart: 0,
-      gameEnd: 0
+      gameEnd: 0,
     };
   }
 
@@ -48,13 +57,13 @@ const Game = () => {
     if (!isValid) navigate('/not-found');
   }, [isValid]);
 
-  const gameStateRef = useRef<GameData | null>(initialGameState);
+  const gameDataRef = useRef<GameData | null>(initialGameData);
 
-  if (!isValid || !gameStateRef.current) return null;
+  if (!isValid || !gameDataRef.current) return null;
 
   return (
     <GameLayout>
-      <Canvas gameData={gameStateRef.current}/>
+      <Canvas gameData={gameDataRef.current}/>
     </GameLayout>
   )
 }

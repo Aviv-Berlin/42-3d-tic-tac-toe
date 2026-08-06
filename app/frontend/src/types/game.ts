@@ -9,6 +9,15 @@ export interface PlayerData {
   username: string;
 }
 
+export interface ActiveGame {
+	id: string;
+	host: string;
+	size: number;
+	requiredPlayers: number;
+	players: string[];
+	status: "waiting" | "ready" | "started";
+}
+
 export interface Move {
   pos: GridPosition;
   player: CellState;
@@ -19,7 +28,7 @@ export interface GameData {
   player2: PlayerData;
   level: AiLevel;
   winner: PlayerData | null;
-  moves: Move[] | null;
+  moves: Move[];
   size: number;
   isFinished: boolean;
   isDraw: boolean;

@@ -20,7 +20,7 @@ export function createBabylonGame(canvas: HTMLCanvasElement, gameData: GameData,
   const materials = new Materials(scene);
   const camera = new CameraManager(scene, canvas);
   const board = new Board(gameData.size, scene, materials);
-  const ui = new GameUI(scene, onExit, materials);
+  const ui = new GameUI(scene, onExit, materials, board);
   const graphics = new GameGraphics(board, materials, camera);
 
   //backend runs the GameState and AiPlayer

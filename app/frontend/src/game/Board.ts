@@ -12,7 +12,7 @@ export class Board {
     private offset: number;
     public materials: Materials;
     private spheres: Mesh [] = [];
-    private cubes: Mesh[] = [];
+    private boardMeshes: Mesh[] = [];
     private cubesShrink: boolean = false;
     private sphereMeshes: (AbstractMesh | null)[][][];
 
@@ -26,30 +26,64 @@ export class Board {
         this.step = this.smallSize + this.gap;
         this.offset = (this.N - 1) / 2;
         this.sphereMeshes = Array.from({ length: N }, () => Array.from({ length: N }, () => Array<AbstractMesh | null>(N).fill(null))); //intialize sphereMeshes to null
-        this.createCubes();
+        this.createBoard(1);
 
     }
 
-    private createCubes(): void {
+    private createBoardMesh(looks: number): BABYLON.Mesh {
+        switch (looks) {
+            case 4:
+                return BABYLON.MeshBuilder.CreateSphere("smallSphere", { diameter: this.smallSize * 1.1 }, this.scene);
+
+            case 5: {
+                const cylinder1 = BABYLON.MeshBuilder.CreateCylinder("smallCylinderY", { height: this.smallSize * 1.05, diameter: this.smallSize / 5}, this.scene);
+                const cylinder2 = BABYLON.MeshBuilder.CreateCylinder("smallCylinderX", { height: this.smallSize * 1.05, diameter: this.smallSize / 5}, this.scene);
+                const cylinder3 = BABYLON.MeshBuilder.CreateCylinder("smallCylinderZ", { height: this.smallSize * 1.05, diameter: this.smallSize / 5}, this.scene);
+                cylinder2.rotation.x = BABYLON.Tools.ToRadians(90);
+                cylinder3.rotation.z = BABYLON.Tools.ToRadians(90);
+                const cylinders = BABYLON.Mesh.MergeMeshes([cylinder1, cylinder2, cylinder3], true);
+                if (!cylinders) {
+                    throw new Error("Failed to merge board cylinders");
+                }
+                cylinders.name = "cylindersCross";
+                return cylinders;
+            }
+
+            default:
+                return BABYLON.MeshBuilder.CreateBox("smallCube", { size: this.smallSize },  this.scene);
+        }
+    }
+
+    public createBoard(looks: number): void {
+
+        this.boardMeshes.forEach(mesh => mesh.dispose());
+        this.boardMeshes = [];        
         for (let x = 0; x < this.N; x++) {
             for (let y = 0; y < this.N; y++) {
                 for (let z = 0; z < this.N; z++) {
-                    const cube = BABYLON.MeshBuilder.CreateBox
-						("smallCube", { size: this.smallSize },  this.scene);
-
-                    cube.position = this.getPosition(x, y, z);
-                    cube.material = this.materials.cube;
-                    cube.metadata = { gridPosition: { x, y, z}};
-                    this.cubes.push(cube);
+                    const finalMesh = this.createBoardMesh(looks);
+                    finalMesh.position = this.getPosition(x, y, z);
+                    finalMesh.material = this.materials.cube;
+                    finalMesh.metadata = { gridPosition: { x, y, z}};
+                    this.boardMeshes.push(finalMesh);
                 }
             }
         }
     }
 
+    public toggleCubeEdges(renderEdges: boolean): void {
+        for (const mesh of this.boardMeshes) {
+            if (renderEdges)
+                this.materials.applyCubeEdges(mesh);
+            else
+                mesh.disableEdgesRendering();
+        }
+    }
+
     public toggleCubeSize(): void {
         const scale = this.cubesShrink ? 1 : 0.25;
-        for(const cube of this.cubes)
-            cube.scaling.set(scale, scale, scale);
+        for(const mesh of this.boardMeshes)
+            mesh.scaling.set(scale, scale, scale);
         this.cubesShrink = !this.cubesShrink;
     }
 
@@ -64,7 +98,7 @@ export class Board {
 
         sphere.position = this.getPosition(pos.x, pos.y, pos.z);
         sphere.material = material;
-        sphere.renderingGroupId = 1;
+        sphere.renderingGroupId = 0;
         sphere.isPickable = false;
 
         this.spheres.push(sphere);

@@ -1,19 +1,23 @@
 //import userQueries from "../database/userQueries.ts";
 import { type Request, type Response } from 'express';
+import { broadcastMatch } from "../websocket/matchSockets.ts";
 //import jwt from 'jsonwebtoken';
 
 // Store connected clients
 const clients = new Set<Response>();
 
 interface Match {
+	id: string;
 	host: string;
 	size: number;
 	requiredPlayers: number;
 	players: string[];
-	status: "waiting" | "ready" | "started";
+	status: "waiting" | "ready" | "started" | "disconnected" | "canceled" | "ended";
 }
 
-const matches = new Map<string, Match>();
+export const lobbyMatches = new Map<string, Match>();
+
+export const matches = new Map<string, Match>();
 
 
 // SSE endpoint function
@@ -25,12 +29,20 @@ export async function lobby(request: Request, response: Response){
 	'Connection': 'keep-alive',
 	});
 
+	console.log('current matches:', Array.from(lobbyMatches.values()));
+
 	// Send initial comment to establish the connection
 	// Comments start with a colon and are ignored by EventSource / clients
 	response.write(': Connected to lobby\n\n');
 
 	// Add this client to the set
 	clients.add(response);
+
+	sendEvent(response, 'lobby-update', {
+		type: "initial",
+		matches: Array.from(lobbyMatches.values())
+	})
+
 	console.log(`Client connected. Total clients: ${clients.size}`);
 
 	// Handle client disconnect
@@ -68,20 +80,27 @@ export async function createMatch(request: Request, response: Response) {
 		});
 	}
 
-	if (matches.has(body.host)) {
+	console.log('Creating match as host:', body.host);
+
+	const existingMatch = Array.from(lobbyMatches.values()).find(match => match.host === body.host);
+	if (existingMatch) {
+		console.log(`Host ${body.host} already has a match.`);
 		return response.status(400).json({
 			error: "You already have a hosted match"
 		});
 	}
 
+	const matchId = crypto.randomUUID(); // Generate a unique match ID
 	const newMatch: Match = {
+		id: matchId,
 		host: body.host,
 		size: body.size,
 		requiredPlayers: body.requiredPlayers,
 		players: [body.host],
 		status: "waiting"
 	}
-	matches.set(body.host, newMatch);
+	lobbyMatches.set(matchId, newMatch);
+	matches.set(matchId, newMatch);
 
 	// Broadcast the new match to all clients in the lobby
 	broadcast('lobby-update', {type: "created", match: newMatch});
@@ -92,58 +111,82 @@ export async function createMatch(request: Request, response: Response) {
 	});
 }
 
-// export async function joinMatch(request: Request, response: Response) {
-// 	const body = request.body;
-// 	...
-// 	// Broadcast the updated match to all clients in the lobby
-// 	if (match.players.length === match.requiredPlayers) {
-// 		newMatch.status = "ready";
-// 		broadcast('lobby-update', {
-// 			type: "removed", 
-// 			match: match
-// 		});
-// 	else {
-// 		broadcast('lobby-update', {
-// 			type: "updated",
-// 			match: match
-// 		});
-// 	}
-// 	return response.status(200).json({
-// 		message: 'joined match',
-// 		match: match
-// 	});
-// }
+export async function joinMatch(request: Request, response: Response) {
+	
+	const body = request.body;
+	const match = lobbyMatches.get(body.matchId);
+
+	console.log(`Player ${body.player} is trying to join match ${body.matchId}`);
+	console.log('found match:', match);
+
+	if (!match) {
+		return response.status(404).json({
+			error: 'match not found'
+		});
+	}
+
+	if (match.players.includes(body.player)) {
+		return response.status(400).json({
+			error: 'player already in match'
+		});
+	}
+
+	if (match.status !== "waiting") {
+		return response.status(400).json({
+			error: 'match is not open for joining'
+		});
+	}
+
+	if (match.players.length === match.requiredPlayers) {
+		return response.status(400).json({
+			error: 'match is full'
+		});
+	}
+	
+	// Add player to the match
+	match.players.push(body.player);
+	console.log('added player to match:', match);
+	broadcastMatch(match.id, {
+		type: "match-state",
+		host: match.host,
+		size: match.size,
+		requiredPlayers: match.requiredPlayers,
+		players: match.players,
+		status: match.status
+	});
+
+	// Update match status if required players reached
+	if (match.players.length === match.requiredPlayers) {
+		match.status = "ready";
+		broadcast('lobby-update', {
+			type: "removed", 
+			match: match
+		});
+		lobbyMatches.delete(match.id);
+		console.log('match is ready, removed from lobby:');
+	}
+	else {
+		broadcast('lobby-update', {
+			type: "updated",
+			match: match
+		});
+	}
+	return response.status(200).json({
+		message: 'joined match',
+		match: match
+	});
+}
 
 export default {
 	lobby,
 	createMatch,
-	// joinMatch
+	joinMatch
 };
 
-// needs to be added in frontend
-// const eventSource = new EventSource(
-//   "http://localhost:3001/v1/game/online/lobby" / "http://localhost:3001/v1/lobby"
-// );
+// generate a real match ID with crypto.randomUUID() or similar, instead of using host as the match ID. This will allow multiple matches to be hosted by the same user and avoid potential conflicts. (?)
+// store player identity properly instead of localStorage.getItem("username") in the frontend, and validate it on the backend with authentication/JWT
+// create the WebSocket server. Seperate from lobby routes e.g. ws://localhost:3001/game/:matchID
 
-// eventSource.addEventListener("lobby-update", (event) => {
-//	const update = JSON.parse(event.data);
-//
-//	switch (update.type) {
-//		case "created":
-//			addMatch(update.match);
-//			console.log("new match:", match);
-//			break;
-//		case "updated":
-//			updateMatch(update.match);
-//			console.log("update match:", match);
-//			break;
-//		case "removed":
-//			removeMatch(update.match);
-//			console.log("removed match:", match);
-//			break;
-//	}
-//eventSource.onerror = (error) => {
-//   console.error("SSE error:", error);
-// };
 
-// check the how to transform from http to websocket connection!!!!
+// check how to transform from http to websocket connection!!!!
+// once player created a match or joined one, fronted need to navigate them to game room and open websocket connection to the game room, and then the game room will handle the game logic and send updates to the players in the room.

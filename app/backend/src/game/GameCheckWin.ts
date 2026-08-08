@@ -1,5 +1,5 @@
-import { addGP, negateGP, } from "./Utils";
-import { GridPosition, CellState, points } from "./Types"
+import { addGP, negateGP, } from "../../../shared/game/Utils.ts";
+import { GridPosition, CellState, points } from "../../../shared/game/Types.ts"
 
 function checkForward(boardState: CellState[][][], startPos: GridPosition, player: CellState, vec: GridPosition): GridPosition[] {
 	const positions: GridPosition[] = [];

@@ -6,7 +6,7 @@ import { broadcastMatch } from "../websocket/matchSockets.ts";
 // Store connected clients
 const clients = new Set<Response>();
 
-interface Match {
+export interface Match {
 	id: string;
 	host: string;
 	size: number;

@@ -1,0 +1,145 @@
+import * as BABYLON from "@babylonjs/core";
+import { Materials } from "./Materials";
+import { Board } from "./Board";
+import { GameUI } from "./GameUI";
+import { GameState } from "../../../backend/src/game/GameState";
+import { InputManager } from "./InputManager";
+import { GameGraphics } from "./GameGraphics";
+import { CameraManager } from "./CameraManager";
+import { Player } from "./Player"
+import { AiPlayer } from "../../../backend/src/game/AIPlayer"
+import { LocalPlayer } from "./LocalPlayer"
+import { GameData } from "../../../shared/game";
+import { GridPosition, CellState, PLAYER_STATES } from "../../../shared/game/Types"
+import { WsMessage } from "../../../shared/messages"
+import { handleMessage } from "./socketHandlersFE";
+import { createJoinGameMessage, createMoveMessage } from "../../../shared/messages"
+
+export class GameController {
+    private boardState: CellState [][][] = [];
+    private N: number;
+    private ui: GameUI;
+    private playerNames: string[] = [];
+    private localPlayer!: LocalPlayer;
+    private guestPlayer!: LocalPlayer;
+    private localPlayerIndex: number = -1;
+    private guestPlayerIndex: number = -1;
+    private players: Player[] = [];
+    private currentPlayerIndex: number = 0;
+    private nPlayers: number;
+    private graphics: GameGraphics;
+    private gameData: GameData;
+    private gameID!: string;
+    private ws: WebSocket;
+    private onExit: () => void;
+
+    constructor(gameData: GameData, ui: GameUI, graphics: GameGraphics, nPlayers: number, ws: WebSocket, onExit: () => void) {
+        this.gameData = gameData;
+        this.N = gameData.size;
+        this.ui = ui;
+        this.graphics = graphics;
+        this.nPlayers = nPlayers;
+        this.ws = ws;
+        this.onExit = onExit;
+        this.initBoard();
+    }
+    
+    public async handleMessage(message: WsMessage) {
+        console.log("Received message:", message);
+        switch (message.type) {
+            case "game-start":
+                console.log(`Game ${message.payload.gameID} started`);
+                this.playerNames = message.payload.playerNames;
+                this.nPlayers = message.payload.nPlayers;
+                if (this.playerNames[message.payload.youAre] === "guest")
+                    this.guestPlayerIndex = message.payload.youAre;
+                else
+                    this.localPlayerIndex = message.payload.youAre;
+                this.gameID = message.payload.gameID;
+                break;
+			
+            case "turn":
+                this.currentPlayerIndex = message.payload.PlaysNow;
+                await this.ui.playerTitle(this.playerNames[message.payload.PlaysNow]);
+                if (message.payload.PlaysNow === this.localPlayerIndex)
+                    this.localPlayer.yourTurn(this.boardState, this.N, PLAYER_STATES[this.localPlayerIndex]);
+                if (message.payload.PlaysNow === this.guestPlayerIndex)
+                    this.guestPlayer.yourTurn(this.boardState, this.N, PLAYER_STATES[this.guestPlayerIndex]);
+                break;
+            
+            case "move":
+                this.graphics.placeSphere(message.payload.position, message.payload.player);
+                this.boardState[message.payload.position.x][message.payload.position.y][message.payload.position.z] = message.payload.player;
+                break;
+            
+            case "end":
+                this.gameData = message.payload.gameData;
+                this.graphics.hidePreview();
+                if (this.gameData.isDraw)
+                    this.ui.displayWinner("No one wins"); 
+                else {
+                    this.graphics.animateWin(message.payload.winningPos);
+                    if (this.gameData.winner)
+                        await this.ui.displayWinner(this.gameData.winner.username);    
+                }
+                setTimeout(() => {this.onExit();}, 3000);
+                break;
+            
+            default:
+                console.log(`Unknown message: ${message}`);
+        }
+    }
+    
+
+
+    public register(player: LocalPlayer): void {
+        if (this.players.length >= this.nPlayers)
+            throw new Error("Too many players were registered");
+        if (player.name === "guest")
+            this.guestPlayer = player;
+        else
+            this.localPlayer = player;
+        this.players.push(player);
+    }
+
+
+
+
+    public placeMove(pos: GridPosition, IAm: LocalPlayer): boolean {
+        if (IAm === this.localPlayer)
+            this.ws.send(JSON.stringify(createMoveMessage(this.gameID, PLAYER_STATES[this.localPlayerIndex], this.localPlayerIndex, pos)));
+        else if (IAm === this.guestPlayer)
+            this.ws.send(JSON.stringify(createMoveMessage(this.gameID, PLAYER_STATES[this.guestPlayerIndex], this.guestPlayerIndex, pos)));
+        return true;
+    }
+
+    public getCurrentPlayer(): Player | null {
+            if (this.currentPlayerIndex === this.localPlayerIndex)
+                return this.localPlayer;
+            else if (this.currentPlayerIndex === this.guestPlayerIndex)
+                return this.guestPlayer;
+            else
+                return null;
+    }
+
+    public getCurrentPlayerState(): CellState {
+        const state = PLAYER_STATES[this.currentPlayerIndex];
+
+        if (state === undefined) {
+            throw new Error("Current player has no CellState");
+        }
+
+        return state;
+    }
+
+    private initBoard() {
+        for(let x = 0; x < this.N; x++) {
+            this.boardState[x] = [];
+            for(let y = 0; y < this.N; y++) {
+                this.boardState[x][y] = [];
+                for(let z = 0; z < this.N ; z++)
+                    this.boardState[x][y][z] = CellState.Empty;
+            }
+        }
+    }
+}

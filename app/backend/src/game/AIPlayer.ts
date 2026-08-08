@@ -1,8 +1,7 @@
-import { GridPosition, CellState, points, PLAYER_STATES } from "./Types"
-import { Player } from "./Player";
-import { GameState } from "./GameState";
-import { GameGraphics} from "./GameGraphics"
-import { addGP } from "./Utils";
+import { GridPosition, CellState, points, PLAYER_STATES } from "../../../shared/game/Types.ts"
+import { GameState } from "./GameState.ts";
+import { WsMessage } from "../../../shared/messages.ts"
+import { addGP } from "../../../shared/game/Utils.ts";
 
 interface PositionScore {
     score: number;
@@ -15,17 +14,39 @@ interface MoveScore {
     blocksWin: boolean;
 }
 
-export class AiPlayer extends Player {
-    private IAm: CellState = 0;
-    private level: number;
-    
-    constructor(name: string, game: GameState, graphics: GameGraphics, level: number) {
-        super (name, game, graphics);
+export class AiPlayer {
+    private playerIndex: number = -1;
+    private IAm: CellState = CellState.Empty;    private level: number;
+    private game: GameState
+    private N: number;
+
+    constructor(game: GameState, level: number, N: number) {
         this.level = level;
+        this.game = game;
+        this.N = N;
     }
-    
-    public yourTurn(BoardState: CellState[][][], N: number, youAre: CellState): boolean {
-        this.IAm = youAre;
+
+    public handleMessage(message: WsMessage) {
+        console.log("Received message:", message);
+        switch (message.type) {
+            case "game-start":
+                this.playerIndex = message.payload.youAre;
+                this.IAm = PLAYER_STATES[this.playerIndex];
+                break;
+			case "turn":
+				if (this.playerIndex === message.payload.PlaysNow)
+                    this.yourTurn(this.game.getBoardState(),this.N);
+                break;
+            case "move":
+
+                //this.switchPlayer();
+                break;
+            default:
+                console.log(`Unknown message: ${message}`);
+        }
+    }
+
+    public yourTurn(BoardState: CellState[][][], N: number): boolean {
         setTimeout(() => {
            switch(this.level) {
             case 1:
@@ -38,16 +59,16 @@ export class AiPlayer extends Player {
                 else
                     this.playSmartMove(BoardState, N);
                 break;
-            
+
             case 3:
                 this.playSmartMove(BoardState, N);
                 break;
-            
+
             default:
                 this.playRandomMove(BoardState, N);
                 break;
-           } 
-        }, 500);
+           }
+        }, 1000);
         return true;
     }
 
@@ -92,14 +113,14 @@ export class AiPlayer extends Player {
         else
             candidates = bestPositions;
         const randomIndex = Math.floor(Math.random() * candidates.length);
-        this.game.placeMove(candidates[randomIndex]);
+        this.game.placeMove(candidates[randomIndex], this.IAm);
     }
 
     private scoreMove(boardState: CellState[][][], pos: GridPosition, N: number): MoveScore {
         let score = -1;
         if (boardState[pos.x][pos.y][pos.z] !== CellState.Empty)
-            return { score: -1, winsGame: false, blocksWin: false};
-        
+            return { score, winsGame: false, blocksWin: false};
+
         const myScore = this.scorePos(boardState, pos, this.IAm, N);
         const emptyScore = this.scorePos(boardState, pos, 0, N);
         let bestOpponentScore = 0;
@@ -143,7 +164,7 @@ export class AiPlayer extends Player {
                     playerCells++;
                 else if (cell !== CellState.Empty) {
                     lineIsBlocked = true;
-                    break; 
+                    break;
                 }
             }
 
@@ -175,18 +196,25 @@ export class AiPlayer extends Player {
     }
 
     private playRandomMove(BoardState: CellState[][][], N: number) {
-        this.game.placeMove(this.getRandomEmptyCell(BoardState, N));
+        this.game.placeMove(this.getRandomEmptyCell(BoardState, N), this.IAm);
     }
 
-    //these methods dont do anything, they are here in case input manager calls the ai player.
-    public moveCursor(direction: boolean, plane:  "x" | "y" | "z"): void {
-        return;
+    private getRandomEmptyCell(boardState: CellState[][][], N: number): GridPosition {
+        const emptyCells: GridPosition[] = [];
+
+        for (let x = 0; x < N; x++) {
+            for (let y = 0; y < N; y++) {
+                for (let z = 0; z < N; z++) {
+                    const pos: GridPosition = {x,y,z};
+                    if (boardState[x][y][z] === CellState.Empty)
+                        emptyCells.push(pos);
+                }
+            }
+        };
+        const randomNumber = Math.floor(Math.random() * emptyCells.length);
+        return emptyCells[randomNumber];
     }
-    public choosePos(): void {
-        return;
-    }
-    public selectPos(pos: GridPosition): boolean {
-        return false;
-    }
+
+
 
 }

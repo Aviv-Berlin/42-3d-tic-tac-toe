@@ -1,9 +1,9 @@
 import { GameUI } from "./GameUI";
-import { checkWin } from "./GameCheckWin";
+import { checkWin } from "../../../backend/src/game/GameCheckWin";
 import { GameGraphics } from "./GameGraphics";
-import { GridPosition, CellState, PLAYER_STATES} from "./Types";
+import { GridPosition, CellState, PLAYER_STATES} from "../../../shared/game/Types";
 import { Player } from "./Player";
-import { GameData } from "../types/game";
+import { GameData } from "../../../shared/game";
 
 
 

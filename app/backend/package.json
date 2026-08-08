@@ -6,9 +6,9 @@
   "author": "",
   "type": "module",
   "scripts": {
-    "dev": "concurrently \"tsc --watch\" \"node --watch src/server.ts\"",
+    "dev": "tsx watch src/server.ts",
     "multiply": "tsc && node multiplier.ts",
-    "start": "node src/server.ts",
+    "start": "tsx src/server.ts",
     "test": "\\\"echo \\\\\\\"Error: no test specified\\\\\\\" && exit 1\\\"",
     "tsc": "tsc"
   },
@@ -17,20 +17,28 @@
     "@types/cors": "^2.8.17",
     "@types/express": "^5.0.6",
     "@types/jsonwebtoken": "^9.0.10",
-    "@types/node": "^26.1.1",
+    "@types/node": "^26.1.2",
     "@types/pg": "^8.15.0",
-	"@types/ws": "^8.x.x",
+    "@types/ws": "^8.18.1",
     "concurrently": "^9.2.4",
+    "tsx": "^4.23.5",
     "typescript": "^7.0.2"
   },
   "dependencies": {
     "bcrypt": "^6.0.0",
     "cors": "^2.8.5",
     "dotenv": "^17.0.0",
+    "esbuild": "^0.28.1",
     "express": "^5.2.1",
     "jsonwebtoken": "^9.0.2",
     "pg": "^8.16.0",
-	"ws": "^8.18.0",
-    "zustand": "^5.0.14"
+    "present": "^1.0.0",
+    "scripts": "^0.1.0",
+    "ws": "^8.21.2"
+  },
+  "allowScripts": {
+    "ws@8.21.2": true,
+    "bcrypt@6.0.0": true,
+    "esbuild@0.28.1": true
   }
 }

@@ -29,7 +29,6 @@ then
 		DB_PORT=
 		DB_NAME=
 		DB_USER=
-		DB_PASSWORD=
 	"
 	exit 1
 fi

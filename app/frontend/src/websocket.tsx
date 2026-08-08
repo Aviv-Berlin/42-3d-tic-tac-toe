@@ -1,10 +1,10 @@
-
+import { createContext, useEffect } from "react"
+import { useParams, Outlet, useLocation } from "react-router-dom"
 
 let socket: WebSocket | null = null;
 let currentMatchId: string | null = null;
 
 export function openSocket(matchId: string): WebSocket {
-	console.log("here");
 	if (socket && socket.readyState !== WebSocket.CLOSED && currentMatchId === matchId)
 		return socket;
 
@@ -51,3 +51,55 @@ export function closeSocket() {
 		currentMatchId = null;
 	}
 }
+
+// export const MatchSocketProvider = () => {
+// 	const { matchId } = useParams();
+// 	const location = useLocation();
+
+// 	useEffect(() => {
+// 		if (!matchId) return;
+
+// 		console.log("MatchSocketProvider mounted: ", matchId)
+
+// 		openSocket(matchId);
+
+// 	}, [matchId])
+
+// 	useEffect(() => {
+// 		if (!matchId) return;
+
+// 		const insideMatch =
+// 			location.pathname === `/waiting/${matchId}` || 
+// 			location.pathname === `/game/${matchId}`;
+
+// 		if (!insideMatch) {
+// 			console.log("User left match, closing socket");
+// 			closeSocket();
+// 		}
+// 	}, [location.pathname, matchId]);
+	
+// 	return <Outlet />;
+// }
+
+export const MatchSocketProvider = () => {
+	const location = useLocation();
+
+	useEffect(() => {
+		const matchPath = location.pathname.match(
+			/^\/(waiting|game)\/([^/]+)$/
+		);
+
+		if (!matchPath) {
+			console.log("User left match");
+			closeSocket();
+			return;
+		}
+
+		const matchId = matchPath[2];
+
+		console.log("User is in match:", matchId);
+		openSocket(matchId);
+	}, [location.pathname]);
+
+	return <Outlet />;
+};

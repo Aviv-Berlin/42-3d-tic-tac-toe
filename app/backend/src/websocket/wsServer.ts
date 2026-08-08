@@ -77,6 +77,48 @@ export function setupWebSocket(server: http.Server) {
 					});
 				}
 			}
+			if (data.type === "cancel-game"){
+				if (sender?.username !== match.host){
+					match.players = match.players.filter(player => player !== sender?.username);
+					match.status = "waiting";
+					broadcast("lobby-update", { type: "created", match });
+					lobbyMatches.set(matchId, match);
+					broadcastMatch(matchId, {
+					type: "match-state",
+					host: match.host,
+					size: match.size,
+					requiredPlayers: match.requiredPlayers,
+					players: match.players,
+					status: match.status
+					})
+					sender?.ws.send(JSON.stringify({
+						type: "left-match"
+					}))
+					sender?.ws.close();
+					console.log("Match ${matchId} is available again.");
+				}
+				if (sender?.username === match.host){
+					console.log(`Host ${match.host} canceled match ${matchId}.`);
+					if (match.players.length < match.requiredPlayers)
+						broadcast("lobby-update", { type: "removed", match });
+					match.status = "canceled";
+					broadcastMatch(matchId, {
+						type: "game-canceled",
+						host: match.host,
+						size: match.size,
+						requiredPlayers: 0,
+						players: [],
+						status: match.status
+					});
+					sockets.forEach((player) => {
+						player.ws.close();
+					});
+					matches.delete(matchId);
+					lobbyMatches.delete(matchId);
+					matchSockets.delete(matchId);
+					return;
+				}
+			}
 		});
 	
 		socket.on("close", () => {
@@ -95,7 +137,7 @@ export function setupWebSocket(server: http.Server) {
 				broadcast("lobby-update", { type: "removed", match });
 				match.status = "canceled";
 				broadcastMatch(matchId, {
-					type: "match-state",
+					type: "game-canceled",
 					host: match.host,
 					size: match.size,
 					requiredPlayers: 0,

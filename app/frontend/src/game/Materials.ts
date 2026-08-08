@@ -9,6 +9,7 @@ import { playerStateToIndex } from "./Utils";
 export class Materials {
     
     public readonly cube: StandardMaterial;
+    public readonly buttonCube: StandardMaterial;
     public readonly playerMaterials: StandardMaterial[];
     public readonly previewMaterials: StandardMaterial[];
     private readonly cubeColor = new Color3(0.67, 0.7, 0.71);
@@ -32,6 +33,10 @@ export class Materials {
         this.cube.needDepthPrePass = false;
         this.cube.disableDepthWrite = true;
 
+        this.buttonCube = new StandardMaterial("buttonCube", scene);
+        this.buttonCube.diffuseColor = new BABYLON.Color3(0, 0, 0);
+        this.buttonCube.alpha = 1;
+
         const playerColors: readonly Color3[] = [
             new Color3(1, 0.16, 0.01),  // Player 1: orange/red
             new Color3(0.01, 0.89, 1),  // Player 2: cyan
@@ -52,6 +57,8 @@ export class Materials {
         mesh.edgesColor = this.cubeEdgeColor;
     }
     
+    
+
     public applyLook(look: number): boolean {
         switch (look) {
             case 1:
@@ -99,6 +106,15 @@ export class Materials {
                 return false;
             
             case 6:
+                this.scene.clearColor = this.sceneBackground.clone();
+                this.cube.diffuseColor = this.cubeColor.clone();
+                this.cube.alpha = 0.4;
+                this.cube.needDepthPrePass = false;
+                this.cube.disableDepthWrite = true;
+                this.textColor = this.defaultTextColor.clone();
+                return false;
+            
+            case 7:
                 // Same values used when Materials is constructed.
                 this.scene.clearColor = this.sceneBackground.clone();
                 this.cube.diffuseColor = this.cubeColor.clone();

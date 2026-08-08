@@ -1,8 +1,8 @@
 import { useState, useRef, useEffect } from 'react'
 import { Link, useNavigate } from 'react-router-dom'
-import { useUsername } from '../context/UsernameContext'
 import { ChevronUp, ChevronDown } from 'lucide-react';
 import DropDownButton from './DropDownButton'
+import { useUsername } from '../../store/username'
 
 const NavDropDown = () => {
   const [open, setOpen] = useState(false);
@@ -11,10 +11,7 @@ const NavDropDown = () => {
 
   const navigate = useNavigate();
 
-  const userInfo = useUsername();
-  if (!userInfo) return null;
-
-  const { username } = userInfo;
+  const username = useUsername();
 
   const handleLogOut = () => {
     window.localStorage.removeItem('token');
@@ -38,7 +35,7 @@ const NavDropDown = () => {
   return (
     <div ref={DropDownRef} className="relative">
       <DropDownButton onClick={() => setOpen((prev) => !prev)}>
-        <p className="hidden sm:inline">{username}</p>
+        <p>{username}</p>
         { open ? <ChevronUp /> : <ChevronDown /> }
       </DropDownButton>
       <div className={`absolute right-0 flex flex-col bg-white border rounded-md border-stone-400 mt-6 w-40 items-center ${open ? "visible" : "invisible"}`}>

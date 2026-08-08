@@ -9,7 +9,7 @@ interface GameSettingButtonProps {
 const GameSettingButton = ({selected, children, onClick}: GameSettingButtonProps) => {
   return (
     <button
-      className={`border rounded-xl bg-white h-32 w-32 hover:bg-stone-200 cursor-pointer text-xl ${selected ? 'border-stone-800' : 'border-stone-400'}`}
+      className={`rounded-xl h-32 w-32 overflow-hidden cursor-pointer text-xl border border-stone-800 ${selected ? 'border-3' : 'border'}`}
       onClick={onClick}
     >{children}
     </button>

@@ -6,6 +6,7 @@ import AuthCard from '../components/AuthCard'
 import Input from '../components/Input'
 import SubmitButton from '../components/SubmitButton'
 import auth from '../../services/auth'
+import { validateForm } from '../../utils/auth'
 
 const Register = () => {
   const [form, setForm] = useState({username: '', email: '', password: '', confirmPassword: ''});
@@ -13,14 +14,6 @@ const Register = () => {
   const [errorMessage, setErrorMessage] = useState('');
 
   const navigate = useNavigate();
-
-  const validate = () => {
-    return (
-      form.email.includes('@') &&
-      form.password.length >= 8 &&
-      form.password === form.confirmPassword
-    )
-  }
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     setForm({...form, [e.target.name]: e.target.value});
@@ -31,7 +24,7 @@ const Register = () => {
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
     setSubmit(true);
-    if (!validate()) {
+    if (!validateForm(form)) {
       console.log("invalid form");
       return;
     }
@@ -50,7 +43,8 @@ const Register = () => {
       <AuthCard>
         <h1 className="text-2xl font-serif italic">Sign up</h1>
         <form className="flex flex-col" onSubmit={handleSubmit}>
-          <Input name="username" value={form.username} handler={handleChange} submit={submit}/>
+          <Input name="username" value={form.username} handler={handleChange} submit={submit}
+            validate={() => form.username.length <= 16} message="Username is too long"/>
           <Input name="email" value={form.email} handler={handleChange}
             validate={() => form.email.includes('@')} message="Invalid email" submit={submit} />
           <Input name="password" value={form.password} handler={handleChange}

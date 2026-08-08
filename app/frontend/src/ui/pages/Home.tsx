@@ -1,14 +1,13 @@
 import { useNavigate } from 'react-router-dom';
-import { useUsername } from '../context/UsernameContext'
 import MainButton from '../components/MainButton';
 import { GameMode } from '../../types/game';
 import CenteredLayout from '../layouts/CenteredLayout';
+import { useUsername } from '../../store/username';
 
 const Home = () => {
   const navigate = useNavigate();
 
-  const userInfo = useUsername();
-  const username = userInfo ? userInfo.username : "stranger";
+  const username = useUsername() ?? "stranger";
 
   const handleClick = (gameMode: GameMode) => {
     if (gameMode === "online") {

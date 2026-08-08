@@ -1,10 +1,12 @@
-import { useEffect, useState } from "react";
-import {useParams } from "react-router-dom";
+import { useEffect, useRef, useState } from "react";
+import {useParams, useNavigate } from "react-router-dom";
 import MainLayout from "../layouts/MainLayout";
 import MainButton from "../components/MainButton";
-import { useNavigate } from "react-router-dom";
-import { openSocket, closeSocket, sendMessage } from "../../websocket";
+import { openSocket, closeSocket, sendMessage, getSocket } from "../../websocket";
 import { send } from "vite";
+
+import CenteredLayout from "../layouts/CenteredLayout"
+import SecondaryButton from "../components/SecondaryButton";
 
 
 interface Match {
@@ -15,8 +17,7 @@ interface Match {
 	status: "waiting" | "ready" | "started" | "disconnected" | "canceled" | "ended";
 }
 
-
-const Game = () => {
+const WaitingRoom = () => {
 	const { matchId } = useParams();
 	const navigate = useNavigate();
 	const [match, setMatch] = useState<Match | null>(null);
@@ -27,7 +28,10 @@ const Game = () => {
 			return;
 		}
 
-		const socket = openSocket(matchId);
+		const socket = getSocket();
+
+		if (!socket)
+			return;
 
 		const handleMessage = (event: MessageEvent) => {
 			const data = JSON.parse(event.data);
@@ -54,6 +58,18 @@ const Game = () => {
 				navigate(`/game/${matchId}?game-mode=online&level=0&size=${data.size}`);
 			}
 
+			if (data.type === "game-canceled"){
+				setMatch(null);
+				closeSocket();
+				navigate("/lobby");
+			}
+
+			if (data.type === "left-match"){
+				setMatch(null);
+				closeSocket();
+				navigate("/lobby");
+			}
+
 			if (data.type === "error") {
 				setMatch(null);
 				closeSocket();
@@ -68,8 +84,8 @@ const Game = () => {
 			socket.removeEventListener("message", handleMessage);
 		}
 	}, [matchId, navigate]);
-
-	const requiredPlayers = match?.requiredPlayers ?? 0;		
+	
+	const requiredPlayers = match?.requiredPlayers ?? 0;
 	const connectedPlayers = match?.players.length ?? 0;
 
 	const statusMessage = (connectedPlayers: number, requiredPlayers: number) => {
@@ -77,11 +93,14 @@ const Game = () => {
 			return "Host disconnected, please return to main menu!";
 		if (connectedPlayers < requiredPlayers) 
 			return "Waiting for players ...";
-		return "All players connected. Ready to start!";
+		if (match?.host === localStorage.getItem("username"))
+			return "All players connected. Ready to start!";
+		return "All players connected. Waiting for host to start the game ...";
 	}
 
-	const handleStart = () => {
+	const handlePlay = () => {
 		// should be checked by server first before navigated
+		//pressedPlay.current = true;
 		sendMessage({
 			type: "start-game",
 			matchId
@@ -89,39 +108,37 @@ const Game = () => {
 		console.log("Starting game request sent...");
 	};
 
+	const handleCancel = () => {
+		console.log("remove the game")
+		sendMessage({
+			type: "cancel-game",
+			matchId
+		}); // remove game in backend and make sure only host can cancel if player just let him leave?
+		// navigate here or handleMessage after communication with server? in any case if they cancel they return to lobby 
+		//navigate('/lobby')
+	}
+
 	return (
-	<MainLayout>
-		<div className="flex flex-col items-center gap-8">
+	<CenteredLayout>
+		<h1 className="text-5xl font-serif italic">WAITING ROOM</h1>
+		<p>Players: {connectedPlayers}/{requiredPlayers}</p>
+		<p className="font-serif italic">
+			{statusMessage(connectedPlayers, requiredPlayers)}
+		</p>
+		{match?.host === localStorage.getItem("username") && (
+			<>
+				{connectedPlayers === requiredPlayers && (
+					<MainButton onClick={handlePlay}>PLAY</MainButton>
+				)}
 
-			<h1 className="text-3xl font-serif italic">
-				Waiting Room
-			</h1>
-
-			<p>Match ID: {matchId}</p>
-
-			<div className="flex flex-col items-center gap-2">
-				<h2 className="text-xl">
-					Players: {connectedPlayers} / {requiredPlayers}
-				</h2>
-
-				<p className="font-serif italic">
-					{statusMessage(connectedPlayers, requiredPlayers)}
-				</p>
-			</div>
-
-			{connectedPlayers < requiredPlayers ? (
-				<MainButton disabled>
-					Start Game
-				</MainButton>
-			) : (
-				<MainButton onClick={handleStart}>
-					Start Game
-				</MainButton>
-			)}
-
-		</div>
-	</MainLayout>
-);
+				{connectedPlayers !== requiredPlayers && (
+					<MainButton disabled>PLAY</MainButton>
+				)}
+			</>
+		)}
+		<SecondaryButton onClick={handleCancel}>Cancel</SecondaryButton>
+	</CenteredLayout>
+	);
 }
 
-export default Game;
+export default WaitingRoom;

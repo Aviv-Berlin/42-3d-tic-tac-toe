@@ -14,10 +14,10 @@
   },
   "devDependencies": {
     "@types/bcrypt": "^6.0.0",
+    "@types/cors": "^2.8.17",
     "@types/express": "^5.0.6",
     "@types/jsonwebtoken": "^9.0.10",
     "@types/node": "^26.1.1",
-    "@types/cors": "^2.8.17",
     "@types/pg": "^8.15.0",
 	"@types/ws": "^8.x.x",
     "concurrently": "^9.2.4",
@@ -25,12 +25,12 @@
   },
   "dependencies": {
     "bcrypt": "^6.0.0",
-    "express": "^5.2.1",
     "cors": "^2.8.5",
     "dotenv": "^17.0.0",
+    "express": "^5.2.1",
     "jsonwebtoken": "^9.0.2",
     "pg": "^8.16.0",
-	"ws": "^8.x.x"
+	"ws": "^8.18.0",
+    "zustand": "^5.0.14"
   }
 }
-

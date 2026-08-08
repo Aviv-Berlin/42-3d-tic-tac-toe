@@ -1,12 +1,11 @@
 import { useSearchParams, useNavigate } from 'react-router-dom';
 import { useEffect, useRef } from 'react';
-import { useUsername } from '../context/UsernameContext'
 import GameLayout from '../layouts/GameLayout';
 import Canvas from '../components/Canvas';
 import { GameData, GameMode, AiLevel } from '../../types/game';
 import createPlayers from '../../utils/players';
 import { openSocket, closeSocket, sendMessage, getSocket } from "../../websocket";
-
+import { useUsername } from '../../store/username';
 
 const Game = () => {
   const [searchParams] = useSearchParams();
@@ -15,8 +14,7 @@ const Game = () => {
   const socket = getSocket()
   console.log("socket: ", socket);
 
-  const userInfo = useUsername();
-  const username = userInfo?.username ?? "stranger";
+  const username = useUsername() ?? "stranger";
 
   const gameModeParam = searchParams.get('game-mode');
   const sizeParam = searchParams.get('size');

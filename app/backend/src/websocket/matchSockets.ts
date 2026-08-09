@@ -1,5 +1,11 @@
 import { WebSocket } from "ws";
 import { Match, matches, broadcast, lobbyMatches} from "../controllers/gameController.ts";
+import { GameState } from "../game/GameState.ts";
+
+import { GameData} from "../../../shared/game.ts";
+import  createPlayers from "../../../frontend/src/utils/players.ts"
+import { CancelGameMessage, PlayGameMessage } from "../../../shared/messages.ts"
+
 
 export interface PlayerConnection {
 	username: string;
@@ -24,12 +30,69 @@ export function broadcastMatch(matchId: string, data: unknown) {
 	});
 }
 
-function handleStartGame(
-	sender: PlayerConnection,
-	sockets: Set<PlayerConnection>,
-	match: Match,
-	matchId: string
+function initGame(match: Match, sockets: Set<PlayerConnection>, games: GameState[]) {
+	
+	// construct GameData from trusted match data
+    const gameMode = "online";
+	const [player1, player2] = createPlayers(match.players, gameMode);
+    const level = 0;
+	let gameData: GameData= {
+      player1, // = host
+      player2,
+      level,
+      gameMode,
+      moves: [],
+      size: match.size,
+      isFinished: false,
+      isDraw: false,
+      winner: null,
+      gameStart: 0,
+      gameEnd: 0,
+      gameID: match.id
+   	 };
+  
+  	console.log("GameData:", gameData);
+
+    // create GameState
+	let game = new GameState(gameData, match.requiredPlayers);
+
+	// attach existing WebSockets
+	sockets.forEach(player => {
+	game.addPlayer(player.ws, player.username);
+	});
+	
+    // add to games
+	games.push(game);
+	
+	console.log(`Game ${match.id} created`);
+
+	// if (data.player2.type === "ai") {
+	// 	const ai = new AiPlayer(game, data.level, data.size);
+	// 	game.addAiPlayer(ai, "ai");
+	// }
+	// else if (data.player2.type === "guest")
+	// 	game.addPlayer(ws, "guest");
+
+	//game.startGame();
+
+	return gameData;
+}
+
+export function PlayGame(message: PlayGameMessage, socket: WebSocket, games: GameState[]
 ) {
+
+	const matchId = message.payload.matchId;
+	const sockets = matchSockets.get(matchId);
+ 	if (!sockets) return;
+
+	const match = matches.get(matchId);
+	if (!match) return
+
+	const sender = [...sockets].find(
+		player => player.ws === socket
+	);
+	if (!sender) return;
+
 	if (sender.username !== match.host)
 		return;
 
@@ -38,26 +101,35 @@ function handleStartGame(
 		return;
 	}
 
+	const gameData = initGame(match, sockets, games);
+
 	match.status = "started";
 
-	broadcastMatch(matchId, {
-		type: "game-started",
+	broadcastMatch(match.id, {
+		type: "game-init",
 		host: match.host,
 		size: match.size,
 		requiredPlayers: match.requiredPlayers,
 		players: match.players,
-		status: match.status
+		status: match.status,
+		gameData
 	});
-
-	// initialize game ... handover sockets 
 }
 
-function handleCancelGame(
-	sender: PlayerConnection,
-	sockets: Set<PlayerConnection>,
-	match: Match,
-	matchId: string
-) {
+export function CancelGame(message: CancelGameMessage, socket: WebSocket) {
+
+	const matchId = message.payload.matchId;
+	const sockets = matchSockets.get(matchId);
+ 	if (!sockets) return;
+
+	const match = matches.get(matchId);
+	if (!match) return
+
+	const sender = [...sockets].find(
+		player => player.ws === socket
+	);
+	if (!sender) return;
+	
 	// Player leaves
 	if (sender.username !== match.host) {
 		match.players = match.players.filter(
@@ -123,34 +195,35 @@ function handleCancelGame(
 	matchSockets.delete(matchId);
 }
 
-export function handleMessage(
-	message: WebSocket.RawData,
-	socket: WebSocket,
-	match: Match,
-) {
-	console.log("received message:", message.toString());
+// export function handleMessage(
+// 	message: WebSocket.RawData,
+// 	socket: WebSocket,
+// 	match: Match,
+// 	games: GameState[]
+// ) {
+// 	console.log("received message:", message.toString());
 
-	const data = JSON.parse(message.toString());
+// 	const data = JSON.parse(message.toString());
 
-	const sockets = matchSockets.get(match.id);
-	if (!sockets) return;
+// 	const sockets = matchSockets.get(match.id);
+// 	if (!sockets) return;
 
-	const sender = [...sockets].find(
-		player => player.ws === socket
-	);
+// 	const sender = [...sockets].find(
+// 		player => player.ws === socket
+// 	);
 
-	if (!sender) return;
+// 	if (!sender) return;
 
-	switch (data.type) {
-		case "start-game":
-			handleStartGame(sender, sockets, match, match.id);
-			break;
+// 	switch (data.type) {
+// 		case "play-game":
+// 			handleStartGame(sender, sockets, match, games);
+// 			break;
 
-		case "cancel-game":
-			handleCancelGame(sender, sockets, match, match.id);
-			break;
+// 		case "cancel-game":
+// 			handleCancelGame(sender, sockets, match, match.id);
+// 			break;
 
-		default:
-			console.log(`Unknown message type: ${data.type}`);
-	}
-}
+// 		default:
+// 			console.log(`Unknown message type: ${data.type}`);
+// 	}
+// }

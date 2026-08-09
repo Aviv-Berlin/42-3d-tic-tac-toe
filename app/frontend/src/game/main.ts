@@ -14,7 +14,7 @@ import { GameData } from "../../../shared/game";
 import { WsMessage } from "../../../shared/messages"
 import { handleMessage } from "./socketHandlersFE";
 import { createJoinGameMessage } from "../../../shared/messages"
-import { getSocket } from "../websocket";
+import { getSocket, sendMessage } from "../websocket";
 
 export function createBabylonGame(canvas: HTMLCanvasElement, gameData: GameData, onExit: () => void) {
 
@@ -34,7 +34,6 @@ export function createBabylonGame(canvas: HTMLCanvasElement, gameData: GameData,
   const ws = getSocket();
 
   if (!ws) return;
-  
   const gameController = new GameController(gameData, ui, graphics, 2, ws, onExit);
   const player = new LocalPlayer(gameData.player1.username, gameController, graphics);
   gameController.register(player);
@@ -48,6 +47,7 @@ export function createBabylonGame(canvas: HTMLCanvasElement, gameData: GameData,
 	console.log("Received message from server:", data);
     gameController.handleMessage(data);
   }
+
 
   ws.addEventListener("message", handleGameMessage)
 

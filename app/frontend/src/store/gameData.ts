@@ -1,6 +1,6 @@
 import { create } from 'zustand'
 import { persist } from 'zustand/middleware'
-import { GameData } from '../types/game'
+import { GameData } from '../../../shared/game'
 
 interface GameDataStore {
   gameData: GameData | null;

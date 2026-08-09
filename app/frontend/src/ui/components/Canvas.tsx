@@ -1,5 +1,5 @@
 import { useEffect, useRef } from "react";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, useParams } from "react-router-dom";
 import { createBabylonGame } from "../../game/main";
 import { GameData } from "../../../../shared/game";
 import { useSetGameData } from "../../store/gameData"
@@ -34,3 +34,5 @@ const Canvas = ({gameData}: CanvasProps) => {
 };
 
 export default Canvas;
+
+

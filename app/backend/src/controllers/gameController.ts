@@ -12,7 +12,7 @@ export interface Match {
 	size: number;
 	requiredPlayers: number;
 	players: string[];
-	status: "waiting" | "ready" | "started" | "disconnected" | "canceled" | "ended";
+	status: "waiting" | "ready" | "started" | "disconnected" | "canceled";
 }
 
 export const lobbyMatches = new Map<string, Match>();

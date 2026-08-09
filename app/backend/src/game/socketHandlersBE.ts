@@ -1,75 +1,9 @@
-import { WsMessage, JoinGameMessage, MoveMessage, createMoveMessage } from "../../../shared/messages.ts"
+import { WsMessage, JoinGameMessage, InitGameMessage, MoveMessage, createMoveMessage, StartGameMessage } from "../../../shared/messages.ts"
 import { WebSocket } from "ws";
 import { GameState } from "./GameState.ts";
 import { AiPlayer } from "./AIPlayer.ts";
 
-//import { matches } from "../controllers/gameController.ts";
-//import { matchSockets } from "../websocket/matchSockets.ts";
-//import { PlayerData, ActiveGame, Move, GameData } from "../../../shared/game.ts";
-
-
-//  interface PlayerConnection {
-// 	username: string;
-// 	ws: WebSocket;
-// }
-
-// interface Match {
-// 	id: string;
-// 	host: string;
-// 	size: number;
-// 	requiredPlayers: number;
-// 	players: string[];
-// 	status: "waiting" | "ready" | "started" | "canceled";
-// }
-
-// function initializeGame(matchId: string, games: GameState[]) {
-
-// 	const match = matches.get(matchId);
-// 	if (!match) return;
-
-// 	const sockets = matchSockets.get(matchId);
-// 	if (!sockets) return;
-
-// 	const host = {
-// 		type: "real",
-// 		username: match.players[0]
-// 	}
-
-// 	const player = {
-// 		type: "real",
-// 		username: match.players[1]
-// 	}
-
-// 	const data: GameData;
-// 	data.gameID = match.id;
-// 	data.set= {
-// 		player1: host,
-// 		player2: player,
-// 		level: 0,
-// 		gameMode: "online",
-// 		winner: null,
-// 		moves: null,
-// 		size: match.size,
-// 		isFinished: null,
-// 		isDraw: null,
-// 		gameStart: null,
-// 		gameEnd: null,
-// 		gameID: match.id
-// 	}
-
-// 	let game = new GameState(data, 2);
-// 		game.addPlayer(ws, data.player1.username);
-// 		games.push(game);
-// 		console.log(`Game ${data.gameID} created`);
-// 	}
-// 	// if (data.player2.type === "ai") {
-// 	// 	const ai = new AiPlayer(game, data.level, data.size);
-// 	// 	game.addAiPlayer(ai, "ai");
-// 	// }
-// 	// else if (data.player2.type === "guest")
-// 	// 	game.addPlayer(ws, "guest");
-// 	game.startGame();
-// }
+import { CancelGame, PlayGame } from "../websocket/matchSockets.ts"
 
 function joinGame(message: JoinGameMessage, ws: WebSocket, games: GameState[]) {
 	const data = message.payload.gameData;
@@ -94,6 +28,14 @@ function joinGame(message: JoinGameMessage, ws: WebSocket, games: GameState[]) {
 	game.startGame();
 }
 
+function StartGame(message: StartGameMessage, games: GameState[]){
+	const data = message.payload.gameData;
+	let game = games.find(game => game.getID() === data.gameID);
+	if (game)
+		game.startGame();
+}
+
+
 export function makeMove(message: MoveMessage, ws: WebSocket, games: GameState[]) {
 	const data = message.payload;
 	let game = games.find(game => game.getID() === data.gameID);
@@ -115,8 +57,20 @@ export function handleMessage(message: WsMessage, ws: WebSocket, games: GameStat
 	//console.log(`Received message: ${message}`);
 	console.log(`TYPE: ${message.type} \n`)
 	switch (message.type) {
+			case "play-game":
+				PlayGame(message, ws, games);
+				console.log(`Received play-game msg: ${message}`);
+				break;
+			case "cancel-game":
+				CancelGame(message, ws);
+				console.log(`Received cancel-game msg: ${message}`);
+				break;
+			case "start-game":
+				StartGame(message, games);
+				console.log(`Received start-game msg: ${message}`);
+				break;
 			case "join-game":
-				joinGame(message, ws, games);
+				joinGame(message, ws, games); // prev. joinGame
 				console.log(`Received join-game msg: ${message}`);
 				break;
 			case "move":

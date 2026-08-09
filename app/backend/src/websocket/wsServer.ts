@@ -1,7 +1,13 @@
 import { WebSocketServer, WebSocket} from "ws";
 import type http from "http";
-import { broadcastMatch, matchSockets, handleMessage } from "../websocket/matchSockets.ts";
+import { broadcastMatch, matchSockets } from "../websocket/matchSockets.ts";
 import { lobbyMatches, matches, broadcast } from "../controllers/gameController.ts";
+import { GameState } from "../game/GameState.ts";
+
+import { handleMessage } from "../game/socketHandlersBE.ts";
+import { WsMessage } from "../../../shared/messages.ts"
+
+const games: GameState[] = [];
 
 export function setupWebSocket(server: http.Server) {
 
@@ -48,9 +54,11 @@ export function setupWebSocket(server: http.Server) {
 		 }));
 	
 		 // use later for broadcasting messages to all clients in the match
-		 socket.on("message", (message) => {
-			console.log("received message:", message.toString());
-			handleMessage(message, socket,	match)
+		 socket.on("message", (event) => {
+			console.log("Server received message");
+			const message: WsMessage = JSON.parse(event.toString());
+			//handleMessage(message, socket,	match, games)
+			handleMessage(message, socket, games);
 		});
 	
 		socket.on("close", () => {

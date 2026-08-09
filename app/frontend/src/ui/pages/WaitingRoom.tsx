@@ -4,23 +4,20 @@ import MainLayout from "../layouts/MainLayout";
 import MainButton from "../components/MainButton";
 import { openSocket, closeSocket, sendMessage, getSocket } from "../../websocket";
 import { send } from "vite";
+import { Match, useMatch, useSetMatch, useClearMatch } from "../../store/matchData"
+import { useSetGameData } from "../../store/gameData";
 
 import CenteredLayout from "../layouts/CenteredLayout"
 import SecondaryButton from "../components/SecondaryButton";
-
-
-interface Match {
-	host: string;
-	size: number;
-	requiredPlayers: number;
-	players: string[];
-	status: "waiting" | "ready" | "started" | "disconnected" | "canceled" | "ended";
-}
+import { createCancelGameMessage, createPlayGameMessage } from "../../../../shared/messages";
 
 const WaitingRoom = () => {
 	const { matchId } = useParams();
 	const navigate = useNavigate();
-	const [match, setMatch] = useState<Match | null>(null);
+	const match = useMatch();
+	const setMatch = useSetMatch();
+	const setGameData = useSetGameData();
+	const clearMatch = useClearMatch();
 
 	useEffect(() => {
 		if (!matchId) {
@@ -39,6 +36,7 @@ const WaitingRoom = () => {
 
 			if (data.type === "match-state") {
 				setMatch({
+					id: matchId,
 					host: data.host,
 					size: data.size,
 					requiredPlayers: data.requiredPlayers,
@@ -47,31 +45,33 @@ const WaitingRoom = () => {
 				});
 			}
 
-			if (data.type === "game-started") {
+			if (data.type === "game-init") {
 				setMatch({
+					id: matchId,
 					host: data.host,
 					size: data.size,
 					requiredPlayers: data.requiredPlayers,
 					players: data.players,
 					status: data.status
 				});
+				setGameData(data.gameData);
 				navigate(`/game/${matchId}?game-mode=online&level=0&size=${data.size}`);
 			}
 
 			if (data.type === "game-canceled"){
-				setMatch(null);
+				clearMatch();
 				closeSocket();
 				navigate("/lobby");
 			}
 
 			if (data.type === "left-match"){
-				setMatch(null);
+				clearMatch();
 				closeSocket();
 				navigate("/lobby");
 			}
 
 			if (data.type === "error") {
-				setMatch(null);
+				clearMatch();
 				closeSocket();
 				navigate("/lobby");
 			}
@@ -99,23 +99,15 @@ const WaitingRoom = () => {
 	}
 
 	const handlePlay = () => {
-		// should be checked by server first before navigated
-		//pressedPlay.current = true;
-		sendMessage({
-			type: "start-game",
-			matchId
-		});
+		if (!matchId) return;
+		sendMessage(createPlayGameMessage(matchId));
 		console.log("Starting game request sent...");
 	};
 
 	const handleCancel = () => {
 		console.log("remove the game")
-		sendMessage({
-			type: "cancel-game",
-			matchId
-		}); // remove game in backend and make sure only host can cancel if player just let him leave?
-		// navigate here or handleMessage after communication with server? in any case if they cancel they return to lobby 
-		//navigate('/lobby')
+		if (!matchId) return;
+		sendMessage(createCancelGameMessage(matchId));
 	}
 
 	return (

@@ -1,4 +1,5 @@
-import { WsMessage, JoinGameMessage, MoveMessage, GameStartMessage } from "../../../shared/messages"
+//import { WsMessage, JoinGameMessage, MoveMessage, GameStartMessage } from "../../../shared/messages"
+import { WsMessage } from "../../../shared/messages"
 
 
 

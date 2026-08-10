@@ -2,19 +2,15 @@ import * as BABYLON from "@babylonjs/core";
 import { Materials } from "./Materials";
 import { Board } from "./Board";
 import { GameUI } from "./GameUI";
-import { GameController } from "./GameController";
-import { GameState } from "../../../backend/src/game/GameState";
+import { GameServerConnection } from "./GameServerConnection";
 import { InputManager } from "./InputManager";
 import { GameGraphics } from "./GameGraphics";
 import { CameraManager } from "./CameraManager";
-import { Player } from "./Player"
-import { AiPlayer } from "../../../backend/src/game/AIPlayer"
 import { LocalPlayer } from "./LocalPlayer"
 import { GameData } from "../../../shared/game";
 import { WsMessage } from "../../../shared/messages"
-import { handleMessage } from "./socketHandlersFE";
-import { createJoinGameMessage } from "../../../shared/messages"
-import { getSocket, sendMessage } from "../websocket";
+//import { createJoinGameMessage } from "../../../shared/messages"
+import { getSocket } from "../websocket";
 
 export function createBabylonGame(canvas: HTMLCanvasElement, gameData: GameData, onExit: () => void) {
 
@@ -33,26 +29,27 @@ export function createBabylonGame(canvas: HTMLCanvasElement, gameData: GameData,
   //const ws = new WebSocket(`ws://${window.location.hostname}:3001`);
   const ws = getSocket();
 
+  ////
   if (!ws) return;
-  const gameController = new GameController(gameData, ui, graphics, 2, ws, onExit);
-  const player = new LocalPlayer(gameData.player1.username, gameController, graphics);
-  gameController.register(player);
+  const serverConnection = new GameServerConnection(gameData, ui, graphics, 2, ws, onExit);
+  const player = new LocalPlayer(gameData.player1.username, serverConnection, graphics);
+  serverConnection.register(player);
+  ////
   if (gameData.player2.type === "guest") {
-    const guestPlayer = new LocalPlayer("guest", gameController, graphics);
-    gameController.register(guestPlayer);
+    const guestPlayer = new LocalPlayer("guest",serverConnection, graphics);
+    serverConnection.register(guestPlayer);
   }
-
+///
   const handleGameMessage = (event: MessageEvent) => {
 	const data: WsMessage = JSON.parse(event.data);
 	console.log("Received message from server:", data);
-    gameController.handleMessage(data);
+    serverConnection.handleMessage(data);
   }
-
 
   ws.addEventListener("message", handleGameMessage)
 
   //input manager is also frontend
-  const input = new InputManager(gameController, scene, board, camera);
+  const input = new InputManager(serverConnection, scene, board, camera);
   input.registerEvents();
 
 

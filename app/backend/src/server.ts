@@ -50,10 +50,29 @@ server.listen(process.env.PORT, () => {
 	console.log(`Server running on port ${process.env.PORT}`);
 });
 
+// CHECKOUT DIFF!!!
 
-// const server = http.createServer(app);
+// const wss = new WebSocketServer({ server });
 
-// const games: GameState[] = [];
+// wss.on('connection', (ws) => {
+
+// 	ws.on('message', (event) => {
+//     const message: WsMessage = JSON.parse(event.toString());
+// 		handleMessage(message, ws, games);
+//     	console.log(`Got `);
+
+// 	})
+//     ws.on("close", ()=> {
+//         console.log("Player disconnected");
+//         for (const game of games) {
+//             game.handleDisconnect(ws);
+//         }
+//     });
+// >>>>>>> websockets-main-integration
+// });
+
+// ==============================================
+
 
 // const wss = new WebSocketServer({ server });
 

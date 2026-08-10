@@ -1,11 +1,11 @@
 import { useNavigate } from "react-router-dom";
 import { useState, useEffect } from "react";
 import MainLayout from "../layouts/MainLayout";
-import { ActiveGame } from "../../types/game";
+import { ActiveGame } from "../../../../shared/game";
 import MainButton from "../components/MainButton";
 import SecondaryButton from "../components/SecondaryButton";
 
-const token = localStorage.getItem("token");
+//const token = localStorage.getItem("token");
 
 const Lobby = () => {
   const navigate = useNavigate();

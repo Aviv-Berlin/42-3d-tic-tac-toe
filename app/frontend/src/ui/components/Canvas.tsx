@@ -1,5 +1,5 @@
 import { useEffect, useRef } from "react";
-import { useNavigate, useParams } from "react-router-dom";
+import { useNavigate } from "react-router-dom";
 import { createBabylonGame } from "../../game/main";
 import { GameData } from "../../../../shared/game";
 import { useSetGameData } from "../../store/gameData"

@@ -1,10 +1,8 @@
-import { useEffect, useRef, useState } from "react";
+import { useEffect } from "react";
 import {useParams, useNavigate } from "react-router-dom";
-import MainLayout from "../layouts/MainLayout";
 import MainButton from "../components/MainButton";
-import { openSocket, closeSocket, sendMessage, getSocket } from "../../websocket";
-import { send } from "vite";
-import { Match, useMatch, useSetMatch, useClearMatch } from "../../store/matchData"
+import { closeSocket, sendMessage, getSocket } from "../../websocket";
+import { useMatch, useSetMatch, useClearMatch } from "../../store/matchData"
 import { useSetGameData } from "../../store/gameData";
 
 import CenteredLayout from "../layouts/CenteredLayout"

@@ -1,5 +1,5 @@
-import { createContext, useEffect } from "react"
-import { useParams, Outlet, useLocation } from "react-router-dom"
+import { useEffect } from "react"
+import { Outlet, useLocation } from "react-router-dom"
 
 let socket: WebSocket | null = null;
 let currentMatchId: string | null = null;
@@ -8,7 +8,7 @@ export function openSocket(matchId: string): WebSocket {
 	if (socket && socket.readyState !== WebSocket.CLOSED && currentMatchId === matchId)
 		return socket;
 
-	const username = localStorage.getItem("username");
+	//const username = localStorage.getItem("username");
 
 	console.log("username: ", localStorage.getItem("username"));
 	console.log("matchId:", matchId);

@@ -1,5 +1,6 @@
 import * as BABYLON from "@babylonjs/core";
-import type { AbstractMesh, Scene, StandardMaterial, Mesh, Material } from "@babylonjs/core";
+//import type { AbstractMesh, Scene, StandardMaterial, Mesh, Material } from "@babylonjs/core";
+import type { Scene } from "@babylonjs/core";
 import * as GUI from "@babylonjs/gui";
 import { Materials } from "./Materials"
 import { Board } from "./Board"
@@ -160,7 +161,7 @@ export class GameUI {
         const camera = this.scene.activeCamera;
         if (!camera)
             throw new Error("No active camera found");
-        const finalPlayerPos = new BABYLON.Vector3(-30, 14, 40);
+        //const finalPlayerPos = new BABYLON.Vector3(-30, 14, 40);
         if (this.playerNameRow === null) {
             this.playerNameRow = this.createTextCubeRow(Array.from(player.toUpperCase()), {
                 name: "playerName",

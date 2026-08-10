@@ -1,16 +1,10 @@
 import { checkWin } from "./GameCheckWin.ts";
-import { GridPosition, CellState, PLAYER_STATES} from "../../../shared/game/Types.ts";
+import { GridPosition, CellState } from "../../../shared/game/Types.ts";
 import { GameData, PlayerData } from "../../../shared/game.js";
 import { WebSocket } from "ws";
 import { AiPlayer } from "./AIPlayer.ts"
-import { log } from "node:console";
 import { WsMessage, createEndMessage, createGameStartMessage, CreateTurnMessage, createMoveMessage } from "../../../shared/messages.ts"
 
-
-interface NewPlayer {
-    name: string;
-    yourTurn(BoardState: CellState[][][], N: number): boolean;
-}
 
 interface RemotePlayer {
   type: "remote";
@@ -50,8 +44,6 @@ export class GameState {
         this.initBoard();
     }
 
-
-
     public async startGame(): Promise<void> {
         if (this.players.length < this.nPlayers) {
             console.log(`Still waiting for players`);
@@ -83,28 +75,6 @@ export class GameState {
         }
     }
 
-    public async startReply(): Promise<void> {
-        for (let i = 0; i < this.gameData.moves.length; i++) {
-            // if (i % 2 === 0) {
-            //     await this.ui.playerTitle(this.gameData.player1.username);
-            // } else {
-            //     await this.ui.playerTitle(this.gameData.player2.username);
-            // }
-            this.boardState[this.gameData.moves[i].pos.x][this.gameData.moves[i].pos.y][this.gameData.moves[i].pos.z] = this.gameData.moves[i].player;
-            // setTimeout(() => { this.graphics.placeSphere(this.gameData.moves[i].pos, this.gameData.moves[i].player);}, 500);
-        }
-        const winningPositions = checkWin(this.boardState, this.gameData.moves[this.gameData.moves.length -1].pos, this.gameData.moves[this.gameData.moves.length -1].player, this.N);
-        if (winningPositions)
-            // this.graphics.animateWin(winningPositions);
-            console.log(`winner found`);
-        if (this.gameData.moves[this.gameData.moves.length -1].player === CellState.Player1)
-            console.log(`Player1 wins`);
-            // this.ui.displayWinner(this.gameData.player1.username);
-        else
-            console.log(`Player2 wins`);
-            // this.ui.displayWinner(this.gameData.player2.username);
-         this.exitTimeout = setTimeout(() => { ;}, 3000);
-    }
 
     public placeMove(pos: GridPosition, playerState: CellState): boolean {
         if (this.gameOver)
@@ -147,25 +117,9 @@ export class GameState {
     }
 
 
-
-    public getCurrentPlayerState(): CellState {
-        const state = PLAYER_STATES[this.currentPlayerIndex];
-
-        if (state === undefined) {
-            throw new Error("Current player has no CellState");
-        }
-
-        return state;
-    }
-
-
-
     public getCell(pos: GridPosition): CellState {
         return this.boardState[pos.x][pos.y][pos.z];
     }
-
-
-
 
 
     private finishGame(winner: number, winningPositions: GridPosition[]): void {
@@ -217,5 +171,15 @@ export class GameState {
 
     public getBoardState(): CellState [][][] {
         return this.boardState;
+    }
+
+    public handleDisconnect(ws: WebSocket) {
+        for (let i = 0; i < this.players.length; i++) {
+            const player = this.players[i];
+            if (player.type === "remote" && player.socket === ws) {
+                console.log("player quit game");
+                //here the game should send message to everyone that this player quit
+            }
+        }
     }
 }

@@ -1,11 +1,10 @@
-import { useSearchParams, useNavigate, useParams } from 'react-router-dom';
-import { useEffect, useRef } from 'react';
+import { useSearchParams, useNavigate } from 'react-router-dom';
+import { useEffect } from 'react';
 import GameLayout from '../layouts/GameLayout';
 import Canvas from '../components/Canvas';
-import { GameData, GameMode, AiLevel } from '../../../../shared/game';
-import createPlayers from '../../utils/players';
-import { openSocket, closeSocket, sendMessage, getSocket } from "../../websocket";
-import { useUsername } from '../../store/username';
+//import { GameMode, AiLevel } from '../../../../shared/game';
+import { sendMessage } from "../../websocket";
+//import { useUsername } from '../../store/username';
 import { useGameData } from "../../store/gameData"
 
 import { createStartGameMessage } from '../../../../shared/messages';
@@ -22,7 +21,7 @@ const Game = () => {
   console.log("Match in Game:", gameData);
   sendMessage(createStartGameMessage(gameData));
 
-  const username = useUsername() ?? "stranger";
+  //const username = useUsername() ?? "stranger";
 
   const gameModeParam = searchParams.get('game-mode');
   const sizeParam = searchParams.get('size');
@@ -38,11 +37,11 @@ const Game = () => {
 
   if (!isValid)
 	console.log("none valid value");
-  if (isValid) {
-    const size = Number(sizeParam);
-    const gameMode = gameModeParam as GameMode;
-    const level = Number(levelParam) as AiLevel;
-  }
+//   if (isValid) {
+//     const size = Number(sizeParam);
+//     const gameMode = gameModeParam as GameMode;
+//     const level = Number(levelParam) as AiLevel;
+//   }
     //const [player1, player2] = createPlayers(match.players, gameMode); //const [player1, player2] = createPlayers(username, gameMode);
     //const uniqueGameName = globalThis.crypto.randomUUID();
 

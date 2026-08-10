@@ -44,7 +44,12 @@ wss.on('connection', (ws) => {
     	console.log(`Got `);
 
 	})
-	//ws.send(JSON.stringify(`Hello from server.ts!`));
+    ws.on("close", ()=> {
+        console.log("Player disconnected");
+        for (const game of games) {
+            game.handleDisconnect(ws);
+        }
+    });
 });
 
 const PORT = Number(process.env.PORT) || 3001;

@@ -172,4 +172,14 @@ export class GameState {
     public getBoardState(): CellState [][][] {
         return this.boardState;
     }
+
+    public handleDisconnect(ws: WebSocket) {
+        for (let i = 0; i < this.players.length; i++) {
+            const player = this.players[i];
+            if (player.type === "remote" && player.socket === ws) {
+                console.log("player quit game");
+                //here the game should send message to everyone that this player quit
+            }
+        }
+    }
 }

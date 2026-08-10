@@ -39,9 +39,6 @@ export function makeMove(message: MoveMessage, ws: WebSocket, games: GameState[]
 	if (game.placeMove(data.position, data.player)) {
 		return ;
 	}
-	// const msg = createMoveMessage(data.gameID, data.player, )
-	//game.broadcastMessage(message);
-
 }
 
 
@@ -60,3 +57,5 @@ export function handleMessage(message: WsMessage, ws: WebSocket, games: GameStat
 				console.log(`Unknown message: ${message}`);
 		}
 }
+
+

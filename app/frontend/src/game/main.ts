@@ -92,10 +92,7 @@ export function createBabylonGame(canvas: HTMLCanvasElement, gameData: GameData,
     ws.onclose = null;
     ws.onerror = null;
 
-    if (
-      ws.readyState === WebSocket.OPEN ||
-      ws.readyState === WebSocket.CONNECTING
-    ) {
+    if (ws.readyState === WebSocket.OPEN || ws.readyState === WebSocket.CONNECTING) {
       ws.close();
     }
 

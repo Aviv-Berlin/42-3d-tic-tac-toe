@@ -81,7 +81,7 @@ export class GameState {
             return false;
         if (!this.isCellEmpty(pos))
             return false;
-
+        //do we need to do here a check that the right player actually made the move?
         this.moveCounter++;
         this.boardState[pos.x][pos.y][pos.z] = playerState;
         this.gameData.moves.push({ pos: pos, player: playerState });

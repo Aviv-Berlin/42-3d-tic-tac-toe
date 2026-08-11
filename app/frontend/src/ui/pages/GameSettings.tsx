@@ -6,10 +6,12 @@ import MainLayout from '../layouts/MainLayout';
 import BoardSizeSettings from '../components/BoardSizeSettings'
 import DifficultySettings from '../components/DifficultySettings'
 import { normalizeGameMode } from '../../utils/gameMode';
+import { useUsername } from '../../store/username';
 
 const GameSettings = () => {
   const [size, setSize] = useState(3);
   const [level, setLevel] = useState(0);
+  const username = useUsername();
 
   const navigate = useNavigate();
 
@@ -28,22 +30,22 @@ const GameSettings = () => {
   const gameModeDisplay = normalizeGameMode(gameMode);
 
   const handleConfirm = async () => {
-	
+
 	if (gameMode === "ai" || gameMode === "local") {
 	  navigate(`/game?game-mode=${gameMode}&size=${size}&level=${level}`);
 	  return;
 	}
 
-	const response = await fetch("http://localhost:3001/v1/game/lobby/create", 
+	const response = await fetch("http://localhost:3001/v1/game/lobby/create",
 	{
 		method: "POST",
 		headers: {
 			"Content-Type": "application/json",
 			//"Authorization": `Bearer ${localStorage.getItem("token")
 		},
-		body: JSON.stringify({ 
-			host: localStorage.getItem("username"), 
-			size, 
+		body: JSON.stringify({
+			host: username,
+			size,
 			requiredPlayers: 2
 		}),
 	})

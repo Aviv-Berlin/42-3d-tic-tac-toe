@@ -1,8 +1,8 @@
 import { useRef, useEffect } from 'react'
-import { BabylonButtonType, babylonButton } from '../../game/BabylonButton'
+import { babylonButton } from '../../game/BabylonButton'
 
 interface BabylonImageProps {
-  type: BabylonButtonType;
+  type: string;
 }
 
 const BabylonImage = ({type}: BabylonImageProps) => {

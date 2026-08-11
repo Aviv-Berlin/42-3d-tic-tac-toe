@@ -1,4 +1,4 @@
-import { GameData } from "../types/game";
+import { GameData } from "../../../shared/game";
 
 export const getGameEndMessage = (gameData: GameData, username: string): string => {
   if (gameData?.isDraw) return "DRAW";

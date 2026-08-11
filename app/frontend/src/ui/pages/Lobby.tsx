@@ -4,35 +4,30 @@ import MainLayout from "../layouts/MainLayout";
 import { ActiveGame } from "../../../../shared/game";
 import MainButton from "../components/MainButton";
 import SecondaryButton from "../components/SecondaryButton";
+import { useUsername } from "../../store/username";
+import gameService from "../../services/game";
 
 //const token = localStorage.getItem("token");
 
 const Lobby = () => {
   const navigate = useNavigate();
+  const username = useUsername();
   const [activeGames, setActiveGames] = useState<ActiveGame[]>([]);
 
   const joinMatch = async (matchId: string) => {
-	const response = await fetch("http://localhost:3001/v1/game/lobby/join", {
-		method: "POST",
-		headers: {
-			//"Authorization": `Bearer ${token}`,
-			"Content-Type": "application/json"
-		},
-		body: JSON.stringify({ matchId, player: localStorage.getItem("username") }),
-	})
-	const data = await response.json();
-	if (!response.ok) {
-		console.error(data.error);
-		return;
-	}
-	console.log("Joined match:", data.match);
-	navigate(`/waiting/${data.match.id}`);
+    try {
+      const response = await gameService.joinMatch(matchId, username)
+    	console.log("Joined match:", response.data.match);
+    	navigate(`/waiting/${response.data.match.id}`);
+    } catch (err) {
+      console.log(err);
+    }
 	};
 
   useEffect(() => {
   // Fetch active games from the backend
   const eventSource = new EventSource("http://localhost:3001/v1/game/lobby");
-  
+
   eventSource.addEventListener("lobby-update", (event) => {
 	const update = JSON.parse(event.data);
 
@@ -40,7 +35,7 @@ const Lobby = () => {
 		case "initial":
 			setActiveGames(update.matches);
 			break;
-		
+
 		case "created":
 			setActiveGames(prev => [...prev, update.match]);
 			break;

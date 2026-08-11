@@ -1,5 +1,5 @@
 import { useUsername } from '../../store/username'
-import { GameData } from '../../types/game'
+import { GameData } from '../../../../shared/game'
 import { getGameEndMessage } from '../../utils/gameData'
 import SecondaryButton from './SecondaryButton'
 

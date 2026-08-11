@@ -1,6 +1,6 @@
 import ProfileLayout from '../layouts/ProfileLayout';
 import GameRecap from '../components/GameRecap';
-import { GameData } from '../../types/game'
+import { GameData } from '../../../../shared/game'
 
 const Profile = () => {
 
@@ -28,6 +28,8 @@ const Profile = () => {
       isDraw: false,
       gameStart: 0,
       gameEnd: 0,
+      gameID: "",
+      gameMode: "online",
     },
     {
       player1: {
@@ -49,6 +51,8 @@ const Profile = () => {
       isDraw: false,
       gameStart: 0,
       gameEnd: 0,
+      gameID: "",
+      gameMode: "online",
     },
     {
       player1: {
@@ -70,6 +74,8 @@ const Profile = () => {
       isDraw: false,
       gameStart: 0,
       gameEnd: 0,
+      gameID: "",
+      gameMode: "online",
     }
   ];
 

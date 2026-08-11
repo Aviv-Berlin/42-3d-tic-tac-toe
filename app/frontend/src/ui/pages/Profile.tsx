@@ -1,6 +1,6 @@
 import ProfileLayout from '../layouts/ProfileLayout';
 import GameRecap from '../components/GameRecap';
-import { GameData } from '../../types/game'
+import { GameData } from '../../../../shared/game'
 
 const Profile = () => {
 

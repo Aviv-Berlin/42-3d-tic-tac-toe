@@ -75,7 +75,6 @@ export class GameState {
         }
     }
 
-
     public placeMove(pos: GridPosition, playerState: CellState): boolean {
         if (this.gameOver)
             return false;
@@ -112,6 +111,10 @@ export class GameState {
         }
     }
 
+    public playerExit(ws: WebSocket, playerIndex: number) {
+        this.disributeMessage(createEndMessage(this.gameData, null, playerIndex));
+    }
+
     public isCellEmpty(pos: GridPosition): boolean {
         return this.boardState[pos.x][pos.y][pos.z] === CellState.Empty;
     }
@@ -137,7 +140,7 @@ export class GameState {
         };
         this.gameData.winner = winnerData;
         this.gameData.gameEnd = Date.now();
-        this.disributeMessage(createEndMessage(this.gameData, winningPositions));
+        this.disributeMessage(createEndMessage(this.gameData, winningPositions, 0));
     }
 
     private endGameDraw() {
@@ -145,7 +148,7 @@ export class GameState {
         this.gameData.isFinished = true;
         this.gameData.isDraw = true;
         this.gameData.gameEnd = Date.now();
-        this.disributeMessage(createEndMessage(this.gameData, null));
+        this.disributeMessage(createEndMessage(this.gameData, null, 0));
     }
 
     public dispose(): void {

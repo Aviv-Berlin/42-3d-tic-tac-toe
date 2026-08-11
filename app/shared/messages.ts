@@ -18,19 +18,19 @@ export function createJoinGameMessage(gameData: GameData): JoinGameMessage {
 	}
 }
 
-export type ExitMessage = 
+export type ExitMessage =
 	{ type: "exit";
 		payload: {
-			GameID: string;
+			gameID: string;
 			IAm: number;
 		}
 	}
-	
-export function createExitMessage(GameID: string, IAm: number): ExitMessage {
+
+export function createExitMessage(gameID: string, IAm: number): ExitMessage {
 	return {
 		type: "exit",
 			payload: {
-				GameID,
+				gameID,
 				IAm
 			}
 	}
@@ -41,16 +41,16 @@ export type TurnMessage =
 	{ type: "turn";
 		payload: {
 			gameID: string,
-			PlaysNow: number
+			playsNow: number
 		}
 	};
 
-export function CreateTurnMessage(gameID: string, PlaysNow: number): TurnMessage {
+export function CreateTurnMessage(gameID: string, playsNow: number): TurnMessage {
 	return {
 		type: "turn",
 		payload: {
 			gameID,
-			PlaysNow }
+			playsNow }
 	}
 }
 
@@ -76,20 +76,22 @@ export function createGameStartMessage(gameID: string, playerNames: string[],
 	}
 }
 
-export type EndMessage = 
+export type EndMessage =
 	{ type: "end";
 		payload: {
 			gameData: GameData;
 			winningPos: GridPosition [] | null;
+			whoExited: number;
 		}
 	}
 
-export function createEndMessage(gameData: GameData, winningPos: GridPosition[] | null): EndMessage {
+export function createEndMessage(gameData: GameData, winningPos: GridPosition[] | null, whoExited: number): EndMessage {
 	return {
 		type: "end",
 			payload: {
 				gameData,
-				winningPos
+				winningPos,
+				whoExited
 			}
 	}
 }
@@ -128,5 +130,6 @@ export type WsMessage =
 export default {
 	createGameStartMessage,
 	createJoinGameMessage,
-	createMoveMessage
+	createMoveMessage,
+	createEndMessage
   }

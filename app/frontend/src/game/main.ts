@@ -29,6 +29,7 @@ export function createBabylonGame(canvas: HTMLCanvasElement, gameData: GameData,
 
   const ws = new WebSocket(`ws://${window.location.hostname}:3001`);
   const serverConnection = new GameServerConnection(gameData, ui, graphics, 2, ws, onExit);
+  ui.register(serverConnection);
   const player = new LocalPlayer(gameData.player1.username, serverConnection, graphics);
   serverConnection.register(player);
   if (gameData.player2.type === "guest") {

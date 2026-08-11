@@ -28,6 +28,8 @@ const Profile = () => {
       isDraw: false,
       gameStart: 0,
       gameEnd: 0,
+      gameID: "",
+      gameMode: "online",
     },
     {
       player1: {
@@ -49,6 +51,8 @@ const Profile = () => {
       isDraw: false,
       gameStart: 0,
       gameEnd: 0,
+      gameID: "",
+      gameMode: "online",
     },
     {
       player1: {
@@ -70,6 +74,8 @@ const Profile = () => {
       isDraw: false,
       gameStart: 0,
       gameEnd: 0,
+      gameID: "",
+      gameMode: "online",
     }
   ];
 

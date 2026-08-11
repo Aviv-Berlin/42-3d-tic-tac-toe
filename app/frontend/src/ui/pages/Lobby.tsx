@@ -10,6 +10,7 @@ import { useUsername } from "../../store/username";
 
 const Lobby = () => {
   const navigate = useNavigate();
+  const username = useUsername();
   const [activeGames, setActiveGames] = useState<ActiveGame[]>([]);
 
   const joinMatch = async (matchId: string) => {
@@ -19,7 +20,7 @@ const Lobby = () => {
 			//"Authorization": `Bearer ${token}`,
 			"Content-Type": "application/json"
 		},
-		body: JSON.stringify({ matchId, player: useUsername() }),
+		body: JSON.stringify({ matchId, player: username }),
 	})
 	const data = await response.json();
 	if (!response.ok) {

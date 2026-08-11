@@ -112,6 +112,8 @@ export class GameState {
     }
 
     public playerExit(ws: WebSocket, playerIndex: number) {
+        this.gameData.isFinished = true;
+        this.gameData.gameEnd = Date.now();
         this.disributeMessage(createEndMessage(this.gameData, null, playerIndex));
     }
 
@@ -140,7 +142,7 @@ export class GameState {
         };
         this.gameData.winner = winnerData;
         this.gameData.gameEnd = Date.now();
-        this.disributeMessage(createEndMessage(this.gameData, winningPositions, 0));
+        this.disributeMessage(createEndMessage(this.gameData, winningPositions, -1));
     }
 
     private endGameDraw() {

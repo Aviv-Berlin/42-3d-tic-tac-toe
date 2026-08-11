@@ -50,11 +50,11 @@ export class GameServerConnection {
                 break;
 			
             case "turn":
-                this.currentPlayerIndex = message.payload.PlaysNow;
-                await this.ui.playerTitle(this.playerNames[message.payload.PlaysNow]);
-                if (message.payload.PlaysNow === this.localPlayerIndex)
+                this.currentPlayerIndex = message.payload.playsNow;
+                await this.ui.playerTitle(this.playerNames[message.payload.playsNow]);
+                if (message.payload.playsNow === this.localPlayerIndex)
                     this.localPlayer.yourTurn(this.boardState, this.N, PLAYER_STATES[this.localPlayerIndex]);
-                if (message.payload.PlaysNow === this.guestPlayerIndex)
+                if (message.payload.playsNow === this.guestPlayerIndex)
                     this.guestPlayer.yourTurn(this.boardState, this.N, PLAYER_STATES[this.guestPlayerIndex]);
                 break;
             

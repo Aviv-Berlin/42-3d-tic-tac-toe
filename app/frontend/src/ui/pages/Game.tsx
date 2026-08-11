@@ -35,8 +35,9 @@ const Game = () => {
 
   //let initialGameData: GameData | null = null;
 
-  if (!isValid)
-	console.log("none valid value");
+  if (!isValid) {
+    console.log("invalid search parameters");
+  }
 //   if (isValid) {
 //     const size = Number(sizeParam);
 //     const gameMode = gameModeParam as GameMode;

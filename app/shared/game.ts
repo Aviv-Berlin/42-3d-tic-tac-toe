@@ -1,4 +1,4 @@
-import { GridPosition, CellState } from "../game/Types";
+import { GridPosition, CellState } from "./game/Types";
 
 export type PlayerType = "real" | "ai" | "guest";
 export type GameMode = "online" | "ai" | "local";
@@ -10,8 +10,12 @@ export interface PlayerData {
 }
 
 export interface ActiveGame {
-  host: string;
-  size: number;
+	id: string;
+	host: string;
+	size: number;
+	requiredPlayers: number;
+	players: string[];
+	status: "waiting" | "ready" | "started";
 }
 
 export interface Move {
@@ -23,6 +27,7 @@ export interface GameData {
   player1: PlayerData;
   player2: PlayerData;
   level: AiLevel;
+  gameMode: GameMode;
   winner: PlayerData | null;
   moves: Move[];
   size: number;
@@ -30,4 +35,5 @@ export interface GameData {
   isDraw: boolean;
   gameStart: number;
   gameEnd: number;
+  gameID: string;
 }

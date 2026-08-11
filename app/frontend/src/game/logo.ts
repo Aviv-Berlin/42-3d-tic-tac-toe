@@ -1,7 +1,7 @@
 import * as BABYLON from "@babylonjs/core";
 import { Materials } from "./Materials";
-import { Board } from "./Board";
-import { CameraManager } from "./CameraManager";
+//import { Board } from "./Board";
+//import { CameraManager } from "./CameraManager";
 
 
 
@@ -11,8 +11,8 @@ export function babylonLogo(canvas: HTMLCanvasElement): ()=> void {
       const scene = new BABYLON.Scene(engine);
       const materials = new Materials(scene);
       materials.applyLook(1);
-      const camera = new CameraManager(scene, canvas);
-      let board: Board;
+      //const camera = new CameraManager(scene, canvas);
+      //let board: Board;
       
       
     engine.runRenderLoop(() => {

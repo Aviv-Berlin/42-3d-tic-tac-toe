@@ -1,7 +1,9 @@
 import * as BABYLON from "@babylonjs/core";
-import type { AbstractMesh, Scene, StandardMaterial, Mesh, Material } from "@babylonjs/core";
+import type { AbstractMesh, Scene, Mesh, Material } from "@babylonjs/core";
+//import type { AbstractMesh, Scene, StandardMaterial, Mesh, Material } from "@babylonjs/core";
 import { Materials } from "./Materials";
-import { GridPosition } from "./Types";
+import { GridPosition } from "../../../shared/game/Types"
+//import { GridPosition, CellState, PLAYER_STATES } from "../../../shared/game/Types"
 import { TextCubeFactory } from "./TextCubeFactory";
 
 export class Board {
@@ -167,8 +169,7 @@ export class Board {
     }
 
     putSphere(pos: GridPosition, material: Material, storeMove: boolean): Mesh {
-        const sphere = BABYLON.MeshBuilder.CreateSphere
-            ("moveSphere", { diameter: this.smallSize * 0.7 }, this.scene);
+        const sphere = BABYLON.MeshBuilder.CreateSphere("moveSphere", { diameter: this.smallSize * 0.7 }, this.scene);
 
         sphere.position = this.getPosition(pos.x, pos.y, pos.z, true);
         sphere.material = material;

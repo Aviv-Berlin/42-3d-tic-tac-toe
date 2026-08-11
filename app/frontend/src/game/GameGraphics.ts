@@ -1,8 +1,8 @@
 import * as BABYLON from "@babylonjs/core";
 import { Board } from "./Board";
 import { Materials } from "./Materials";
-import { StandardMaterial } from "@babylonjs/core/Materials/standardMaterial";
-import { CellState, type GridPosition } from "./Types";
+//import { StandardMaterial } from "@babylonjs/core/Materials/standardMaterial";
+import { CellState, type GridPosition } from "../../../shared/game/Types";;
 import { CameraManager } from "./CameraManager";
 
 
@@ -45,8 +45,9 @@ export class GameGraphics {
         this.camera.resetCamera();
     }
 
-    public animateWin(winningPositions: GridPosition[]): void {
-        for (const position of winningPositions) {
+    public animateWin(winningPositions: GridPosition[] | null): void {
+        if (!winningPositions) return;
+		for (const position of winningPositions) {
             const sphere = this.board.getSphere(position);
 
             if (sphere)

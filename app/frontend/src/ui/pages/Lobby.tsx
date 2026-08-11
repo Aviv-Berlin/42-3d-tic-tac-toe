@@ -1,22 +1,64 @@
 import { useNavigate } from "react-router-dom";
+import { useState, useEffect } from "react";
 import MainLayout from "../layouts/MainLayout";
-import { ActiveGame } from "../../types/game";
+import { ActiveGame } from "../../../../shared/game";
 import MainButton from "../components/MainButton";
 import SecondaryButton from "../components/SecondaryButton";
 
+//const token = localStorage.getItem("token");
+
 const Lobby = () => {
   const navigate = useNavigate();
+  const [activeGames, setActiveGames] = useState<ActiveGame[]>([]);
 
-  // this will be replaced with actual active games from the backend once we have an endpoint
-  const activeGames: ActiveGame[] = [
-    { host: "s-gas", size: 3 },
-    { host: "tic-tac-toe-master", size: 4 },
-    { host: "tea_cup", size: 3 },
-    { host: "flowers-99", size: 4 },
-    { host: "candle.candle", size: 3 },
-    { host: "the-magician", size: 4 },
-  ];
-  //const activeGames: ActiveGame[] = [];
+  const joinMatch = async (matchId: string) => {
+	const response = await fetch("http://localhost:3001/v1/game/lobby/join", {
+		method: "POST",
+		headers: {
+			//"Authorization": `Bearer ${token}`,
+			"Content-Type": "application/json"
+		},
+		body: JSON.stringify({ matchId, player: localStorage.getItem("username") }),
+	})
+	const data = await response.json();
+	if (!response.ok) {
+		console.error(data.error);
+		return;
+	}
+	console.log("Joined match:", data.match);
+	navigate(`/waiting/${data.match.id}`);
+	};
+
+  useEffect(() => {
+  // Fetch active games from the backend
+  const eventSource = new EventSource("http://localhost:3001/v1/game/lobby");
+  
+  eventSource.addEventListener("lobby-update", (event) => {
+	const update = JSON.parse(event.data);
+
+	switch (update.type) {
+		case "initial":
+			setActiveGames(update.matches);
+			break;
+		
+		case "created":
+			setActiveGames(prev => [...prev, update.match]);
+			break;
+
+		case "updated":
+			setActiveGames(prev => prev.map(match => match.id === update.match.id ? update.match : match));
+			break;
+
+		case "removed":
+			setActiveGames(prev => prev.filter(match => match.id !== update.match.id));
+			break;
+
+  }
+});
+	return () => {
+		eventSource.close();
+	};
+  }, []);
 
   if (activeGames.length === 0) {
     return (
@@ -56,14 +98,14 @@ const Lobby = () => {
             </SecondaryButton>
           </div>
           <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-4">
-            {activeGames.map((game, index) => (
-              <div key={index} className="flex justify-between items-end border rounded-md  border-stone-400 p-4 bg-white">
-                <div key={index} className="flex flex-col">
+            {activeGames.map((game) => (
+              <div key={game.id} className="flex justify-between items-end border rounded-md  border-stone-400 p-4 bg-white">
+                <div key={game.id} className="flex flex-col">
                   <h3 className="text-2xl font-serif italic">{game.host}&apos;s game</h3>
                   <span>Host: {game.host}</span>
                   <span>Size: {game.size}x{game.size}x{game.size}</span>
                 </div>
-                <SecondaryButton onClick={() => console.log("click")}>
+                <SecondaryButton onClick={() => joinMatch(game.id)}>
                   Join
                 </SecondaryButton>
               </div>
@@ -74,5 +116,6 @@ const Lobby = () => {
     </MainLayout>
   );
 };
+
 
 export default Lobby;

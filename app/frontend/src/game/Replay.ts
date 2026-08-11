@@ -2,12 +2,12 @@ import * as BABYLON from "@babylonjs/core";
 import { Materials } from "./Materials";
 import { Board } from "./Board";
 import { GameUI } from "./GameUI";
-import { CellState, PLAYER_STATES, GridPosition } from "./Types";
+import { CellState, PLAYER_STATES, GridPosition } from "../../../shared/game/Types";
 import { GameGraphics } from "./GameGraphics";
 import { CameraManager } from "./CameraManager";
-import { GameData } from "../types/game";
-import { delay } from "./Utils";
-import { checkWin } from "./GameCheckWin";
+import { GameData } from "../../../shared/game";
+import { delay } from "../../../shared/game/Utils";
+import { checkWin } from "../../../backend/src/game/GameCheckWin";
 
 
 export function replayGame(canvas: HTMLCanvasElement, gameData: GameData, onExit: () => void) {

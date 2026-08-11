@@ -62,7 +62,7 @@ export type EndMessage =
 	{ type: "end";
 		payload: {
 			gameData: GameData;
-			winningPos: GridPosition [];
+			winningPos: GridPosition [] | null;
 		}
 	}
 export function createEndMessage(gameData: GameData, winningPos: GridPosition[] | null): EndMessage {

@@ -4,6 +4,7 @@ import MainLayout from "../layouts/MainLayout";
 import { ActiveGame } from "../../../../shared/game";
 import MainButton from "../components/MainButton";
 import SecondaryButton from "../components/SecondaryButton";
+import { useUsername } from "../../store/username";
 
 //const token = localStorage.getItem("token");
 
@@ -18,7 +19,7 @@ const Lobby = () => {
 			//"Authorization": `Bearer ${token}`,
 			"Content-Type": "application/json"
 		},
-		body: JSON.stringify({ matchId, player: localStorage.getItem("username") }),
+		body: JSON.stringify({ matchId, player: useUsername() }),
 	})
 	const data = await response.json();
 	if (!response.ok) {
@@ -32,7 +33,7 @@ const Lobby = () => {
   useEffect(() => {
   // Fetch active games from the backend
   const eventSource = new EventSource("http://localhost:3001/v1/game/lobby");
-  
+
   eventSource.addEventListener("lobby-update", (event) => {
 	const update = JSON.parse(event.data);
 
@@ -40,7 +41,7 @@ const Lobby = () => {
 		case "initial":
 			setActiveGames(update.matches);
 			break;
-		
+
 		case "created":
 			setActiveGames(prev => [...prev, update.match]);
 			break;

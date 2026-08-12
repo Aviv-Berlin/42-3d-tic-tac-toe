@@ -32,6 +32,7 @@ export function createBabylonGame(canvas: HTMLCanvasElement, gameData: GameData,
   ////
   if (!ws) return;
   const serverConnection = new GameServerConnection(gameData, ui, graphics, 2, ws, onExit);
+  ui.register(serverConnection);
   const player = new LocalPlayer(gameData.player1.username, serverConnection, graphics);
   serverConnection.register(player);
   ////

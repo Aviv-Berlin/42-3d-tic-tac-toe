@@ -1,4 +1,4 @@
-import { WsMessage, JoinGameMessage, InitGameMessage, MoveMessage, createMoveMessage, StartGameMessage } from "../../../shared/messages.ts"
+import { WsMessage, JoinGameMessage, MoveMessage, ExitMessage, createEndMessage } from "../../../shared/messages.ts"
 import { WebSocket } from "ws";
 import { GameState } from "./GameState.ts";
 import { AiPlayer } from "./AIPlayer.ts";
@@ -49,6 +49,17 @@ export function makeMove(message: MoveMessage, ws: WebSocket, games: GameState[]
 	}
 }
 
+function playerExit(message: ExitMessage, ws: WebSocket, games: GameState[]) {
+	const data = message.payload;
+	let game = games.find(game => game.getID() === data.gameID);
+	if (!game) {
+		console.log(`Invalid gameID ${data.gameID}`);
+		ws.send(JSON.stringify(`Invalid gameID ${data.gameID}`));
+		return ;
+	}
+	game.playerExit(ws, data.IAm);
+}
+
 
 export function handleMessage(message: WsMessage, ws: WebSocket, games: GameState[]) {
 	//console.log(`Received message: ${message}`);
@@ -72,6 +83,9 @@ export function handleMessage(message: WsMessage, ws: WebSocket, games: GameStat
 				break;
 			case "move":
 				makeMove(message, ws, games);
+				break;
+			case "exit":
+				playerExit(message, ws, games);
 				break;
 			default:
 				console.log(`Unknown message: ${message}`);

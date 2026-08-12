@@ -3,6 +3,14 @@ import { type Request, type Response } from 'express';
 import bcrypt from 'bcrypt';
 import jwt from 'jsonwebtoken';
 
+const getTokenFrom = (request: Request) => {
+	const authorization = request.get('authorization')
+	if (authorization && authorization.startsWith('Bearer ')) {
+		return authorization.replace('Bearer ', '')
+	}
+	return null
+}
+
 // Register a new user
 export async function register(request: Request, response: Response) {
 	const body = request.body;

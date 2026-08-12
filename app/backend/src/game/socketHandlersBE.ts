@@ -1,4 +1,4 @@
-import { WsMessage, JoinGameMessage, MoveMessage, ExitMessage, createEndMessage } from "../../../shared/messages.ts"
+import { WsMessage, JoinGameMessage, MoveMessage, ExitMessage, StartGameMessage, createEndMessage } from "../../../shared/messages.ts"
 import { WebSocket } from "ws";
 import { GameState } from "./GameState.ts";
 import { AiPlayer } from "./AIPlayer.ts";
@@ -37,6 +37,7 @@ function StartGame(message: StartGameMessage, games: GameState[]){
 
 
 export function makeMove(message: MoveMessage, ws: WebSocket, games: GameState[]) {
+	console.log(`no. of games: ${games.length}`);
 	const data = message.payload;
 	let game = games.find(game => game.getID() === data.gameID);
 	if (!game) {
@@ -58,6 +59,7 @@ function playerExit(message: ExitMessage, ws: WebSocket, games: GameState[]) {
 		return ;
 	}
 	game.playerExit(ws, data.IAm);
+	game.removeGame(games);
 }
 
 

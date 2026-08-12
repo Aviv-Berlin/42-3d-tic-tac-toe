@@ -114,6 +114,7 @@ export class GameState {
     public playerExit(ws: WebSocket, playerIndex: number) {
         this.gameData.isFinished = true;
         this.gameData.gameEnd = Date.now();
+        this.gameData.endMessage = `${this.players[playerIndex].name} has left the game`;
         this.disributeMessage(createEndMessage(this.gameData, null, playerIndex));
     }
 
@@ -176,6 +177,12 @@ export class GameState {
 
     public getBoardState(): CellState [][][] {
         return this.boardState;
+    }
+
+    public removeGame(games: GameState[]) {
+        const index = games.findIndex(game => game.getID() === this.gameData.gameID);
+        if (index !== -1)
+            games.splice(index, 1);
     }
 
     public handleDisconnect(ws: WebSocket) {

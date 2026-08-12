@@ -12,4 +12,8 @@ const createLobby = (username: string, size: number) => {
   return axios.post(url, { host: username, size, requiredPlayers: 2 });
 };
 
-export default { joinMatch, createLobby };
+const createEventSource = () => {
+  return new EventSource(`${baseUrl}/lobby`);
+};
+
+export default { joinMatch, createLobby, createEventSource };

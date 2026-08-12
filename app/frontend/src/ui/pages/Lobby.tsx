@@ -25,8 +25,7 @@ const Lobby = () => {
 	};
 
   useEffect(() => {
-  // Fetch active games from the backend
-    const eventSource = new EventSource("http://localhost:3001/v1/game/lobby");
+    const eventSource = gameService.createEventSource();
 
     eventSource.addEventListener("lobby-update", (event) => {
       const update = JSON.parse(event.data);

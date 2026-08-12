@@ -10,7 +10,7 @@ import { LocalPlayer } from "./LocalPlayer"
 import { GameData } from "../../../shared/game";
 import { WsMessage } from "../../../shared/messages"
 //import { createJoinGameMessage } from "../../../shared/messages"
-import { getSocket } from "../websocket";
+import { getSocket } from "../services/websocket";
 
 export function createBabylonGame(canvas: HTMLCanvasElement, gameData: GameData, onExit: () => void) {
 

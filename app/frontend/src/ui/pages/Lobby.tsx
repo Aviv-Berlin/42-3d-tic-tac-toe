@@ -25,34 +25,32 @@ const Lobby = () => {
 	};
 
   useEffect(() => {
-  // Fetch active games from the backend
-  const eventSource = new EventSource("http://localhost:3001/v1/game/lobby");
+    const eventSource = gameService.createEventSource();
 
-  eventSource.addEventListener("lobby-update", (event) => {
-	const update = JSON.parse(event.data);
+    eventSource.addEventListener("lobby-update", (event) => {
+      const update = JSON.parse(event.data);
 
-	switch (update.type) {
-		case "initial":
-			setActiveGames(update.matches);
-			break;
+      switch (update.type) {
+    		case "initial":
+   			setActiveGames(update.matches);
+   			break;
 
-		case "created":
-			setActiveGames(prev => [...prev, update.match]);
-			break;
+    		case "created":
+   			setActiveGames(prev => [...prev, update.match]);
+   			break;
 
-		case "updated":
-			setActiveGames(prev => prev.map(match => match.id === update.match.id ? update.match : match));
-			break;
+    		case "updated":
+   			setActiveGames(prev => prev.map(match => match.id === update.match.id ? update.match : match));
+   			break;
 
-		case "removed":
-			setActiveGames(prev => prev.filter(match => match.id !== update.match.id));
-			break;
-
-  }
-});
-	return () => {
-		eventSource.close();
-	};
+    		case "removed":
+   			setActiveGames(prev => prev.filter(match => match.id !== update.match.id));
+   			break;
+      }
+    });
+  	return () => {
+  		eventSource.close();
+  	};
   }, []);
 
   if (activeGames.length === 0) {

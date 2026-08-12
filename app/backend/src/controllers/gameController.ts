@@ -1,7 +1,7 @@
 //import userQueries from "../database/userQueries.ts";
 import { type Request, type Response } from 'express';
 import { broadcastMatch } from "../websocket/matchSockets.ts";
-import { getTokenFrom } from "./authController.ts";
+import { getTokenFrom, secretKey } from "./middleware.ts";
 import jwt from 'jsonwebtoken';
 
 // Store connected clients
@@ -79,7 +79,14 @@ export async function createMatch(request: Request, response: Response) {
 			error: 'match data incomplete'
 		});
 	}
-	const decodedToken = jwt.verify(getTokenFrom(request), process.env.SECRET)
+
+	const token = getTokenFrom(request)
+	if (!token){
+		return response.status(400).json({
+			error: 'missing token' // TODO better error description -- when could this happen?
+		});
+	}
+	const decodedToken = jwt.verify(token, secretKey)
 	if (!decodedToken.id) {
 		return response.status(401).json({ error: 'token invalid' })
 	}

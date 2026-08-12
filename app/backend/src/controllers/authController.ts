@@ -3,7 +3,7 @@ import { type Request, type Response } from 'express';
 import bcrypt from 'bcrypt';
 import jwt from 'jsonwebtoken';
 
-const getTokenFrom = (request: Request) => {
+export const getTokenFrom = (request: Request) => {
 	const authorization = request.get('authorization')
 	if (authorization && authorization.startsWith('Bearer ')) {
 		return authorization.replace('Bearer ', '')

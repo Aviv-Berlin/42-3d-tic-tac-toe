@@ -1,7 +1,8 @@
 //import userQueries from "../database/userQueries.ts";
 import { type Request, type Response } from 'express';
 import { broadcastMatch } from "../websocket/matchSockets.ts";
-//import jwt from 'jsonwebtoken';
+import { getTokenFrom } from "./authController.ts";
+import jwt from 'jsonwebtoken';
 
 // Store connected clients
 const clients = new Set<Response>();
@@ -73,12 +74,16 @@ export function broadcast(event: string, data: unknown) {
 
 export async function createMatch(request: Request, response: Response) {
 	const body = request.body;
-
 	if (!body.size || !body.requiredPlayers) {
 		return response.status(400).json({
 			error: 'match data incomplete'
 		});
 	}
+	const decodedToken = jwt.verify(getTokenFrom(request), process.env.SECRET)
+	if (!decodedToken.id) {
+		return response.status(401).json({ error: 'token invalid' })
+	}
+
 
 	console.log('Creating match as host:', body.host);
 

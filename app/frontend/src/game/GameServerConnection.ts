@@ -4,7 +4,7 @@ import { LocalPlayer } from "./LocalPlayer"
 import { GameData } from "../../../shared/game";
 import { GridPosition, CellState, PLAYER_STATES } from "../../../shared/game/Types"
 import { WsMessage } from "../../../shared/messages"
-import { createMoveMessage } from "../../../shared/messages"
+import { createMoveMessage, createExitMessage } from "../../../shared/messages"
 
 export class GameServerConnection {
     private boardState: CellState [][][] = [];
@@ -50,11 +50,11 @@ export class GameServerConnection {
                 break;
 			
             case "turn":
-                this.currentPlayerIndex = message.payload.PlaysNow;
-                await this.ui.playerTitle(this.playerNames[message.payload.PlaysNow]);
-                if (message.payload.PlaysNow === this.localPlayerIndex)
+                this.currentPlayerIndex = message.payload.playsNow;
+                await this.ui.playerTitle(this.playerNames[message.payload.playsNow]);
+                if (message.payload.playsNow === this.localPlayerIndex)
                     this.localPlayer.yourTurn(this.boardState, this.N, PLAYER_STATES[this.localPlayerIndex]);
-                if (message.payload.PlaysNow === this.guestPlayerIndex)
+                if (message.payload.playsNow === this.guestPlayerIndex)
                     this.guestPlayer.yourTurn(this.boardState, this.N, PLAYER_STATES[this.guestPlayerIndex]);
                 break;
             
@@ -66,12 +66,11 @@ export class GameServerConnection {
             case "end":
                 Object.assign(this.gameData, message.payload.gameData);
                 this.graphics.hidePreview();
-                if (this.gameData.isDraw)
-                    this.ui.displayWinner("No one wins"); 
-                else {
+                if (message.payload.winningPos && this.gameData.winner) {
                     this.graphics.animateWin(message.payload.winningPos);
-                    if (this.gameData.winner)
-                        await this.ui.displayWinner(this.gameData.winner.username);    
+                    await this.ui.displayWinner(this.gameData.winner.username);
+                } else {
+                    this.ui.displayWinner("No one wins");
                 }
                 setTimeout(() => {this.onExit();}, 3000);
                 break;
@@ -79,9 +78,7 @@ export class GameServerConnection {
             default:
                 console.log(`Unknown message: ${message}`);
         }
-    }
-    
-
+    } 
 
     public register(player: LocalPlayer): void {
         if (this.players.length >= this.nPlayers)
@@ -93,15 +90,17 @@ export class GameServerConnection {
         this.players.push(player);
     }
 
-
-
-
     public placeMove(pos: GridPosition, IAm: LocalPlayer): boolean {
         if (IAm === this.localPlayer)
             this.ws.send(JSON.stringify(createMoveMessage(this.gameID, PLAYER_STATES[this.localPlayerIndex], this.localPlayerIndex, pos)));
         else if (IAm === this.guestPlayer)
             this.ws.send(JSON.stringify(createMoveMessage(this.gameID, PLAYER_STATES[this.guestPlayerIndex], this.guestPlayerIndex, pos)));
         return true;
+    }
+
+    public exitGame() {
+        this.ws.send(JSON.stringify(createExitMessage(this.gameID, this.localPlayerIndex)));
+        this.onExit();
     }
 
     public getCurrentPlayer(): LocalPlayer | null {

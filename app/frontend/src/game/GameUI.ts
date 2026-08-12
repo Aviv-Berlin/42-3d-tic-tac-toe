@@ -4,6 +4,8 @@ import type { Scene } from "@babylonjs/core";
 import * as GUI from "@babylonjs/gui";
 import { Materials } from "./Materials"
 import { Board } from "./Board"
+import { GameServerConnection } from "./GameServerConnection"
+
 import { TextCubeFactory } from "./TextCubeFactory";
 
 type CubeRowAnchor = "left" | "center" | "right";
@@ -46,6 +48,7 @@ export class GameUI {
     private renderEdges: boolean = false;
     private board: Board;
     private readonly textCubeFactory: TextCubeFactory;
+    private game: GameServerConnection | null = null;
 
     
     constructor(scene: Scene, onExit: () => void, materials: Materials, board: Board) {
@@ -61,7 +64,10 @@ export class GameUI {
         this.displayInstructions();
     }
 
-
+    public register(game: GameServerConnection): void {
+        if (!this.game)
+            this.game = game;
+    }
     
     private createTextCubeRow(labels: readonly string[], options: TextCubeRowOptions): BABYLON.TransformNode {
         const cubeSize = options.cubeSize ?? 2;
@@ -110,7 +116,9 @@ export class GameUI {
                 alwaysOnTop :true,
                 onClick: () => {
                     //close the websockets?
-                    this.onExit();
+                    if (this.game)
+                        this.game.exitGame()
+                    //this.onExit();
                 }
             }
         );

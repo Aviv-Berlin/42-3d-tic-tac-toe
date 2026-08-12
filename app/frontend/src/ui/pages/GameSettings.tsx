@@ -11,7 +11,7 @@ import gameService from "../../services/game";
 
 const GameSettings = () => {
   const [size, setSize] = useState(3);
-  const [level, setLevel] = useState(0);
+  const [level, setLevel] = useState(1);
   const username = useUsername();
 
   const navigate = useNavigate();

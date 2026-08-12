@@ -36,7 +36,7 @@ const GameSettings = () => {
 	  return;
 	}
 
-	const response = await fetch("http://localhost:3001/v1/game/lobby/create",
+	const response = await fetch(`http://${window.location.hostname}:3001/v1/game/lobby/create`,
 	{
 		method: "POST",
 		headers: {

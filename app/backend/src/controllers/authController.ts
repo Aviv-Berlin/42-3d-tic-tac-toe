@@ -63,6 +63,8 @@ export async function login(request: Request, response: Response) {
 				error: 'username not found'
 			});
 		}
+		// TODO should user and password matching be combined so that you can't
+		// necessarily see that a username exists
 
 		const pwMatch = await bcrypt.compare(body.password, user.pw_hash);
 		if (!pwMatch) {
@@ -76,9 +78,9 @@ export async function login(request: Request, response: Response) {
 			id: user.id,
 		}
 
-		const token = jwt.sign(userToken, process.env.SECRET as string, { expiresIn: '1h' });
+		const token = jwt.sign(userToken, process.env.SECRET as string, { expiresIn: '1m' });
 
-		return response.status(201).send({
+		return response.status(200).send({
 			token, username: user.username, email: user.email
 		});
 

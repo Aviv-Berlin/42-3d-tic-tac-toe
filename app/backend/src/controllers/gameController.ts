@@ -1,6 +1,7 @@
 //import userQueries from "../database/userQueries.ts";
 import { type Request, type Response } from 'express';
 import { broadcastMatch } from "../websocket/matchSockets.ts";
+import { GameState } from '../game/GameState.ts';
 //import jwt from 'jsonwebtoken';
 
 // Store connected clients
@@ -13,6 +14,7 @@ export interface Match {
 	requiredPlayers: number;
 	players: string[];
 	status: "waiting" | "ready" | "started" | "disconnected" | "canceled";
+	state: GameState | null;
 }
 
 export const lobbyMatches = new Map<string, Match>();
@@ -58,7 +60,7 @@ export function sendEvent(response: Response, event: string, data: unknown, id: 
 	if (id) message += `id: ${id}\n`;
 	if (event) message += `event: ${event}\n`;
 	message += `data: ${JSON.stringify(data)}\n\n`;
-	
+
 	response.write(message);
 }
 
@@ -97,7 +99,8 @@ export async function createMatch(request: Request, response: Response) {
 		size: body.size,
 		requiredPlayers: body.requiredPlayers,
 		players: [body.host],
-		status: "waiting"
+		status: "waiting",
+		state: null
 	}
 	lobbyMatches.set(matchId, newMatch);
 	matches.set(matchId, newMatch);
@@ -112,7 +115,7 @@ export async function createMatch(request: Request, response: Response) {
 }
 
 export async function joinMatch(request: Request, response: Response) {
-	
+
 	const body = request.body;
 	const match = lobbyMatches.get(body.matchId);
 
@@ -142,7 +145,7 @@ export async function joinMatch(request: Request, response: Response) {
 			error: 'match is full'
 		});
 	}
-	
+
 	// Add player to the match
 	match.players.push(body.player);
 	console.log('added player to match:', match);
@@ -159,7 +162,7 @@ export async function joinMatch(request: Request, response: Response) {
 	if (match.players.length === match.requiredPlayers) {
 		match.status = "ready";
 		broadcast('lobby-update', {
-			type: "removed", 
+			type: "removed",
 			match: match
 		});
 		lobbyMatches.delete(match.id);

@@ -63,7 +63,7 @@ function initGame(match: Match, sockets: Set<PlayerConnection>, games: GameState
 	});
 
     // add to games
-	games.push(game);
+	match.state = game; //games.push(game);
 
 	console.log(`Game ${match.id} created`);
 

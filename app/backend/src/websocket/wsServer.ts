@@ -10,9 +10,11 @@ import { WsMessage } from "../../../shared/messages.ts"
 export function setupWebSocket(server: http.Server) {
 
 	const wss = new WebSocketServer({ server });
-	const aliveSockets = new Map<WebSocket, boolean>();
+	const aliveSockets = new Map<WebSocket, boolean>(); //<socket, isAlive?>
 
 	wss.on("connection", (socket: WebSocket, request: http.IncomingMessage) => {
+
+		aliveSockets.set(socket, true);
 
 		const url = new URL(request.url ?? "", "http://localhost");
 
@@ -61,7 +63,13 @@ export function setupWebSocket(server: http.Server) {
 			handleMessage(message, socket, match);
 		});
 
+		socket.on("pong", () => {
+			aliveSockets.set(socket, true);
+		})
+
 		socket.on("close", () => {
+			aliveSockets.delete(socket);
+
 			const sockets = matchSockets.get(matchId);
 			if (!sockets) return;
 			const disconnectedPlayer = [...sockets].find(player => player.ws === socket);
@@ -110,6 +118,10 @@ export function setupWebSocket(server: http.Server) {
 				});
 				console.log("Match ${matchId} is available again.");
 			}
+			else if (match.status === "started") {
+
+				match.state?.playerExit(socket, )
+			}
 			else {
 				// update player count -> needs to be implemented in the frontend lobby
 				broadcast("lobby-update", { type: "updated", match });
@@ -124,4 +136,16 @@ export function setupWebSocket(server: http.Server) {
 
 		});
 	});
+
+	const pingCheck = setInterval(() => {
+		wss.clients.forEach((socket) => {
+			if (!aliveSockets.get(socket)) {
+				socket.terminate();
+				return;
+			}
+			aliveSockets.set(socket, false);
+			socket.ping();
+		});
+
+	}, 5_000)
 }

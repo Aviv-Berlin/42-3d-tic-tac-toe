@@ -4,6 +4,7 @@ import { GameState } from "./GameState.ts";
 import { AiPlayer } from "./AIPlayer.ts";
 
 import { CancelGame, PlayGame } from "../websocket/matchSockets.ts"
+import { Match } from "../controllers/gameController.ts";
 
 function joinGame(message: JoinGameMessage, ws: WebSocket, games: GameState[]) {
 	const data = message.payload.gameData;
@@ -63,12 +64,12 @@ function playerExit(message: ExitMessage, ws: WebSocket, games: GameState[]) {
 }
 
 
-export function handleMessage(message: WsMessage, ws: WebSocket, games: GameState[]) {
+export function handleMessage(message: WsMessage, ws: WebSocket, match: Match) {
 	//console.log(`Received message: ${message}`);
 	console.log(`TYPE: ${message.type} \n`)
 	switch (message.type) {
 			case "play-game":
-				PlayGame(message, ws, games);
+				PlayGame(message, ws, match);
 				console.log(`Received play-game msg: ${message}`);
 				break;
 			case "cancel-game":
@@ -76,18 +77,18 @@ export function handleMessage(message: WsMessage, ws: WebSocket, games: GameStat
 				console.log(`Received cancel-game msg: ${message}`);
 				break;
 			case "start-game":
-				StartGame(message, games);
+				StartGame(message, match);
 				console.log(`Received start-game msg: ${message}`);
 				break;
 			case "join-game":
-				joinGame(message, ws, games); // prev. joinGame
+				joinGame(message, ws, match); // prev. joinGame
 				console.log(`Received join-game msg: ${message}`);
 				break;
 			case "move":
-				makeMove(message, ws, games);
+				makeMove(message, ws, match);
 				break;
 			case "exit":
-				playerExit(message, ws, games);
+				playerExit(message, ws, match);
 				break;
 			default:
 				console.log(`Unknown message: ${message}`);

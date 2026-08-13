@@ -58,7 +58,7 @@ export function setupWebSocket(server: http.Server) {
 			console.log("Server received message");
 			const message: WsMessage = JSON.parse(event.toString());
 			//handleMessage(message, socket,	match, games)
-			handleMessage(message, socket, games);
+			handleMessage(message, socket, match);
 		});
 
 		socket.on("close", () => {

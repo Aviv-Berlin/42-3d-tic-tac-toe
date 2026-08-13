@@ -334,16 +334,16 @@ export class GameUI {
         row.dispose();
     }
 
-    public async displayWinner(winner: string): Promise<void> {
+    public async displayWinner(firstLine: string, secondLine: string): Promise<void> {
         const camera = this.scene.activeCamera;
         if (!camera)
             throw new Error("No active camera found");
-        await this.playerTitle(winner);
+        await this.playerTitle(firstLine);
         await this.animateCubeRow(this.playerNameRow, { position: new BABYLON.Vector3(0, 3, 30), scale: 2, anchor: "center"}, false, 30, 3);
         await new Promise<void>((resolve) => { setTimeout(resolve, 500); });
 
         this.winnerMessageRow = this.createTextCubeRow(
-            Array.from("wins!"),
+            Array.from(secondLine),
             {
                 name: "winnerMessage",
                 parent: camera,

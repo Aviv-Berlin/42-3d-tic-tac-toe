@@ -49,7 +49,6 @@ export class GameGraphics {
         if (!winningPositions) return;
 		for (const position of winningPositions) {
             const sphere = this.board.getSphere(position);
-
             if (sphere)
                 sphere.scaling.setAll(1.3);
         }

@@ -45,16 +45,19 @@ export class GameState {
     }
 
     public async startGame(): Promise<void> {
+        if (this.gameData.gameStart > 0)
+            return ;
         if (this.players.length < this.nPlayers) {
             console.log(`Still waiting for players`);
             return ;
         }
+        this.gameData.gameStart = Date.now();
         let msg = createGameStartMessage(this.gameData.gameID, this.playerNames, this.nPlayers, 0);
         console.log("Sending game-start messages");
         this.disributeMessage(msg);
         console.log("Finished sending game-start messages");
 
-        this.gameData.gameStart = Date.now();
+
         if (this.gameData.moves === null)
             this.gameData.moves = [];
         console.log(`handing yourTurn to player`);
@@ -151,7 +154,7 @@ export class GameState {
         this.gameData.isFinished = true;
         this.gameData.isDraw = true;
         this.gameData.gameEnd = Date.now();
-        this.disributeMessage(createEndMessage(this.gameData, null, 0));
+        this.disributeMessage(createEndMessage(this.gameData, null, -1));
     }
 
     public dispose(): void {
@@ -166,6 +169,13 @@ export class GameState {
     }
 
     public addPlayer(socket: WebSocket, name: string) {
+        for (const player of this.players) {
+            if (player.type === "remote" && player.socket === socket) {
+                return ;
+            }
+        }
+        if (this.players.length >= this.nPlayers)
+            return;
         this.players.push({ type: "remote", name, socket });
         this.playerNames.push(name);
     }

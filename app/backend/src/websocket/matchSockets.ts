@@ -30,7 +30,7 @@ export function broadcastMatch(matchId: string, data: unknown) {
 	});
 }
 
-function initGame(match: Match, sockets: Set<PlayerConnection>, games: GameState[]) {
+function initGame(match: Match, sockets: Set<PlayerConnection>) {
 
 	// construct GameData from trusted match data
     const gameMode = "online";
@@ -79,15 +79,15 @@ function initGame(match: Match, sockets: Set<PlayerConnection>, games: GameState
 	return gameData;
 }
 
-export function PlayGame(message: PlayGameMessage, socket: WebSocket, games: GameState[]
+export function PlayGame(message: PlayGameMessage, socket: WebSocket, match: Match
 ) {
 
 	const matchId = message.payload.matchId;
 	const sockets = matchSockets.get(matchId);
  	if (!sockets) return;
 
-	const match = matches.get(matchId);
-	if (!match) return
+	// const match = matches.get(matchId);
+	// if (!match) return
 
 	const sender = [...sockets].find(
 		player => player.ws === socket
@@ -102,7 +102,7 @@ export function PlayGame(message: PlayGameMessage, socket: WebSocket, games: Gam
 		return;
 	}
 
-	const gameData = initGame(match, sockets, games);
+	const gameData = initGame(match, sockets);
 
 	match.status = "started";
 

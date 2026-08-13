@@ -80,16 +80,6 @@ export async function createMatch(request: Request, response: Response) {
 		});
 	}
 
-	const token = getTokenFrom(request)
-	if (!token){
-		return response.status(400).json({
-			error: 'missing token' // TODO better error description -- when could this happen?
-		});
-	}
-	const decodedToken = jwt.verify(token, secretKey)
-	if (!decodedToken.id) {
-		return response.status(401).json({ error: 'token invalid' })
-	}
 
 
 	console.log('Creating match as host:', body.host);

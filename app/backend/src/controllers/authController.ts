@@ -11,6 +11,16 @@ export const getTokenFrom = (request: Request) => {
 	return null
 }
 
+// TODO should this function be async
+export function verifyToken(request: Request, response: Response) {
+
+	const body = request.body;
+	const decodedToken = jwt.verify(token, secretKey)
+	if (!decodedToken.id) {
+		return response.status(401).json({ error: 'token invalid' })
+	}
+}
+
 // Register a new user
 export async function register(request: Request, response: Response) {
 	const body = request.body;
@@ -105,5 +115,6 @@ export async function login(request: Request, response: Response) {
 
 export default {
 	register,
-	login
+	login,
+	verifyToken
 };

@@ -6,18 +6,19 @@ import { AiPlayer } from "./AIPlayer.ts";
 import { CancelGame, PlayGame } from "../websocket/matchSockets.ts"
 import { Match } from "../controllers/gameController.ts";
 
-function joinGame(message: JoinGameMessage, ws: WebSocket, games: GameState[]) {
+function joinGame(message: JoinGameMessage, ws: WebSocket, match: Match) {
 	const data = message.payload.gameData;
-	let game = games.find(game => game.getID() === data.gameID);
+	let game = match.state;
 
 	if (game) {
 		game.addPlayer(ws, data.player1.username);
 		console.log(`Added player to game ${data.gameID}`);
 	}
 	else {
+		console.log(`Game not found inside match, setting up GameState`);
 		game = new GameState(data, 2);
 		game.addPlayer(ws, data.player1.username);
-		games.push(game);
+		match.state = game; //games.push(game);
 		console.log(`Game ${data.gameID} created`);
 	}
 	if (data.player2.type === "ai") {

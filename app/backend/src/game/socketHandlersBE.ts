@@ -38,13 +38,12 @@ function StartGame(message: StartGameMessage, match: Match){
 }
 
 
-export function makeMove(message: MoveMessage, ws: WebSocket, games: GameState[]) {
-	console.log(`no. of games: ${games.length}`);
+export function makeMove(message: MoveMessage, ws: WebSocket, match: Match) {
 	const data = message.payload;
-	let game = games.find(game => game.getID() === data.gameID);
+	let game = match.state;
 	if (!game) {
-		console.log(`Invalid gameID ${data.gameID}`);
-		ws.send(JSON.stringify(`Invalid gameID ${data.gameID}`));
+		console.log(`Error: gameState not yet created ${data.gameID}`);
+		ws.send(JSON.stringify(`Error: gameState not yet created ${data.gameID}`));
 		return ;
 	}
 	if (game.placeMove(data.position, data.player)) {

@@ -10,6 +10,7 @@ import { WsMessage } from "../../../shared/messages.ts"
 export function setupWebSocket(server: http.Server) {
 
 	const wss = new WebSocketServer({ server });
+	const aliveSockets = new Map<WebSocket, boolean>();
 
 	wss.on("connection", (socket: WebSocket, request: http.IncomingMessage) => {
 

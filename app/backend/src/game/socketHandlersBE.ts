@@ -29,9 +29,9 @@ function joinGame(message: JoinGameMessage, ws: WebSocket, games: GameState[]) {
 	game.startGame();
 }
 
-function StartGame(message: StartGameMessage, games: GameState[]){
-	const data = message.payload.gameData;
-	let game = games.find(game => game.getID() === data.gameID);
+function StartGame(message: StartGameMessage, match: Match){
+	// const data = message.payload.gameData;
+	let game = match.state;
 	if (game)
 		game.startGame();
 }

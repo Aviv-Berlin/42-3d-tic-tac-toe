@@ -7,8 +7,6 @@ import { GameState } from "../game/GameState.ts";
 import { handleMessage } from "../game/socketHandlersBE.ts";
 import { WsMessage } from "../../../shared/messages.ts"
 
-const games: GameState[] = [];
-
 export function setupWebSocket(server: http.Server) {
 
 	const wss = new WebSocketServer({ server });
@@ -56,13 +54,13 @@ export function setupWebSocket(server: http.Server) {
 		 // use later for broadcasting messages to all clients in the match
 		 socket.on("message", (event) => {
 			console.log("Server received message");
+			console.log(`No. of matches: ${matches.size}`);
 			const message: WsMessage = JSON.parse(event.toString());
 			//handleMessage(message, socket,	match, games)
 			handleMessage(message, socket, match);
 		});
 
 		socket.on("close", () => {
-			console.log(`no. of games: ${games.length}`);
 			const sockets = matchSockets.get(matchId);
 			if (!sockets) return;
 			const disconnectedPlayer = [...sockets].find(player => player.ws === socket);

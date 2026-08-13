@@ -71,9 +71,12 @@ export class GameServerConnection {
                 this.graphics.hidePreview();
                 if (message.payload.winningPos && this.gameData.winner) {
                     this.graphics.animateWin(message.payload.winningPos);
-                    await this.ui.displayWinner(this.gameData.winner.username);
+                    await this.ui.displayWinner(this.gameData.winner.username, "WINS!");
+                }
+                else if (message.payload.whoExited !== -1) {
+                    await this.ui.displayWinner(this.playerNames[message.payload.whoExited], "left game");
                 } else {
-                    this.ui.displayWinner("No one wins");
+                    this.ui.displayWinner("No one", "wins");
                 }
                 setTimeout(() => {this.onExit();}, 3000);
                 break;

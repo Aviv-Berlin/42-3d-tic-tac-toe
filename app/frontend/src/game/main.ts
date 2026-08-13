@@ -43,8 +43,8 @@ export function createBabylonGame(canvas: HTMLCanvasElement, gameData: GameData,
 ///
   const handleGameMessage = (event: MessageEvent) => {
 	const data: WsMessage = JSON.parse(event.data);
-	console.log("Received message from server:", data);
-    serverConnection.handleMessage(data);
+  console.log(`[Babylon ${instanceID}] Received message from server:`, data);
+  serverConnection.handleMessage(data);
   }
 
   ws.addEventListener("message", handleGameMessage)

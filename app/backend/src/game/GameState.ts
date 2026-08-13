@@ -31,6 +31,7 @@ export class GameState {
     private gameOver: boolean = false;
     private exitTimeout: ReturnType<typeof setTimeout> | null = null;
     private gameData: GameData;
+    private gameStarted: boolean = false;
 
     constructor(gameData: GameData, nPlayers: number) {
         if (nPlayers < 2 || nPlayers > 4)
@@ -45,10 +46,13 @@ export class GameState {
     }
 
     public async startGame(): Promise<void> {
+        if (this.gameStarted)
+            return ;
         if (this.players.length < this.nPlayers) {
             console.log(`Still waiting for players`);
             return ;
         }
+        this.gameStarted = true;
         let msg = createGameStartMessage(this.gameData.gameID, this.playerNames, this.nPlayers, 0);
         console.log("Sending game-start messages");
         this.disributeMessage(msg);
@@ -151,7 +155,7 @@ export class GameState {
         this.gameData.isFinished = true;
         this.gameData.isDraw = true;
         this.gameData.gameEnd = Date.now();
-        this.disributeMessage(createEndMessage(this.gameData, null, 0));
+        this.disributeMessage(createEndMessage(this.gameData, null, -1));
     }
 
     public dispose(): void {
@@ -166,6 +170,13 @@ export class GameState {
     }
 
     public addPlayer(socket: WebSocket, name: string) {
+        for (const player of this.players) {
+            if (player.type === "remote" && player.socket === socket) {
+                return ;
+            }
+        }
+        if (this.players.length >= this.nPlayers)
+            return;
         this.players.push({ type: "remote", name, socket });
         this.playerNames.push(name);
     }

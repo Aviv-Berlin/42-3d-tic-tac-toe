@@ -81,12 +81,13 @@ export async function login(request: Request, response: Response) {
 			});
 		}
 
-		const userToken = {
+		const userForToken = {
 			username: user.username,
-			id: user.id,
+			id: user._id, // underscore to match Full Stack Open example
+							// not sure yet why this is convention here
 		}
 
-		const token = jwt.sign(userToken, process.env.SECRET as string, { expiresIn: '1m' });
+		const token = jwt.sign(userForToken, process.env.SECRET as string, { expiresIn: '1m' });
 
 		return response.status(200).send({
 			token, username: user.username, email: user.email

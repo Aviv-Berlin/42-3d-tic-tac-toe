@@ -31,7 +31,6 @@ export class GameState {
     private gameOver: boolean = false;
     private exitTimeout: ReturnType<typeof setTimeout> | null = null;
     private gameData: GameData;
-    private gameStarted: boolean = false;
 
     constructor(gameData: GameData, nPlayers: number) {
         if (nPlayers < 2 || nPlayers > 4)
@@ -46,19 +45,19 @@ export class GameState {
     }
 
     public async startGame(): Promise<void> {
-        if (this.gameStarted)
+        if (this.gameData.gameStart > 0)
             return ;
         if (this.players.length < this.nPlayers) {
             console.log(`Still waiting for players`);
             return ;
         }
-        this.gameStarted = true;
+        this.gameData.gameStart = Date.now();
         let msg = createGameStartMessage(this.gameData.gameID, this.playerNames, this.nPlayers, 0);
         console.log("Sending game-start messages");
         this.disributeMessage(msg);
         console.log("Finished sending game-start messages");
 
-        this.gameData.gameStart = Date.now();
+
         if (this.gameData.moves === null)
             this.gameData.moves = [];
         console.log(`handing yourTurn to player`);

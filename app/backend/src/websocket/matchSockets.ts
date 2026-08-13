@@ -1,10 +1,11 @@
 import { WebSocket } from "ws";
 import { Match, matches, broadcast, lobbyMatches} from "../controllers/gameController.ts";
 import { GameState } from "../game/GameState.ts";
+import { AiPlayer } from "../game/AIPlayer.ts";
 
 import { GameData} from "../../../shared/game.ts";
 import  createPlayers from "../../../frontend/src/utils/players.ts"
-import { CancelGameMessage, PlayGameMessage } from "../../../shared/messages.ts"
+import { CancelGameMessage, PlayGameMessage, PlayLocalMessage } from "../../../shared/messages.ts"
 
 
 export interface PlayerConnection {
@@ -24,19 +25,19 @@ export function broadcastMatch(matchId: string, data: unknown) {
 	const message = JSON.stringify(data);
 
 	sockets.forEach(( player) => {
-		if (player.ws.readyState === WebSocket.OPEN) {
+		if (player.ws && player.ws.readyState === WebSocket.OPEN) {
 			player.ws.send(message);
 		}
 	});
 }
 
-function initGame(match: Match, sockets: Set<PlayerConnection>, games: GameState[]) {
+export function initGame(match: Match, sockets: Set<PlayerConnection>, games: GameState[]) {
 	
 	// construct GameData from trusted match data
-    const gameMode = "online";
+    const gameMode = match.mode;
 	const [player1, player2] = createPlayers(match.players, gameMode);
-    const level = 0;
-	let gameData: GameData= {
+    const level = match.level;
+	const gameData: GameData= {
       player1, // = host
       player2,
       level,
@@ -54,11 +55,22 @@ function initGame(match: Match, sockets: Set<PlayerConnection>, games: GameState
   	console.log("GameData:", gameData);
 
     // create GameState
-	let game = new GameState(gameData, match.requiredPlayers);
+	const game = new GameState(gameData, match.requiredPlayers);
 
+	if (gameData.player2.type === "ai") {
+			const ai = new AiPlayer(game, gameData.level, gameData.size);
+			game.addAiPlayer(ai, "ai");
+		}
+	else if (gameData.player2.type === "guest"){
+			sockets.forEach(player => {
+				if (player.ws)
+				game.addPlayer(player.ws, "guest");
+			})	
+	}
 	// attach existing WebSockets
 	sockets.forEach(player => {
-	game.addPlayer(player.ws, player.username);
+		if (player.ws)
+			game.addPlayer(player.ws, player.username);
 	});
 	
     // add to games
@@ -78,6 +90,36 @@ function initGame(match: Match, sockets: Set<PlayerConnection>, games: GameState
 	return gameData;
 }
 
+export function PlayLocal(message: PlayLocalMessage, socket: WebSocket, games: GameState[]) {
+	
+	const match = message.payload.match;
+	const username = match.host;
+	const ws = socket;
+
+	const sockets = new Set<PlayerConnection>();
+	sockets.add({
+		username,
+		ws
+	})
+
+	const gameData = initGame(match, sockets, games);
+
+	match.status = "started";
+
+	socket.send(JSON.stringify({
+		type: "game-init",
+		id: match.id,
+		host: match.host,
+		mode: match.mode,
+		level: match.level,
+		size: match.size,
+		requiredPlayers: match.requiredPlayers,
+		players: match.players,
+		status: match.status,
+		gameData
+	}))
+}
+
 export function PlayGame(message: PlayGameMessage, socket: WebSocket, games: GameState[]
 ) {
 
@@ -91,6 +133,7 @@ export function PlayGame(message: PlayGameMessage, socket: WebSocket, games: Gam
 	const sender = [...sockets].find(
 		player => player.ws === socket
 	);
+
 	if (!sender) return;
 
 	if (sender.username !== match.host)
@@ -105,9 +148,12 @@ export function PlayGame(message: PlayGameMessage, socket: WebSocket, games: Gam
 
 	match.status = "started";
 
+	console.log("here");
 	broadcastMatch(match.id, {
 		type: "game-init",
 		host: match.host,
+		mode: match.mode,
+		level: match.level,
 		size: match.size,
 		requiredPlayers: match.requiredPlayers,
 		players: match.players,
@@ -154,11 +200,13 @@ export function CancelGame(message: CancelGameMessage, socket: WebSocket) {
 			status: match.status
 		});
 
-		sender.ws.send(JSON.stringify({
+		if (sender.ws)
+			sender.ws.send(JSON.stringify({
 			type: "left-match"
 		}));
 
-		sender.ws.close();
+		if (sender.ws)
+			sender.ws.close();
 
 		return;
 	}
@@ -187,7 +235,8 @@ export function CancelGame(message: CancelGameMessage, socket: WebSocket) {
 	});
 
 	sockets.forEach(player => {
-		player.ws.close();
+		if (player.ws)
+			player.ws.close();
 	});
 
 	matches.delete(matchId);

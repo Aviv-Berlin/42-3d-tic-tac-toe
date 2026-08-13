@@ -10,7 +10,8 @@
     "multiply": "tsc && node multiplier.ts",
     "start": "tsx src/server.ts",
     "test": "echo \"Error: no test specified\" && exit 1",
-    "tsc": "tsc"
+    "tsc": "tsc",
+    "lint": "eslint ."
   },
   "devDependencies": {
     "@types/bcrypt": "^6.0.0",
@@ -22,7 +23,10 @@
     "@types/ws": "^8.18.1",
     "concurrently": "^9.2.4",
     "tsx": "^4.23.5",
-    "typescript": "^7.0.2"
+    "@eslint/js": "^9.x.x",
+    "eslint": "^10.8.1",
+    "typescript-eslint": "^8.65.0",
+    "typescript": "^6.0.0"
   },
   "dependencies": {
     "bcrypt": "^6.0.0",

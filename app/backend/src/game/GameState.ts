@@ -49,7 +49,7 @@ export class GameState {
             console.log(`Still waiting for players`);
             return ;
         }
-        let msg = createGameStartMessage(this.gameData.gameID, this.playerNames, this.nPlayers, 0);
+        const msg = createGameStartMessage(this.gameData.gameID, this.playerNames, this.nPlayers, 0);
         console.log("Sending game-start messages");
         this.disributeMessage(msg);
         console.log("Finished sending game-start messages");

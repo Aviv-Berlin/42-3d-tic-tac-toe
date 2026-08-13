@@ -8,6 +8,7 @@ import { useSetGameData } from "../../store/gameData";
 import CenteredLayout from "../layouts/CenteredLayout"
 import SecondaryButton from "../components/SecondaryButton";
 import { createCancelGameMessage, createPlayGameMessage } from "../../../../shared/messages";
+import { useUsername } from '../../store/username'
 
 const WaitingRoom = () => {
 	const { matchId } = useParams();
@@ -16,6 +17,7 @@ const WaitingRoom = () => {
 	const setMatch = useSetMatch();
 	const setGameData = useSetGameData();
 	const clearMatch = useClearMatch();
+	const username = useUsername();
 
 	useEffect(() => {
 		if (!matchId) {
@@ -36,6 +38,8 @@ const WaitingRoom = () => {
 				setMatch({
 					id: matchId,
 					host: data.host,
+					mode: data.mode,
+					level: data.level,
 					size: data.size,
 					requiredPlayers: data.requiredPlayers,
 					players: data.players,
@@ -47,6 +51,8 @@ const WaitingRoom = () => {
 				setMatch({
 					id: matchId,
 					host: data.host,
+					mode: data.mode,
+					level: data.level,
 					size: data.size,
 					requiredPlayers: data.requiredPlayers,
 					players: data.players,
@@ -91,7 +97,7 @@ const WaitingRoom = () => {
 			return "Host disconnected, please return to main menu!";
 		if (connectedPlayers < requiredPlayers) 
 			return "Waiting for players ...";
-		if (match?.host === localStorage.getItem("username"))
+		if (match?.host === username)
 			return "All players connected. Ready to start!";
 		return "All players connected. Waiting for host to start the game ...";
 	}
@@ -115,7 +121,7 @@ const WaitingRoom = () => {
 		<p className="font-serif italic">
 			{statusMessage(connectedPlayers, requiredPlayers)}
 		</p>
-		{match?.host === localStorage.getItem("username") && (
+		{match?.host === username && (
 			<>
 				{connectedPlayers === requiredPlayers && (
 					<MainButton onClick={handlePlay}>PLAY</MainButton>

@@ -1,9 +1,9 @@
-import { WsMessage, JoinGameMessage, InitGameMessage, MoveMessage, createMoveMessage, StartGameMessage } from "../../../shared/messages.ts"
+import { WsMessage, JoinGameMessage, MoveMessage, StartGameMessage } from "../../../shared/messages.ts"
 import { WebSocket } from "ws";
 import { GameState } from "./GameState.ts";
 import { AiPlayer } from "./AIPlayer.ts";
 
-import { CancelGame, PlayGame } from "../websocket/matchSockets.ts"
+import { CancelGame, PlayGame, PlayLocal } from "../websocket/matchSockets.ts"
 
 function joinGame(message: JoinGameMessage, ws: WebSocket, games: GameState[]) {
 	const data = message.payload.gameData;
@@ -30,7 +30,7 @@ function joinGame(message: JoinGameMessage, ws: WebSocket, games: GameState[]) {
 
 function StartGame(message: StartGameMessage, games: GameState[]){
 	const data = message.payload.gameData;
-	let game = games.find(game => game.getID() === data.gameID);
+	const game = games.find(game => game.getID() === data.gameID);
 	if (game)
 		game.startGame();
 }
@@ -38,7 +38,7 @@ function StartGame(message: StartGameMessage, games: GameState[]){
 
 export function makeMove(message: MoveMessage, ws: WebSocket, games: GameState[]) {
 	const data = message.payload;
-	let game = games.find(game => game.getID() === data.gameID);
+	const game = games.find(game => game.getID() === data.gameID);
 	if (!game) {
 		console.log(`Invalid gameID ${data.gameID}`);
 		ws.send(JSON.stringify(`Invalid gameID ${data.gameID}`));
@@ -54,6 +54,10 @@ export function handleMessage(message: WsMessage, ws: WebSocket, games: GameStat
 	//console.log(`Received message: ${message}`);
 	console.log(`TYPE: ${message.type} \n`)
 	switch (message.type) {
+			case "play-local":
+				PlayLocal(message, ws, games);
+				console.log(`Received play-local msg: ${message}`);
+				break;
 			case "play-game":
 				PlayGame(message, ws, games);
 				console.log(`Received play-game msg: ${message}`);

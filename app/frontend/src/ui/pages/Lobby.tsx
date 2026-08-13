@@ -4,12 +4,14 @@ import MainLayout from "../layouts/MainLayout";
 import { ActiveGame } from "../../../../shared/game";
 import MainButton from "../components/MainButton";
 import SecondaryButton from "../components/SecondaryButton";
+import { useUsername } from '../../store/username'
 
 //const token = localStorage.getItem("token");
 
 const Lobby = () => {
   const navigate = useNavigate();
   const [activeGames, setActiveGames] = useState<ActiveGame[]>([]);
+  const username = useUsername();
 
   const joinMatch = async (matchId: string) => {
 	const response = await fetch("http://localhost:3001/v1/game/lobby/join", {
@@ -18,7 +20,7 @@ const Lobby = () => {
 			//"Authorization": `Bearer ${token}`,
 			"Content-Type": "application/json"
 		},
-		body: JSON.stringify({ matchId, player: localStorage.getItem("username") }),
+		body: JSON.stringify({ matchId, player: username }),
 	})
 	const data = await response.json();
 	if (!response.ok) {

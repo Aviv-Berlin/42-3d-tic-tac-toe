@@ -15,7 +15,11 @@ router.post('/lobby/join', game.joinMatch);
 // [ Host a new online match]
 // API endpoit/trigger route to push updates (SSE):
 // once the host has set the game settings and created the match, send event to all clients in the lobby (broadcast)
-router.post('/lobby/create', game.createMatch); 
+router.post('/lobby/create', game.createMatch);
+
+// [ Create a AI/local Game ]
+// setup gameData
+router.post('/create', game.createGame);
 
 
 export default router;

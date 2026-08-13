@@ -1,19 +1,18 @@
 import { useEffect } from "react"
 import { Outlet, useLocation } from "react-router-dom"
+import { useUsername } from '../src/store/username'
 
 let socket: WebSocket | null = null;
 let currentMatchId: string | null = null;
 
-export function openSocket(matchId: string): WebSocket {
+export function openSocket(matchId: string, username: string): WebSocket {
 	if (socket && socket.readyState !== WebSocket.CLOSED && currentMatchId === matchId)
 		return socket;
 
-	//const username = localStorage.getItem("username");
-
-	console.log("username: ", localStorage.getItem("username"));
+	console.log("username: ", username);
 	console.log("matchId:", matchId);
 
-	socket = new WebSocket(`ws://localhost:3001/v1/game/${matchId}?username=${localStorage.getItem("username")}`)
+	socket = new WebSocket(`ws://localhost:3001/v1/game/${matchId}?username=${username}`)
 
 	currentMatchId = matchId;
 
@@ -83,6 +82,7 @@ export function closeSocket() {
 
 export const MatchSocketProvider = () => {
 	const location = useLocation();
+	const username = useUsername();
 
 	useEffect(() => {
 		const matchPath = location.pathname.match(
@@ -98,7 +98,7 @@ export const MatchSocketProvider = () => {
 		const matchId = matchPath[2];
 
 		console.log("User is in match:", matchId);
-		openSocket(matchId);
+		openSocket(matchId, username);
 	}, [location.pathname]);
 
 	return <Outlet />;

@@ -51,16 +51,15 @@ export function makeMove(message: MoveMessage, ws: WebSocket, match: Match) {
 	}
 }
 
-function playerExit(message: ExitMessage, ws: WebSocket, games: GameState[]) {
+function playerExit(message: ExitMessage, ws: WebSocket, match: Match) {
 	const data = message.payload;
-	let game = games.find(game => game.getID() === data.gameID);
+	let game = match.state;
 	if (!game) {
 		console.log(`Invalid gameID ${data.gameID}`);
 		ws.send(JSON.stringify(`Invalid gameID ${data.gameID}`));
 		return ;
 	}
 	game.playerExit(ws, data.IAm);
-	game.removeGame(games);
 }
 
 

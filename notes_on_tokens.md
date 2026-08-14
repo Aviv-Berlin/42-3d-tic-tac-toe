@@ -64,6 +64,11 @@ Suggested alternatives are:
 	- https://github.com/EventSource/eventsource
 	- https://github.com/mpetazzoni/sse.js
 
+
+### Trying Cookies:
+
+Reference: https://stackoverflow.com/questions/16209145/how-can-i-set-cookie-in-node-js-using-express-framework
+
 ---
 
 TODO

@@ -88,8 +88,8 @@ export async function login(request: Request, response: Response) {
 		}
 		const token = jwt.sign(userForToken, process.env.SECRET as string, { expiresIn: '1h' });
 
-		return response.status(200).send({
-			token, username: user.username, email: user.email
+		return response.cookie('token', token).status(200).send({
+			username: user.username, email: user.email
 		});
 
 	}

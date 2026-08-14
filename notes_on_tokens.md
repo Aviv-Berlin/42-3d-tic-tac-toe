@@ -1,7 +1,41 @@
+
+
+
+### Generating Token
+
 Following Module 4 section on Token Authentication from
 [Full Stack Open](https://fullstackopen.com/en/part4/token_authentication)
 
-I notice that we already have a ProtectedRoute setup...
+- When a user has successfully logged in (name & password are correct),
+	we generate a token via JWT (JSON Web Token) using the user's name and id
+- The token is added to local storage on the client side
 
-This article shows how to use JWT w/ Protected Routes & the use of an "AuthContext"
-[Medium: Securing Your React Application](https://anilchitte.medium.com/securing-your-react-application-a-guide-to-jwt-protected-routes-and-token-refresh-26cc53a6d421)
+### Authenticating Token
+- This is done via "middleware" -- On the server side, requests to /v1/game are routed to checkToken before being routed to gameRoutes.
+
+```
+app.use("/v1/game", checkToken, gameRoutes);
+```
+
+Following Module 3 section on middleware from
+[Full Stack Open](https://fullstackopen.com/en/part3/node_js_and_express#middleware)
+
+### Sending the Token
+Between generating / storing a token on the client side... and verifying that token on the server side... The missing step is actually sending the token from the client to the server.
+
+- On the server side, the example getTokenFrom function that we're trying from Full Stack Open expects that the token is part of the HTTP "authorization" and starts with "Bearer."
+
+- We can rig up Axios (which we're using to make all HTTP requests), to include an Authorization header bearing the token on its requests.
+	- There is a way to do this granularly using Axios "instances," but to begin with, I wanted to try including the header with ALL requests:
+
+	```
+	axios.defaults.headers.common['Authorization'] = `Bearer ${token}`;
+	```
+	https://axios.rest/pages/advanced/create-an-instance
+
+
+[Stack Overflow](https://stackoverflow.com/questions/28176933/http-authorization-header-in-eventsource-server-sent-events)
+
+TODO
+- when tokens are working, many if not all requests should be refactored to use token instead of username. Username can be spoofed and should not be trusted. The secure way is to read username from token.
+- frontend is not completely handling errors -- When we try to access lobby and get a 401 from the server (because token isn't being sent right now), we still see a page where we can click through the steps of creating a game. (However, the game isn't actually created -- Another user doesn't see it)

@@ -82,6 +82,8 @@ export function handleMessage(message: WsMessage, ws: WebSocket, match: Match | 
 				console.log(`Received cancel-game msg: ${message}`);
 				break;
 			case "start-game":
+				if (!match)
+					console.log("match is null")
 				if (match)
 					StartGame(message, match);
 				console.log(`Received start-game msg: ${message}`);

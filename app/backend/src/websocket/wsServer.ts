@@ -25,7 +25,7 @@ export function setupWebSocket(server: http.Server) {
 			return;
 		}
 
-		const match = matches.get(matchId);
+		let match = matches.get(matchId);
 		if (!match) {
 			console.log(`Match not found: ${matchId}, Local mode?`);
 			//socket.send(JSON.stringify({ type: "error", message: "Match not found" }));
@@ -60,6 +60,8 @@ export function setupWebSocket(server: http.Server) {
 			console.log(`No. of matches: ${matches.size}`);
 			const message: WsMessage = JSON.parse(event.toString());
 			//handleMessage(message, socket,	match, games)
+			if (!match)
+				match = matches.get(matchId);
 			if (!match)
 				handleMessage(message, socket, null);
 			else

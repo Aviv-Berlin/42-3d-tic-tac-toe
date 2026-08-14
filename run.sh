@@ -1,12 +1,12 @@
 #!/bin/bash
 
-root=$(pwd);
-
 cd app/backend;
 
-npm run dev & echo $! > ${root}/.backend.pid;
+npm run dev &;
 
 cd ../frontend;
 
-npm run dev & echo $! > ${root}/.frontend1.pid;
-npm run dev:alt & echo $! > ${root}/.frontend2.pid;
+npm run dev;
+npm run dev:alt;
+
+wait

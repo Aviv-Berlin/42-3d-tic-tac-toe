@@ -105,6 +105,5 @@ export async function login(request: Request, response: Response) {
 
 export default {
 	register,
-	login,
-	verifyToken
+	login
 };

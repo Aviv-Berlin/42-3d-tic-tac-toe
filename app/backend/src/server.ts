@@ -6,6 +6,7 @@ import http from "http";
 import authRoutes from "./routes/authRoutes.ts";
 import gameRoutes from "./routes/gameRoutes.ts";
 import { setupWebSocket } from "./websocket/wsServer.ts";
+import { checkToken } from "./controllers/middleware.ts";
 
 //import { WebSocketServer } from "ws";
 //import { GameState } from "./game/GameState.ts";
@@ -37,7 +38,7 @@ app.use("/v1/auth", authRoutes);
 
 // add middleware for token verification for game routes
 
-app.use("/v1/game", gameRoutes);
+app.use("/v1/game", checkToken, gameRoutes);
 
 // HTTP Server
 const server = http.createServer(app);

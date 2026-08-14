@@ -1,5 +1,6 @@
 import { useState } from 'react'
 import { Link, useNavigate } from 'react-router-dom'
+import axios from 'axios'
 import AuthLayout from '../layouts/AuthLayout'
 import AuthCard from '../components/AuthCard'
 import Input from '../components/Input'

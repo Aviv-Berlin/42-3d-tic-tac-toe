@@ -31,6 +31,7 @@ const Login = () => {
       const token = response.data.token;
       const username = response.data.username;
       window.localStorage.setItem('token', token);
+      axios.defaults.headers.common['Authorization'] = `Bearer ${token}`;
       setUsername(username);
       navigate("/home");
     } catch(err) {

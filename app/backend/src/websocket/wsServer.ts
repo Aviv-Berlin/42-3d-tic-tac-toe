@@ -73,7 +73,6 @@ export function setupWebSocket(server: http.Server) {
 			const sockets = matchSockets.get(matchId);
 			if (!sockets) return;
 			const disconnectedPlayer = [...sockets].find(player => player.ws === socket);
-
 			if (!disconnectedPlayer) return;
 
 			sockets.delete(disconnectedPlayer);
@@ -119,8 +118,9 @@ export function setupWebSocket(server: http.Server) {
 				console.log("Match ${matchId} is available again.");
 			}
 			else if (match.status === "started") {
-
-				match.state?.playerExit(socket, )
+				const playerIndex = match.state?.playerNames.findIndex((name) => name === disconnectedPlayer.username);
+				if (playerIndex !== undefined && playerIndex >= 0)
+					match.state?.playerExit(socket, playerIndex);
 			}
 			else {
 				// update player count -> needs to be implemented in the frontend lobby

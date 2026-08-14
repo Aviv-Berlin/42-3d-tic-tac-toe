@@ -60,7 +60,9 @@ Suggested alternatives are:
 - cookies (good idea?)
 - putting the token in a query string (bad idea -- not secure)
 - a convoluted-looking method of generating and using a second temporary-token
-
+- using an external EventSource client (good idea?)
+	- https://github.com/EventSource/eventsource
+	- https://github.com/mpetazzoni/sse.js
 
 ---
 

@@ -34,7 +34,7 @@ export class GameServerConnection {
         this.onExit = onExit;
         this.initBoard();
     }
-    
+
     public async handleMessage(message: WsMessage) {
         console.log("Received message:", message);
         switch (message.type) {
@@ -48,9 +48,10 @@ export class GameServerConnection {
                     this.localPlayerIndex = message.payload.youAre;
                 this.gameID = message.payload.gameID;
                 break;
-			
+
             case "turn":
-                console.log("TURN", { playsNow: message.payload.playsNow,  localPlayerIndex: this.localPlayerIndex,  isMyTurn: message.payload.playsNow === this.localPlayerIndex,});
+                console.log("TURN", { playsNow: message.payload.playsNow,  localPlayerIndex: this.localPlayerIndex,
+                    isMyTurn: message.payload.playsNow === this.localPlayerIndex, guestPlayerIndex: this.guestPlayerIndex, isGuestTurn: message.payload.playsNow === this.guestPlayerIndex});
                 this.currentPlayerIndex = message.payload.playsNow;
                 await this.ui.playerTitle(this.playerNames[message.payload.playsNow]);
                 if (message.payload.playsNow === this.localPlayerIndex)
@@ -60,12 +61,12 @@ export class GameServerConnection {
                 else
                     this.graphics.hidePreview();
                 break;
-            
+
             case "move":
                 this.graphics.placeSphere(message.payload.position, message.payload.player);
                 this.boardState[message.payload.position.x][message.payload.position.y][message.payload.position.z] = message.payload.player;
                 break;
-            
+
             case "end":
                 Object.assign(this.gameData, message.payload.gameData);
                 this.graphics.hidePreview();
@@ -80,11 +81,11 @@ export class GameServerConnection {
                 }
                 setTimeout(() => {this.onExit();}, 3000);
                 break;
-            
+
             default:
                 console.log(`Unknown message: ${message}`);
         }
-    } 
+    }
 
     public register(player: LocalPlayer): void {
         if (this.players.length >= this.nPlayers)

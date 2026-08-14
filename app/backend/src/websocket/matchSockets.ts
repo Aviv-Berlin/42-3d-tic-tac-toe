@@ -58,32 +58,32 @@ export function initGame(match: Match, sockets: Set<PlayerConnection>) {
     // create GameState
 	const game = new GameState(gameData, match.requiredPlayers);
 
+	// attach existing WebSockets
+	sockets.forEach(player => {
+		if (player.ws) {
+			game.addPlayer(player.ws, player.username);
+			console.log(`added real player successfully`);
+		}
+	});
+
 	if (gameData.player2.type === "ai") {
 			const ai = new AiPlayer(game, gameData.level, gameData.size);
 			game.addAiPlayer(ai, "ai");
 		}
 	else if (gameData.player2.type === "guest"){
-			sockets.forEach(player => {
-				if (player.ws)
-				game.addPlayer(player.ws, "guest");
-			})	
-	}
-	// attach existing WebSockets
-	sockets.forEach(player => {
-		if (player.ws)
-			game.addPlayer(player.ws, player.username);
-	});
+				console.log(`adding guest...`);
+				game.addPlayer(null, "guest");
+		}
 
     // add to games
 	match.state = game; //games.push(game);
 
 	console.log(`Game ${match.id} created`);
-
 	return gameData;
 }
 
 export function PlayLocal(message: PlayLocalMessage, socket: WebSocket) {
-	
+
 	const match = message.payload.match;
 	const username = match.host;
 	const ws = socket;
@@ -98,7 +98,6 @@ export function PlayLocal(message: PlayLocalMessage, socket: WebSocket) {
 	matchSockets.set(match.id, sockets);
 
 	const gameData = initGame(match, sockets);
-
 	match.status = "started";
 
 	socket.send(JSON.stringify({

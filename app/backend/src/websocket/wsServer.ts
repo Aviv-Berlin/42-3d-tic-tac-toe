@@ -44,7 +44,7 @@ export function setupWebSocket(server: http.Server) {
 
 		// Send the current match state to the newly connected client
 		if (match){
-			socket.send(JSON.stringify({ 
+			socket.send(JSON.stringify({
 			type: "match-state",
 			host: match.host,
 			size: match.size,
@@ -53,11 +53,11 @@ export function setupWebSocket(server: http.Server) {
 			status: match.status
 		 }));
 		}
-	
+
 		 // use later for broadcasting messages to all clients in the match
 		 socket.on("message", (event) => {
 			console.log("Server received message");
-			console.log(`No. of matches: ${matches.size}`);
+			// console.log(`No. of matches: ${matches.size}`);
 			const message: WsMessage = JSON.parse(event.toString());
 			//handleMessage(message, socket,	match, games)
 			if (!match)

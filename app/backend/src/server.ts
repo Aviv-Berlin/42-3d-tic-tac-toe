@@ -1,5 +1,6 @@
 import "dotenv/config";
 import express from "express";
+import cookieParser from 'cookie-parser';
 import cors from "cors";
 import http from "http";
 
@@ -20,6 +21,8 @@ const allowedOrigins = new Set([
     "http://localhost:5174",
     "http://localhost:3000"
 ]);
+
+app.use(cookieParser());
 
 app.use(cors({
     origin: (origin, callback) => {

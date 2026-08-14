@@ -17,11 +17,21 @@ export { secretKey };
 // const secret = await readFile(secretFilePath, 'utf8');
 
 export const getTokenFrom = (request: Request) => {
-	const authorization = request.get('authorization')
+	const cookie = request.cookies;
+	if (!cookie){
+		console.log('getTokenFrom... !cookies')
+		return null // TODO temp hack what should it actually return
+	}
+	const token_cookie = cookie['token']
+	/*
+	console.log('getTokenFrom. token_cookie = ', token_cookie)
+	const authorization = token_cookie.get('authorization')
 	if (authorization && authorization.startsWith('Bearer ')) {
 		return authorization.replace('Bearer ', '')
 	}
 	return null
+	*/
+	return (token_cookie)
 }
 
 export const checkToken = (request: Request, response: Response, next: NextFunction) => {

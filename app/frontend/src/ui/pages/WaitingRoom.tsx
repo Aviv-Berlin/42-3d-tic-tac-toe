@@ -1,10 +1,9 @@
 import { useEffect } from "react";
 import {useParams, useNavigate } from "react-router-dom";
 import MainButton from "../components/MainButton";
-import { closeSocket, sendMessage, getSocket } from "../../websocket";
+import { closeSocket, sendMessage, getSocket } from "../../services/websocket";
 import { useMatch, useSetMatch, useClearMatch } from "../../store/matchData"
 import { useSetGameData } from "../../store/gameData";
-
 import CenteredLayout from "../layouts/CenteredLayout"
 import SecondaryButton from "../components/SecondaryButton";
 import { createCancelGameMessage, createPlayGameMessage } from "../../../../shared/messages";
@@ -79,7 +78,7 @@ const WaitingRoom = () => {
 				closeSocket();
 				navigate("/lobby");
 			}
-			
+
 		}
 
 		socket.addEventListener("message", handleMessage);
@@ -88,14 +87,14 @@ const WaitingRoom = () => {
 			socket.removeEventListener("message", handleMessage);
 		}
 	}, [matchId, navigate]);
-	
+
 	const requiredPlayers = match?.requiredPlayers ?? 0;
 	const connectedPlayers = match?.players.length ?? 0;
 
 	const statusMessage = (connectedPlayers: number, requiredPlayers: number) => {
-		if (match?.status === "canceled") 
+		if (match?.status === "canceled")
 			return "Host disconnected, please return to main menu!";
-		if (connectedPlayers < requiredPlayers) 
+		if (connectedPlayers < requiredPlayers)
 			return "Waiting for players ...";
 		if (match?.host === username)
 			return "All players connected. Ready to start!";

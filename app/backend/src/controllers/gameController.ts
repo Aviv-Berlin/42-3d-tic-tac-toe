@@ -1,12 +1,12 @@
 //import userQueries from "../database/userQueries.ts";
 import { type Request, type Response } from 'express';
 import { broadcastMatch } from "../websocket/matchSockets.ts";
+import { GameState } from '../game/GameState.ts';
 //import jwt from 'jsonwebtoken';
 
 import { GameMode, AiLevel } from '../../../shared/game.ts';
-import { games } from "../websocket/wsServer.ts"
-import { initGame } from "../websocket/matchSockets.ts"
-import { PlayerConnection } from '../websocket/matchSockets.ts';
+//import { initGame } from "../websocket/matchSockets.ts"
+//import { PlayerConnection } from '../websocket/matchSockets.ts';
 // Store connected clients
 const clients = new Set<Response>();
 
@@ -19,6 +19,7 @@ export interface Match {
 	requiredPlayers: number;
 	players: string[];
 	status: "waiting" | "ready" | "started" | "disconnected" | "canceled";
+	state: GameState | null;
 }
 
 export const lobbyMatches = new Map<string, Match>();
@@ -64,7 +65,7 @@ export function sendEvent(response: Response, event: string, data: unknown, id: 
 	if (id) message += `id: ${id}\n`;
 	if (event) message += `event: ${event}\n`;
 	message += `data: ${JSON.stringify(data)}\n\n`;
-	
+
 	response.write(message);
 }
 
@@ -105,7 +106,8 @@ export async function createMatch(request: Request, response: Response) {
 		size: body.size,
 		requiredPlayers: body.requiredPlayers,
 		players: [body.host],
-		status: "waiting"
+		status: "waiting",
+		state: null
 	}
 	lobbyMatches.set(matchId, newMatch);
 	matches.set(matchId, newMatch);
@@ -120,7 +122,7 @@ export async function createMatch(request: Request, response: Response) {
 }
 
 export async function joinMatch(request: Request, response: Response) {
-	
+
 	const body = request.body;
 	const match = lobbyMatches.get(body.matchId);
 
@@ -150,7 +152,7 @@ export async function joinMatch(request: Request, response: Response) {
 			error: 'match is full'
 		});
 	}
-	
+
 	// Add player to the match
 	match.players.push(body.player);
 	console.log('added player to match:', match);
@@ -169,7 +171,7 @@ export async function joinMatch(request: Request, response: Response) {
 	if (match.players.length === match.requiredPlayers) {
 		match.status = "ready";
 		broadcast('lobby-update', {
-			type: "removed", 
+			type: "removed",
 			match: match
 		});
 		lobbyMatches.delete(match.id);
@@ -187,48 +189,49 @@ export async function joinMatch(request: Request, response: Response) {
 	});
 }
 
-export async function createGame(request: Request, response: Response){
-	const body = request.body;
+// export async function createGame(request: Request, response: Response){
+// 	const body = request.body;
 
-	if (!body.size || !body.username || !body.gameMode || !body.level) {
-		return response.status(400).json({
-			error: 'match settings incomplete'
-		});
-	}
+// 	if (!body.size || !body.username || !body.gameMode || !body.level) {
+// 		return response.status(400).json({
+// 			error: 'match settings incomplete'
+// 		});
+// 	}
 
-	console.log('Creating local/ai match:', body.host);
+// 	console.log('Creating local/ai match:', body.host);
 
-	 // Generate a unique match ID
-	const newMatch: Match = {
-		id: body.matchId,
-		host: body.username,
-		mode: body.gameMode,
-		level: body.level,
-		size: body.size,
-		requiredPlayers: 2,
-		players: [body.host],
-		status: "ready"
-	}
+// 	 // Generate a unique match ID
+// 	const newMatch: Match = {
+// 		id: body.matchId,
+// 		host: body.username,
+// 		mode: body.gameMode,
+// 		level: body.level,
+// 		size: body.size,
+// 		requiredPlayers: 2,
+// 		players: [body.host],
+// 		status: "ready",
+// 		state: null
+// 	}
 
-	const players = new Set<PlayerConnection>();
-	players.add({
-		username: newMatch.host,
-		ws: body.socket
-	})
-	const gameData = initGame(newMatch, players, games);
+// 	const players = new Set<PlayerConnection>();
+// 	players.add({
+// 		username: newMatch.host,
+// 		ws: body.socket
+// 	})
+// 	const gameData = initGame(newMatch, players);
 
-	return response.status(201).json({
-		message: 'match created',
-		gameData: gameData
-	});
-}
+// 	return response.status(201).json({
+// 		message: 'match created',
+// 		gameData: gameData
+// 	});
+// }
 
 
 export default {
 	lobby,
 	createMatch,
 	joinMatch,
-	createGame
+	//createGame
 };
 
 // generate a real match ID with crypto.randomUUID() or similar, instead of using host as the match ID. This will allow multiple matches to be hosted by the same user and avoid potential conflicts. (?)

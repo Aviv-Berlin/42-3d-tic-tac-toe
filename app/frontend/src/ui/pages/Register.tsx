@@ -1,6 +1,7 @@
 import { useState } from 'react'
 import { useNavigate } from 'react-router-dom';
 import { Link } from 'react-router-dom'
+import axios from 'axios';
 import AuthLayout from '../layouts/AuthLayout'
 import AuthCard from '../components/AuthCard'
 import Input from '../components/Input'
@@ -32,8 +33,10 @@ const Register = () => {
       await auth.register(form)
       navigate('/register-success');
     } catch (err) {
-      console.log(err);
-      setErrorMessage(err.response?.data?.error || "something went wrong");
+      if (axios.isAxiosError(err)) {
+        console.log(err);
+        setErrorMessage(err.response?.data?.error || "something went wrong");
+      }
     }
   }
 

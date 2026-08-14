@@ -3,7 +3,7 @@ import { useEffect } from 'react';
 import GameLayout from '../layouts/GameLayout';
 import Canvas from '../components/Canvas';
 //import { GameMode, AiLevel } from '../../../../shared/game';
-import { sendMessage } from "../../websocket";
+import { sendMessage } from "../../services/websocket";
 //import { useUsername } from '../../store/username';
 import { useGameData } from "../../store/gameData"
 
@@ -35,8 +35,9 @@ const Game = () => {
 
   //let initialGameData: GameData | null = null;
 
-  if (!isValid)
-	console.log("none valid value");
+  if (!isValid) {
+    console.log("invalid search parameters");
+  }
 //   if (isValid) {
 //     const size = Number(sizeParam);
 //     const gameMode = gameModeParam as GameMode;

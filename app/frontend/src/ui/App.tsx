@@ -11,16 +11,16 @@ import PrivacyPolicy from './pages/PrivacyPolicy'
 import TermsOfService from './pages/TermsOfService'
 import NotFound from './pages/NotFound'
 import ProtectedRoute from './routes/ProtectedRoute'
+import MatchSocketProvider from './routes/MatchSocketProvider'
 import Lobby from './pages/Lobby'
 import GameEnd from './pages/GameEnd'
 import Replay from './pages/Replay'
 import WaitingRoom from './pages/WaitingRoom'
-import { MatchSocketProvider } from '../websocket'
 
 const App = () => {
   return (
 	  <Routes>
-		<Route element={<MatchSocketProvider />}>
+			<Route element={<MatchSocketProvider />}>
         <Route path="/" element={<Navigate to="/home" />} />
         <Route path="/register" element={<Register />} />
         <Route path="/register-success" element={<RegisterSuccess />} />
@@ -29,10 +29,8 @@ const App = () => {
           <Route path="/home" element={<Home />} />
           <Route path="/game-settings" element={<GameSettings />} />
           <Route path="/lobby" element={<Lobby />} />
-		  
           	<Route path="/waiting/:matchId" element={<WaitingRoom />} />
           	<Route path="/game/:matchId" element={<Game />} />
-
           <Route path="/game-end" element={<GameEnd />} />
           <Route path="/replay" element={<Replay />} />
           <Route path="/waiting-room" element={<WaitingRoom />} />
@@ -42,8 +40,8 @@ const App = () => {
         <Route path="/privacy" element={<PrivacyPolicy />} />
         <Route path="/terms" element={<TermsOfService />} />
         <Route path="*" element={<NotFound />} />
-	 	</Route>
-      </Routes>
+	 	  </Route>
+    </Routes>
   )
 }
 

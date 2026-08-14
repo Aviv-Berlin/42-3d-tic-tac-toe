@@ -20,13 +20,13 @@ export class LocalPlayer {
     }
 
     public yourTurn(boardState: CellState[][][], N: number, youAre: CellState): boolean {
+        this.myTurn = true;
         this.boardState = boardState;
         this.N = N;
         this.IAm = youAre;
         this.cursor = {x: N - 1, y: N - 1, z: N -1};
         this.placeCursor();
         this.graphics.showPreview(this.cursor, this.IAm);
-        this.myTurn = true;
         return true;
     }
 
@@ -64,6 +64,7 @@ export class LocalPlayer {
         if (!this.myTurn)
             return;
         this.game.placeMove(this.cursor, this);
+        this.myTurn = false;
     }
 
 

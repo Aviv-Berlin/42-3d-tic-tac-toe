@@ -31,8 +31,8 @@ export function broadcastMatch(matchId: string, data: unknown) {
 	});
 }
 
-export function initGame(match: Match, sockets: Set<PlayerConnection>, games: GameState[]) {
-	
+export function initGame(match: Match, sockets: Set<PlayerConnection>) {
+
 	// construct GameData from trusted match data
     const gameMode = match.mode;
 	const [player1, player2] = createPlayers(match.players, gameMode);
@@ -49,9 +49,10 @@ export function initGame(match: Match, sockets: Set<PlayerConnection>, games: Ga
       winner: null,
       gameStart: 0,
       gameEnd: 0,
-      gameID: match.id
+      gameID: match.id,
+	  endMessage: null
    	 };
-  
+
   	console.log("GameData:", gameData);
 
     // create GameState
@@ -72,16 +73,16 @@ export function initGame(match: Match, sockets: Set<PlayerConnection>, games: Ga
 		if (player.ws)
 			game.addPlayer(player.ws, player.username);
 	});
-	
+
     // add to games
-	games.push(game);
-	
+	match.state = game; //games.push(game);
+
 	console.log(`Game ${match.id} created`);
 
 	return gameData;
 }
 
-export function PlayLocal(message: PlayLocalMessage, socket: WebSocket, games: GameState[]) {
+export function PlayLocal(message: PlayLocalMessage, socket: WebSocket) {
 	
 	const match = message.payload.match;
 	const username = match.host;
@@ -93,7 +94,10 @@ export function PlayLocal(message: PlayLocalMessage, socket: WebSocket, games: G
 		ws
 	})
 
-	const gameData = initGame(match, sockets, games);
+	matches.set(match.id, match);
+	matchSockets.set(match.id, sockets);
+
+	const gameData = initGame(match, sockets);
 
 	match.status = "started";
 
@@ -111,15 +115,15 @@ export function PlayLocal(message: PlayLocalMessage, socket: WebSocket, games: G
 	}))
 }
 
-export function PlayGame(message: PlayGameMessage, socket: WebSocket, games: GameState[]
+export function PlayGame(message: PlayGameMessage, socket: WebSocket, match: Match
 ) {
 
 	const matchId = message.payload.matchId;
 	const sockets = matchSockets.get(matchId);
  	if (!sockets) return;
 
-	const match = matches.get(matchId);
-	if (!match) return
+	// const match = matches.get(matchId);
+	// if (!match) return
 
 	const sender = [...sockets].find(
 		player => player.ws === socket
@@ -135,7 +139,7 @@ export function PlayGame(message: PlayGameMessage, socket: WebSocket, games: Gam
 		return;
 	}
 
-	const gameData = initGame(match, sockets, games);
+	const gameData = initGame(match, sockets);
 
 	match.status = "started";
 
@@ -166,7 +170,7 @@ export function CancelGame(message: CancelGameMessage, socket: WebSocket) {
 		player => player.ws === socket
 	);
 	if (!sender) return;
-	
+
 	// Player leaves
 	if (sender.username !== match.host) {
 		match.players = match.players.filter(

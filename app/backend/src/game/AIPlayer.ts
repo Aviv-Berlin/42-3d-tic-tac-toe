@@ -27,14 +27,14 @@ export class AiPlayer {
     }
 
     public handleMessage(message: WsMessage) {
-        console.log("Received message:", message);
+        // console.log("AI player received message:", message);
         switch (message.type) {
             case "game-start":
                 this.playerIndex = message.payload.youAre;
                 this.IAm = PLAYER_STATES[this.playerIndex];
                 break;
 			case "turn":
-				if (this.playerIndex === message.payload.PlaysNow)
+				if (this.playerIndex === message.payload.playsNow)
                     this.yourTurn(this.game.getBoardState(),this.N);
                 break;
             case "move":

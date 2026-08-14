@@ -139,7 +139,8 @@ export function setupWebSocket(server: http.Server) {
 
 	const pingCheck = setInterval(() => {
 		wss.clients.forEach((socket) => {
-			if (!aliveSockets.get(socket)) {
+			if (aliveSockets.get(socket) === false) {
+				console.log(`no pong received form socket, terminating`)
 				socket.terminate();
 				return;
 			}

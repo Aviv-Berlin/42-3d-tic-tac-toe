@@ -7,8 +7,6 @@ import { GameState } from "../game/GameState.ts";
 import { handleMessage } from "../game/socketHandlersBE.ts";
 import { WsMessage } from "../../../shared/messages.ts"
 
-const games: GameState[] = [];
-
 export function setupWebSocket(server: http.Server) {
 
 	const wss = new WebSocketServer({ server });
@@ -16,7 +14,7 @@ export function setupWebSocket(server: http.Server) {
 	wss.on("connection", (socket: WebSocket, request: http.IncomingMessage) => {
 
 		const url = new URL(request.url ?? "", "http://localhost");
-		
+
 		const matchId = url.pathname.split("/").pop();
 		const username = url.searchParams.get("username");
 
@@ -33,7 +31,7 @@ export function setupWebSocket(server: http.Server) {
 			socket.close();
 			return;
 		}
-		
+
 		if (!matchSockets.has(matchId)) {
 			matchSockets.set(matchId, new Set());
 		}
@@ -44,7 +42,7 @@ export function setupWebSocket(server: http.Server) {
 		});
 
 		// Send the current match state to the newly connected client
-		socket.send(JSON.stringify({ 
+		socket.send(JSON.stringify({
 			type: "match-state",
 			host: match.host,
 			size: match.size,
@@ -52,22 +50,23 @@ export function setupWebSocket(server: http.Server) {
 			players: match.players,
 			status: match.status
 		 }));
-	
+
 		 // use later for broadcasting messages to all clients in the match
 		 socket.on("message", (event) => {
 			console.log("Server received message");
+			console.log(`No. of matches: ${matches.size}`);
 			const message: WsMessage = JSON.parse(event.toString());
 			//handleMessage(message, socket,	match, games)
-			handleMessage(message, socket, games);
+			handleMessage(message, socket, match);
 		});
-	
+
 		socket.on("close", () => {
 			const sockets = matchSockets.get(matchId);
 			if (!sockets) return;
 			const disconnectedPlayer = [...sockets].find(player => player.ws === socket);
 
 			if (!disconnectedPlayer) return;
-			
+
 			sockets.delete(disconnectedPlayer);
 			console.log(`Player ${disconnectedPlayer.username} disconnected from match ${matchId}`);
 
@@ -124,4 +123,4 @@ export function setupWebSocket(server: http.Server) {
 
 		});
 	});
-}	
+}

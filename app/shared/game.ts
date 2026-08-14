@@ -36,4 +36,5 @@ export interface GameData {
   gameStart: number;
   gameEnd: number;
   gameID: string;
+  endMessage: string | null;
 }

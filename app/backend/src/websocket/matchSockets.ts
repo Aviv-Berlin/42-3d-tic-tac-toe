@@ -78,15 +78,6 @@ export function initGame(match: Match, sockets: Set<PlayerConnection>, games: Ga
 	
 	console.log(`Game ${match.id} created`);
 
-	// if (data.player2.type === "ai") {
-	// 	const ai = new AiPlayer(game, data.level, data.size);
-	// 	game.addAiPlayer(ai, "ai");
-	// }
-	// else if (data.player2.type === "guest")
-	// 	game.addPlayer(ws, "guest");
-
-	//game.startGame();
-
 	return gameData;
 }
 
@@ -243,36 +234,3 @@ export function CancelGame(message: CancelGameMessage, socket: WebSocket) {
 	lobbyMatches.delete(matchId);
 	matchSockets.delete(matchId);
 }
-
-// export function handleMessage(
-// 	message: WebSocket.RawData,
-// 	socket: WebSocket,
-// 	match: Match,
-// 	games: GameState[]
-// ) {
-// 	console.log("received message:", message.toString());
-
-// 	const data = JSON.parse(message.toString());
-
-// 	const sockets = matchSockets.get(match.id);
-// 	if (!sockets) return;
-
-// 	const sender = [...sockets].find(
-// 		player => player.ws === socket
-// 	);
-
-// 	if (!sender) return;
-
-// 	switch (data.type) {
-// 		case "play-game":
-// 			handleStartGame(sender, sockets, match, games);
-// 			break;
-
-// 		case "cancel-game":
-// 			handleCancelGame(sender, sockets, match, match.id);
-// 			break;
-
-// 		default:
-// 			console.log(`Unknown message type: ${data.type}`);
-// 	}
-// }

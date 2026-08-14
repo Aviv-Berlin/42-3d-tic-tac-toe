@@ -45,8 +45,10 @@ export class GameState {
     }
 
     public async startGame(): Promise<void> {
-        if (this.gameData.gameStart > 0)
+        if (this.gameData.gameStart > 0){
+			console.log("game already started")
             return ;
+		}
         if (this.players.length < this.nPlayers) {
             console.log(`Still waiting for players`);
             return ;

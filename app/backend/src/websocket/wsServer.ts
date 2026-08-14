@@ -60,7 +60,9 @@ export function setupWebSocket(server: http.Server) {
 			console.log(`No. of matches: ${matches.size}`);
 			const message: WsMessage = JSON.parse(event.toString());
 			//handleMessage(message, socket,	match, games)
-			if (match)
+			if (!match)
+				handleMessage(message, socket, null);
+			else
 				handleMessage(message, socket, match);
 		});
 

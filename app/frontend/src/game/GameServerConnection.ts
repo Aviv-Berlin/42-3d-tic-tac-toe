@@ -16,7 +16,7 @@ export class GameServerConnection {
     private localPlayerIndex: number = -1;
     private guestPlayerIndex: number = -1;
     private players: LocalPlayer[] = [];
-    private currentPlayerIndex: number = 0;
+    private currentPlayerIndex: number = -1;
     private nPlayers: number;
     private graphics: GameGraphics;
     private gameData: GameData;
@@ -39,7 +39,7 @@ export class GameServerConnection {
         console.log("Received message:", message);
         switch (message.type) {
             case "game-start":
-                console.log(`Game ${message.payload.gameID} started`);
+                console.log("GAME START", { youAre: message.payload.youAre, playerNames: message.payload.playerNames,});
                 this.playerNames = message.payload.playerNames;
                 this.nPlayers = message.payload.nPlayers;
                 if (this.playerNames[message.payload.youAre] === "guest")
@@ -50,12 +50,15 @@ export class GameServerConnection {
                 break;
 			
             case "turn":
+                console.log("TURN", { playsNow: message.payload.playsNow,  localPlayerIndex: this.localPlayerIndex,  isMyTurn: message.payload.playsNow === this.localPlayerIndex,});
                 this.currentPlayerIndex = message.payload.playsNow;
                 await this.ui.playerTitle(this.playerNames[message.payload.playsNow]);
                 if (message.payload.playsNow === this.localPlayerIndex)
                     this.localPlayer.yourTurn(this.boardState, this.N, PLAYER_STATES[this.localPlayerIndex]);
-                if (message.payload.playsNow === this.guestPlayerIndex)
+                else if (message.payload.playsNow === this.guestPlayerIndex)
                     this.guestPlayer.yourTurn(this.boardState, this.N, PLAYER_STATES[this.guestPlayerIndex]);
+                else
+                    this.graphics.hidePreview();
                 break;
             
             case "move":
@@ -68,9 +71,12 @@ export class GameServerConnection {
                 this.graphics.hidePreview();
                 if (message.payload.winningPos && this.gameData.winner) {
                     this.graphics.animateWin(message.payload.winningPos);
-                    await this.ui.displayWinner(this.gameData.winner.username);
+                    await this.ui.displayWinner(this.gameData.winner.username, "WINS!");
+                }
+                else if (message.payload.whoExited !== -1) {
+                    await this.ui.displayWinner(this.playerNames[message.payload.whoExited], "left game");
                 } else {
-                    this.ui.displayWinner("No one wins");
+                    this.ui.displayWinner("No one", "wins");
                 }
                 setTimeout(() => {this.onExit();}, 3000);
                 break;

@@ -11,15 +11,6 @@ export const getTokenFrom = (request: Request) => {
 	return null
 }
 
-// TODO should this function be async
-export function verifyToken(request: Request, response: Response) {
-
-	const body = request.body;
-	const decodedToken = jwt.verify(token, secretKey)
-	if (!decodedToken.id) {
-		return response.status(401).json({ error: 'token invalid' })
-	}
-}
 
 // Register a new user
 export async function register(request: Request, response: Response) {
@@ -93,11 +84,10 @@ export async function login(request: Request, response: Response) {
 
 		const userForToken = {
 			username: user.username,
-			id: user._id, // underscore to match Full Stack Open example
+			id: user.id, // underscore to match Full Stack Open example
 							// not sure yet why this is convention here
 		}
-
-		const token = jwt.sign(userForToken, process.env.SECRET as string, { expiresIn: '1m' });
+		const token = jwt.sign(userForToken, process.env.SECRET as string, { expiresIn: '1h' });
 
 		return response.status(200).send({
 			token, username: user.username, email: user.email

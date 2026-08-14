@@ -14,7 +14,9 @@ const NavDropDown = () => {
   const username = useUsername();
 
   const handleLogOut = () => {
-    window.localStorage.removeItem('token');
+    //window.localStorage.removeItem('token');
+	// Is this the right flow for logout or should it be moved
+	// to protected?
     window.localStorage.removeItem('username');
     navigate('/login');
   }

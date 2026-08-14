@@ -1,12 +1,12 @@
 #!/bin/bash
 
-cd app/backend;
+cd app/backend
 
-npm run dev &;
+npm run dev &
 
-cd ../frontend;
+cd ../frontend
 
-npm run dev;
-npm run dev:alt;
+npm run dev &
+npm run dev:alt &
 
-wait;
+wait

@@ -42,7 +42,7 @@ const Login = () => {
   return (
     <AuthLayout>
       <div className="hidden md:block w-100 h-100 relative">
-        <BabylonImage type="three" />
+        <BabylonImage type="logo" />
       </div>
       <AuthCard>
         <h1 className="text-2xl font-serif italic">Log in</h1>

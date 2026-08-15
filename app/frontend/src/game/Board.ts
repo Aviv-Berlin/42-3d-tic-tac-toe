@@ -69,7 +69,7 @@ export class Board {
 
         for (let x = 0; x < this.N; x++) {
             for (let y = 0; y < this.N; y++) {
-                for (let z = 0; z < this.N; z++) {
+                for (let z = 0; z < this.N; z++) {               
                     const finalMesh = this.createBoardMesh(looks);
                     finalMesh.scaling.set(scale, scale, scale);
                     finalMesh.position = this.getPosition(x, y, z, true);
@@ -102,22 +102,53 @@ export class Board {
         }
     }
 
-    public createLogo(N: number): void {
+    public createLogo(): void {
+        const N = 3;
         this.smallSize = 2 / N;
+        this.offset = (N - 1) / 2;
         this.boardMeshes.forEach(mesh => mesh.dispose());
         this.boardMeshes = [];
-        const Factory = new TextCubeFactory(this.scene, this.materials);
+        const factory = new TextCubeFactory(this.scene, this.materials);
 
         for (let x = 0; x < N; x++) {
             for (let y = 0; y < N; y++) {
                 for (let z = 0; z < N; z++) {
-                    const finalMesh = Factory.createTextCube("T");
+                    let letter = "";
+                    let letterFace = 6;
+
+                    if (x === 0 && y === 2 && z === 0) {
+                        letter = "T";
+                         letterFace = 6;
+                    }
+                    if (x === 0 && y === 2 && z === 1) {
+                        letter = "I";
+                         letterFace = 4;
+                    }
+                    if (x === 0 && y === 2 && z === 2) {
+                        letter = "C";
+                         letterFace = 4;
+                    }
+                    if (x === 1 && y === 2 && z === 0) {
+                        letter = "A";
+                        letterFace = 1;
+                    }
+                    if (x === 2 && y === 2 && z === 0) {
+                        letter = "C";
+                        letterFace = 1;
+                    }
+                    if (x === 0 && y === 1 && z === 0) {
+                        letter = "O";
+                        letterFace = 1;
+                    }
+                    if (x === 0 && y === 0 && z === 0) {
+                        letter = "E";
+                        letterFace = 1;
+                    }
+
+                    const finalMesh = factory.createTextCube(letter, {name: `logo-${x}-${y}-${z}`,
+                            size: this.smallSize, letterFace, renderEdges: true,  cubeColor: BABYLON.Color3.White(), ignoreLighting: true});
                     finalMesh.position = this.getPosition(x, y, z, false);
-                    finalMesh.material = this.materials.cube;
-                    //finalMesh.enableEdgesRendering();
-                    finalMesh.edgesWidth = 15.0;
-                    finalMesh.edgesColor = new BABYLON.Color4(1, 1, 1, 1);
-                    finalMesh.metadata = { gridPosition: { x, y, z}};
+                    finalMesh.metadata = { gridPosition: { x, y, z } };
                     this.boardMeshes.push(finalMesh);
                 }
             }

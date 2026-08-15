@@ -22,7 +22,6 @@ export function createBabylonGame(canvas: HTMLCanvasElement, gameData: GameData,
   const materials = new Materials(scene);
   const camera = new CameraManager(scene, canvas);
   const board = new Board(gameData.size, scene, materials);
-  board.createBoard(1);
   const ui = new GameUI(scene, onExit, materials, board);
   const graphics = new GameGraphics(board, materials, camera);
 
@@ -48,7 +47,7 @@ export function createBabylonGame(canvas: HTMLCanvasElement, gameData: GameData,
   }
 ///
 
-
+  board.createBoard(1);
   const input = new InputManager(serverConnection, scene, board, camera);
   input.registerEvents();
 

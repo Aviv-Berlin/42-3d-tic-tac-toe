@@ -52,6 +52,12 @@ export function babylonButton(canvas: HTMLCanvasElement, type: string): () => vo
       camera.spinCamera(4);
       break;
 
+    case "logo":
+      board= new Board(3, scene, materials);  
+      board.createLogo();
+      camera.spinCamera(1);
+      break;
+
     default:
       board= new Board(3, scene, materials);  
       board.createBoardButton(4);

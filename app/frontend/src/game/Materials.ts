@@ -6,12 +6,27 @@ import { CellState } from "../../../shared/game/Types";
 import { playerStateToIndex } from "../../../shared/game/Utils";
 
 
+export interface Look {
+    backgroundColor: BABYLON.Color4;
+    cubeColor: BABYLON.Color3;
+    cubeAlpha: number;
+    edgeColor: BABYLON.Color4;
+    textColor: BABYLON.Color3;
+}
+
 export class Materials {
     
     public readonly cube: StandardMaterial;
     public readonly buttonCube: StandardMaterial;
     public readonly playerMaterials: StandardMaterial[];
     public readonly previewMaterials: StandardMaterial[];
+    private currentLook: Look = {
+        backgroundColor: new Color4(0.33, 0.30, 0.35, 1),
+        cubeColor: new Color3(0.67, 0.7, 0.71),
+        cubeAlpha: 0.4,
+        edgeColor: new Color4(1, 1, 1, 1),
+        textColor: new Color3(0.85, 0.85, 0.85),
+    };
     private readonly cubeColor = new Color3(0.67, 0.7, 0.71);
     private cubeEdgeColor = new Color4(1, 1, 1, 1);
     private sceneBackground = new Color4(0.33, 0.30, 0.35, 1);
@@ -162,12 +177,12 @@ export class Materials {
         return material;
     }
 
-    private drawTextCubeTexture(texture: BABYLON.DynamicTexture, text: string): void {
+    private drawTextCubeTexture(texture: BABYLON.DynamicTexture, text: string, cubeColor: Color3, cubeOpacity: number = 1, textOpacity: number = 1): void {
         const textureSize = 512;
         const context = texture.getContext() as CanvasRenderingContext2D;
         context.clearRect(0, 0, textureSize, textureSize);
         // Cube background follows the current board-cube alpha.
-        context.fillStyle = this.colorToCss(this.cubeColor, this.cube.alpha);
+        context.fillStyle = this.colorToCss(cubeColor, cubeOpacity);
         context.fillRect(0, 0, textureSize, textureSize);
         const maxTextWidth = textureSize * 0.72;
         const maximumFontSize = 340;
@@ -181,25 +196,29 @@ export class Materials {
         }
 
         context.font = `bold ${fontSize}px ${this.textFont}`;
-        context.fillStyle = this.colorToCss(this.textColor, 1);
+        context.fillStyle = this.colorToCss(this.textColor, textOpacity);
         context.textAlign = "center";
         context.textBaseline = "middle";
         context.fillText(text, textureSize / 2, textureSize / 2);
         texture.update();
     }
 
-    public createTextCubeMaterial(id: string, text: string): StandardMaterial {
+    public createTextCubeMaterial(id: string, text: string, cubeColor: Color3, cubeOpacity: number = 1, textOpacity: number = 1): StandardMaterial {
         const textureSize = 512;
         const texture = new BABYLON.DynamicTexture(`${id}Texture`,
             { width: textureSize, height: textureSize }, this.scene, true);
         texture.hasAlpha = true;
-        this.drawTextCubeTexture(texture, text);
+        this.drawTextCubeTexture(texture, text, cubeColor, cubeOpacity, textOpacity);
         const material = new StandardMaterial(`${id}Material`, this.scene);
         material.diffuseColor = Color3.White();
         material.diffuseTexture = texture;
         material.useAlphaFromDiffuseTexture = true;
         material.needDepthPrePass = true;
         return material;
+    }
+
+    public getCubeColor(): Color3 {
+        return this.cube.diffuseColor.clone();
     }
 
     private colorToCss(color: Color3, alpha: number): string {
@@ -209,25 +228,11 @@ export class Materials {
         return `rgba(${red}, ${green}, ${blue}, ${alpha})`;
     }
 
-    public applyTextCubeLook(mesh: BABYLON.AbstractMesh,renderEdges: boolean): void {
+    public applyTextCubeLook(mesh: BABYLON.AbstractMesh, renderEdges: boolean): void {
         const multiMaterial = mesh.material;
         if (!(multiMaterial instanceof BABYLON.MultiMaterial))
             return;
-        const plainMaterial = multiMaterial.subMaterials[0];
-        const textMaterial = multiMaterial.subMaterials[1];
-        if (plainMaterial instanceof StandardMaterial) {
-            plainMaterial.diffuseColor.copyFrom(this.cube.diffuseColor);
-            plainMaterial.alpha = this.cube.alpha;
-        }
-
-        if (textMaterial instanceof StandardMaterial) {
-            const texture = textMaterial.diffuseTexture;
-            const label = mesh.metadata?.textCubeLabel as string | undefined;
-
-            if (texture instanceof BABYLON.DynamicTexture && label !== undefined)
-                this.drawTextCubeTexture(texture, label);
-        }
-        if (renderEdges) 
+        if (renderEdges)
             this.applyCubeEdges(mesh);
         else
             mesh.disableEdgesRendering();
@@ -239,6 +244,10 @@ export class Materials {
         material.alpha = this.cube.alpha;
         material.needDepthPrePass = true;
         return material;
+    }
+
+    public getLook(): Look {
+        return this.currentLook;
     }
 
 }

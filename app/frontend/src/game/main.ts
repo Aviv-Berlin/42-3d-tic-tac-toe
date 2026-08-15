@@ -17,21 +17,27 @@ export function createBabylonGame(canvas: HTMLCanvasElement, gameData: GameData,
   const instanceID = crypto.randomUUID().slice(0, 8);
   console.log(`[Babylon ${instanceID}] CREATE`);
   //all these are the visual elements - so running by the browser
-    const engine = new BABYLON.Engine(canvas, true);
-    const scene = new BABYLON.Scene(engine);
-    const materials = new Materials(scene);
-    const camera = new CameraManager(scene, canvas);
-    const board = new Board(gameData.size, scene, materials);
-    board.createBoard(1);
-    const ui = new GameUI(scene, onExit, materials, board);
-    const graphics = new GameGraphics(board, materials, camera);
+  const engine = new BABYLON.Engine(canvas, true);
+  const scene = new BABYLON.Scene(engine);
+  const materials = new Materials(scene);
+  const camera = new CameraManager(scene, canvas);
+  const board = new Board(gameData.size, scene, materials);
+  board.createBoard(1);
+  const ui = new GameUI(scene, onExit, materials, board);
+  const graphics = new GameGraphics(board, materials, camera);
 
-  //const ws = new WebSocket(`ws://${window.location.hostname}:3001`);
   const ws = getSocket();
-
-  ////
   if (!ws) return;
+
   const serverConnection = new GameServerConnection(gameData, ui, graphics, 2, ws, onExit);
+  
+  const handleGameMessage = (event: MessageEvent) => {
+    const data: WsMessage = JSON.parse(event.data);
+    console.log(`[Babylon ${instanceID}] Received message from server:`, data);
+    serverConnection.handleMessage(data);
+  }
+  ws.addEventListener("message", handleGameMessage)
+
   ui.register(serverConnection);
   const player = new LocalPlayer(gameData.player1.username, serverConnection, graphics);
   serverConnection.register(player);
@@ -41,29 +47,21 @@ export function createBabylonGame(canvas: HTMLCanvasElement, gameData: GameData,
     serverConnection.register(guestPlayer);
   }
 ///
-  const handleGameMessage = (event: MessageEvent) => {
-	const data: WsMessage = JSON.parse(event.data);
-  console.log(`[Babylon ${instanceID}] Received message from server:`, data);
-  serverConnection.handleMessage(data);
-  }
 
-  ws.addEventListener("message", handleGameMessage)
 
-  //input manager is also frontend
   const input = new InputManager(serverConnection, scene, board, camera);
   input.registerEvents();
 
 
   engine.runRenderLoop(() => {
-    scene.render();
+      scene.render();
   });
 
+  const handleWheel = (event: WheelEvent) => { event.preventDefault();  };
+  canvas.addEventListener("wheel", handleWheel, { passive: false });
 
-  const handleResize = () => {
-    engine.resize();
-  };
-
-  window.addEventListener("resize", handleResize);
+  const resizeObserver = new ResizeObserver(() => { engine.resize();  });
+  resizeObserver.observe(canvas);
 
   let disposed = false;
 
@@ -76,11 +74,11 @@ export function createBabylonGame(canvas: HTMLCanvasElement, gameData: GameData,
     console.log("Cleaning up Babylon game");
 
     input.unregisterEvents();
-    window.removeEventListener("resize", handleResize);
-
+    resizeObserver.disconnect();
+    canvas.removeEventListener("wheel", handleWheel);
     engine.stopRenderLoop();
 
-	ws.removeEventListener("message", handleGameMessage)
+	  ws.removeEventListener("message", handleGameMessage)
 
     ui.dispose();
     scene.dispose();

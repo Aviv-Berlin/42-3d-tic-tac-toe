@@ -16,6 +16,8 @@ export class CameraManager {
     constructor(scene: Scene, canvas: HTMLCanvasElement) {
         this.canvas = canvas;
         this.camera = new ArcRotateCamera("camera", Math.PI / 3.99, Math.PI / 3, 6, Vector3.Zero(), scene);
+        this.camera.lowerRadiusLimit = 4;  // closest zoom
+        this.camera.upperRadiusLimit = 8; // furthest zoom
         this.camera.attachControl(this.canvas, true);
         this.camera.minZ = 0.05;
     }

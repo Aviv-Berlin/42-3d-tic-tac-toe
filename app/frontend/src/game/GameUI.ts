@@ -169,7 +169,8 @@ export class GameUI {
         const camera = this.scene.activeCamera;
         if (!camera)
             throw new Error("No active camera found");
-        //const finalPlayerPos = new BABYLON.Vector3(-30, 14, 40);
+        if (player === undefined)
+            player = "player name error!"
         if (this.playerNameRow === null) {
             this.playerNameRow = this.createTextCubeRow(Array.from(player.toUpperCase()), {
                 name: "playerName",

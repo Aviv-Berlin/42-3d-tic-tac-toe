@@ -39,7 +39,11 @@ export class GameServerConnection {
         console.log("Received message:", message);
         switch (message.type) {
             case "game-start":
-                console.log("GAME START", { youAre: message.payload.youAre, playerNames: message.payload.playerNames,});
+                console.log("GAME START");
+                console.log("youAre:", message.payload.youAre);
+                console.log("playerNames:", message.payload.playerNames);
+                console.log("playerNames[0]:", message.payload.playerNames[0]);
+                console.log("playerNames[1]:", message.payload.playerNames[1])
                 this.playerNames = message.payload.playerNames;
                 this.nPlayers = message.payload.nPlayers;
                 if (this.playerNames[message.payload.youAre] === "guest")

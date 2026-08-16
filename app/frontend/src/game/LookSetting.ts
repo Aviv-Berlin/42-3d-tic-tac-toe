@@ -1,5 +1,34 @@
 import * as BABYLON from "@babylonjs/core";
 
+export enum MeshStyle {
+    Box = "box",
+    Sphere = "sphere",
+    Cylinders = "cylinders",
+    Plane = "plane",
+}
+
+export const MESH_STYLE_SETTINGS = {
+    [MeshStyle.Box]: {
+        type: MeshStyle.Box,
+    },
+
+    [MeshStyle.Sphere]: {
+        type: MeshStyle.Sphere,
+        diameterScale: 1.1,
+    },
+
+    [MeshStyle.Cylinders]: {
+        type: MeshStyle.Cylinders,
+        heightScale: 1.05,
+        diameterScale: 0.2,
+    },
+
+    [MeshStyle.Plane]: {
+        type: MeshStyle.Plane,
+        rotationX: Math.PI / 2,
+    },
+} as const;
+
 export interface Look {
     backgroundColor: BABYLON.Color4;
     cubeColor: BABYLON.Color3;
@@ -11,8 +40,9 @@ export interface Look {
     renderEdges: boolean;
     textColor: BABYLON.Color3;
     playerColors?: PlayerColors;
-    boardStyle: number;
-    moveStyle: number;
+    boardStyle: MeshStyle;
+    moveStyle: MeshStyle;
+    boardSize: number,
     boardGap: number;
 }
 
@@ -40,8 +70,9 @@ export const LOOKS: Look[] = [
         edgeWidth: 4,
         renderEdges: true,
         textColor: new BABYLON.Color3(0, 0, 0),
-        boardStyle: 0,
-        moveStyle: 3,
+        boardStyle: MeshStyle.Box,
+        moveStyle: MeshStyle.Sphere,
+        boardSize: 2.5,
         boardGap: 0,
     },
 
@@ -53,8 +84,9 @@ export const LOOKS: Look[] = [
         edgeWidth: 4,
         renderEdges: true,
         textColor: new BABYLON.Color3(1, 1, 1),
-        boardStyle: 1,
-        moveStyle: 3,
+        boardStyle: MeshStyle.Box,
+        moveStyle: MeshStyle.Sphere,
+        boardSize: 2.5,
         boardGap: 0,
     },
 
@@ -66,8 +98,9 @@ export const LOOKS: Look[] = [
         edgeWidth: 2,
         renderEdges: false,
         textColor: new BABYLON.Color3(1, 1, 0),
-        boardStyle: 2,
-        moveStyle: 0,
+        boardStyle: MeshStyle.Box,
+        moveStyle: MeshStyle.Sphere,
+        boardSize: 2.5,
         boardGap: 0.02,
     },
 
@@ -79,8 +112,9 @@ export const LOOKS: Look[] = [
         edgeWidth: 2,
         renderEdges: false,
         textColor: new BABYLON.Color3(0.85, 0.85, 0.85),
-        boardStyle: 3, // sphere
-        moveStyle: 0,
+        boardStyle: MeshStyle.Sphere, // sphere
+        moveStyle: MeshStyle.Sphere,
+        boardSize: 2.5,
         boardGap: 0.02,
     },
 
@@ -92,8 +126,9 @@ export const LOOKS: Look[] = [
         edgeWidth: 2,
         renderEdges: false,
         textColor: new BABYLON.Color3(0.85, 0.85, 0.85),
-        boardStyle: 4, // cylinders
-        moveStyle: 3,
+        boardStyle: MeshStyle.Cylinders,
+        moveStyle: MeshStyle.Sphere,
+        boardSize: 2.5,
         boardGap: 0.02,
     },
 
@@ -105,8 +140,9 @@ export const LOOKS: Look[] = [
         edgeWidth: 2,
         renderEdges: false,
         textColor: new BABYLON.Color3(0.85, 0.85, 0.85),
-        boardStyle: 5, // plane
-        moveStyle: 0,
+        boardStyle: MeshStyle.Plane, // plane
+        moveStyle: MeshStyle.Box,
+        boardSize: 2.5,
         boardGap: 0.05,
     },
 
@@ -118,8 +154,9 @@ export const LOOKS: Look[] = [
         edgeWidth: 2,
         renderEdges: false,
         textColor: new BABYLON.Color3(0.85, 0.85, 0.85),
-        boardStyle: 6, // default cube
-        moveStyle: 3,
+        boardStyle: MeshStyle.Box, // default cube
+        moveStyle: MeshStyle.Sphere,
+        boardSize: 2.5,
         boardGap: 0.02,
     },
 ];

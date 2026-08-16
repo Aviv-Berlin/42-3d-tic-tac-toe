@@ -1,20 +1,21 @@
 import * as BABYLON from "@babylonjs/core";
-import type { AbstractMesh, Scene, Mesh, Material } from "@babylonjs/core";
-//import type { AbstractMesh, Scene, StandardMaterial, Mesh, Material } from "@babylonjs/core";
+import type { AbstractMesh, Scene, Mesh } from "@babylonjs/core";
 import { Materials } from "./Materials";
 import { GridPosition, CellState } from "../../../shared/game/Types"
 import { TextCubeFactory } from "./TextCubeFactory";
+import { MeshStyle, MESH_STYLE_SETTINGS } from "./LookSetting";
 
 export class Board {
     scene: Scene;
     private N: number;
-    private smallSize: number;
+    private cellSize: number;
     private offset: number;
     public materials: Materials;
+    private previewMesh: Mesh | null = null;
     private moveMeshes: Mesh [] = [];
     private boardMeshes: Mesh[] = [];
     private cubesShrink: boolean = false;
-    private sphereMeshes: (AbstractMesh | null)[][][];
+    private moveMeshesGrid: (AbstractMesh | null)[][][];
     private textCubeFactory: TextCubeFactory;
 
     constructor(N: number, scene: Scene, materials: Materials)
@@ -22,57 +23,57 @@ export class Board {
         this.scene = scene;
         this.materials = materials;
         this.N = N;
-        this.smallSize = 2.5 / this.N;
+        this.cellSize = this.materials.getLook().boardSize / this.N;
         this.offset = (this.N - 1) / 2;
-        this.sphereMeshes = Array.from({ length: N }, () => Array.from({ length: N }, () => Array<AbstractMesh | null>(N).fill(null))); //intialize sphereMeshes to null
+        this.moveMeshesGrid = Array.from({ length: N }, () => Array.from({ length: N }, () => Array<AbstractMesh | null>(N).fill(null))); //intialize sphereMeshes to null
         this.textCubeFactory =  new TextCubeFactory(scene, materials);
     }
 
-    private createStyledMesh(style: number, size: number, name: string): BABYLON.Mesh {
-        switch (style) {
-            case 0:
-            case 1:
-            case 2:
-            case 6:
+    private createStyledMesh(style: MeshStyle, size: number, name: string): BABYLON.Mesh {
+
+        const settings = MESH_STYLE_SETTINGS[style];
+        switch (settings.type) {
+
+            case MeshStyle.Box:
                 return BABYLON.MeshBuilder.CreateBox(name, { size }, this.scene);
 
-            case 3:
-                return BABYLON.MeshBuilder.CreateSphere(name, { diameter: size * 1.1 }, this.scene);
+            case MeshStyle.Sphere:
+                return BABYLON.MeshBuilder.CreateSphere(name, { diameter: size * settings.diameterScale }, this.scene);
 
-            case 4: {
-                const cylinder1 = BABYLON.MeshBuilder.CreateCylinder(`${name}Y`, { height: size * 1.05, diameter: size / 5 }, this.scene);
-                const cylinder2 = BABYLON.MeshBuilder.CreateCylinder(`${name}X`, { height: size * 1.05, diameter: size / 5 }, this.scene);
-                const cylinder3 = BABYLON.MeshBuilder.CreateCylinder(`${name}X`, { height: size * 1.05, diameter: size / 5 }, this.scene);
-                cylinder2.rotation.x = BABYLON.Tools.ToRadians(90);
-                cylinder3.rotation.z = BABYLON.Tools.ToRadians(90);
-                const merged = BABYLON.Mesh.MergeMeshes([cylinder1, cylinder2, cylinder3], true);
+            case MeshStyle.Cylinders: { 
+                const height =  size * settings.heightScale;
+                const diameter = size * settings.diameterScale;
+                const cylinderY = BABYLON.MeshBuilder.CreateCylinder(`${name}Y`, { height, diameter }, this.scene);
+                const cylinderX = BABYLON.MeshBuilder.CreateCylinder(`${name}X`, { height, diameter }, this.scene);
+                const cylinderZ = BABYLON.MeshBuilder.CreateCylinder(`${name}Z`, { height, diameter }, this.scene);
+                cylinderX.rotation.x = Math.PI / 2;
+                cylinderZ.rotation.z = Math.PI / 2;
+                const merged = BABYLON.Mesh.MergeMeshes([cylinderY, cylinderX, cylinderZ], true);
                 if (!merged)
                     throw new Error("Failed to merge cylinders");
                 merged.name = name;
                 return merged;
             }
 
-            case 5: {
-                const plane = BABYLON.MeshBuilder.CreatePlane(name,
-                    { width: size, height: size, sideOrientation: BABYLON.Mesh.DOUBLESIDE }, this.scene);
-                plane.rotation.x = BABYLON.Tools.ToRadians(90);
+            case MeshStyle.Plane: {
+                const plane = BABYLON.MeshBuilder.CreatePlane( name, 
+                    { width: size, height: size, sideOrientation: BABYLON.Mesh.DOUBLESIDE}, this.scene);
+                plane.rotation.x = settings.rotationX;
                 return plane;
             }
-
-            default:
-                throw new Error(`Unknown mesh style: ${style}`);
         }
     }
 
-    public createBoard(looks: number): void {
+    public createBoard(): void {
         const scale = this.cubesShrink ? 0.25 : 1;
+        this.cellSize = this.materials.getLook().boardSize / this.N;
         this.boardMeshes.forEach(mesh => mesh.dispose());
         this.boardMeshes = [];        
 
         for (let x = 0; x < this.N; x++) {
             for (let y = 0; y < this.N; y++) {
                 for (let z = 0; z < this.N; z++) {               
-                    const finalMesh = this.createStyledMesh(looks, this.smallSize, "boardMesh");
+                    const finalMesh = this.createStyledMesh(this.materials.getLook().boardStyle, this.cellSize, "boardMesh");
                     finalMesh.scaling.set(scale, scale, scale);
                     finalMesh.position = this.getPosition(x, y, z);
                     finalMesh.material = this.materials.cube;
@@ -85,14 +86,14 @@ export class Board {
     }
 
     public createBoardButton(N: number): void {
-        this.smallSize = 2 / N;
+        this.cellSize = 2 / N;
         this.boardMeshes.forEach(mesh => mesh.dispose());
         this.boardMeshes = [];
 
         for (let x = 0; x < N; x++) {
             for (let y = 0; y < N; y++) {
                 for (let z = 0; z < N; z++) {
-                    const finalMesh = BABYLON.MeshBuilder.CreateBox("smallCube", { size: this.smallSize },  this.scene);
+                    const finalMesh = BABYLON.MeshBuilder.CreateBox("smallCube", { size: this.cellSize },  this.scene);
                     finalMesh.position = this.getPosition(x, y, z);
                     finalMesh.material = this.materials.buttonCube;
                     finalMesh.enableEdgesRendering();
@@ -107,7 +108,7 @@ export class Board {
 
     public createLogo(): void {
         const N = 3;
-        this.smallSize = 2 / N;
+        this.cellSize = 2 / N;
         this.offset = (N - 1) / 2;
         this.boardMeshes.forEach(mesh => mesh.dispose());
         this.boardMeshes = [];
@@ -148,7 +149,7 @@ export class Board {
                     }
 
                     const finalMesh = this.textCubeFactory.createTextCube(letter, {name: `logo-${x}-${y}-${z}`,
-                            size: this.smallSize, letterFace, renderEdges: true,  cubeColor: BABYLON.Color3.White(), ignoreLighting: true});
+                            size: this.cellSize, letterFace, renderEdges: true,  cubeColor: BABYLON.Color3.White(), ignoreLighting: true});
                     finalMesh.position = this.getPosition(x, y, z);
                     finalMesh.metadata = { gridPosition: { x, y, z } };
                     this.boardMeshes.push(finalMesh);
@@ -164,7 +165,7 @@ export class Board {
         this.boardMeshes = [];
 
         for (let y = 0; y < N; y++) {
-                    const finalMesh = BABYLON.MeshBuilder.CreateBox("smallCube", { size: this.smallSize },  this.scene);
+                    const finalMesh = BABYLON.MeshBuilder.CreateBox("smallCube", { size: this.cellSize },  this.scene);
                     finalMesh.position = this.getPosition(1, y, 1);
                     finalMesh.material = this.materials.buttonCube;
                     finalMesh.enableEdgesRendering();
@@ -192,34 +193,15 @@ export class Board {
     }
 
     private getPosition(x: number, y: number, z: number): BABYLON.Vector3 {
-        const step = this.smallSize + this.materials.getLook().boardGap;;
+        const step = this.cellSize + this.materials.getLook().boardGap;;
         return new BABYLON.Vector3
 			((x - this.offset) * step, (y - this.offset) * step, (z - this.offset) * step);
     }
 
-    // putSphere(pos: GridPosition, material: Material, storeMove: boolean): Mesh {
-    //     const moveMesh = this.createStyledMesh(this.materials.getLook().moveStyle,  this.smallSize * 0.7, "moveMesh");
 
-    //     moveMesh.position = this.getPosition(pos.x, pos.y, pos.z);
-    //     moveMesh.material = material;
-    //     moveMesh.metadata = { gridPosition: {...pos } };
-    //     moveMesh.renderingGroupId = 0;
-    //     moveMesh.isPickable = false;
-
-    //     this.moveMeshes.push(moveMesh);
-    //     if (storeMove)
-    //         this.sphereMeshes[pos.x][pos.y][pos.z] = moveMesh;
-    //     return moveMesh;
-    // }
 
     private createMoveMesh(pos: GridPosition, playerState: CellState, isPreview: boolean): Mesh {
-
-            console.log(
-        "CREATE MOVE:",
-        "look =", this.materials.getLookIndex(),
-        "moveStyle =", this.materials.getLook().moveStyle
-    );
-        const mesh = this.createStyledMesh(this.materials.getLook().moveStyle, this.smallSize * 0.7, "moveMesh");
+        const mesh = this.createStyledMesh(this.materials.getLook().moveStyle, this.cellSize * 0.7, "moveMesh");
         mesh.position = this.getPosition(pos.x, pos.y, pos.z);
         mesh.material = isPreview ? this.materials.getPreviewMaterial(playerState) : this.materials.getPlayerMaterial(playerState);
         mesh.renderingGroupId = 0;
@@ -232,43 +214,75 @@ export class Board {
         const mesh = this.createMoveMesh(pos, playerState, isPreview );
         if (!isPreview) {
             this.moveMeshes.push(mesh);
-            this.sphereMeshes[pos.x][pos.y][pos.z] = mesh;
+            this.moveMeshesGrid[pos.x][pos.y][pos.z] = mesh;
         }
         return mesh;
     }
 
     public refreshMoves(): void {
-            console.log(
-        "REFRESH MOVES:",
-        "look =", this.materials.getLookIndex(),
-        "moveStyle =", this.materials.getLook().moveStyle,
-        "moves =", this.moveMeshes.length
-    );
-
         for (let i = 0; i < this.moveMeshes.length; i++) {
             const oldMesh = this.moveMeshes[i];
             const pos = oldMesh.metadata?.gridPosition as GridPosition | undefined;
             const playerState = oldMesh.metadata?.playerState as CellState | undefined;
-            const isPreview = oldMesh.metadata?.isPreview as boolean | undefined;
+            const isPreview = oldMesh.metadata?.isPreview as boolean;
             if (!pos || playerState === undefined)
                 continue;
             oldMesh.dispose();
-            const newMesh = this.createMoveMesh( pos, playerState, false);
+            const newMesh = this.createMoveMesh( pos, playerState, isPreview);
             this.moveMeshes[i] = newMesh;
-            this.sphereMeshes[pos.x][pos.y][pos.z] = newMesh;
+            this.moveMeshesGrid[pos.x][pos.y][pos.z] = newMesh;
         }
     }
 
-    reset() {
+    public reset(): void {
+        this.hidePreview();
         for (const moveMesh of this.moveMeshes)
             moveMesh.dispose();
+            this.moveMeshes = [];
+            this.moveMeshesGrid = Array.from({ length: this.N }, () => Array.from( { length: this.N },
+                () => Array<AbstractMesh | null>(this.N).fill(null)));
     }
 
-    public getSphere(pos: GridPosition): AbstractMesh | null {
-        return this.sphereMeshes[pos.x][pos.y][pos.z];
+    public getMoveMesh(pos: GridPosition): AbstractMesh | null {
+        return this.moveMeshesGrid[pos.x][pos.y][pos.z];
     }
     public refreshTextCubes(): void {
         this.textCubeFactory.refreshLook();
+    }
+
+    public showPreview(pos: GridPosition, player: CellState): void {
+        this.hidePreview();
+        this.previewMesh =  this.placeMoveMesh(pos, player, true);
+    }
+
+    public hidePreview(): void {
+        if (!this.previewMesh)
+            return;
+
+        this.previewMesh.dispose();
+        this.previewMesh = null;
+    }
+
+    public refreshPreview(): void {
+        if (!this.previewMesh)
+            return;
+
+        const pos = this.previewMesh.metadata?.gridPosition as GridPosition | undefined;
+        const playerState = this.previewMesh.metadata?.playerState as CellState | undefined;
+        if (!pos || playerState === undefined)
+            return;
+        this.previewMesh.dispose();
+        this.previewMesh = this.createMoveMesh(pos, playerState, true);
+    }
+
+
+    public animateWin(winningPositions: GridPosition[] | null): void {
+        if (!winningPositions) return;
+		for (const position of winningPositions) {
+            const sphere = this.getMoveMesh(position);
+            if (sphere)
+                sphere.scaling.setAll(1.5);
+        }
     }
 }
 

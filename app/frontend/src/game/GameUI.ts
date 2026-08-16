@@ -1,5 +1,4 @@
 import * as BABYLON from "@babylonjs/core";
-//import type { AbstractMesh, Scene, StandardMaterial, Mesh, Material } from "@babylonjs/core";
 import type { Scene } from "@babylonjs/core";
 import * as GUI from "@babylonjs/gui";
 import { Materials } from "./Materials"
@@ -65,10 +64,9 @@ export class GameUI {
     private toggleLook(): void {
         const nextLookIndex = (this.materials.getLookIndex() + 1) % LOOKS.length;
         this.materials.applyLook(nextLookIndex);
-        const look = this.materials.getLook();
-        this.board.createBoard(look.boardStyle);
+        this.board.createBoard();
         this.board.refreshMoves();
-        this.board.toggleCubeEdges(look.renderEdges);
+        this.board.refreshPreview();
         this.textCubeFactory.refreshLook();
         this.board.refreshTextCubes();
     }

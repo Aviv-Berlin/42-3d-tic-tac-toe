@@ -44,8 +44,6 @@ export class GameUI {
     private onExit: () => void;
     private materials: Materials;
     private winnerMessageRow: BABYLON.TransformNode | null = null;
-    private lookIndex: number = 0;
-    private renderEdges: boolean = false;
     private board: Board;
     private readonly textCubeFactory: TextCubeFactory;
     private game: GameServerConnection | null = null;
@@ -62,6 +60,16 @@ export class GameUI {
         this.createExitCubeRow();
         this.createLookCubeRow();
         this.displayInstructions();
+    }
+
+    private toggleLook(): void {
+        const nextLookIndex = (this.materials.getLookIndex() + 1) % LOOKS.length;
+        this.materials.applyLook(nextLookIndex);
+        const look = this.materials.getLook();
+        this.board.createBoard(look.boardStyle);
+        this.board.toggleCubeEdges(look.renderEdges);
+        this.textCubeFactory.refreshLook();
+        this.board.refreshTextCubes();
     }
 
     public register(game: GameServerConnection): void {
@@ -87,7 +95,6 @@ export class GameUI {
                 {
                     name: `${options.name}Cube${index}`,
                     size: cubeSize,
-                    renderEdges: this.renderEdges,
                     alwaysOnTop: options.alwaysOnTop,
                     onClick: options.onClick
                 });
@@ -142,13 +149,7 @@ export class GameUI {
         );
     }
 
-    private toggleLook(): void {
-        this.lookIndex = (this.lookIndex + 1) % LOOKS.length;
-        this.materials.applyLook(this.lookIndex);
-        this.board.createBoard(this.materials.getLook().boardStyle);
-        this.board.toggleCubeEdges(this.materials.getLook().renderEdges);
-        this.applyLookToTextRows();
-    }
+
 
     private displayInstructions() {
         this.instructions = new GUI.TextBlock();
@@ -419,14 +420,5 @@ export class GameUI {
         return Array.from({ length: cubeCount }, (_, index) => firstCubeX + index * step);
     }
 
-    private applyLookToTextRows(): void { 
-        const rows: Array<BABYLON.TransformNode | null> = [this.playerNameRow, this.exitRow,  this.lookRow, this.winnerMessageRow];
 
-        for (const row of rows) {
-            if (!row)
-                continue;
-            for (const cube of row.getChildMeshes())
-                this.materials.applyTextCubeLook(cube, this.renderEdges);
-        }
-    }
 }

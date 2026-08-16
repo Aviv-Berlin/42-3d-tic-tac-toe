@@ -11,7 +11,7 @@ export function babylonButton(canvas: HTMLCanvasElement, type: string): () => vo
   const engine = new BABYLON.Engine(canvas, true);
   const scene = new BABYLON.Scene(engine);
   const materials = new Materials(scene);
-  materials.applyLook(1);
+  materials.applyLook(0);
   const camera = new CameraManager(scene, canvas);
   let board: Board; 
   switch (type) {

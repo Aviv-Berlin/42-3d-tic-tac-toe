@@ -13,18 +13,18 @@ export class Materials {
     public readonly buttonCube: StandardMaterial;
     public readonly playerMaterials: StandardMaterial[];
     public readonly previewMaterials: StandardMaterial[];
-    private currentLookIndex = 0;
+    private currentLookIndex = 6;
     private scene: Scene;
 
     constructor(scene: Scene) {
         this.scene = scene;
         const look = this.getLook();
-        scene.clearColor = look.backgroundColor;
+        scene.clearColor = look.backgroundColor.clone();
         const light = new BABYLON.HemisphericLight("light", new BABYLON.Vector3(0, 1, 0), scene);
         light.intensity = 0.7;
 
         this.cube = new StandardMaterial("cubeMat", scene);
-        this.cube.diffuseColor = look.cubeColor;
+        this.cube.diffuseColor = look.cubeColor.clone();
         this.cube.alpha = look.cubeAlpha;
         this.cube.needDepthPrePass = false;
         this.cube.disableDepthWrite = true;
@@ -44,7 +44,7 @@ export class Materials {
         const look = this.getLook();
         mesh.enableEdgesRendering();
         mesh.edgesWidth = look.edgeWidth;
-        mesh.edgesColor = look.edgeColor;
+        mesh.edgesColor = look.edgeColor.clone();
     }
     
     

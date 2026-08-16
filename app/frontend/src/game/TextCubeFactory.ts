@@ -493,7 +493,8 @@ export class TextCubeFactory {
 
         this.applyEdges(
             data.mesh,
-            data.options.renderEdges ?? false
+            data.options.renderEdges ??
+                this.materials.getLook().renderEdges
         );
     }
 }

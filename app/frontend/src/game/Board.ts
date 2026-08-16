@@ -33,8 +33,14 @@ export class Board {
         this.textCubeFactory =  new TextCubeFactory(scene, materials);
     }
 
-    private createBoardMesh(looks: number): BABYLON.Mesh {
-        switch (looks) {
+    private createBoardMesh(boardStyle: number): BABYLON.Mesh {
+        switch (boardStyle) {
+            case 0:
+            case 1:
+            case 2:
+            case 3:
+                return BABYLON.MeshBuilder.CreateBox("smallCube", { size: this.smallSize },  this.scene);
+
             case 4:
                 return BABYLON.MeshBuilder.CreateSphere("smallSphere", { diameter: this.smallSize * 1.1 }, this.scene);
 
@@ -60,7 +66,7 @@ export class Board {
             }
 
             default:
-                return BABYLON.MeshBuilder.CreateBox("smallCube", { size: this.smallSize },  this.scene);
+                throw new Error(`Unknown board style: ${boardStyle}`);
         }
     }
 

@@ -18,6 +18,7 @@ export class Board {
     private boardMeshes: Mesh[] = [];
     private cubesShrink: boolean = false;
     private sphereMeshes: (AbstractMesh | null)[][][];
+    private textCubeFactory: TextCubeFactory;
 
     constructor(N: number, scene: Scene, materials: Materials)
 	{
@@ -29,6 +30,7 @@ export class Board {
         this.step = this.smallSize + this.gap;
         this.offset = (this.N - 1) / 2;
         this.sphereMeshes = Array.from({ length: N }, () => Array.from({ length: N }, () => Array<AbstractMesh | null>(N).fill(null))); //intialize sphereMeshes to null
+        this.textCubeFactory =  new TextCubeFactory(scene, materials);
     }
 
     private createBoardMesh(looks: number): BABYLON.Mesh {
@@ -108,7 +110,6 @@ export class Board {
         this.offset = (N - 1) / 2;
         this.boardMeshes.forEach(mesh => mesh.dispose());
         this.boardMeshes = [];
-        const factory = new TextCubeFactory(this.scene, this.materials);
 
         for (let x = 0; x < N; x++) {
             for (let y = 0; y < N; y++) {
@@ -145,7 +146,7 @@ export class Board {
                         letterFace = 1;
                     }
 
-                    const finalMesh = factory.createTextCube(letter, {name: `logo-${x}-${y}-${z}`,
+                    const finalMesh = this.textCubeFactory.createTextCube(letter, {name: `logo-${x}-${y}-${z}`,
                             size: this.smallSize, letterFace, renderEdges: true,  cubeColor: BABYLON.Color3.White(), ignoreLighting: true});
                     finalMesh.position = this.getPosition(x, y, z, false);
                     finalMesh.metadata = { gridPosition: { x, y, z } };
@@ -220,6 +221,9 @@ export class Board {
 
     public getSphere(pos: GridPosition): AbstractMesh | null {
         return this.sphereMeshes[pos.x][pos.y][pos.z];
+    }
+    public refreshTextCubes(): void {
+        this.textCubeFactory.refreshLook();
     }
 }
 

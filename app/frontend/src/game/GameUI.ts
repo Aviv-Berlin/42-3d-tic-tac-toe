@@ -5,7 +5,7 @@ import * as GUI from "@babylonjs/gui";
 import { Materials } from "./Materials"
 import { Board } from "./Board"
 import { GameServerConnection } from "./GameServerConnection"
-
+import { LOOKS, Look, DEFAULT_PLAYER_COLORS} from "./LookSetting"
 import { TextCubeFactory } from "./TextCubeFactory";
 
 type CubeRowAnchor = "left" | "center" | "right";
@@ -44,7 +44,7 @@ export class GameUI {
     private onExit: () => void;
     private materials: Materials;
     private winnerMessageRow: BABYLON.TransformNode | null = null;
-    private looks: number = 7;
+    private lookIndex: number = 0;
     private renderEdges: boolean = false;
     private board: Board;
     private readonly textCubeFactory: TextCubeFactory;
@@ -143,11 +143,10 @@ export class GameUI {
     }
 
     private toggleLook(): void {
-        this.looks = (this.looks % 7) + 1;
-
-        this.renderEdges = this.materials.applyLook(this.looks);
-        this.board.createBoard(this.looks);
-        this.board.toggleCubeEdges(this.renderEdges);
+        this.lookIndex = (this.lookIndex + 1) % LOOKS.length;
+        this.materials.applyLook(this.lookIndex);
+        this.board.createBoard(this.materials.getLook().boardStyle);
+        this.board.toggleCubeEdges(this.materials.getLook().renderEdges);
         this.applyLookToTextRows();
     }
 

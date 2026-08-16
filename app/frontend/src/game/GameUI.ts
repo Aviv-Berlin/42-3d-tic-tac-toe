@@ -67,6 +67,7 @@ export class GameUI {
         this.materials.applyLook(nextLookIndex);
         const look = this.materials.getLook();
         this.board.createBoard(look.boardStyle);
+        this.board.refreshMoves();
         this.board.toggleCubeEdges(look.renderEdges);
         this.textCubeFactory.refreshLook();
         this.board.refreshTextCubes();

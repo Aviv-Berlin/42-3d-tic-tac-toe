@@ -115,11 +115,7 @@ export class TextCubeFactory {
             cube,
             materialIndexes
         );
-
-        this.applyEdges(
-            cube,
-            options.renderEdges ?? false
-        );
+        this.applyEdges(cube, options.renderEdges ?? this.materials.getLook().renderEdges);
 
         if (options.alwaysOnTop) {
             cube.renderingGroupId = 2;
@@ -491,10 +487,6 @@ export class TextCubeFactory {
                 style.ignoreLighting;
         }
 
-        this.applyEdges(
-            data.mesh,
-            data.options.renderEdges ??
-                this.materials.getLook().renderEdges
-        );
+        this.applyEdges(data.mesh, data.options.renderEdges ?? this.materials.getLook().renderEdges);
     }
 }

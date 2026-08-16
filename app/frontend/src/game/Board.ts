@@ -2,19 +2,16 @@ import * as BABYLON from "@babylonjs/core";
 import type { AbstractMesh, Scene, Mesh, Material } from "@babylonjs/core";
 //import type { AbstractMesh, Scene, StandardMaterial, Mesh, Material } from "@babylonjs/core";
 import { Materials } from "./Materials";
-import { GridPosition } from "../../../shared/game/Types"
-//import { GridPosition, CellState, PLAYER_STATES } from "../../../shared/game/Types"
+import { GridPosition, CellState } from "../../../shared/game/Types"
 import { TextCubeFactory } from "./TextCubeFactory";
 
 export class Board {
     scene: Scene;
     private N: number;
     private smallSize: number;
-    private gap: number;
-    private step: number;
     private offset: number;
     public materials: Materials;
-    private spheres: Mesh [] = [];
+    private moveMeshes: Mesh [] = [];
     private boardMeshes: Mesh[] = [];
     private cubesShrink: boolean = false;
     private sphereMeshes: (AbstractMesh | null)[][][];
@@ -25,50 +22,45 @@ export class Board {
         this.scene = scene;
         this.materials = materials;
         this.N = N;
-        this.gap = 0.02;
         this.smallSize = 2.5 / this.N;
-        this.step = this.smallSize + this.gap;
         this.offset = (this.N - 1) / 2;
         this.sphereMeshes = Array.from({ length: N }, () => Array.from({ length: N }, () => Array<AbstractMesh | null>(N).fill(null))); //intialize sphereMeshes to null
         this.textCubeFactory =  new TextCubeFactory(scene, materials);
     }
 
-    private createBoardMesh(boardStyle: number): BABYLON.Mesh {
-        switch (boardStyle) {
+    private createStyledMesh(style: number, size: number, name: string): BABYLON.Mesh {
+        switch (style) {
             case 0:
             case 1:
             case 2:
-                return BABYLON.MeshBuilder.CreateBox("smallCube", { size: this.smallSize },  this.scene);
+            case 6:
+                return BABYLON.MeshBuilder.CreateBox(name, { size }, this.scene);
 
             case 3:
-                return BABYLON.MeshBuilder.CreateSphere("smallSphere", { diameter: this.smallSize * 1.1 }, this.scene);
+                return BABYLON.MeshBuilder.CreateSphere(name, { diameter: size * 1.1 }, this.scene);
 
             case 4: {
-                const cylinder1 = BABYLON.MeshBuilder.CreateCylinder("smallCylinderY", { height: this.smallSize * 1.05, diameter: this.smallSize / 5}, this.scene);
-                const cylinder2 = BABYLON.MeshBuilder.CreateCylinder("smallCylinderX", { height: this.smallSize * 1.05, diameter: this.smallSize / 5}, this.scene);
-                const cylinder3 = BABYLON.MeshBuilder.CreateCylinder("smallCylinderZ", { height: this.smallSize * 1.05, diameter: this.smallSize / 5}, this.scene);
-
+                const cylinder1 = BABYLON.MeshBuilder.CreateCylinder(`${name}Y`, { height: size * 1.05, diameter: size / 5 }, this.scene);
+                const cylinder2 = BABYLON.MeshBuilder.CreateCylinder(`${name}X`, { height: size * 1.05, diameter: size / 5 }, this.scene);
+                const cylinder3 = BABYLON.MeshBuilder.CreateCylinder(`${name}X`, { height: size * 1.05, diameter: size / 5 }, this.scene);
                 cylinder2.rotation.x = BABYLON.Tools.ToRadians(90);
                 cylinder3.rotation.z = BABYLON.Tools.ToRadians(90);
-                const cylinders = BABYLON.Mesh.MergeMeshes([cylinder1, cylinder2, cylinder3], true);
-                if (!cylinders) {
-                    throw new Error("Failed to merge board cylinders");
-                }
-                cylinders.name = "cylindersCross";
-                return cylinders;
+                const merged = BABYLON.Mesh.MergeMeshes([cylinder1, cylinder2, cylinder3], true);
+                if (!merged)
+                    throw new Error("Failed to merge cylinders");
+                merged.name = name;
+                return merged;
             }
 
             case 5: {
-                const plane = BABYLON.MeshBuilder.CreatePlane("smallPlane", {width: this.smallSize, height: this.smallSize, sideOrientation: BABYLON.Mesh.DOUBLESIDE}, this.scene);
+                const plane = BABYLON.MeshBuilder.CreatePlane(name,
+                    { width: size, height: size, sideOrientation: BABYLON.Mesh.DOUBLESIDE }, this.scene);
                 plane.rotation.x = BABYLON.Tools.ToRadians(90);
                 return plane;
             }
 
-            case 6:
-                return BABYLON.MeshBuilder.CreateBox("smallCube", { size: this.smallSize },  this.scene);
-
             default:
-                throw new Error(`Unknown board style: ${boardStyle}`);
+                throw new Error(`Unknown mesh style: ${style}`);
         }
     }
 
@@ -80,9 +72,9 @@ export class Board {
         for (let x = 0; x < this.N; x++) {
             for (let y = 0; y < this.N; y++) {
                 for (let z = 0; z < this.N; z++) {               
-                    const finalMesh = this.createBoardMesh(looks);
+                    const finalMesh = this.createStyledMesh(looks, this.smallSize, "boardMesh");
                     finalMesh.scaling.set(scale, scale, scale);
-                    finalMesh.position = this.getPosition(x, y, z, true);
+                    finalMesh.position = this.getPosition(x, y, z);
                     finalMesh.material = this.materials.cube;
                     finalMesh.metadata = { gridPosition: { x, y, z}};
                     this.boardMeshes.push(finalMesh);
@@ -101,7 +93,7 @@ export class Board {
             for (let y = 0; y < N; y++) {
                 for (let z = 0; z < N; z++) {
                     const finalMesh = BABYLON.MeshBuilder.CreateBox("smallCube", { size: this.smallSize },  this.scene);
-                    finalMesh.position = this.getPosition(x, y, z, false);
+                    finalMesh.position = this.getPosition(x, y, z);
                     finalMesh.material = this.materials.buttonCube;
                     finalMesh.enableEdgesRendering();
                     finalMesh.edgesWidth = 15.0;
@@ -157,7 +149,7 @@ export class Board {
 
                     const finalMesh = this.textCubeFactory.createTextCube(letter, {name: `logo-${x}-${y}-${z}`,
                             size: this.smallSize, letterFace, renderEdges: true,  cubeColor: BABYLON.Color3.White(), ignoreLighting: true});
-                    finalMesh.position = this.getPosition(x, y, z, false);
+                    finalMesh.position = this.getPosition(x, y, z);
                     finalMesh.metadata = { gridPosition: { x, y, z } };
                     this.boardMeshes.push(finalMesh);
                 }
@@ -173,7 +165,7 @@ export class Board {
 
         for (let y = 0; y < N; y++) {
                     const finalMesh = BABYLON.MeshBuilder.CreateBox("smallCube", { size: this.smallSize },  this.scene);
-                    finalMesh.position = this.getPosition(1, y, 1, false);
+                    finalMesh.position = this.getPosition(1, y, 1);
                     finalMesh.material = this.materials.buttonCube;
                     finalMesh.enableEdgesRendering();
                     finalMesh.edgesWidth = 15.0;
@@ -199,33 +191,54 @@ export class Board {
         this.cubesShrink = !this.cubesShrink;
     }
 
-    private getPosition(x: number, y: number, z: number, withGap: boolean): BABYLON.Vector3 {
-        if (withGap) {
+    private getPosition(x: number, y: number, z: number): BABYLON.Vector3 {
+        const step = this.smallSize + this.materials.getLook().boardGap;;
         return new BABYLON.Vector3
-			((x - this.offset) * this.step, (y - this.offset) * this.step, (z - this.offset) * this.step);
-        } else {
-            return new BABYLON.Vector3
-			    ((x - this.offset) * this.smallSize, (y - this.offset) * this.smallSize, (z - this.offset) * this.smallSize);
+			((x - this.offset) * step, (y - this.offset) * step, (z - this.offset) * step);
+    }
+
+    // putSphere(pos: GridPosition, material: Material, storeMove: boolean): Mesh {
+    //     const moveMesh = this.createStyledMesh(this.materials.getLook().moveStyle,  this.smallSize * 0.7, "moveMesh");
+
+    //     moveMesh.position = this.getPosition(pos.x, pos.y, pos.z);
+    //     moveMesh.material = material;
+    //     moveMesh.metadata = { gridPosition: {...pos } };
+    //     moveMesh.renderingGroupId = 0;
+    //     moveMesh.isPickable = false;
+
+    //     this.moveMeshes.push(moveMesh);
+    //     if (storeMove)
+    //         this.sphereMeshes[pos.x][pos.y][pos.z] = moveMesh;
+    //     return moveMesh;
+    // }
+
+    public createMoveMesh(pos: GridPosition, playerState: CellState, isPreview: boolean): Mesh {
+
+        const mesh = this.createStyledMesh(this.materials.getLook().moveStyle, this.smallSize * 0.7, "moveMesh");
+        mesh.position = this.getPosition(pos.x, pos.y, pos.z);
+        mesh.material = isPreview ? this.materials.getPreviewMaterial(playerState) : this.materials.getPlayerMaterial(playerState);
+        mesh.renderingGroupId = 0;
+        mesh.isPickable = false;
+        mesh.metadata = { gridPosition: { ...pos }, playerState, isPreview };
+        return mesh;
+    }
+
+    public refreshMoves(): void {
+        for (let i = 0; i < this.moveMeshes.length; i++) {
+            const oldMesh = this.moveMeshes[i];
+            const pos = oldMesh.metadata?.gridPosition as GridPosition | undefined;
+            const playerState = oldMesh.metadata?.playerState as CellState | undefined;
+            const isPreview = oldMesh.metadata?.isPreview as boolean | undefined;
+            if (!pos || playerState === undefined)
+                continue;
+            oldMesh.dispose();
+            this.moveMeshes[i] = this.createMoveMesh( pos, playerState, isPreview ?? false);
         }
     }
 
-    putSphere(pos: GridPosition, material: Material, storeMove: boolean): Mesh {
-        const sphere = BABYLON.MeshBuilder.CreateSphere("moveSphere", { diameter: this.smallSize * 0.7 }, this.scene);
-
-        sphere.position = this.getPosition(pos.x, pos.y, pos.z, true);
-        sphere.material = material;
-        sphere.renderingGroupId = 0;
-        sphere.isPickable = false;
-
-        this.spheres.push(sphere);
-        if (storeMove) // ignore preivew spheres
-            this.sphereMeshes[pos.x][pos.y][pos.z] = sphere;
-        return sphere;
-    }
-
     reset() {
-        for (const sphere of this.spheres)
-            sphere.dispose();
+        for (const moveMesh of this.moveMeshes)
+            moveMesh.dispose();
     }
 
     public getSphere(pos: GridPosition): AbstractMesh | null {

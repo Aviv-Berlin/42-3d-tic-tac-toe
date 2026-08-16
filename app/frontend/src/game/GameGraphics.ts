@@ -20,9 +20,8 @@ export class GameGraphics {
 
     public showPreview(pos: GridPosition, player: CellState): void {
         this.hidePreview();
+        this.previewSphere =  this.board.createMoveMesh(pos, player, true);
 
-        const material = this.materials.getPreviewMaterial(player);
-        this.previewSphere = this.board.putSphere(pos,material, false);
     }
 
     public hidePreview(): void {
@@ -35,8 +34,7 @@ export class GameGraphics {
 
     public placeSphere(pos: GridPosition, player: CellState): void {
         this.hidePreview();
-        const material = this.materials.getPlayerMaterial(player);
-        this.board.putSphere(pos, material, true);
+        this.board.createMoveMesh(pos, player, false);
     }
 
     public resetVisuals(): void {

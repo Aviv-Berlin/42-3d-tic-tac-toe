@@ -70,6 +70,12 @@ export const LOOKS: Look[] = [
         edgeWidth: 4,
         renderEdges: true,
         textColor: new BABYLON.Color3(0, 0, 0),
+        playerColors: [
+            new BABYLON.Color3(0.2, 0.2, 0.2),   // Player 1 - dark gray
+            new BABYLON.Color3(0.65, 0.65, 0.65), // Player 2 - light gray
+            DEFAULT_PLAYER_COLORS[2],
+            DEFAULT_PLAYER_COLORS[3],
+        ],
         boardStyle: MeshStyle.Box,
         moveStyle: MeshStyle.Sphere,
         boardSize: 2.5,
@@ -98,6 +104,12 @@ export const LOOKS: Look[] = [
         edgeWidth: 2,
         renderEdges: false,
         textColor: new BABYLON.Color3(1, 1, 0),
+        playerColors: [
+            new BABYLON.Color3(0, 0, 0.8),   // Player 1 - blue
+            new BABYLON.Color3(0, 0.8, 0), // Player 2 - green
+            DEFAULT_PLAYER_COLORS[2],
+            DEFAULT_PLAYER_COLORS[3],
+        ],
         boardStyle: MeshStyle.Box,
         moveStyle: MeshStyle.Sphere,
         boardSize: 2.5,

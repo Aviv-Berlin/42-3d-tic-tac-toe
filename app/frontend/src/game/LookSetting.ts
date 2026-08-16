@@ -93,7 +93,7 @@ export const LOOKS: Look[] = [
         renderEdges: false,
         textColor: new BABYLON.Color3(0.85, 0.85, 0.85),
         boardStyle: 4, // cylinders
-        moveStyle:0,
+        moveStyle: 3,
         boardGap: 0.02,
     },
 
@@ -105,8 +105,8 @@ export const LOOKS: Look[] = [
         edgeWidth: 2,
         renderEdges: false,
         textColor: new BABYLON.Color3(0.85, 0.85, 0.85),
-        boardStyle: 5, // 
-        moveStyle:0,
+        boardStyle: 5, // plane
+        moveStyle: 0,
         boardGap: 0.05,
     },
 
@@ -119,7 +119,7 @@ export const LOOKS: Look[] = [
         renderEdges: false,
         textColor: new BABYLON.Color3(0.85, 0.85, 0.85),
         boardStyle: 6, // default cube
-        moveStyle:0,
+        moveStyle: 3,
         boardGap: 0.02,
     },
 ];

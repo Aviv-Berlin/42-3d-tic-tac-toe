@@ -212,8 +212,13 @@ export class Board {
     //     return moveMesh;
     // }
 
-    public createMoveMesh(pos: GridPosition, playerState: CellState, isPreview: boolean): Mesh {
+    private createMoveMesh(pos: GridPosition, playerState: CellState, isPreview: boolean): Mesh {
 
+            console.log(
+        "CREATE MOVE:",
+        "look =", this.materials.getLookIndex(),
+        "moveStyle =", this.materials.getLook().moveStyle
+    );
         const mesh = this.createStyledMesh(this.materials.getLook().moveStyle, this.smallSize * 0.7, "moveMesh");
         mesh.position = this.getPosition(pos.x, pos.y, pos.z);
         mesh.material = isPreview ? this.materials.getPreviewMaterial(playerState) : this.materials.getPlayerMaterial(playerState);
@@ -223,7 +228,23 @@ export class Board {
         return mesh;
     }
 
+    public placeMoveMesh(pos: GridPosition, playerState: CellState, isPreview: boolean): Mesh {
+        const mesh = this.createMoveMesh(pos, playerState, isPreview );
+        if (!isPreview) {
+            this.moveMeshes.push(mesh);
+            this.sphereMeshes[pos.x][pos.y][pos.z] = mesh;
+        }
+        return mesh;
+    }
+
     public refreshMoves(): void {
+            console.log(
+        "REFRESH MOVES:",
+        "look =", this.materials.getLookIndex(),
+        "moveStyle =", this.materials.getLook().moveStyle,
+        "moves =", this.moveMeshes.length
+    );
+
         for (let i = 0; i < this.moveMeshes.length; i++) {
             const oldMesh = this.moveMeshes[i];
             const pos = oldMesh.metadata?.gridPosition as GridPosition | undefined;
@@ -232,7 +253,9 @@ export class Board {
             if (!pos || playerState === undefined)
                 continue;
             oldMesh.dispose();
-            this.moveMeshes[i] = this.createMoveMesh( pos, playerState, isPreview ?? false);
+            const newMesh = this.createMoveMesh( pos, playerState, false);
+            this.moveMeshes[i] = newMesh;
+            this.sphereMeshes[pos.x][pos.y][pos.z] = newMesh;
         }
     }
 

@@ -26,6 +26,8 @@ const GameEnd = () => {
     navigate('/');
   }
 
+
+
   return (
     <CenteredLayout>
       <div className="flex flex-col items-center gap-8">
@@ -34,11 +36,10 @@ const GameEnd = () => {
           <SecondaryButton onClick={() => navigate("/replay")}>View Replay</SecondaryButton>
         </div>
         <h1 className="text-5xl font-serif italic text-center">{message}</h1>
-        <MainButton onClick={() => console.log("play again")}>Play Again</MainButton>
         <div className="flex flex-col gap-2">
-          <h2 className="text-2xl font-serif italic">Stats</h2>
-          <p>Number of moves: {numMoves}</p>
-          <p>Game duration: {gameLength} seconds</p>
+          <h2 className="text-2xl font-serif italic">Game Stats</h2>
+          <p>- Number of moves: {numMoves}</p>
+          <p>- Game duration: {gameLength} seconds</p>
         </div>
       </div>
     </CenteredLayout>

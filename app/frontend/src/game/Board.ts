@@ -38,13 +38,12 @@ export class Board {
             case 0:
             case 1:
             case 2:
-            case 3:
                 return BABYLON.MeshBuilder.CreateBox("smallCube", { size: this.smallSize },  this.scene);
 
-            case 4:
+            case 3:
                 return BABYLON.MeshBuilder.CreateSphere("smallSphere", { diameter: this.smallSize * 1.1 }, this.scene);
 
-            case 5: {
+            case 4: {
                 const cylinder1 = BABYLON.MeshBuilder.CreateCylinder("smallCylinderY", { height: this.smallSize * 1.05, diameter: this.smallSize / 5}, this.scene);
                 const cylinder2 = BABYLON.MeshBuilder.CreateCylinder("smallCylinderX", { height: this.smallSize * 1.05, diameter: this.smallSize / 5}, this.scene);
                 const cylinder3 = BABYLON.MeshBuilder.CreateCylinder("smallCylinderZ", { height: this.smallSize * 1.05, diameter: this.smallSize / 5}, this.scene);
@@ -59,11 +58,14 @@ export class Board {
                 return cylinders;
             }
 
-            case 6: {
+            case 5: {
                 const plane = BABYLON.MeshBuilder.CreatePlane("smallPlane", {width: this.smallSize, height: this.smallSize, sideOrientation: BABYLON.Mesh.DOUBLESIDE}, this.scene);
                 plane.rotation.x = BABYLON.Tools.ToRadians(90);
                 return plane;
             }
+
+            case 6:
+                return BABYLON.MeshBuilder.CreateBox("smallCube", { size: this.smallSize },  this.scene);
 
             default:
                 throw new Error(`Unknown board style: ${boardStyle}`);
@@ -87,6 +89,7 @@ export class Board {
                 }
             }
         }
+        this.toggleCubeEdges(this.materials.getLook().renderEdges);
     }
 
     public createBoardButton(N: number): void {

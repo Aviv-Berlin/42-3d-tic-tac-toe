@@ -53,7 +53,8 @@ export function babylonButton(canvas: HTMLCanvasElement, type: string): () => vo
       break;
 
     case "logo":
-      board= new Board(3, scene, materials);  
+      camera.setCameraPosition({alpha: 0, beta: Math.PI / 3.6})
+      board = new Board(3, scene, materials);  
       board.createLogo();
       camera.spinCamera(1);
       break;

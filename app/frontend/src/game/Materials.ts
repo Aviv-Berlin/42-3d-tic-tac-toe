@@ -13,7 +13,7 @@ export class Materials {
     public readonly buttonCube: StandardMaterial;
     public readonly playerMaterials: StandardMaterial[];
     public readonly previewMaterials: StandardMaterial[];
-    private currentLookIndex = 6;
+    private currentLookIndex = 0;
     private scene: Scene;
 
     constructor(scene: Scene) {

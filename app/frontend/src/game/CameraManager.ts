@@ -5,9 +5,9 @@ import { Animation } from "@babylonjs/core/Animations/animation";
 
 export class CameraManager {
 
-    private readonly initialAlpha = Math.PI / 4;
-    private readonly initialBeta = Math.PI / 3;
-    private readonly initialRadius = 6;
+    private initialAlpha = Math.PI / 3.99;
+    private initialBeta = Math.PI / 3;
+    private initialRadius = 6;
 
     private camera: ArcRotateCamera;
     private canvas: HTMLCanvasElement;
@@ -15,11 +15,21 @@ export class CameraManager {
 
     constructor(scene: Scene, canvas: HTMLCanvasElement) {
         this.canvas = canvas;
-        this.camera = new ArcRotateCamera("camera", Math.PI / 3.99, Math.PI / 3, 6, Vector3.Zero(), scene);
+        this.camera = new ArcRotateCamera("camera", this.initialAlpha,this.initialBeta, this.initialRadius, Vector3.Zero(), scene);
         this.camera.lowerRadiusLimit = 4;  // closest zoom
         this.camera.upperRadiusLimit = 8; // furthest zoom
         this.camera.attachControl(this.canvas, true);
         this.camera.minZ = 0.05;
+    }
+
+
+    public setCameraPosition({ alpha, beta, radius}: { alpha?: number; beta?: number; radius?: number;}): void {
+        if (alpha !== undefined)
+            this.camera.alpha = alpha;
+        if (beta !== undefined)
+            this.camera.beta = beta;
+        if (radius !== undefined)
+            this.camera.radius = radius;
     }
 
     public spinCamera(speed: number = 0.3): void {
@@ -125,10 +135,6 @@ export class CameraManager {
                 best = gridDir;
             }
         }
-
-        //console.log("Input direction:", dir.toString());
-        //console.log("Camera direction:", camDir.toString());
-        //console.log("Grid direction:", best.toString());
 
         return best.clone();
     }

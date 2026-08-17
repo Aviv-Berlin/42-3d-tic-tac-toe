@@ -6,6 +6,7 @@ import Input from '../components/Input'
 import SubmitButton from '../components/SubmitButton'
 import auth from '../../services/auth'
 import { useSetUsername } from '../../store/username'
+import BabylonImage from '../components/BabylonImage'
 
 const Login = () => {
   const [form, setForm] = useState({username: '', password: ''});
@@ -40,7 +41,9 @@ const Login = () => {
 
   return (
     <AuthLayout>
-      <img src="/logo.png" className="hidden md:block w-60 h-auto"/>
+      <div className="hidden md:block w-100 h-100 relative">
+        <BabylonImage type="logo" />
+      </div>
       <AuthCard>
         <h1 className="text-2xl font-serif italic">Log in</h1>
         <form className="flex flex-col" onSubmit={handleSubmit}>

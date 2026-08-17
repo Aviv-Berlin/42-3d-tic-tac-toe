@@ -11,7 +11,7 @@ export function babylonButton(canvas: HTMLCanvasElement, type: string): () => vo
   const engine = new BABYLON.Engine(canvas, true);
   const scene = new BABYLON.Scene(engine);
   const materials = new Materials(scene);
-  materials.applyLook(1);
+  materials.applyLook(0);
   const camera = new CameraManager(scene, canvas);
   let board: Board; 
   switch (type) {
@@ -50,6 +50,13 @@ export function babylonButton(canvas: HTMLCanvasElement, type: string): () => vo
       board= new Board(3, scene, materials);  
       board.createStack(3);
       camera.spinCamera(4);
+      break;
+
+    case "logo":
+      camera.setCameraPosition({alpha: 0, beta: Math.PI / 3.6})
+      board = new Board(3, scene, materials);  
+      board.createLogo();
+      camera.spinCamera(1);
       break;
 
     default:

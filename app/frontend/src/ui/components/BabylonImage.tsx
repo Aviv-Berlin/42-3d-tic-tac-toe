@@ -14,7 +14,7 @@ const BabylonImage = ({type}: BabylonImageProps) => {
   }, [])
 
   return (
-    <canvas ref={canvasRef} />
+    <canvas ref={canvasRef} className="w-full h-full block"/>
   )
 }
 

@@ -9,6 +9,7 @@ import { CameraManager } from "./CameraManager";
 export function babylonButton(canvas: HTMLCanvasElement, type: string): () => void {
 
   const engine = new BABYLON.Engine(canvas, true);
+  engine.setHardwareScalingLevel(0.25);
   const scene = new BABYLON.Scene(engine);
   const materials = new Materials(scene);
   materials.applyLook(0);
@@ -56,6 +57,30 @@ export function babylonButton(canvas: HTMLCanvasElement, type: string): () => vo
       camera.setCameraPosition({alpha: 0, beta: Math.PI / 3.6})
       board = new Board(3, scene, materials);  
       board.createLogo();
+      camera.spinCamera(1);
+      break;
+
+    case "navbar":
+      board= new Board(1, scene, materials);  
+      board.createNavbar();
+      camera.spinCamera(0.5);
+      break;
+
+    case "online":
+      board= new Board(3, scene, materials);  
+      board.createOnlineButton("online");
+      camera.spinCamera(1);
+      break;
+
+    case "ai":
+      board= new Board(3, scene, materials);  
+      board.createOnlineButton("online");
+      camera.spinCamera(1);
+      break;
+
+    case "local":
+      board= new Board(3, scene, materials);  
+      board.createOnlineButton("online");
       camera.spinCamera(1);
       break;
 

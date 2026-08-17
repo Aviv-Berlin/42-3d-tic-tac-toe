@@ -44,6 +44,8 @@ export interface Look {
     moveStyle: MeshStyle;
     boardSize: number,
     boardGap: number;
+    moveSizeScale: number,
+    previewAlpha: number,
 }
 
 export type PlayerColors = readonly [
@@ -80,6 +82,8 @@ export const LOOKS: Look[] = [
         moveStyle: MeshStyle.Sphere,
         boardSize: 2.5,
         boardGap: 0,
+        moveSizeScale: 0.7,
+        previewAlpha: 0.2,
     },
 
     {
@@ -94,6 +98,8 @@ export const LOOKS: Look[] = [
         moveStyle: MeshStyle.Sphere,
         boardSize: 2.5,
         boardGap: 0,
+        moveSizeScale: 0.7,
+        previewAlpha: 0.2,
     },
 
     {
@@ -114,6 +120,8 @@ export const LOOKS: Look[] = [
         moveStyle: MeshStyle.Sphere,
         boardSize: 2.5,
         boardGap: 0.02,
+        moveSizeScale: 0.7,
+        previewAlpha: 0.2,
     },
 
     {
@@ -128,6 +136,8 @@ export const LOOKS: Look[] = [
         moveStyle: MeshStyle.Sphere,
         boardSize: 2.5,
         boardGap: 0.02,
+        moveSizeScale: 0.7,
+        previewAlpha: 0.2,
     },
 
     {
@@ -142,6 +152,8 @@ export const LOOKS: Look[] = [
         moveStyle: MeshStyle.Sphere,
         boardSize: 2.5,
         boardGap: 0.02,
+        moveSizeScale: 0.7,
+        previewAlpha: 0.2,
     },
 
     {
@@ -156,6 +168,8 @@ export const LOOKS: Look[] = [
         moveStyle: MeshStyle.Box,
         boardSize: 2.5,
         boardGap: 0.05,
+        moveSizeScale: 0.7,
+        previewAlpha: 0.2,
     },
 
     {
@@ -170,5 +184,9 @@ export const LOOKS: Look[] = [
         moveStyle: MeshStyle.Sphere,
         boardSize: 2.5,
         boardGap: 0.02,
+        moveSizeScale: 0.7,
+        previewAlpha: 0.2,
     },
 ];
+
+

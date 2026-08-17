@@ -37,7 +37,7 @@ export class Materials {
         this.playerMaterials = playerColors.map((color, index) =>
                 this.createPlayerMaterial(`player${index + 1}Material`, color, 1));
         this.previewMaterials = playerColors.map((color, index) =>
-                this.createPlayerMaterial(`player${index + 1}PreviewMaterial`, color, 0.2));
+                this.createPlayerMaterial(`player${index + 1}PreviewMaterial`, color, look.previewAlpha));
     }
 
     public applyCubeEdges(mesh: BABYLON.AbstractMesh): void {
@@ -64,6 +64,7 @@ export class Materials {
         for (let i = 0; i < playerColors.length; i++) {
             this.playerMaterials[i]?.diffuseColor.copyFrom(playerColors[i]);
             this.previewMaterials[i]?.diffuseColor.copyFrom(playerColors[i]);
+            this.previewMaterials[i].alpha = look.previewAlpha;
         }
     }
 

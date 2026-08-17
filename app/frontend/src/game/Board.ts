@@ -201,7 +201,8 @@ export class Board {
 
 
     private createMoveMesh(pos: GridPosition, playerState: CellState, isPreview: boolean): Mesh {
-        const mesh = this.createStyledMesh(this.materials.getLook().moveStyle, this.cellSize * 0.7, "moveMesh");
+        const look = this.materials.getLook();
+        const mesh = this.createStyledMesh(look.moveStyle, this.cellSize * look.moveSizeScale, "moveMesh");
         mesh.position = this.getPosition(pos.x, pos.y, pos.z);
         mesh.material = isPreview ? this.materials.getPreviewMaterial(playerState) : this.materials.getPlayerMaterial(playerState);
         mesh.renderingGroupId = 0;

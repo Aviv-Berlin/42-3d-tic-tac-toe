@@ -54,7 +54,7 @@ export function makeMove(message: MoveMessage, ws: WebSocket, match: Match) {
 
 function playerExit(message: ExitMessage, ws: WebSocket, match: Match) {
 	const data = message.payload;
-	let game = match.state;
+	const game = match.state;
 	if (!game) {
 		console.log(`Invalid gameID ${data.gameID}`);
 		ws.send(JSON.stringify(`Invalid gameID ${data.gameID}`));

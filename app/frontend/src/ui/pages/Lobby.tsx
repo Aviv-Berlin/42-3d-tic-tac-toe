@@ -6,21 +6,34 @@ import MainButton from "../components/MainButton";
 import SecondaryButton from "../components/SecondaryButton";
 import { useUsername } from "../../store/username";
 import gameService from "../../services/game";
+import axios from "axios";
 
 //const token = localStorage.getItem("token");
 
 const Lobby = () => {
+  const [errorMessage, setErrorMessage] = useState('');
   const navigate = useNavigate();
   const username = useUsername();
   const [activeGames, setActiveGames] = useState<ActiveGame[]>([]);
 
   const joinMatch = async (matchId: string) => {
     try {
-      const response = await gameService.joinMatch(matchId, username)
+      const response = await gameService.joinMatch(matchId, username);
     	console.log("Joined match:", response.data.match);
     	navigate(`/waiting/${response.data.match.id}`);
     } catch (err) {
-      console.log(err);
+      if (axios.isAxiosError(err)) {
+        console.log(err.message);
+        if (err.response?.data?.error === "player already in match") {
+          setErrorMessage("You already joined this game.");
+        } else if (err.response?.data?.error === "match is not open for joining") {
+          setErrorMessage("This game is not ready. Pleasy try again later.");
+        } else if (err.response?.data?.error === "match is full") {
+          setErrorMessage("This game is currently full.");
+        } else {
+          setErrorMessage("Server error. Please try again later.");
+        }
+      }
     }
 	};
 
@@ -92,15 +105,18 @@ const Lobby = () => {
           </div>
           <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-4">
             {activeGames.map((game) => (
-              <div key={game.id} className="flex justify-between items-end border rounded-md  border-stone-400 p-4 bg-white">
-                <div key={game.id} className="flex flex-col">
-                  <h3 className="text-2xl font-serif italic">{game.host}&apos;s game</h3>
-                  <span>Host: {game.host}</span>
-                  <span>Size: {game.size}x{game.size}x{game.size}</span>
+              <div key={game.id} className="flex flex-col">
+                <div key={game.id} className="flex justify-between items-end border rounded-md  border-stone-400 p-4 bg-white">
+                  <div key={game.id} className="flex flex-col">
+                    <h3 className="text-2xl font-serif italic">{game.host}&apos;s game</h3>
+                    <span>Host: {game.host}</span>
+                    <span>Size: {game.size}x{game.size}x{game.size}</span>
+                  </div>
+                  <SecondaryButton onClick={() => joinMatch(game.id)}>
+                    Join
+                  </SecondaryButton>
                 </div>
-                <SecondaryButton onClick={() => joinMatch(game.id)}>
-                  Join
-                </SecondaryButton>
+                <p className="text-red-400 min-h-6">{errorMessage}</p>
               </div>
             ))}
           </div>

@@ -2,17 +2,10 @@ import { Navigate, Outlet } from 'react-router-dom'
 import axios from 'axios'
 
 const ProtectedRoute = () => {
-	/*
-	const token = window.localStorage.getItem('token')
-	if (!token) {
+	const loggedIn = window.localStorage.getItem('username')
+	if (!loggedIn) {
   	  return <Navigate to="/login" replace />
   	}
-*/
-
-  //  axios.defaults.headers.common['Authorization'] = `Bearer ${token}`;
- //	const url = "/v1/auth/verifyToken";
-//	return axios.post(url, token)
-  
 	return <Outlet />
 }
 

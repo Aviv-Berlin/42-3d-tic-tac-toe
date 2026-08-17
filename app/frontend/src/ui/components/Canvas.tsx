@@ -28,7 +28,7 @@ const Canvas = ({gameData}: CanvasProps) => {
     <canvas
       ref={canvasRef}
       id="renderCanvas"
-      className="flex-1"
+      className="w-full h-full block"
     />
   );
 };

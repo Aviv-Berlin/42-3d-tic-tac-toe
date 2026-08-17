@@ -1,11 +1,10 @@
 import * as BABYLON from "@babylonjs/core";
-//import type { AbstractMesh, Scene, StandardMaterial, Mesh, Material } from "@babylonjs/core";
 import type { Scene } from "@babylonjs/core";
 import * as GUI from "@babylonjs/gui";
 import { Materials } from "./Materials"
 import { Board } from "./Board"
 import { GameServerConnection } from "./GameServerConnection"
-
+import { LOOKS, Look, DEFAULT_PLAYER_COLORS} from "./LookSetting"
 import { TextCubeFactory } from "./TextCubeFactory";
 
 type CubeRowAnchor = "left" | "center" | "right";
@@ -44,8 +43,6 @@ export class GameUI {
     private onExit: () => void;
     private materials: Materials;
     private winnerMessageRow: BABYLON.TransformNode | null = null;
-    private looks: number = 7;
-    private renderEdges: boolean = false;
     private board: Board;
     private readonly textCubeFactory: TextCubeFactory;
     private game: GameServerConnection | null = null;
@@ -62,6 +59,16 @@ export class GameUI {
         this.createExitCubeRow();
         this.createLookCubeRow();
         this.displayInstructions();
+    }
+
+    private toggleLook(): void {
+        const nextLookIndex = (this.materials.getLookIndex() + 1) % LOOKS.length;
+        this.materials.applyLook(nextLookIndex);
+        this.board.createBoard();
+        this.board.refreshMoves();
+        this.board.refreshPreview();
+        this.textCubeFactory.refreshLook();
+        this.board.refreshTextCubes();
     }
 
     public register(game: GameServerConnection): void {
@@ -87,7 +94,6 @@ export class GameUI {
                 {
                     name: `${options.name}Cube${index}`,
                     size: cubeSize,
-                    renderEdges: this.renderEdges,
                     alwaysOnTop: options.alwaysOnTop,
                     onClick: options.onClick
                 });
@@ -142,14 +148,7 @@ export class GameUI {
         );
     }
 
-    private toggleLook(): void {
-        this.looks = (this.looks % 7) + 1;
 
-        this.renderEdges = this.materials.applyLook(this.looks);
-        this.board.createBoard(this.looks);
-        this.board.toggleCubeEdges(this.renderEdges);
-        this.applyLookToTextRows();
-    }
 
     private displayInstructions() {
         this.instructions = new GUI.TextBlock();
@@ -169,7 +168,8 @@ export class GameUI {
         const camera = this.scene.activeCamera;
         if (!camera)
             throw new Error("No active camera found");
-        //const finalPlayerPos = new BABYLON.Vector3(-30, 14, 40);
+        if (player === undefined)
+            player = "player name error!"
         if (this.playerNameRow === null) {
             this.playerNameRow = this.createTextCubeRow(Array.from(player.toUpperCase()), {
                 name: "playerName",
@@ -419,14 +419,5 @@ export class GameUI {
         return Array.from({ length: cubeCount }, (_, index) => firstCubeX + index * step);
     }
 
-    private applyLookToTextRows(): void { 
-        const rows: Array<BABYLON.TransformNode | null> = [this.playerNameRow, this.exitRow,  this.lookRow, this.winnerMessageRow];
 
-        for (const row of rows) {
-            if (!row)
-                continue;
-            for (const cube of row.getChildMeshes())
-                this.materials.applyTextCubeLook(cube, this.renderEdges);
-        }
-    }
 }

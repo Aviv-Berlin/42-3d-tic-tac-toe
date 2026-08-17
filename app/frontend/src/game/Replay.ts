@@ -3,7 +3,6 @@ import { Materials } from "./Materials";
 import { Board } from "./Board";
 import { GameUI } from "./GameUI";
 import { CellState, PLAYER_STATES, GridPosition } from "../../../shared/game/Types";
-import { GameGraphics } from "./GameGraphics";
 import { CameraManager } from "./CameraManager";
 import { GameData } from "../../../shared/game";
 import { delay } from "../../../shared/game/Utils";
@@ -17,11 +16,10 @@ export function replayGame(canvas: HTMLCanvasElement, gameData: GameData, onExit
   const materials = new Materials(scene);
   const camera = new CameraManager(scene, canvas);
   const board = new Board(gameData.size, scene, materials);
-  board.createBoard(1);
+  board.createBoard();
   const ui = new GameUI(scene, onExit, materials, board);
-  const graphics = new GameGraphics(board, materials, camera);
 
-  const replay = new Replay(gameData, ui, graphics, onExit);
+  const replay = new Replay(gameData, ui, board, onExit);
   void replay.startReplay().catch((error: unknown) => {
     console.error("Replay failed", error);
   });
@@ -53,17 +51,17 @@ export class Replay {
     private boardState: CellState [][][] = [];
     private N: number;
     private ui: GameUI;
-    private graphics: GameGraphics;
+    private board: Board;
     private onExit: () => void; //this is a function that is called when game is 
     private exitTimeout: ReturnType<typeof setTimeout> | null = null;
     private gameData: GameData;
     private disposed = false;
 
-  constructor(gameData: GameData, ui: GameUI, graphics: GameGraphics, onExit: () => void) {
+  constructor(gameData: GameData, ui: GameUI, board: Board, onExit: () => void) {
     this.gameData = gameData;
     this.N = gameData.size;
     this.ui = ui;
-    this.graphics = graphics;
+    this.board = board;
     this.onExit = onExit;
     this.initBoard();
   }
@@ -95,7 +93,7 @@ export class Replay {
       if (this.disposed)
         return;
       this.boardState[move.pos.x][move.pos.y][move.pos.z] = move.player;
-      this.graphics.placeSphere(move.pos, move.player);
+      this.board.placeMoveMesh(move.pos, move.player, false);
       await delay(500);
       if (this.disposed)
         return;
@@ -103,9 +101,9 @@ export class Replay {
 
     const winningPositions = checkWin(this.boardState,moves[moves.length -1].pos, moves[moves.length -1].player, this.N);
     if (winningPositions)
-      this.graphics.animateWin(winningPositions);
+      this.board.animateWin(winningPositions);
     if (this.gameData.winner)
-      this.ui.displayWinner(this.gameData.winner.username);
+      await this.ui.displayWinner(this.gameData.winner.username, "WINS!");
     else if (this.gameData.isDraw)
       await this.ui.displayDraw();
     else

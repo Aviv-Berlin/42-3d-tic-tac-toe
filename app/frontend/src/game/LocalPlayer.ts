@@ -1,6 +1,6 @@
 import { CellState, GridPosition } from "../../../shared/game/Types"
 import { GameServerConnection } from "./GameServerConnection";
-import { GameGraphics} from "./GameGraphics"
+import { Board} from "./Board"
 
 
 export class LocalPlayer {
@@ -10,13 +10,13 @@ export class LocalPlayer {
     private N: number = 0;
     private IAm: CellState = CellState.Empty;
     private game: GameServerConnection;
-    private graphics: GameGraphics;
+    private board: Board;
     public readonly name: string;
 
-    constructor(name: string, game: GameServerConnection, graphics: GameGraphics) {
+    constructor(name: string, game: GameServerConnection, board: Board) {
         this.name = name;
         this.game = game;
-        this.graphics = graphics;
+        this.board = board;
     }
 
     public yourTurn(boardState: CellState[][][], N: number, youAre: CellState): boolean {
@@ -26,7 +26,7 @@ export class LocalPlayer {
         this.IAm = youAre;
         this.cursor = {x: N - 1, y: N - 1, z: N -1};
         this.placeCursor();
-        this.graphics.showPreview(this.cursor, this.IAm);
+        this.board.showPreview(this.cursor, this.IAm);
         return true;
     }
 
@@ -43,7 +43,7 @@ export class LocalPlayer {
             if (this.boardState) {
                 if (this.boardState[nextCursor.x][nextCursor.y][nextCursor.z] === CellState.Empty) {
                     this.cursor = nextCursor;
-                    this.graphics.showPreview(this.cursor, this.IAm);
+                    this.board.showPreview(this.cursor, this.IAm);
                     return;
                 }
             }
@@ -56,7 +56,7 @@ export class LocalPlayer {
         if (this.boardState && this.boardState[pos.x][pos.y][pos.z] !== CellState.Empty)
              return false;
         this.cursor = { ...pos };
-        this.graphics.showPreview(this.cursor, this.IAm);
+        this.board.showPreview(this.cursor, this.IAm);
         return true;
     }
 

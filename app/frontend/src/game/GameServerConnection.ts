@@ -1,10 +1,11 @@
 import { GameUI } from "./GameUI";
-import { GameGraphics } from "./GameGraphics";
 import { LocalPlayer } from "./LocalPlayer"
 import { GameData } from "../../../shared/game";
 import { GridPosition, CellState, PLAYER_STATES } from "../../../shared/game/Types"
 import { WsMessage } from "../../../shared/messages"
 import { createMoveMessage, createExitMessage } from "../../../shared/messages"
+import { Board } from "./Board"
+
 
 export class GameServerConnection {
     private boardState: CellState [][][] = [];
@@ -18,17 +19,17 @@ export class GameServerConnection {
     private players: LocalPlayer[] = [];
     private currentPlayerIndex: number = -1;
     private nPlayers: number;
-    private graphics: GameGraphics;
+    private board: Board;
     private gameData: GameData;
     private gameID!: string;
     private ws: WebSocket;
     private onExit: () => void;
 
-    constructor(gameData: GameData, ui: GameUI, graphics: GameGraphics, nPlayers: number, ws: WebSocket, onExit: () => void) {
+    constructor(gameData: GameData, ui: GameUI, board: Board, nPlayers: number, ws: WebSocket, onExit: () => void) {
         this.gameData = gameData;
         this.N = gameData.size;
         this.ui = ui;
-        this.graphics = graphics;
+        this.board = board;
         this.nPlayers = nPlayers;
         this.ws = ws;
         this.onExit = onExit;
@@ -39,7 +40,11 @@ export class GameServerConnection {
         console.log("Received message:", message);
         switch (message.type) {
             case "game-start":
-                console.log("GAME START", { youAre: message.payload.youAre, playerNames: message.payload.playerNames,});
+                console.log("GAME START");
+                console.log("youAre:", message.payload.youAre);
+                console.log("playerNames:", message.payload.playerNames);
+                console.log("playerNames[0]:", message.payload.playerNames[0]);
+                console.log("playerNames[1]:", message.payload.playerNames[1])
                 this.playerNames = message.payload.playerNames;
                 this.nPlayers = message.payload.nPlayers;
                 if (this.playerNames[message.payload.youAre] === "guest")
@@ -58,25 +63,26 @@ export class GameServerConnection {
                 else if (message.payload.playsNow === this.guestPlayerIndex)
                     this.guestPlayer.yourTurn(this.boardState, this.N, PLAYER_STATES[this.guestPlayerIndex]);
                 else
-                    this.graphics.hidePreview();
+                    this.board.hidePreview();
                 break;
             
             case "move":
-                this.graphics.placeSphere(message.payload.position, message.payload.player);
+                this.board.hidePreview();
+                this.board.placeMoveMesh(message.payload.position, message.payload.player, false);
                 this.boardState[message.payload.position.x][message.payload.position.y][message.payload.position.z] = message.payload.player;
                 break;
             
             case "end":
                 Object.assign(this.gameData, message.payload.gameData);
-                this.graphics.hidePreview();
+                this.board.hidePreview();
                 if (message.payload.winningPos && this.gameData.winner) {
-                    this.graphics.animateWin(message.payload.winningPos);
+                    this.board.animateWin(message.payload.winningPos);
                     await this.ui.displayWinner(this.gameData.winner.username, "WINS!");
                 }
                 else if (message.payload.whoExited !== -1) {
                     await this.ui.displayWinner(this.playerNames[message.payload.whoExited], "left game");
                 } else {
-                    this.ui.displayWinner("No one", "wins");
+                    await this.ui.displayWinner("No one", "wins");
                 }
                 setTimeout(() => {this.onExit();}, 3000);
                 break;

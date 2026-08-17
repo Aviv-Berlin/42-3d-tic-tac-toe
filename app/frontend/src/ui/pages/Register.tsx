@@ -1,7 +1,6 @@
 import { useState } from 'react'
 import { useNavigate } from 'react-router-dom';
 import { Link } from 'react-router-dom'
-import axios from 'axios';
 import AuthLayout from '../layouts/AuthLayout'
 import AuthCard from '../components/AuthCard'
 import Input from '../components/Input'
@@ -9,6 +8,7 @@ import SubmitButton from '../components/SubmitButton'
 import auth from '../../services/auth'
 import { validateForm } from '../../utils/auth'
 import BabylonImage from '../components/BabylonImage';
+import { getErrorMessage } from '../../utils/errors';
 
 const Register = () => {
   const [form, setForm] = useState({username: '', email: '', password: '', confirmPassword: ''});
@@ -34,16 +34,7 @@ const Register = () => {
       await auth.register(form)
       navigate('/register-success');
     } catch (err) {
-      if (axios.isAxiosError(err)) {
-        console.log(err.message);
-        if (err.response?.data?.error === "username already exists") {
-          setErrorMessage("Username already exists. Please choose a different one.");
-        } else if (err.response?.data?.error === "email already registered") {
-          setErrorMessage("An account already exists with this email address.");
-        } else {
-          setErrorMessage("Server error. Please try again later.");
-        }
-      }
+      setErrorMessage(getErrorMessage(err));
     }
   }
 

@@ -8,7 +8,7 @@ import DifficultySettings from '../components/DifficultySettings'
 import { normalizeGameMode } from '../../utils/gameMode';
 import { useUsername } from '../../store/username';
 import gameService from "../../services/game";
-import axios from 'axios';
+import { getErrorMessage } from '../../utils/errors';
 
 const GameSettings = () => {
   const [errorMessage, setErrorMessage] = useState("");
@@ -43,14 +43,7 @@ const GameSettings = () => {
       console.log("Created match:", response.data.match);
       navigate(`/waiting/${response.data.match.id}`);
     } catch (err) {
-      if (axios.isAxiosError(err)) {
-        console.log(err.message);
-        if (err.response?.data?.error === "You already have a hosted match") {
-          setErrorMessage("You already created a game.");
-        } else {
-          setErrorMessage("Server error. Please try again later.");
-        }
-      }
+      setErrorMessage(getErrorMessage(err));
     }
   }
 

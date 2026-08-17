@@ -7,7 +7,7 @@ import SubmitButton from '../components/SubmitButton'
 import auth from '../../services/auth'
 import { useSetUsername } from '../../store/username'
 import BabylonImage from '../components/BabylonImage'
-import axios from "axios"
+import { getErrorMessage } from '../../utils/errors'
 
 const Login = () => {
   const [form, setForm] = useState({username: '', password: ''});
@@ -35,16 +35,7 @@ const Login = () => {
       setUsername(username);
       navigate("/home");
     } catch (err) {
-      if (axios.isAxiosError(err)) {
-        console.log(err.message);
-        if (err.status) {
-          if (err.status < 500) {
-            setErrorMessage("Invalid credentials. Please try again.");
-          } else {
-            setErrorMessage("Server error. Please try again later.")
-          }
-        }
-      }
+      setErrorMessage(getErrorMessage(err));
     }
   }
 

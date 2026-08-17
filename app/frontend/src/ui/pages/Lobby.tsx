@@ -6,7 +6,7 @@ import MainButton from "../components/MainButton";
 import SecondaryButton from "../components/SecondaryButton";
 import { useUsername } from "../../store/username";
 import gameService from "../../services/game";
-import axios from "axios";
+import { getErrorMessage } from "../../utils/errors";
 
 //const token = localStorage.getItem("token");
 
@@ -22,18 +22,7 @@ const Lobby = () => {
     	console.log("Joined match:", response.data.match);
     	navigate(`/waiting/${response.data.match.id}`);
     } catch (err) {
-      if (axios.isAxiosError(err)) {
-        console.log(err.message);
-        if (err.response?.data?.error === "player already in match") {
-          setErrorMessage("You already joined this game.");
-        } else if (err.response?.data?.error === "match is not open for joining") {
-          setErrorMessage("This game is not ready. Pleasy try again later.");
-        } else if (err.response?.data?.error === "match is full") {
-          setErrorMessage("This game is currently full.");
-        } else {
-          setErrorMessage("Server error. Please try again later.");
-        }
-      }
+      setErrorMessage(getErrorMessage(err));
     }
 	};
 

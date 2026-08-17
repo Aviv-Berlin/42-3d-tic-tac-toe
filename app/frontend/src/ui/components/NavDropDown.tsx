@@ -15,7 +15,6 @@ const NavDropDown = () => {
   const username = useUsername();
 
   const handleLogOut = async () => {
-    console.log("Handle logout");
     const response = await auth.logout();
     console.log("handleLogOut: response: ", response);
     window.localStorage.removeItem('username');

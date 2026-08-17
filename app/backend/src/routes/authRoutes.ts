@@ -7,6 +7,6 @@ router.post('/register', auth.register);
 
 router.post('/login', auth.login);
 
-//router.post('/verifyToken', auth.verifyToken); 
+router.post('/logout', auth.logout);
 
 export default router;

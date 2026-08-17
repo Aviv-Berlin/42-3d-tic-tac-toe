@@ -104,7 +104,8 @@ export async function login(request: Request, response: Response) {
 // Logout
 export async function logout(request: Request, response: Response) {
 	// TODO how to void Request?
-	return response.clearCookie('token').status(200).redirect('/login')
+	console.log("logout in authController");
+	return response.clearCookie('token').status(200).send({});
 	// https://stackoverflow.com/questions/38558150/cant-delete-cookie-in-express
 }
 
@@ -112,5 +113,6 @@ export async function logout(request: Request, response: Response) {
 
 export default {
 	register,
-	login
+	login,
+	logout
 };

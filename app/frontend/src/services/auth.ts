@@ -27,4 +27,10 @@ const login = (form: LoginForm) => {
   return axios.post(url, form);
 }
 
-export default { register, login }
+const logout = () => {
+  console.log("auth.ts: logout()");
+  const url = "/v1/auth/logout";
+  return axios.post(url, {});
+}
+
+export default { register, login, logout }

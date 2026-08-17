@@ -3,6 +3,7 @@ import { Link, useNavigate } from 'react-router-dom'
 import { ChevronUp, ChevronDown } from 'lucide-react';
 import DropDownButton from './DropDownButton'
 import { useUsername } from '../../store/username'
+import auth from '../../services/auth'
 
 const NavDropDown = () => {
   const [open, setOpen] = useState(false);
@@ -13,10 +14,10 @@ const NavDropDown = () => {
 
   const username = useUsername();
 
-  const handleLogOut = () => {
-    //window.localStorage.removeItem('token');
-	// Is this the right flow for logout or should it be moved
-	// to protected?
+  const handleLogOut = async () => {
+    console.log("Handle logout");
+    const response = await auth.logout();
+    console.log("handleLogOut: response: ", response);
     window.localStorage.removeItem('username');
     navigate('/login');
   }

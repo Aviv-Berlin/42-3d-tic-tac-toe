@@ -42,10 +42,8 @@ export class GameServerConnection {
                 console.log("GAME START", { youAre: message.payload.youAre, playerNames: message.payload.playerNames,});
                 this.playerNames = message.payload.playerNames;
                 this.nPlayers = message.payload.nPlayers;
-                if (this.playerNames[message.payload.youAre] === "guest")
-                    this.guestPlayerIndex = message.payload.youAre;
-                else
-                    this.localPlayerIndex = message.payload.youAre;
+                this.localPlayerIndex = message.payload.youAre;
+                this.guestPlayerIndex = this.playerNames.findIndex(name => name === "guest");
                 this.gameID = message.payload.gameID;
                 break;
 

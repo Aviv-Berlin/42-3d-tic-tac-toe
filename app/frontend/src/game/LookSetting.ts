@@ -73,8 +73,8 @@ export const LOOKS: Look[] = [
         renderEdges: true,
         textColor: new BABYLON.Color3(0, 0, 0),
         playerColors: [
-            new BABYLON.Color3(0.2, 0.2, 0.2),   // Player 1 - dark gray
-            new BABYLON.Color3(0.65, 0.65, 0.65), // Player 2 - light gray
+            new BABYLON.Color3(0.1, 0.1, 0.1),   // Player 1 - dark gray
+            new BABYLON.Color3(1, 1, 1), // Player 2 - light gray
             DEFAULT_PLAYER_COLORS[2],
             DEFAULT_PLAYER_COLORS[3],
         ],

@@ -35,8 +35,14 @@ const Register = () => {
       navigate('/register-success');
     } catch (err) {
       if (axios.isAxiosError(err)) {
-        console.log(err);
-        setErrorMessage(err.response?.data?.error || "something went wrong");
+        console.log(err.message);
+        if (err.response?.data?.error === "username already exists") {
+          setErrorMessage("Username already exists. Please choose a different one.");
+        } else if (err.response?.data?.error === "email already registered") {
+          setErrorMessage("An account already exists with this email address.");
+        } else {
+          setErrorMessage("Server error. Please try again later.");
+        }
       }
     }
   }

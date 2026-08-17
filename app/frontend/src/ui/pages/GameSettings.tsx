@@ -8,8 +8,10 @@ import DifficultySettings from '../components/DifficultySettings'
 import { normalizeGameMode } from '../../utils/gameMode';
 import { useUsername } from '../../store/username';
 import gameService from "../../services/game";
+import axios from 'axios';
 
 const GameSettings = () => {
+  const [errorMessage, setErrorMessage] = useState("");
   const [size, setSize] = useState(3);
   const [level, setLevel] = useState(1);
   const username = useUsername();
@@ -41,7 +43,14 @@ const GameSettings = () => {
       console.log("Created match:", response.data.match);
       navigate(`/waiting/${response.data.match.id}`);
     } catch (err) {
-      console.log(err);
+      if (axios.isAxiosError(err)) {
+        console.log(err.message);
+        if (err.response?.data?.error === "You already have a hosted match") {
+          setErrorMessage("You already created a game.");
+        } else {
+          setErrorMessage("Server error. Please try again later.");
+        }
+      }
     }
   }
 
@@ -57,6 +66,7 @@ const GameSettings = () => {
         <BoardSizeSettings size={size} setSize={setSize}/>
         {gameMode === "ai" && <DifficultySettings level={level} setLevel={setLevel}/>}
         <MainButton onClick={handleConfirm}>CONFIRM</MainButton>
+        <p className="text-red-400 min-h-6">{errorMessage}</p>
       </div>
     </MainLayout>
   )

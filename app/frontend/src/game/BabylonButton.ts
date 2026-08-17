@@ -68,19 +68,19 @@ export function babylonButton(canvas: HTMLCanvasElement, type: string): () => vo
 
     case "online":
       board= new Board(3, scene, materials);  
-      board.createOnlineButton("online");
+      board.createOnlineButton(type);
       camera.spinCamera(1);
       break;
 
     case "ai":
       board= new Board(3, scene, materials);  
-      board.createOnlineButton("online");
+      board.createOnlineButton(type);
       camera.spinCamera(1);
       break;
 
     case "local":
       board= new Board(3, scene, materials);  
-      board.createOnlineButton("online");
+      board.createOnlineButton(type);
       camera.spinCamera(1);
       break;
 

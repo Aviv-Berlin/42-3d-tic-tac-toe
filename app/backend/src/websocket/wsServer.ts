@@ -153,6 +153,6 @@ export function setupWebSocket(server: http.Server) {
 			socket.ping();
 		});
 
-	}, 5_000)
+	}, 30_000)
 
 }

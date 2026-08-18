@@ -8,8 +8,10 @@ import DifficultySettings from '../components/DifficultySettings'
 import { normalizeGameMode } from '../../utils/gameMode';
 import { useUsername } from '../../store/username';
 import gameService from "../../services/game";
+import { getErrorMessage } from '../../utils/errors';
 
 const GameSettings = () => {
+  const [errorMessage, setErrorMessage] = useState("");
   const [size, setSize] = useState(3);
   const [level, setLevel] = useState(1);
   const username = useUsername();
@@ -41,7 +43,7 @@ const GameSettings = () => {
       console.log("Created match:", response.data.match);
       navigate(`/waiting/${response.data.match.id}`);
     } catch (err) {
-      console.log(err);
+      setErrorMessage(getErrorMessage(err));
     }
   }
 
@@ -57,6 +59,7 @@ const GameSettings = () => {
         <BoardSizeSettings size={size} setSize={setSize}/>
         {gameMode === "ai" && <DifficultySettings level={level} setLevel={setLevel}/>}
         <MainButton onClick={handleConfirm}>CONFIRM</MainButton>
+        <p className="text-red-400 min-h-6">{errorMessage}</p>
       </div>
     </MainLayout>
   )

@@ -7,6 +7,7 @@ import SubmitButton from '../components/SubmitButton'
 import auth from '../../services/auth'
 import { useSetUsername } from '../../store/username'
 import BabylonImage from '../components/BabylonImage'
+import { getErrorMessage } from '../../utils/errors'
 
 const Login = () => {
   const [form, setForm] = useState({username: '', password: ''});
@@ -33,9 +34,8 @@ const Login = () => {
       window.localStorage.setItem('token', token);
       setUsername(username);
       navigate("/home");
-    } catch(err) {
-      console.log(err);
-      setErrorMessage("Invalid credentials");
+    } catch (err) {
+      setErrorMessage(getErrorMessage(err));
     }
   }
 

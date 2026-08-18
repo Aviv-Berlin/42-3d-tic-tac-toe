@@ -7,6 +7,8 @@ import Input from '../components/Input'
 import SubmitButton from '../components/SubmitButton'
 import auth from '../../services/auth'
 import { useSetUsername } from '../../store/username'
+import BabylonImage from '../components/BabylonImage'
+import { getErrorMessage } from '../../utils/errors'
 
 const Login = () => {
   const [form, setForm] = useState({username: '', password: ''});
@@ -34,15 +36,16 @@ const Login = () => {
       //axios.defaults.headers.common['Authorization'] = `Bearer ${token}`;
       setUsername(username);
       navigate("/home");
-    } catch(err) {
-      console.log(err);
-      setErrorMessage("Invalid credentials");
+    } catch (err) {
+      setErrorMessage(getErrorMessage(err));
     }
   }
 
   return (
     <AuthLayout>
-      <img src="/logo.png" className="hidden md:block w-60 h-auto"/>
+      <div className="hidden md:block w-100 h-100 relative">
+        <BabylonImage type="logo" />
+      </div>
       <AuthCard>
         <h1 className="text-2xl font-serif italic">Log in</h1>
         <form className="flex flex-col" onSubmit={handleSubmit}>

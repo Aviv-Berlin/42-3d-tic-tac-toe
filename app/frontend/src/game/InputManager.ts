@@ -65,6 +65,10 @@ export class InputManager {
 
     private handleKeyDown = (event: KeyboardEvent): void => {
 
+        if (event.key === "1") {
+            this.board.toggleCubeSize();
+            return;
+        }
         let cameraDir = new Vector3(0,0,0);
         const right = new Vector3(1,0,0);
         const left = new Vector3(-1,0,0);
@@ -78,10 +82,6 @@ export class InputManager {
         switch (event.key) {
             case "Enter":
                 player.choosePos();
-                break;
-            
-            case "1":
-                this.board.toggleCubeSize();
                 break;
             
             case "l":

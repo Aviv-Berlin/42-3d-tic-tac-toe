@@ -176,6 +176,114 @@ export class Board {
         }
     }
 
+    public createOnlineButton(type: string): void {
+        const player1 = this.createPlayerLogo();
+        player1.rotation.y = Math.PI / 2;
+        const pos1 = new BABYLON.Vector3(1.5, 0 , 0);
+        player1.position = pos1;
+        const pos2 = new BABYLON.Vector3(-1.5, 0 , 0);
+        const line = BABYLON.CreateGreasedLine("dottedLine", { points: [pos1, pos2]},
+            { color: new BABYLON.Color3(0, 0, 0), width: 0.05, useDash: true,
+                dashCount: 8, dashRatio: 0.2, }, this.scene);
+
+        switch(type) {
+            case "online":
+            const player2 = this.createPlayerLogo();
+            player2.position = pos2;
+            player2.rotation.y = -(Math.PI / 2);
+            break;
+
+            case "ai":
+            const computer = this.createComputerLogo();
+            computer.position = pos2;
+            computer.rotation.y = -(Math.PI / 2);
+            break;
+
+            case "local":
+            line.dispose();
+            player1.position = new BABYLON.Vector3(1, 0 , -0.2);
+            const guest = this.createPlayerLogo();
+            guest.position = new BABYLON.Vector3(-1, 0 , -0.2);
+            guest.rotation.y = -(Math.PI / 2);
+            const localComputer = this.createComputerLogo();
+            localComputer.position = new BABYLON.Vector3(0, 0 , 0.3);
+        }
+
+
+
+
+    }
+
+    private createComputerLogo(): BABYLON.TransformNode {
+        const blackMaterial = new BABYLON.StandardMaterial("black", this.scene);
+        blackMaterial.diffuseColor = new BABYLON.Color3(0, 0, 0);
+        blackMaterial.alpha = 1;
+        const whiteMaterial = new BABYLON.StandardMaterial("white", this.scene);
+        whiteMaterial.emissiveColor = new BABYLON.Color3(1, 1, 1);
+        whiteMaterial.alpha = 1;
+        whiteMaterial.disableLighting = true;
+
+        
+        const computer = new BABYLON.TransformNode("computer", this.scene);
+
+        const body = BABYLON.MeshBuilder.CreateBox("body", { width: 1.2, height: 0.8, depth: 0.2 },  this.scene);
+        body.position = new BABYLON.Vector3(0, 0.5, 0);
+        body.material = blackMaterial;
+        body.parent = computer;
+
+        const screen = BABYLON.MeshBuilder.CreateBox("screen", { width: 0.95, height: 0.67, depth: 0.1 },  this.scene);
+        screen.position = new BABYLON.Vector3(0, 0.5, -0.07);
+        screen.material = whiteMaterial;
+        screen.parent = computer;
+
+        const keyboard = BABYLON.MeshBuilder.CreateBox("keyboard", { width: 1.1, height: 0.4, depth: 0.2 },  this.scene);
+        keyboard.position = new BABYLON.Vector3(0, -0.1, -0.2);
+        keyboard.rotation.x = Math.PI / 2.3;
+        keyboard.material = blackMaterial;
+        keyboard.parent = computer;
+
+        return computer;
+    }
+
+    private createPlayerLogo(): BABYLON.Mesh {
+        const body = BABYLON.MeshBuilder.CreateSphere("body", { diameterX: 1.2, diameterY: 2, diameterZ: 0.3, slice: 0.5 }, this.scene);
+        body.position = new BABYLON.Vector3(0, -0.5, 0);
+        const head = BABYLON.MeshBuilder.CreateSphere("head", { diameter: 0.5 }, this.scene);
+        head.position = new BABYLON.Vector3(0, 0.8, 0);
+        const merged = BABYLON.Mesh.MergeMeshes([body,head], true);
+            if (!merged)
+                throw new Error("Failed to merge cylinders");
+        merged.name = "player";
+        const material = new BABYLON.StandardMaterial("buttonCube", this.scene);
+        material.diffuseColor = new BABYLON.Color3(0, 0, 0);
+        material.emissiveColor = new BABYLON.Color3(0, 0, 0);
+        material.alpha = 1;
+        //material.disableLighting = true;
+        merged.material = material;
+        return merged
+    } 
+
+    public createNavbar(): void {
+        this.boardMeshes.forEach(mesh => mesh.dispose());
+        this.boardMeshes = [];
+
+
+        const finalMesh = BABYLON.MeshBuilder.CreateBox("smallCube", { size: 2.8 },  this.scene);
+        finalMesh.position = new BABYLON.Vector3(0, 0, 0);
+        const material = new BABYLON.StandardMaterial("buttonCube", this.scene);
+        //material.diffuseColor = new BABYLON.Color3(1, 1, 1);
+        material.emissiveColor = new BABYLON.Color3(0, 0, 0);
+        material.alpha = 1;
+        material.disableLighting = true;
+        finalMesh.material = material;
+        // finalMesh.enableEdgesRendering();
+        // finalMesh.edgesWidth = 15.0;
+        // finalMesh.edgesColor = new BABYLON.Color4(1, 1, 1, 1);
+        finalMesh.metadata = { gridPosition: { x: 0, y: 0, z: 0}};
+        this.boardMeshes.push(finalMesh);
+
+    }
+
     public toggleCubeEdges(renderEdges: boolean): void {
         for (const mesh of this.boardMeshes) {
             if (renderEdges)

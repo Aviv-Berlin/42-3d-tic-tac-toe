@@ -34,75 +34,28 @@ export class TextCubeFactory {
 
     private textCubes: TextCubeData[] = [];
 
-    constructor(
-        scene: BABYLON.Scene,
-        materials: Materials
-    ) {
+    constructor(scene: BABYLON.Scene, materials: Materials) {
         this.scene = scene;
         this.materials = materials;
     }
 
 
-    public createTextCube(
-        text: string,
-        options: TextCubeOptions = {}
-    ): BABYLON.Mesh {
-
-        const name =
-            options.name ?? `textCube-${text}`;
-
-        const size =
-            options.size ?? 2;
-
-        const cube = BABYLON.MeshBuilder.CreateBox(
-            name,
-            { size },
-            this.scene
-        );
-
+    public createTextCube(text: string, options: TextCubeOptions = {}): BABYLON.Mesh {
+        const name = options.name ?? `textCube-${text}`;
+        const size = options.size ?? 2;
+        const cube = BABYLON.MeshBuilder.CreateBox(name, { size }, this.scene);
         const style = this.getStyle(options);
-
-        const plainMaterial =
-            this.createPlainMaterial(
-                `${name}PlainMaterial`,
-                style.cubeColor,
-                style.cubeAlpha,
-                style.ignoreLighting
-            );
-
-        const multiMaterial =
-            new BABYLON.MultiMaterial(
-                `${name}MultiMaterial`,
-                this.scene
-            );
-
-        multiMaterial.subMaterials = [
-            plainMaterial
-        ];
-
-        const materialIndexes =
-            new Array(6).fill(0);
+        const plainMaterial = this.createPlainMaterial(`${name}PlainMaterial`,
+                style.cubeColor, style.cubeAlpha, style.ignoreLighting);
+        const multiMaterial = new BABYLON.MultiMaterial(`${name}MultiMaterial`, this.scene);
+        multiMaterial.subMaterials = [plainMaterial];
+        const materialIndexes = new Array(6).fill(0);
 
         if (text !== "") {
-
-            const textMaterial =
-                this.createTextMaterial(
-                    `${name}TextMaterial`,
-                    text,
-                    style.cubeColor,
-                    style.cubeAlpha,
-                    style.textColor,
-                    style.textAlpha,
-                    style.ignoreLighting
-                );
-
-            multiMaterial.subMaterials.push(
-                textMaterial
-            );
-
-            const letterFace =
-                options.letterFace ?? 1;
-
+            const textMaterial = this.createTextMaterial(`${name}TextMaterial`, text, style.cubeColor,
+                style.cubeAlpha, style.textColor, style.textAlpha, style.ignoreLighting);
+            multiMaterial.subMaterials.push(textMaterial);
+            const letterFace = options.letterFace ?? 1;
             if (letterFace === 6)
                 materialIndexes.fill(1);
             else
@@ -110,34 +63,15 @@ export class TextCubeFactory {
         }
 
         cube.material = multiMaterial;
-
-        this.createFaceSubMeshes(
-            cube,
-            materialIndexes
-        );
+        this.createFaceSubMeshes(cube,materialIndexes);
         this.applyEdges(cube, options.renderEdges ?? this.materials.getLook().renderEdges);
-
         if (options.alwaysOnTop) {
             cube.renderingGroupId = 2;
-
-            multiMaterial.depthFunction =
-                BABYLON.Constants.ALWAYS;
-
-            multiMaterial.disableDepthWrite =
-                true;
+            multiMaterial.depthFunction = BABYLON.Constants.ALWAYS;
+            multiMaterial.disableDepthWrite = true;
         }
-
-        this.configurePicking(
-            cube,
-            options.onClick
-        );
-
-        this.textCubes.push({
-            mesh: cube,
-            text,
-            options
-        });
-
+        this.configurePicking(cube, options.onClick);
+        this.textCubes.push({mesh: cube, text, options});
         return cube;
     }
 
@@ -343,103 +277,46 @@ export class TextCubeFactory {
     }
 
 
-    private createFaceSubMeshes(
-        cube: BABYLON.Mesh,
-        materialIndexes: number[]
-    ): void {
-
+    private createFaceSubMeshes(cube: BABYLON.Mesh, materialIndexes: number[]): void {
         cube.subMeshes = [];
-
-        const vertexCount =
-            cube.getTotalVertices();
-
-        for (
-            let face = 0;
-            face < 6;
-            face++
-        ) {
-
-            new BABYLON.SubMesh(
-                materialIndexes[face],
-                0,
-                vertexCount,
-                face * 6,
-                6,
-                cube
-            );
+        const vertexCount = cube.getTotalVertices();
+        for (let face = 0; face < 6; face++) {
+            new BABYLON.SubMesh(materialIndexes[face], 0, vertexCount, face * 6, 6, cube);
         }
     }
 
-
-    private applyEdges(
-        cube: BABYLON.Mesh,
-        renderEdges: boolean
-    ): void {
-
+    private applyEdges(cube: BABYLON.Mesh, renderEdges: boolean): void {
         if (renderEdges)
             this.materials.applyCubeEdges(cube);
         else
             cube.disableEdgesRendering();
     }
 
-
-    private colorToCss(
-        color: BABYLON.Color3,
-        alpha: number
-    ): string {
-
-        const red =
-            Math.round(color.r * 255);
-
-        const green =
-            Math.round(color.g * 255);
-
-        const blue =
-            Math.round(color.b * 255);
-
+    private colorToCss(color: BABYLON.Color3, alpha: number): string {
+        const red = Math.round(color.r * 255);
+        const green = Math.round(color.g * 255);
+        const blue = Math.round(color.b * 255);
         return `rgba(${red}, ${green}, ${blue}, ${alpha})`;
     }
 
-
-    private configurePicking(
-        cube: BABYLON.Mesh,
-        onClick?: () => void
-    ): void {
-
+    private configurePicking(cube: BABYLON.Mesh, onClick?: () => void): void {
         if (!onClick) {
             cube.isPickable = false;
             return;
         }
-
         cube.isPickable = true;
-
-        cube.actionManager =
-            new BABYLON.ActionManager(
-                this.scene
-            );
-
-        cube.actionManager.hoverCursor =
-            "pointer";
-
-        cube.actionManager.registerAction(
-            new BABYLON.ExecuteCodeAction(
-                BABYLON.ActionManager.OnPickTrigger,
-                onClick
-            )
-        );
+        cube.actionManager = new BABYLON.ActionManager(this.scene);
+        cube.actionManager.hoverCursor =  "pointer";
+        cube.actionManager.registerAction(new BABYLON.ExecuteCodeAction(
+            BABYLON.ActionManager.OnPickTrigger,onClick));
     }
 
     public refreshLook(): void {
-
-    for (const data of this.textCubes) {
-
-        if (data.mesh.isDisposed())
-            continue;
-
-        this.refreshCube(data);
-    }
-
-    
+        for (const data of this.textCubes) {
+            if (data.mesh.isDisposed())
+                continue;
+            this.refreshCube(data);
+        }
     }
 
     private refreshCube(data: TextCubeData): void {
@@ -448,45 +325,43 @@ export class TextCubeFactory {
         if (!(multiMaterial instanceof BABYLON.MultiMaterial))
             return;
         // plain faces
-        const plainMaterial =
-            multiMaterial.subMaterials[0];
+        const plainMaterial = multiMaterial.subMaterials[0];
 
-        if (
-            plainMaterial instanceof BABYLON.StandardMaterial
-        ) {
-            plainMaterial.diffuseColor.copyFrom(
-                style.cubeColor
-            );
-
-            plainMaterial.alpha =
-                style.cubeAlpha;
-
-            plainMaterial.disableLighting =
-                style.ignoreLighting;
+        if (plainMaterial instanceof BABYLON.StandardMaterial) {
+            plainMaterial.diffuseColor.copyFrom(style.cubeColor);
+            plainMaterial.alpha = style.cubeAlpha;
+            plainMaterial.disableLighting = style.ignoreLighting;
         }
-
         // text face
-        const textMaterial =
-            multiMaterial.subMaterials[1];
-
-        if (
-            textMaterial instanceof BABYLON.StandardMaterial &&
-            textMaterial.diffuseTexture instanceof BABYLON.DynamicTexture
-        ) {
-
-            this.drawTextTexture(
-                textMaterial.diffuseTexture,
-                data.text,
-                style.cubeColor,
-                style.cubeAlpha,
-                style.textColor,
-                style.textAlpha
-            );
-
-            textMaterial.disableLighting =
-                style.ignoreLighting;
+        const textMaterial = multiMaterial.subMaterials[1];
+        if (textMaterial instanceof BABYLON.StandardMaterial &&
+            textMaterial.diffuseTexture instanceof BABYLON.DynamicTexture) {
+            this.drawTextTexture(textMaterial.diffuseTexture, data.text, style.cubeColor,
+                style.cubeAlpha, style.textColor, style.textAlpha);
+            textMaterial.disableLighting = style.ignoreLighting;
         }
-
         this.applyEdges(data.mesh, data.options.renderEdges ?? this.materials.getLook().renderEdges);
+    }
+
+    public createSphereTextMaterial(name: string, text: string, sphereColor: BABYLON.Color3, textColor: BABYLON.Color3): BABYLON.StandardMaterial {
+
+        const textureSize = 1024;
+        const texture = new BABYLON.DynamicTexture(`${name}Texture`,
+            { width: textureSize, height: textureSize / 2 }, this.scene, true);
+        const context = texture.getContext() as CanvasRenderingContext2D;
+        context.fillStyle = this.colorToCss(sphereColor, 1);
+        context.fillRect(0, 0, textureSize, textureSize / 2);
+        context.font = "bold 100px Arial";
+        context.fillStyle = this.colorToCss(textColor, 1);
+        context.textAlign = "center";
+        context.textBaseline = "middle";
+        // first side
+        context.fillText(text, textureSize * 0.25, textureSize * 0.25);
+        // opposite side
+        context.fillText(text, textureSize * 0.75, textureSize * 0.25);
+        texture.update();
+        const material = new BABYLON.StandardMaterial(`${name}Material`, this.scene);
+        material.diffuseTexture = texture;
+        return material;
     }
 }

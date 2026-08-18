@@ -7,7 +7,7 @@ Run `npm install` both from `app/frontend` and `app/backend`.
 
 ## How to run
 
-From the root of the repository run the script `run.sh`. It will start one instance of the backend (port `3001`) and two instances of the frontend (ports `5173` and `5174`).
+From the root of the repository run the script `run.sh`. It will start one instance of the backend (port `3001`) and three instances of the frontend (ports `5173`, `5174` and `5175`).
 
 ## How to run the frontend in dev mode through Vite
 

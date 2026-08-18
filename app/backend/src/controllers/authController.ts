@@ -3,15 +3,6 @@ import { type Request, type Response } from 'express';
 import bcrypt from 'bcrypt';
 import jwt from 'jsonwebtoken';
 
-export const getTokenFrom = (request: Request) => {
-	const authorization = request.get('authorization')
-	if (authorization && authorization.startsWith('Bearer ')) {
-		return authorization.replace('Bearer ', '')
-	}
-	return null
-}
-
-
 // Register a new user
 export async function register(request: Request, response: Response) {
 	const body = request.body;
@@ -72,8 +63,6 @@ export async function login(request: Request, response: Response) {
 				error: 'username not found'
 			});
 		}
-		// TODO should user and password matching be combined so that you can't
-		// necessarily see that a username exists
 
 		const pwMatch = await bcrypt.compare(body.password, user.pw_hash);
 		if (!pwMatch) {

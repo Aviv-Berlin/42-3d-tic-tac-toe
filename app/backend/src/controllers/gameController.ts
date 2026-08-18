@@ -1,7 +1,7 @@
 //import userQueries from "../database/userQueries.ts";
 import { type Request, type Response } from 'express';
 import { broadcastMatch } from "../websocket/matchSockets.ts";
-import { getTokenFrom, secretKey } from "./middleware.ts";
+//import { getTokenFrom, secretKey } from "./middleware.ts";
 //import jwt from 'jsonwebtoken';
 import { GameState } from '../game/GameState.ts';
 

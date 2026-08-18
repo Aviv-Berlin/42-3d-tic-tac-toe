@@ -15,6 +15,7 @@ const Lobby = () => {
   const navigate = useNavigate();
   const username = useUsername();
   const [activeGames, setActiveGames] = useState<ActiveGame[]>([]);
+  const [joinedMatchId, setJoinedMatchId] = useState('');
 
   const joinMatch = async (matchId: string) => {
     try {
@@ -23,6 +24,7 @@ const Lobby = () => {
     	navigate(`/waiting/${response.data.match.id}`);
     } catch (err) {
       setErrorMessage(getErrorMessage(err));
+      setJoinedMatchId(matchId);
     }
 	};
 
@@ -105,7 +107,7 @@ const Lobby = () => {
                     Join
                   </SecondaryButton>
                 </div>
-                <p className="text-red-400 min-h-6">{errorMessage}</p>
+                {joinedMatchId && joinedMatchId === game.id && <p className="text-red-400 min-h-6">{errorMessage}</p>}
               </div>
             ))}
           </div>

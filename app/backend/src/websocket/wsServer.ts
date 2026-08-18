@@ -6,6 +6,7 @@ import { GameState } from "../game/GameState.ts";
 
 import { handleMessage } from "../game/socketHandlersBE.ts";
 import { WsMessage } from "../../../shared/messages.ts"
+import { log } from "console";
 
 export function setupWebSocket(server: http.Server) {
 
@@ -16,7 +17,8 @@ export function setupWebSocket(server: http.Server) {
 
 		aliveSockets.set(socket, true);
 
-		const url = new URL(request.url ?? "", "http://localhost");
+		const url = new URL(request.url ?? "", `http://localhost`);
+		console.log(`new websocket connection at ${url}`);
 
 		const matchId = url.pathname.split("/").pop();
 		const username = url.searchParams.get("username");
@@ -64,6 +66,7 @@ export function setupWebSocket(server: http.Server) {
 		});
 
 		socket.on("pong", () => {
+			// console.log(`pong received, socket ${username} still alive`);
 			aliveSockets.set(socket, true);
 		})
 
@@ -138,15 +141,18 @@ export function setupWebSocket(server: http.Server) {
 	});
 
 	const pingCheck = setInterval(() => {
-		wss.clients.forEach((socket) => {
-			if (aliveSockets.get(socket) === false) {
-				console.log(`no pong received form socket, terminating`)
+		// console.log(`${Date.now()} setInterval`);
+		aliveSockets.forEach((alive, socket) => {
+			if (alive === false) {
+				console.log(`no pong received from socket, terminating`)
 				socket.terminate();
 				return;
 			}
+			// console.log(`setting ${socket.url} to false`);
 			aliveSockets.set(socket, false);
 			socket.ping();
 		});
 
 	}, 5_000)
+
 }

@@ -5,8 +5,7 @@ const secret = process.env.SECRET
 if (!secret){
 	throw new Error("Missing SECRET");
 }
-const secretKey: string = secret;
-export { secretKey };
+export const secretKey: string = secret;
 
 export const getTokenFrom = (request: Request) => {
 	const cookie = request.cookies;

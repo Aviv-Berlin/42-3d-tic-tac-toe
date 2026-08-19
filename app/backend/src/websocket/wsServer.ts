@@ -2,10 +2,11 @@ import { WebSocketServer, WebSocket} from "ws";
 import type http from "http";
 import { broadcastMatch, matchSockets } from "../websocket/matchSockets.ts";
 import { lobbyMatches, matches, broadcast } from "../controllers/gameController.ts";
-import { GameState } from "../game/GameState.ts";
 
 import { handleMessage } from "../game/socketHandlersBE.ts";
 import { WsMessage } from "../../../shared/messages.ts"
+
+//export const games: GameState[] = [];
 
 export function setupWebSocket(server: http.Server) {
 
@@ -24,12 +25,12 @@ export function setupWebSocket(server: http.Server) {
 			return;
 		}
 
-		const match = matches.get(matchId);
+		let match = matches.get(matchId);
 		if (!match) {
-			console.log(`Match not found: ${matchId}`);
-			socket.send(JSON.stringify({ type: "error", message: "Match not found" }));
-			socket.close();
-			return;
+			console.log(`Match not found: ${matchId}, Local mode?`);
+			//socket.send(JSON.stringify({ type: "error", message: "Match not found" }));
+			//socket.close();
+			//return;
 		}
 
 		if (!matchSockets.has(matchId)) {
@@ -42,7 +43,8 @@ export function setupWebSocket(server: http.Server) {
 		});
 
 		// Send the current match state to the newly connected client
-		socket.send(JSON.stringify({
+		if (match){
+			socket.send(JSON.stringify({
 			type: "match-state",
 			host: match.host,
 			size: match.size,
@@ -50,14 +52,20 @@ export function setupWebSocket(server: http.Server) {
 			players: match.players,
 			status: match.status
 		 }));
+		}
 
 		 // use later for broadcasting messages to all clients in the match
 		 socket.on("message", (event) => {
 			console.log("Server received message");
-			console.log(`No. of matches: ${matches.size}`);
+			// console.log(`No. of matches: ${matches.size}`);
 			const message: WsMessage = JSON.parse(event.toString());
 			//handleMessage(message, socket,	match, games)
-			handleMessage(message, socket, match);
+			if (!match)
+				match = matches.get(matchId);
+			if (!match)
+				handleMessage(message, socket, null);
+			else
+				handleMessage(message, socket, match);
 		});
 
 		socket.on("close", () => {
@@ -71,7 +79,7 @@ export function setupWebSocket(server: http.Server) {
 			console.log(`Player ${disconnectedPlayer.username} disconnected from match ${matchId}`);
 
 			// Host leaves before game started, remove match and notify lobby
-			if (disconnectedPlayer.username === match.host && match.status !== "started") {
+			if (match && disconnectedPlayer.username === match.host && match.status !== "started") {
 				console.log(`Host ${match.host} disconnected. Ending match ${matchId}.`);
 				broadcast("lobby-update", { type: "removed", match });
 				match.status = "canceled";
@@ -84,7 +92,8 @@ export function setupWebSocket(server: http.Server) {
 					status: match.status
 				});
 				sockets.forEach((player) => {
-					player.ws.close();
+					if (player.ws)
+						player.ws.close();
 				});
 				matches.delete(matchId);
 				lobbyMatches.delete(matchId);
@@ -93,6 +102,7 @@ export function setupWebSocket(server: http.Server) {
 			}
 
 			// Normal player leaves
+			if (match){
 			const wasReady = match.status === "ready";
 			match.players = match.players.filter(player => player !== disconnectedPlayer.username);
 			if (wasReady) {
@@ -120,6 +130,8 @@ export function setupWebSocket(server: http.Server) {
 				matchSockets.delete(matchId);
 				matches.delete(matchId);
 			}
+
+		}
 
 		});
 	});

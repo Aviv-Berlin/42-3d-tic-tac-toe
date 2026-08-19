@@ -9,7 +9,7 @@ import { WsMessage, createEndMessage, createGameStartMessage, CreateTurnMessage,
 interface RemotePlayer {
   type: "remote";
   name: string;
-  socket: WebSocket;
+  socket: WebSocket | null;
 }
 
 interface AiGamePlayer {
@@ -45,14 +45,16 @@ export class GameState {
     }
 
     public async startGame(): Promise<void> {
-        if (this.gameData.gameStart > 0)
+        if (this.gameData.gameStart > 0){
+			console.log("game already started")
             return ;
+		}
         if (this.players.length < this.nPlayers) {
             console.log(`Still waiting for players`);
             return ;
         }
         this.gameData.gameStart = Date.now();
-        let msg = createGameStartMessage(this.gameData.gameID, this.playerNames, this.nPlayers, 0);
+        const msg = createGameStartMessage(this.gameData.gameID, this.playerNames, this.nPlayers, 0);
         console.log("Sending game-start messages");
         this.disributeMessage(msg);
         console.log("Finished sending game-start messages");
@@ -72,7 +74,7 @@ export class GameState {
                 outgoingMessage = { ...msg, payload: { ...msg.payload, youAre: i, }, };
             const player = this.players[i];
             if (player.type === "remote")
-                player.socket.send(JSON.stringify(outgoingMessage));
+                player.socket?.send(JSON.stringify(outgoingMessage));
             else
                 player.ai.handleMessage(outgoingMessage);
         }
@@ -168,16 +170,19 @@ export class GameState {
         return this.gameData.gameID;
     }
 
-    public addPlayer(socket: WebSocket, name: string) {
+    public addPlayer(socket: WebSocket | null, name: string) {
         for (const player of this.players) {
             if (player.type === "remote" && player.socket === socket) {
                 return ;
             }
         }
-        if (this.players.length >= this.nPlayers)
+        if (this.players.length >= this.nPlayers) {
+            console.log(`enough players already ${this.players.length} ${this.nPlayers}`)
             return;
+        }
         this.players.push({ type: "remote", name, socket });
         this.playerNames.push(name);
+        console.log(`players: ${Array.from(this.playerNames)}`);
     }
 
     public addAiPlayer(ai: AiPlayer, name: string): void {

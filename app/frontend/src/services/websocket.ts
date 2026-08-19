@@ -6,8 +6,6 @@ export function openSocket(matchId: string, username: string): WebSocket {
 	if (socket && socket.readyState !== WebSocket.CLOSED && currentMatchId === matchId)
 		return socket;
 
-	//const username = localStorage.getItem("username");
-
 	console.log("username: ", username);
 	console.log("matchId:", matchId);
 
@@ -58,32 +56,3 @@ export function closeSocket() {
 		currentMatchId = null;
 	}
 }
-
-// export const MatchSocketProvider = () => {
-// 	const { matchId } = useParams();
-// 	const location = useLocation();
-
-// 	useEffect(() => {
-// 		if (!matchId) return;
-
-// 		console.log("MatchSocketProvider mounted: ", matchId)
-
-// 		openSocket(matchId);
-
-// 	}, [matchId])
-
-// 	useEffect(() => {
-// 		if (!matchId) return;
-
-// 		const insideMatch =
-// 			location.pathname === `/waiting/${matchId}` ||
-// 			location.pathname === `/game/${matchId}`;
-
-// 		if (!insideMatch) {
-// 			console.log("User left match, closing socket");
-// 			closeSocket();
-// 		}
-// 	}, [location.pathname, matchId]);
-
-// 	return <Outlet />;
-// }

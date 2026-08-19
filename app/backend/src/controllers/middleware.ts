@@ -21,23 +21,26 @@ export const getTokenFrom = (request: Request) => {
 export const checkToken = (request: Request, response: Response, next: NextFunction) => {
 	const token = getTokenFrom(request)
 	if (!token) {
- 		return response.status(401).json({ error: 'missing token' })
-		// TODO different response code?
+		console.log("Error: checkToken(): missing token");
+		response.status(401).json({ error: 'missing or invalid token' })
+		return;
 	}
 	const decodedToken = jwt.verify(token, secretKey)
 	if (typeof decodedToken === `string`) {
- 		return response.status(401).json({ error: 'missing token' })
-		// TODO different response code / msg? (this case should never occur)
+		console.log("Error: checkToken(): invalid token");
+		response.status(401).json({ error: 'missing or invalid token' })
+		return;
 	}
 	console.log(`decoded Token id = ${decodedToken.id}`)
 	if (!decodedToken.id) {
- 		return response.status(401).json({ error: 'no id. token invalid' })
+		console.log("Error: checkToken(): token contains invalid id");
+		response.status(401).json({ error: 'misisng or invalid token' })
+		return;
 	}
-	/*
-	const user = await User.findById(decodedToken.id)
-	if (!user) {
-		return response.status(400).json({ error: 'UserId missing or not valid' })
-	}
-		*/
+	// TODO: Next thing to implement is identifying the user by their token
+	// const user = await User.findById(decodedToken.id)
+	// if (!user) {
+	//	return response.status(400).json({ error: 'UserId missing or not valid' })
+	// }
 	next()
 }

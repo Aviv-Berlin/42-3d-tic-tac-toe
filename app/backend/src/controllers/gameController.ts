@@ -1,7 +1,6 @@
 //import userQueries from "../database/userQueries.ts";
 import { type Request, type Response } from 'express';
 import { broadcastMatch } from "../websocket/matchSockets.ts";
-//import { getTokenFrom, secretKey } from "./middleware.ts";
 //import jwt from 'jsonwebtoken';
 import { GameState } from '../game/GameState.ts';
 
@@ -81,8 +80,6 @@ export async function createMatch(request: Request, response: Response) {
 			error: 'match data incomplete'
 		});
 	}
-
-
 
 	console.log('Creating match as host:', body.host);
 

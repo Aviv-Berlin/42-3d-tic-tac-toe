@@ -68,9 +68,17 @@ Suggested alternatives are:
 ### Trying Cookies:
 
 Reference: https://stackoverflow.com/questions/16209145/how-can-i-set-cookie-in-node-js-using-express-framework
+https://stackoverflow.com/questions/38558150/cant-delete-cookie-in-express
 
 ---
 
 TODO
+- secret key should live in secrets, not ENV
+
+// TODO: the secret key should probably live in secrets, not ENV
+// saving this for later while still working on the tokens, for the sake of incremental changes
+//const secretFilePath = path.join(import.meta.dirname, '../../../secrets/key')
+// const secret = await readFile(secretFilePath, 'utf8');
+
 - when tokens are working, many if not all requests should be refactored to use token instead of username. Username can be spoofed and should not be trusted. The secure way is to read username from token.
 - frontend is not completely handling errors -- When we try to access lobby and get a 401 from the server (because token isn't being sent right now), we still see a page where we can click through the steps of creating a game. (However, the game isn't actually created -- Another user doesn't see it)

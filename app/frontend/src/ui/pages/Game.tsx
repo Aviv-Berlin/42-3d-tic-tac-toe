@@ -18,7 +18,7 @@ const Game = () => {
 
   const gameData = useGameData();
   if (!gameData) return;
-  console.log("Match in Game:", gameData);
+  console.log("[GAME] Send startGameMessage, Game:", gameData);
   sendMessage(createStartGameMessage(gameData));
 
   //const username = useUsername() ?? "stranger";

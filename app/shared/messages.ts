@@ -4,6 +4,13 @@ import { Match } from "../backend/src/controllers/gameController"
 import { PlayerConnection } from "../backend/src/websocket/matchSockets";
 
 //client -> server
+export type LeaveMatchMessage =
+{ type: "leave-match"; }
+
+export function createLeaveMatchMessage(): LeaveMatchMessage {
+	return { type: "leave-match" }
+}
+
 export type PlayLocalMessage =
 { type: "play-local";
 	payload: {
@@ -190,6 +197,7 @@ export function createMoveMessage(gameID: string, player: CellState, playerIndex
 }
 
 export type WsMessage =
+  | LeaveMatchMessage
   | PlayLocalMessage
   | PlayGameMessage
   | CancelGameMessage

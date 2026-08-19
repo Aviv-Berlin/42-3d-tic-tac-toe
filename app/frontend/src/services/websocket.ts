@@ -1,3 +1,4 @@
+import { createLeaveMatchMessage } from "../../../shared/messages";
 
 let socket: WebSocket | null = null;
 let currentMatchId: string | null = null;
@@ -6,23 +7,20 @@ export function openSocket(matchId: string, username: string): WebSocket {
 	if (socket && socket.readyState !== WebSocket.CLOSED && currentMatchId === matchId)
 		return socket;
 
-	console.log("username: ", username);
-	console.log("matchId:", matchId);
-
 	socket = new WebSocket(`ws://localhost:3001/v1/game/${matchId}?username=${username}`)
 
 	currentMatchId = matchId;
 
 	socket.onopen = () => {
-		console.log("WebSocket connected");
+		console.log("[WS/open] WebSocket connected");
 	}
 
 	socket.onerror = (error) => {
-		console.error("WebSocket error: ", error);
+		console.error("[WS/error] WebSocket error: ", error);
 	}
 
 	socket.onclose = () => {
-		console.log("Websocket disconnected");
+		console.log("[WS/close] Websocket disconnected");
 		socket = null;
 		currentMatchId = null;
 	}
@@ -41,9 +39,12 @@ export function getSocket(): WebSocket | null {
 }
 
 export function closeSocket() {
-	if (socket){
-		socket.close();
-		socket = null;
-		currentMatchId = null;
-	}
+
+	if (!socket)
+		return;
+
+	sendMessage(createLeaveMatchMessage())
+	socket.close();
+	socket = null;
+	currentMatchId = null;
 }

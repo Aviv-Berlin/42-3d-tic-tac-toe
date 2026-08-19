@@ -93,7 +93,7 @@ const GameSettings = () => {
 		console.error(data.error);
 		return;
 	}
-	console.log("Created match:", data.match);
+	//console.log("Created match:", data.match);
 	navigate(`/waiting/${data.match.id}`);
   }
 }

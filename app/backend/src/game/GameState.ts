@@ -4,6 +4,7 @@ import { GameData, PlayerData } from "../../../shared/game.js";
 import { WebSocket } from "ws";
 import { AiPlayer } from "./AIPlayer.ts"
 import { WsMessage, createEndMessage, createGameStartMessage, CreateTurnMessage, createMoveMessage } from "../../../shared/messages.ts"
+import { createMatchEntry } from "../database/gameQueries.ts";
 
 
 interface RemotePlayer {
@@ -149,6 +150,7 @@ export class GameState {
         this.gameData.winner = winnerData;
         this.gameData.gameEnd = Date.now();
         this.disributeMessage(createEndMessage(this.gameData, winningPositions, -1));
+        createMatchEntry(this.gameData.player1, this.gameData.player2, winnerData, this.gameData.gameStart, this.gameData.gameEnd);
     }
 
     private endGameDraw() {
@@ -157,6 +159,7 @@ export class GameState {
         this.gameData.isDraw = true;
         this.gameData.gameEnd = Date.now();
         this.disributeMessage(createEndMessage(this.gameData, null, -1));
+        createMatchEntry(this.gameData.player1, this.gameData.player2, null, this.gameData.gameStart, this.gameData.gameEnd);
     }
 
     public dispose(): void {

@@ -2,8 +2,8 @@ import { Pool } from "pg";
 import { readFile } from 'node:fs/promises'; // API for async file operations in Node.js
 import path from 'node:path';
 
-const pwFilePath = path.join(import.meta.dirname, '../../../secrets/postgres-passwd')
-const pw = await readFile(pwFilePath, 'utf8');
+const FilePath = path.join(import.meta.dirname, '../../../secrets/postgres-passwd')
+const pw = await readFile(FilePath, 'utf8');
 
 console.log({
 	DB_USER: process.env.DB_USER,

@@ -1,7 +1,6 @@
 //import userQueries from "../database/userQueries.ts";
 import { type Request, type Response } from 'express';
 import { broadcastMatch } from "../websocket/matchSockets.ts";
-//import jwt from 'jsonwebtoken';
 import { GameState } from '../game/GameState.ts';
 
 // Store connected clients
@@ -75,6 +74,7 @@ export function broadcast(event: string, data: unknown) {
 
 export async function createMatch(request: Request, response: Response) {
 	const body = request.body;
+
 	if (!body.size || !body.requiredPlayers) {
 		return response.status(400).json({
 			error: 'match data incomplete'

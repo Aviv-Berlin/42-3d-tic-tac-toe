@@ -10,7 +10,7 @@ export function openSocket(matchId: string, username: string): WebSocket {
 	console.log("matchId:", matchId);
 
 	const loc = window.location;
-	var uri;
+	let uri;
 	if (loc.protocol === "https:") {
  	   uri = "wss:";
 	} else {

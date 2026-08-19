@@ -2,7 +2,6 @@
 import { type Request, type Response } from 'express';
 import { broadcastMatch } from "../websocket/matchSockets.ts";
 import { GameState } from '../game/GameState.ts';
-//import jwt from 'jsonwebtoken';
 
 import { GameMode, AiLevel } from '../../../shared/game.ts';
 //import { initGame } from "../websocket/matchSockets.ts"

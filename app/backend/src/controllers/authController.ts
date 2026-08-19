@@ -71,15 +71,15 @@ export async function login(request: Request, response: Response) {
 			});
 		}
 
-		const userToken = {
+		const userForToken = {
 			username: user.username,
-			id: user.id,
+			id: user.id
 		}
 
-		const token = jwt.sign(userToken, process.env.SECRET as string, { expiresIn: '1h' });
+		const token = jwt.sign(userForToken, process.env.SECRET as string, { expiresIn: '1h' });
 
-		return response.status(201).send({
-			token, username: user.username, email: user.email
+		return response.cookie('token', token).status(200).send({
+			username: user.username, email: user.email
 		});
 
 	}
@@ -91,8 +91,14 @@ export async function login(request: Request, response: Response) {
 	}
 }
 
+export async function logout(request: Request, response: Response) {
+	void request;
+	console.log("logout in authController");
+	return response.clearCookie('token').status(200).send({});
+}
 
 export default {
 	register,
-	login
+	login,
+	logout
 };

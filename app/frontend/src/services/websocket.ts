@@ -9,7 +9,16 @@ export function openSocket(matchId: string, username: string): WebSocket {
 	console.log("username: ", username);
 	console.log("matchId:", matchId);
 
-	socket = new WebSocket(`ws://localhost:3001/v1/game/${matchId}?username=${username}`)
+	const loc = window.location;
+	var uri;
+	if (loc.protocol === "https:") {
+ 	   uri = "wss:";
+	} else {
+ 	   uri = "ws:";
+	}
+	uri += "//" + loc.host;
+	uri += `/ws/v1/game/${matchId}?username=${username}`;
+	socket = new WebSocket(uri);
 
 	currentMatchId = matchId;
 

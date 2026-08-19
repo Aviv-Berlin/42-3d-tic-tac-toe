@@ -30,6 +30,7 @@ const Profile = () => {
       gameEnd: 0,
       gameID: "",
       gameMode: "online",
+	  endMessage: null
     },
     {
       player1: {
@@ -53,6 +54,7 @@ const Profile = () => {
       gameEnd: 0,
       gameID: "",
       gameMode: "online",
+	  endMessage: null
     },
     {
       player1: {
@@ -76,6 +78,7 @@ const Profile = () => {
       gameEnd: 0,
       gameID: "",
       gameMode: "online",
+	  endMessage: null
     }
   ];
 

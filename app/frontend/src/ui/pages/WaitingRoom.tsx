@@ -7,7 +7,7 @@ import { useSetGameData } from "../../store/gameData";
 import CenteredLayout from "../layouts/CenteredLayout"
 import SecondaryButton from "../components/SecondaryButton";
 import { createCancelGameMessage, createPlayGameMessage } from "../../../../shared/messages";
-import { useUsername } from "../../store/username";
+import { useUsername } from '../../store/username'
 
 const WaitingRoom = () => {
 	const { matchId } = useParams();
@@ -15,8 +15,8 @@ const WaitingRoom = () => {
 	const match = useMatch();
 	const setMatch = useSetMatch();
 	const setGameData = useSetGameData();
-  const clearMatch = useClearMatch();
-  const username = useUsername();
+	const clearMatch = useClearMatch();
+	const username = useUsername();
 
 	useEffect(() => {
 		if (!matchId) {
@@ -37,6 +37,8 @@ const WaitingRoom = () => {
 				setMatch({
 					id: matchId,
 					host: data.host,
+					mode: data.mode,
+					level: data.level,
 					size: data.size,
 					requiredPlayers: data.requiredPlayers,
 					players: data.players,
@@ -48,6 +50,8 @@ const WaitingRoom = () => {
 				setMatch({
 					id: matchId,
 					host: data.host,
+					mode: data.mode,
+					level: data.level,
 					size: data.size,
 					requiredPlayers: data.requiredPlayers,
 					players: data.players,

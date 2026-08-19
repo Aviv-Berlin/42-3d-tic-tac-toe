@@ -35,7 +35,7 @@ export class GameServerConnection {
         this.onExit = onExit;
         this.initBoard();
     }
-    
+
     public async handleMessage(message: WsMessage) {
         console.log("Received message:", message);
         switch (message.type) {
@@ -47,15 +47,14 @@ export class GameServerConnection {
                 console.log("playerNames[1]:", message.payload.playerNames[1])
                 this.playerNames = message.payload.playerNames;
                 this.nPlayers = message.payload.nPlayers;
-                if (this.playerNames[message.payload.youAre] === "guest")
-                    this.guestPlayerIndex = message.payload.youAre;
-                else
-                    this.localPlayerIndex = message.payload.youAre;
+                this.localPlayerIndex = message.payload.youAre;
+                this.guestPlayerIndex = this.playerNames.findIndex(name => name === "guest");
                 this.gameID = message.payload.gameID;
                 break;
-			
+
             case "turn":
-                console.log("TURN", { playsNow: message.payload.playsNow,  localPlayerIndex: this.localPlayerIndex,  isMyTurn: message.payload.playsNow === this.localPlayerIndex,});
+                console.log("TURN", { playsNow: message.payload.playsNow,  localPlayerIndex: this.localPlayerIndex,
+                    isMyTurn: message.payload.playsNow === this.localPlayerIndex, guestPlayerIndex: this.guestPlayerIndex, isGuestTurn: message.payload.playsNow === this.guestPlayerIndex});
                 this.currentPlayerIndex = message.payload.playsNow;
                 await this.ui.playerTitle(this.playerNames[message.payload.playsNow]);
                 if (message.payload.playsNow === this.localPlayerIndex)
@@ -65,13 +64,13 @@ export class GameServerConnection {
                 else
                     this.board.hidePreview();
                 break;
-            
+
             case "move":
                 this.board.hidePreview();
                 this.board.placeMoveMesh(message.payload.position, message.payload.player, false);
                 this.boardState[message.payload.position.x][message.payload.position.y][message.payload.position.z] = message.payload.player;
                 break;
-            
+
             case "end":
                 Object.assign(this.gameData, message.payload.gameData);
                 this.board.hidePreview();
@@ -86,11 +85,11 @@ export class GameServerConnection {
                 }
                 setTimeout(() => {this.onExit();}, 3000);
                 break;
-            
+
             default:
                 console.log(`Unknown message: ${message}`);
         }
-    } 
+    }
 
     public register(player: LocalPlayer): void {
         if (this.players.length >= this.nPlayers)

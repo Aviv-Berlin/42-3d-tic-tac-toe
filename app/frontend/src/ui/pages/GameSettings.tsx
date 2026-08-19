@@ -75,12 +75,11 @@ const GameSettings = () => {
 
 
 	else {
-	const response = await fetch("http://localhost:3001/v1/game/lobby/create", 
+	const response = await fetch("/v1/game/lobby/create", 
 	{
 		method: "POST",
 		headers: {
 			"Content-Type": "application/json",
-			//"Authorization": `Bearer ${localStorage.getItem("token")
 		},
 		body: JSON.stringify({ 
 			host: username, 

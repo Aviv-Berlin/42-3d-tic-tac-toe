@@ -5,18 +5,19 @@ DROP TABLE IF EXISTS friendships;
 DROP TABLE IF EXISTS matches;
 DROP TABLE IF EXISTS users;
 --DROP TABLE IF EXISTS stats; -- at first not nessescary, only if computing slows down consider
---DROP TABLE IF EXISTS customizations; -- own table or part of user table? depends: can user own many items? 
+--DROP TABLE IF EXISTS customizations; -- own table or part of user table? depends: can user own many items?
 
 CREATE TABLE users(
 	id SERIAL PRIMARY KEY,
 	username TEXT NOT NULL UNIQUE,
 	email TEXT NOT NULL UNIQUE,
-	pw_hash TEXT NOT NULL, -- adjust 
+	pw_hash TEXT NOT NULL, -- adjust
 	last_seen TIMESTAMPTZ DEFAULT NOW()
 );
 
 INSERT INTO users (username, email, pw_hash) VALUES
-('Guest', 'guest@example.com', 'trG45Vm');
+('guest', 'guest@example.com', 'trG45Vm'),
+('ai', 'ai@example.com', 'trG45Vu');
 
 CREATE TABLE friendships(
 	id SERIAL PRIMARY KEY,

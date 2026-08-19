@@ -7,7 +7,7 @@ if (!secret){
 }
 const secretKey: string = secret;
 
-export const getTokenFrom = (request: Request) => {
+const getTokenFrom = (request: Request) => {
 	const cookie = request.cookies;
 	if (!cookie){
 		console.log('getTokenFrom... !cookies')

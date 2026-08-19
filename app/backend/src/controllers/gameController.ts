@@ -74,6 +74,8 @@ export function broadcast(event: string, data: unknown) {
 }
 
 export async function createMatch(request: Request, response: Response) {
+  console.log(request.headers.authorization)
+  // here we need to read the header and check the token with a middleware
 	const body = request.body;
 
 	if (!body.size || !body.requiredPlayers) {
@@ -115,7 +117,8 @@ export async function createMatch(request: Request, response: Response) {
 }
 
 export async function joinMatch(request: Request, response: Response) {
-
+  console.log(request.headers.authorization)
+  // here we need to read the header and check the token with a middleware
 	const body = request.body;
 	const match = lobbyMatches.get(body.matchId);
 

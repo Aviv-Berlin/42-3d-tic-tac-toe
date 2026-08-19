@@ -3,6 +3,7 @@ import { Link, useNavigate } from 'react-router-dom'
 import { ChevronUp, ChevronDown } from 'lucide-react';
 import DropDownButton from './DropDownButton'
 import { useUsername } from '../../store/username'
+import auth from '../../services/auth'
 
 const NavDropDown = () => {
   const [open, setOpen] = useState(false);
@@ -13,8 +14,8 @@ const NavDropDown = () => {
 
   const username = useUsername();
 
-  const handleLogOut = () => {
-    window.localStorage.removeItem('token');
+  const handleLogOut = async () => {
+    const response = await auth.logout();
     window.localStorage.removeItem('username');
     navigate('/login');
   }

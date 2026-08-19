@@ -29,9 +29,7 @@ const Login = () => {
     setSubmit(true);
     try {
       const response = await auth.login(form)
-      const token = response.data.token;
       const username = response.data.username;
-      window.localStorage.setItem('token', token);
       setUsername(username);
       navigate("/home");
     } catch (err) {

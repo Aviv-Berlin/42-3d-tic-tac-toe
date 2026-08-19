@@ -3,7 +3,6 @@ import { readFile } from 'node:fs/promises'; // API for async file operations in
 import path from 'node:path';
 
 const filePath = path.join(import.meta.dirname, '../../../secrets/postgres-passwd')
-
 const pw = await readFile(filePath, 'utf8');
 
 console.log({

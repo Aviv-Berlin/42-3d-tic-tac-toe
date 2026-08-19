@@ -1,8 +1,11 @@
 import { create } from "zustand";
+import { AiLevel, GameMode} from "../../../shared/game";
 
 export interface Match {
 	id: string;
 	host: string;
+	mode: GameMode;
+	level: AiLevel;
 	size: number;
 	requiredPlayers: number;
 	players: string[];

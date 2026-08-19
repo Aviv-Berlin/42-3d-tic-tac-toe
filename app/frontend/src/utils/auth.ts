@@ -1,4 +1,4 @@
-import { Form } from '../types/form'
+import { Form } from '../../../shared/form'
 
 export const validateForm = (form: Form) => {
   return (

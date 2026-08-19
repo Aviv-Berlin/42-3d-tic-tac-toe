@@ -75,6 +75,7 @@ export async function login(request: Request, response: Response) {
 			username: user.username,
 			id: user.id
 		}
+
 		const token = jwt.sign(userForToken, process.env.SECRET as string, { expiresIn: '1h' });
 
 		return response.cookie('token', token).status(200).send({
@@ -90,7 +91,6 @@ export async function login(request: Request, response: Response) {
 	}
 }
 
-// Logout
 export async function logout(request: Request, response: Response) {
 	void request;
 	console.log("logout in authController");

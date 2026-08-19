@@ -11,22 +11,16 @@ export function openSocket(matchId: string, username: string): WebSocket {
 	console.log("username: ", username);
 	console.log("matchId:", matchId);
 
-	//socket = new WebSocket(`ws://localhost:3001/v1/game/${matchId}?username=${username}`)
-
-	//const PORT = Number(process.env.PORT)
-	//socket = new WebSocket(`ws://localhost:${PORT}/v1/game/${matchId}?username=${username}`)
-	
-	var loc = window.location, new_uri;
+	const loc = window.location;
+	var uri;
 	if (loc.protocol === "https:") {
- 	   new_uri = "wss:";
+ 	   uri = "wss:";
 	} else {
- 	   new_uri = "ws:";
+ 	   uri = "ws:";
 	}
-	new_uri += "//" + loc.host;
-	new_uri += `/ws/v1/game/${matchId}?username=${username}`;
-	// https://stackoverflow.com/questions/10406930/how-to-construct-a-websocket-uri-relative-to-the-page-uri
-	console.log("new_uri = ", new_uri);
-	socket = new WebSocket(new_uri);
+	uri += "//" + loc.host;
+	uri += `/ws/v1/game/${matchId}?username=${username}`;
+	socket = new WebSocket(uri);
 
 	currentMatchId = matchId;
 

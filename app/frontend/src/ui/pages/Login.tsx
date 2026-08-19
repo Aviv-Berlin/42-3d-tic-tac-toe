@@ -1,6 +1,5 @@
 import { useState } from 'react'
 import { Link, useNavigate } from 'react-router-dom'
-import axios from 'axios'
 import AuthLayout from '../layouts/AuthLayout'
 import AuthCard from '../components/AuthCard'
 import Input from '../components/Input'
@@ -30,10 +29,7 @@ const Login = () => {
     setSubmit(true);
     try {
       const response = await auth.login(form)
-      //const token = response.data.token;
       const username = response.data.username;
-      //window.localStorage.setItem('token', token);
-      //axios.defaults.headers.common['Authorization'] = `Bearer ${token}`;
       setUsername(username);
       navigate("/home");
     } catch (err) {

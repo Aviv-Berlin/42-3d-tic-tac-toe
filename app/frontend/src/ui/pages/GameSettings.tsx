@@ -14,6 +14,7 @@ import { Match } from "../../../../backend/src/controllers/gameController"
 import { AiLevel } from '../../../../shared/game';
 
 const GameSettings = () => {
+  const [errorMessage, setErrorMessage] = useState("");
   const [size, setSize] = useState(3);
   const [level, setLevel] = useState(1);
   const username = useUsername();
@@ -110,6 +111,7 @@ const GameSettings = () => {
         <BoardSizeSettings size={size} setSize={setSize}/>
         {gameMode === "ai" && <DifficultySettings level={level} setLevel={setLevel}/>}
         <MainButton onClick={handleConfirm}>CONFIRM</MainButton>
+        <p className="text-red-400 min-h-6">{errorMessage}</p>
       </div>
     </MainLayout>
   )

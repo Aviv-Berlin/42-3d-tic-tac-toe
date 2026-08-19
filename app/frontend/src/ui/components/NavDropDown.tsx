@@ -15,9 +15,13 @@ const NavDropDown = () => {
   const username = useUsername();
 
   const handleLogOut = async () => {
-    const response = await auth.logout();
-    window.localStorage.removeItem('username');
-    navigate('/login');
+    try {
+      await auth.logout();
+      window.localStorage.removeItem('username');
+      navigate('/login');
+    } catch (err) {
+      console.log(err);
+    }
   }
 
   const handleClickOutside = (e: MouseEvent) => {

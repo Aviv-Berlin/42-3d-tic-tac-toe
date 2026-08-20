@@ -27,6 +27,7 @@ const Login = () => {
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
     setSubmit(true);
+    if (!form.username || !form.password) return;
     try {
       const response = await auth.login(form)
       const username = response.data.username;

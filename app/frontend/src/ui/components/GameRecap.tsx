@@ -13,7 +13,7 @@ const GameRecap = ({ gameData }: GameRecapProps) => {
   const username = useUsername();
   const result = getGameEndMessage(gameData, username)
   return (
-    <div className="border rounded-md border-stone-400 px-8 py-4 flex flex-row justify-between items-center">
+    <div className="border bg-white rounded-md px-8 py-4 flex flex-row justify-between items-center">
       <p className="text-xl">{result}</p>
       <div className="hidden sm:flex flex-row gap-8">
         <p className="text-sm">against AI</p>

@@ -20,8 +20,8 @@ const Input = ({name, value, handler, validate, message, submit}: InputProps) =>
     <div className="flex flex-col">
       <label className="flex flex-col">
         {label}
-        <input className="border rounded-md border-stone-400 focus:outline-none focus:border-stone-800 p-2" type={type} name={name} onChange={handler} />
-        <p className="text-sm text-stone-600 min-h-5">
+        <input className="border rounded-md focus:outline-none border-black p-2" type={type} name={name} onChange={handler} />
+        <p className="text-sm text-red-400 min-h-5">
           {submit && !value && "This field cannot be empty"}
           {!(submit && !value) && validate && value && !validate() && message}
         </p>

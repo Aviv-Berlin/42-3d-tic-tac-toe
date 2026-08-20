@@ -1,12 +1,12 @@
 import { Navigate, Outlet } from 'react-router-dom'
+import axios from 'axios'
 
 const ProtectedRoute = () => {
-  const token = window.localStorage.getItem('token')
-  if (!token) {
-    return <Navigate to="/login" replace />
-  }
-
-  return <Outlet />
+	const loggedIn = window.localStorage.getItem('username')
+	if (!loggedIn) {
+  	  return <Navigate to="/login" replace />
+  	}
+	return <Outlet />
 }
 
 export default ProtectedRoute

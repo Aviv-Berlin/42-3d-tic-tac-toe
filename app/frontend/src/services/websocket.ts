@@ -7,7 +7,19 @@ export function openSocket(matchId: string, username: string): WebSocket {
 	if (socket && socket.readyState !== WebSocket.CLOSED && currentMatchId === matchId)
 		return socket;
 
-	socket = new WebSocket(`ws://localhost:3001/v1/game/${matchId}?username=${username}`)
+	console.log("username: ", username);
+	console.log("matchId:", matchId);
+
+	const loc = window.location;
+	let uri;
+	if (loc.protocol === "https:") {
+ 	   uri = "wss:";
+	} else {
+ 	   uri = "ws:";
+	}
+	uri += "//" + loc.host;
+	uri += `/ws/v1/game/${matchId}?username=${username}`;
+	socket = new WebSocket(uri);
 
 	currentMatchId = matchId;
 

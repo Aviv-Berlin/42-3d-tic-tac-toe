@@ -24,7 +24,7 @@ export class GameState {
     private boardState: CellState [][][] = [];
     private N: number;
     private players: GamePlayer[] = [];
-    private playerNames: string[] = [];
+    public playerNames: string[] = [];
     private currentPlayerIndex: number = 0;
     private nPlayers: number;
     private moveCounter: number = 0;

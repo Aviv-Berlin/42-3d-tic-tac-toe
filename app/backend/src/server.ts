@@ -1,11 +1,13 @@
 import "dotenv/config";
 import express from "express";
+import cookieParser from 'cookie-parser';
 import cors from "cors";
 import http from "http";
 
 import authRoutes from "./routes/authRoutes.ts";
 import gameRoutes from "./routes/gameRoutes.ts";
 import { setupWebSocket } from "./websocket/wsServer.ts";
+import { checkToken } from "./controllers/middleware.ts";
 
 //import { WebSocketServer } from "ws";
 //import { GameState } from "./game/GameState.ts";
@@ -19,6 +21,8 @@ const allowedOrigins = new Set([
     "http://localhost:5174",
     "http://localhost:3000"
 ]);
+
+app.use(cookieParser());
 
 app.use(cors({
     origin: (origin, callback) => {
@@ -37,7 +41,7 @@ app.use("/v1/auth", authRoutes);
 
 // add middleware for token verification for game routes
 
-app.use("/v1/game", gameRoutes);
+app.use("/v1/game", checkToken, gameRoutes);
 
 // HTTP Server
 const server = http.createServer(app);

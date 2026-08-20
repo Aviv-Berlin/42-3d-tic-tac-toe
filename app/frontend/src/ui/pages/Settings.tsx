@@ -126,7 +126,7 @@ const Settings = () => {
           <div className="w-60 flex flex-col gap-8">
             <SecondaryButton onClick={handleTriggerChangeUsername}>Change username</SecondaryButton>
             <SecondaryButton onClick={handleTriggerChangePassword}>Change password</SecondaryButton>
-            <SecondaryButton onClick={handleTriggerDeleteAccount}>Delete account</SecondaryButton>
+            <SecondaryButton onClick={handleTriggerDeleteAccount} color={"red"}>Delete account</SecondaryButton>
           </div>
         }
       </div>

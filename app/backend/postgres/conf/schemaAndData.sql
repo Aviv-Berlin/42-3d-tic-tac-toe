@@ -91,17 +91,17 @@ ALTER SEQUENCE public.friendships_id_seq OWNED BY public.friendships.id;
 
 
 --
--- Name: game_replay; Type: TABLE; Schema: public; Owner: -
+-- Name: moves; Type: TABLE; Schema: public; Owner: -
 --
 
-CREATE TABLE public.game_replay (
+CREATE TABLE public.moves (
     move_nr integer NOT NULL,
     match_id integer NOT NULL,
     coord_x integer NOT NULL,
     coord_y integer NOT NULL,
     coord_z integer NOT NULL,
     player integer NOT NULL,
-    played_at interval NOT NULL
+    played_at timestamp with time zone NOT NULL
 );
 
 
@@ -257,10 +257,10 @@ COPY public.friendships (id, user_id, friend_id, status) FROM stdin;
 
 
 --
--- Data for Name: game_replay; Type: TABLE DATA; Schema: public; Owner: -
+-- Data for Name: moves; Type: TABLE DATA; Schema: public; Owner: -
 --
 
-COPY public.game_replay (move_nr, match_id, coord_x, coord_y, coord_z, played_at) FROM stdin;
+COPY public.moves (move_nr, match_id, coord_x, coord_y, coord_z, player, played_at) FROM stdin;
 \.
 
 
@@ -358,11 +358,11 @@ ALTER TABLE ONLY public.friendships
 
 
 --
--- Name: game_replay game_replay_pkey; Type: CONSTRAINT; Schema: public; Owner: -
+-- Name: moves moves_pkey; Type: CONSTRAINT; Schema: public; Owner: -
 --
 
-ALTER TABLE ONLY public.game_replay
-    ADD CONSTRAINT game_replay_pkey PRIMARY KEY (match_id, move_nr);
+ALTER TABLE ONLY public.moves
+    ADD CONSTRAINT moves_pkey PRIMARY KEY (match_id, move_nr);
 
 
 --
@@ -438,11 +438,11 @@ ALTER TABLE ONLY public.friendships
 
 
 --
--- Name: game_replay game_replay_match_id_fkey; Type: FK CONSTRAINT; Schema: public; Owner: -
+-- Name: moves moves_match_id_fkey; Type: FK CONSTRAINT; Schema: public; Owner: -
 --
 
-ALTER TABLE ONLY public.game_replay
-    ADD CONSTRAINT game_replay_match_id_fkey FOREIGN KEY (match_id) REFERENCES public.matches(id);
+ALTER TABLE ONLY public.moves
+    ADD CONSTRAINT moves_match_id_fkey FOREIGN KEY (match_id) REFERENCES public.matches(id);
 
 
 --

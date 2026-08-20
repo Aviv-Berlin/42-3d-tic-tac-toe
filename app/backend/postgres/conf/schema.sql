@@ -1,4 +1,4 @@
-DROP TABLE IF EXISTS game_replay;
+DROP TABLE IF EXISTS moves;
 DROP TABLE IF EXISTS messages;
 DROP TABLE IF EXISTS conversations;
 DROP TABLE IF EXISTS friendships;
@@ -57,13 +57,13 @@ CREATE TABLE matches(
 	ended_at TIMESTAMPTZ
 );
 
-CREATE TABLE game_replay(
+CREATE TABLE moves(
 	move_nr INT NOT NULL,
 	match_id INT NOT NULL REFERENCES matches(id),
 	coord_x INT NOT NULL,
 	coord_y INT NOT NULL,
 	coord_z INT NOT NULL,
 	player INT NOT NULL REFERENCES users(id),
-	played_at INTERVAL NOT NULL,
+	played_at TIMESTAMPTZ NOT NULL,
 	PRIMARY KEY(match_id, move_nr)
 );

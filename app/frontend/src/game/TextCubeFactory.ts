@@ -8,13 +8,10 @@ export interface TextCubeOptions {
     renderEdges?: boolean;
     alwaysOnTop?: boolean;
     onClick?: () => void;
-
     cubeColor?: BABYLON.Color3;
     cubeAlpha?: number;
-
     textColor?: BABYLON.Color3;
     textAlpha?: number;
-
     ignoreLighting?: boolean;
 }
 
@@ -28,17 +25,13 @@ export class TextCubeFactory {
 
     private readonly scene: BABYLON.Scene;
     private readonly materials: Materials;
-
-    private readonly textFont =
-        "Futura, Arial, sans-serif";
-
+    private readonly textFont = "Futura, Arial, sans-serif";
     private textCubes: TextCubeData[] = [];
 
     constructor(scene: BABYLON.Scene, materials: Materials) {
         this.scene = scene;
         this.materials = materials;
     }
-
 
     public createTextCube(text: string, options: TextCubeOptions = {}): BABYLON.Mesh {
         const name = options.name ?? `textCube-${text}`;
@@ -75,204 +68,67 @@ export class TextCubeFactory {
         return cube;
     }
 
-
-    private getStyle(
-        options: TextCubeOptions
-    ) {
-        const look =
-            this.materials.getLook();
-
-        return {
-            cubeColor:
-                options.cubeColor ??
-                look.textCubeColor ??
-                look.cubeColor,
-
-            cubeAlpha:
-                options.cubeAlpha ??
-                look.textCubeAlpha ??
-                look.cubeAlpha,
-
-            textColor:
-                options.textColor ??
-                look.textColor,
-
-            textAlpha:
-                options.textAlpha ?? 1,
-
-            ignoreLighting:
-                options.ignoreLighting ?? false
-        };
+    private getStyle(options: TextCubeOptions) {
+        const look = this.materials.getLook();
+        return {cubeColor: options.cubeColor ?? look.textCubeColor ?? look.cubeColor,
+                cubeAlpha: options.cubeAlpha ?? look.textCubeAlpha ?? look.cubeAlpha,
+                textColor: options.textColor ?? look.textColor,
+                textAlpha: options.textAlpha ?? 1,
+                ignoreLighting: options.ignoreLighting ?? false };
     }
 
-
-    private createPlainMaterial(
-        name: string,
-        color: BABYLON.Color3,
-        alpha: number,
-        ignoreLighting: boolean
-    ): BABYLON.StandardMaterial {
-
-        const material =
-            new BABYLON.StandardMaterial(
-                name,
-                this.scene
-            );
-
-        material.diffuseColor =
-            color.clone();
-
+    private createPlainMaterial(name: string, color: BABYLON.Color3, alpha: number, ignoreLighting: boolean): BABYLON.StandardMaterial {
+        const material = new BABYLON.StandardMaterial(name, this.scene);
+        material.diffuseColor = color.clone();
         material.alpha = alpha;
-
-        material.disableLighting =
-            ignoreLighting;
-
+        material.disableLighting = ignoreLighting;
         if (alpha < 1) {
             material.needDepthPrePass = true;
             material.disableDepthWrite = true;
         }
-
         return material;
     }
 
-
-    private createTextMaterial(
-        name: string,
-        text: string,
-        cubeColor: BABYLON.Color3,
-        cubeAlpha: number,
-        textColor: BABYLON.Color3,
-        textAlpha: number,
-        ignoreLighting: boolean
-    ): BABYLON.StandardMaterial {
-
+    private createTextMaterial(name: string, text: string, cubeColor: BABYLON.Color3, cubeAlpha: number,
+        textColor: BABYLON.Color3, textAlpha: number, ignoreLighting: boolean): BABYLON.StandardMaterial {
         const textureSize = 512;
-
-        const texture =
-            new BABYLON.DynamicTexture(
-                `${name}Texture`,
-                {
-                    width: textureSize,
-                    height: textureSize
-                },
-                this.scene,
-                true
-            );
-
+        const texture = new BABYLON.DynamicTexture(`${name}Texture`, {
+                width: textureSize, height: textureSize }, this.scene, true);
         texture.hasAlpha = true;
-
-        this.drawTextTexture(
-            texture,
-            text,
-            cubeColor,
-            cubeAlpha,
-            textColor,
-            textAlpha
-        );
-
-        const material =
-            new BABYLON.StandardMaterial(
-                name,
-                this.scene
-            );
-
-        material.diffuseTexture =
-            texture;
-
-        material.diffuseColor =
-            BABYLON.Color3.White();
-
-        material.useAlphaFromDiffuseTexture =
-            true;
-
-        material.disableLighting =
-            ignoreLighting;
-
+        this.drawTextTexture(texture, text, cubeColor, cubeAlpha, textColor, textAlpha);
+        const material = new BABYLON.StandardMaterial(name, this.scene);
+        material.diffuseTexture = texture;
+        material.diffuseColor = BABYLON.Color3.White();
+        material.useAlphaFromDiffuseTexture = true;
+        material.disableLighting = ignoreLighting;
         material.needDepthPrePass = true;
-
         return material;
     }
 
 
-    private drawTextTexture(
-        texture: BABYLON.DynamicTexture,
-        text: string,
-        cubeColor: BABYLON.Color3,
-        cubeAlpha: number,
-        textColor: BABYLON.Color3,
-        textAlpha: number
-    ): void {
-
+    private drawTextTexture(texture: BABYLON.DynamicTexture, text: string, cubeColor: BABYLON.Color3,
+        cubeAlpha: number, textColor: BABYLON.Color3, textAlpha: number): void {
         const textureSize = 512;
-
-        const context =
-            texture.getContext() as CanvasRenderingContext2D;
-
-        context.clearRect(
-            0,
-            0,
-            textureSize,
-            textureSize
-        );
-
-        // cube background
-        context.fillStyle =
-            this.colorToCss(
-                cubeColor,
-                cubeAlpha
-            );
-
-        context.fillRect(
-            0,
-            0,
-            textureSize,
-            textureSize
-        );
-
-        const maxTextWidth =
-            textureSize * 0.72;
-
+        const context = texture.getContext() as CanvasRenderingContext2D;
+        context.clearRect(0, 0, textureSize, textureSize);
+       // cube background
+        context.fillStyle = this.colorToCss(cubeColor, cubeAlpha);
+        context.fillRect(0, 0, textureSize, textureSize);
+        const maxTextWidth = textureSize * 0.72;
         const maximumFontSize = 340;
         const minimumFontSize = 40;
-
-        let fontSize =
-            maximumFontSize;
-
-        while (
-            fontSize >
-            minimumFontSize
-        ) {
-
-            context.font =
-                `bold ${fontSize}px ${this.textFont}`;
-
-            if (
-                context.measureText(text).width <=
-                maxTextWidth
-            )
+        let fontSize = maximumFontSize;
+        while (fontSize > minimumFontSize) {
+            context.font = `bold ${fontSize}px ${this.textFont}`;
+            if (context.measureText(text).width <= maxTextWidth)
                 break;
-
             fontSize -= 10;
         }
-
-        context.font =
-            `bold ${fontSize}px ${this.textFont}`;
-
-        context.fillStyle =
-            this.colorToCss(
-                textColor,
-                textAlpha
-            );
-
+        context.font = `bold ${fontSize}px ${this.textFont}`;
+        context.fillStyle = this.colorToCss(textColor, textAlpha);
         context.textAlign = "center";
         context.textBaseline = "middle";
-
-        context.fillText(
-            text,
-            textureSize / 2,
-            textureSize / 2
-        );
-
+        context.fillText(text, textureSize / 2, textureSize / 2);
         texture.update();
     }
 

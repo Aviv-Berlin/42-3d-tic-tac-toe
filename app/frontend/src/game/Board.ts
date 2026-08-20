@@ -312,12 +312,28 @@ export class Board {
         const look = this.materials.getLook();
         const mesh = this.createStyledMesh(look.moveStyle, this.cellSize * look.moveSizeScale, "moveMesh");
         mesh.position = this.getPosition(pos.x, pos.y, pos.z);
-        mesh.material = isPreview ? this.materials.getPreviewMaterial(playerState) : this.materials.getPlayerMaterial(playerState);
+        const tempMaterial = isPreview ? this.materials.getPreviewMaterial(playerState) : this.materials.getPlayerMaterial(playerState);
+        mesh.material = tempMaterial;
+        if (look.textOnMove) {
+            mesh.material = this.textCubeFactory.createSphereTextMaterial("move", "test", tempMaterial.diffuseColor, BABYLON.Color3.White());
+            mesh.rotation.y = Math.PI / 2;
+        }
         mesh.renderingGroupId = 0;
         mesh.isPickable = false;
         mesh.metadata = { gridPosition: { ...pos }, playerState, isPreview };
         return mesh;
     }
+
+    // private createMoveMesh(pos: GridPosition, playerState: CellState, isPreview: boolean): Mesh {
+    //     const look = this.materials.getLook();
+    //     const mesh = this.createStyledMesh(look.moveStyle, this.cellSize * look.moveSizeScale, "moveMesh");
+    //     mesh.position = this.getPosition(pos.x, pos.y, pos.z);
+    //     mesh.material = isPreview ? this.materials.getPreviewMaterial(playerState) : this.materials.getPlayerMaterial(playerState);
+    //     mesh.renderingGroupId = 0;
+    //     mesh.isPickable = false;
+    //     mesh.metadata = { gridPosition: { ...pos }, playerState, isPreview };
+    //     return mesh;
+    // }
 
     public placeMoveMesh(pos: GridPosition, playerState: CellState, isPreview: boolean): Mesh {
         const mesh = this.createMoveMesh(pos, playerState, isPreview );

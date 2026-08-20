@@ -40,18 +40,19 @@ export class Materials {
                 this.createPlayerMaterial(`player${index + 1}PreviewMaterial`, color, look.previewAlpha));
     }
 
+    public getCubeMaterial(): StandardMaterial {
+       return this.cube;
+    }
+
     public applyCubeEdges(mesh: BABYLON.AbstractMesh): void {
         const look = this.getLook();
         mesh.enableEdgesRendering();
         mesh.edgesWidth = look.edgeWidth;
         mesh.edgesColor = look.edgeColor.clone();
     }
-    
-    
 
     public applyLook(index: number): void {
         const look = LOOKS[index];
-
         if (!look)
             throw new Error(`Unknown look index: ${index}`);
         
@@ -80,6 +81,7 @@ export class Materials {
     }
 
     public getPreviewMaterial(playerState: CellState): StandardMaterial {
+        const look = this.getLook();
         const index = playerStateToIndex(playerState);
         const material = this.previewMaterials[index];
         if (material === undefined) {

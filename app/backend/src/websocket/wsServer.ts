@@ -5,16 +5,21 @@ import { lobbyMatches, matches, broadcast } from "../controllers/gameController.
 
 import { handleMessage } from "../game/socketHandlersBE.ts";
 import { WsMessage } from "../../../shared/messages.ts"
+import { log } from "console";
 
 //export const games: GameState[] = [];
 
 export function setupWebSocket(server: http.Server) {
 
 	const wss = new WebSocketServer({ server });
+	const aliveSockets = new Map<WebSocket, boolean>(); //<socket, isAlive?>
 
 	wss.on("connection", (socket: WebSocket, request: http.IncomingMessage) => {
 
-		const url = new URL(request.url ?? "", "http://localhost");
+		aliveSockets.set(socket, true);
+
+		const url = new URL(request.url ?? "", `http://localhost`);
+		console.log(`new websocket connection at ${url}`);
 
 		const matchId = url.pathname.split("/").pop();
 		const username = url.searchParams.get("username");
@@ -68,11 +73,17 @@ export function setupWebSocket(server: http.Server) {
 				handleMessage(message, socket, match);
 		});
 
+		socket.on("pong", () => {
+			// console.log(`pong received, socket ${username} still alive`);
+			aliveSockets.set(socket, true);
+		})
+
 		socket.on("close", () => {
+			aliveSockets.delete(socket);
+
 			const sockets = matchSockets.get(matchId);
 			if (!sockets) return;
 			const disconnectedPlayer = [...sockets].find(player => player.ws === socket);
-
 			if (!disconnectedPlayer) return;
 
 			sockets.delete(disconnectedPlayer);
@@ -119,6 +130,11 @@ export function setupWebSocket(server: http.Server) {
 				});
 				console.log("Match ${matchId} is available again.");
 			}
+			else if (match.status === "started") {
+				const playerIndex = match.state?.playerNames.findIndex((name) => name === disconnectedPlayer.username);
+				if (playerIndex !== undefined && playerIndex >= 0)
+					match.state?.playerExit(socket, playerIndex);
+			}
 			else {
 				// update player count -> needs to be implemented in the frontend lobby
 				broadcast("lobby-update", { type: "updated", match });
@@ -135,4 +151,20 @@ export function setupWebSocket(server: http.Server) {
 
 		});
 	});
+
+	const pingCheck = setInterval(() => {
+		// console.log(`${Date.now()} setInterval`);
+		aliveSockets.forEach((alive, socket) => {
+			if (alive === false) {
+				console.log(`no pong received from socket, terminating`)
+				socket.terminate();
+				return;
+			}
+			// console.log(`setting ${socket.url} to false`);
+			aliveSockets.set(socket, false);
+			socket.ping();
+		});
+
+	}, 30_000)
+
 }

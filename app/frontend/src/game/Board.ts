@@ -59,7 +59,7 @@ export class Board {
                 const plane = BABYLON.MeshBuilder.CreatePlane( name, 
                     { width: size, height: size, sideOrientation: BABYLON.Mesh.DOUBLESIDE}, this.scene);
                 plane.rotation.x = settings.rotationX;
-                return plane;
+				return plane;
             }
         }
     }

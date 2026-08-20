@@ -30,7 +30,7 @@ export class Materials {
         this.cube.disableDepthWrite = true;
 
         this.buttonCube = new StandardMaterial("buttonCube", scene);
-        this.buttonCube.diffuseColor = new BABYLON.Color3(0, 0, 0);
+        this.buttonCube.diffuseColor = new BABYLON.Color3(1, 0, 0);
         this.buttonCube.alpha = 1;
 
         const playerColors = this.getPlayerColors();

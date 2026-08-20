@@ -6,9 +6,8 @@ if (!secret){
 	throw new Error("Missing SECRET");
 }
 const secretKey: string = secret;
-export { secretKey };
 
-export const getTokenFrom = (request: Request) => {
+const getTokenFrom = (request: Request) => {
 	const cookie = request.cookies;
 	if (!cookie){
 		console.log('getTokenFrom... !cookies')

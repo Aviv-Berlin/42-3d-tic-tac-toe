@@ -84,7 +84,7 @@ const Profile = () => {
 
   return (
     <ProfileLayout>
-      <div className="border-r border-stone-400 p-8 flex flex-col gap-4">
+      <div className="border-r p-8 flex flex-col gap-4">
         <h2 className="text-3xl font-serif italic">Recent Games</h2>
         {games.map((game, i) => (
           <GameRecap key={i} gameData={game} />

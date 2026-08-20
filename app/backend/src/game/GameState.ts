@@ -89,7 +89,8 @@ export class GameState {
         //do we need to do here a check that the right player actually made the move?
         this.moveCounter++;
         this.boardState[pos.x][pos.y][pos.z] = playerState;
-        this.gameData.moves.push({ pos: pos, player: playerState });
+        const timeNow = new Date();
+        this.gameData.moves.push({ pos: pos, player: playerState, time: timeNow});
         this.disributeMessage(createMoveMessage(this.gameData.gameID, playerState, this.currentPlayerIndex, pos));
         const winningPositions = checkWin(this.boardState, pos, playerState, this.N);
         if (winningPositions) {

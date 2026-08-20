@@ -44,7 +44,7 @@ const Login = () => {
         <BabylonImage type="logo" />
       </div>
       <AuthCard>
-        <h1 className="text-2xl font-serif italic">Log in</h1>
+        <h1 className="text-2xl">Log in</h1>
         <form className="flex flex-col" onSubmit={handleSubmit}>
           <Input name="username" value={form.username} handler={handleChange} submit={submit}/>
           <Input name="password" value={form.password} handler={handleChange} submit={submit}/>

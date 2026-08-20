@@ -21,7 +21,10 @@ export class Materials {
         const look = this.getLook();
         scene.clearColor = look.backgroundColor.clone();
         const light = new BABYLON.HemisphericLight("light", new BABYLON.Vector3(0, 1, 0), scene);
-        light.intensity = 0.7;
+        const light2 = new BABYLON.HemisphericLight("light", new BABYLON.Vector3(0, -1, 0), scene);
+		light.intensity = 0.7;
+		light.diffuse = new BABYLON.Color3(1,1,1);
+        light2.intensity = 0.7;
 
         this.cube = new StandardMaterial("cubeMat", scene);
         this.cube.diffuseColor = look.cubeColor.clone();

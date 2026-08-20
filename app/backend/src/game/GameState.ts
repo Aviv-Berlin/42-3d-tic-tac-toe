@@ -151,7 +151,10 @@ export class GameState {
         this.gameData.winner = winnerData;
         this.gameData.gameEnd = Date.now();
         this.disributeMessage(createEndMessage(this.gameData, winningPositions, -1));
-        createMatchEntry(this.gameData.player1, this.gameData.player2, winnerData, this.gameData.gameStart, this.gameData.gameEnd);
+        try{
+            createMatchEntry(this.gameData.player1, this.gameData.player2, winnerData, this.gameData.gameStart, this.gameData.gameEnd, this.gameData.moves);}
+        catch (error) {
+            console.error(error);}
     }
 
     private endGameDraw() {
@@ -160,7 +163,10 @@ export class GameState {
         this.gameData.isDraw = true;
         this.gameData.gameEnd = Date.now();
         this.disributeMessage(createEndMessage(this.gameData, null, -1));
-        createMatchEntry(this.gameData.player1, this.gameData.player2, null, this.gameData.gameStart, this.gameData.gameEnd);
+        try{
+            createMatchEntry(this.gameData.player1, this.gameData.player2, null, this.gameData.gameStart, this.gameData.gameEnd, this.gameData.moves);}
+        catch (error) {
+            console.error(error);}
     }
 
     public dispose(): void {

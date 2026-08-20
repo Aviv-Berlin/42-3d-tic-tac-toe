@@ -3,8 +3,8 @@ import type http from "http";
 import { broadcastMatch, matchSockets, handlePlayerLeave } from "../websocket/matchSockets.ts";
 import { lobbyMatches, matches, broadcast } from "../controllers/gameController.ts";
 
-import { handleMessage } from "../game/socketHandlersBE.ts";
-import { WsMessage } from "../../../shared/messages.ts"
+import { handleMessage, playerExit } from "../game/socketHandlersBE.ts";
+import { CreateExitMessage, createGameStateMessage, WsMessage } from "../../../shared/messages.ts"
 
 //export const games: GameState[] = [];
 
@@ -47,8 +47,10 @@ export function setupWebSocket(server: http.Server) {
 				clearTimeout(existingPlayer.disconnectTimer)
 				existingPlayer.disconnectTimer = undefined;
 			}
-			if (match && match.status === "started")
-				match.state?.updatePlayerSocket(socket, existingPlayer.username)
+			if (match && match.status === "started" && match.state){
+				match.state?.updatePlayerSocket(socket, existingPlayer.username);
+				socket.send(JSON.stringify(createGameStateMessage(match.state, existingPlayer.username)));
+			}
 		}
 		else{
 			sockets?.add({
@@ -58,13 +60,8 @@ export function setupWebSocket(server: http.Server) {
 			})
 		}
 
-		// matchSockets.get(matchId)?.add({
-		// 	username: username,
-		// 	ws: socket
-		// });
-
 		// Send the current match state to the newly connected client
-		if (match){
+		if (match && match.status !== "started"){
 			socket.send(JSON.stringify({
 			type: "match-state",
 			host: match.host,
@@ -73,6 +70,7 @@ export function setupWebSocket(server: http.Server) {
 			players: match.players,
 			status: match.status
 		 }));
+
 		}
 
 		 // use later for broadcasting messages to all clients in the match
@@ -125,7 +123,12 @@ export function setupWebSocket(server: http.Server) {
 
 				console.log(`[WS/close] Player ${player.username} did not reconnect`)
 
-				handlePlayerLeave(matchId, player);
+				// handlePlayerLeave(matchId, player);
+				// if (match && match.status === "started" && match.state){
+				// 	const playerIndex = match.state?.getPlayerIndex(username);
+				// 	playerExit(CreateExitMessage(matchId, playerIndex), socket, match)
+				// }
+					
 			}, 5000);
 		});
 	});

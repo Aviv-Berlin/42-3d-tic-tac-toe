@@ -1,7 +1,8 @@
 import { GridPosition, CellState, PLAYER_STATES} from "./game/Types";
-import { GameData} from "./game";
+import { GameData } from "./game";
 import { Match } from "../backend/src/controllers/gameController"
 import { PlayerConnection } from "../backend/src/websocket/matchSockets";
+import { GameState } from "../backend/src/game/GameState"; 
 
 //client -> server
 export type LeaveMatchMessage =
@@ -103,7 +104,7 @@ export type ExitMessage =
 		}
 	}
 
-export function createExitMessage(gameID: string, IAm: number): ExitMessage {
+export function CreateExitMessage(gameID: string, IAm: number): ExitMessage {
 	return {
 		type: "exit",
 			payload: {
@@ -114,6 +115,26 @@ export function createExitMessage(gameID: string, IAm: number): ExitMessage {
 }
 
 //server -> client
+export type GameStateMessage =
+{ type: "game-state";
+		payload: {
+			boardState: CellState [][][],
+			playerNames: string[],
+			localPlayerIndex: number,
+			guestPlayerIndex: number,
+			currentPlayerIndex: number,
+			gameData: GameData
+
+		}
+}
+
+export function createGameStateMessage(game: GameState, username: string): GameStateMessage {
+	return {
+		type: "game-state",
+		payload: game.getReconnectState(username)
+	};
+}
+
 export type TurnMessage =
 	{ type: "turn";
 		payload: {
@@ -197,6 +218,8 @@ export function createMoveMessage(gameID: string, player: CellState, playerIndex
 }
 
 export type WsMessage =
+  | GameStateMessage
+  | GameStartMessage
   | LeaveMatchMessage
   | PlayLocalMessage
   | PlayGameMessage
@@ -211,6 +234,7 @@ export type WsMessage =
 
 
 export default {
+	createGameStateMessage,
 	createPlayLocalMessage,
 	createGameStartMessage,
 	createJoinGameMessage,

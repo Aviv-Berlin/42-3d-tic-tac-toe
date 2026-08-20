@@ -202,6 +202,22 @@ export class GameState {
         return this.boardState;
     }
 
+	public getReconnectState(username: string) {
+    return {
+		boardState: this.boardState,
+		playerNames: this.playerNames,
+		currentPlayerIndex: this.currentPlayerIndex,
+		gameData: this.gameData,
+		//
+        localPlayerIndex: this.playerNames.indexOf(username),
+        guestPlayerIndex: this.playerNames.indexOf("guest"),
+    	};
+	}
+
+	public getPlayerIndex(username: string){
+		return this.playerNames.indexOf(username)
+	}
+
     public removeGame(games: GameState[]) {
         const index = games.findIndex(game => game.getID() === this.gameData.gameID);
         if (index !== -1)

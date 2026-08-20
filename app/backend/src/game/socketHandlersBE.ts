@@ -51,7 +51,7 @@ export function makeMove(message: MoveMessage, ws: WebSocket, match: Match) {
 	}
 }
 
-function playerExit(message: ExitMessage, ws: WebSocket, match: Match) {
+export function playerExit(message: ExitMessage, ws: WebSocket, match: Match) {
 	const data = message.payload;
 	const game = match.state;
 	if (!game) {

@@ -100,6 +100,7 @@ CREATE TABLE public.game_replay (
     coord_x integer NOT NULL,
     coord_y integer NOT NULL,
     coord_z integer NOT NULL,
+    player integer NOT NULL,
     played_at interval NOT NULL
 );
 

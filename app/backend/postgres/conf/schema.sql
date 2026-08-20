@@ -63,6 +63,7 @@ CREATE TABLE game_replay(
 	coord_x INT NOT NULL,
 	coord_y INT NOT NULL,
 	coord_z INT NOT NULL,
+	player INT NOT NULL REFERENCES users(id),
 	played_at INTERVAL NOT NULL,
 	PRIMARY KEY(match_id, move_nr)
 );

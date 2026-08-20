@@ -17,8 +17,8 @@ export async function createMatchEntry(p1: PlayerData, p2: PlayerData, winner: P
 
 	const startDate = new Date(start);
 	const endDate = new Date(end);
-	console.log(`p1: ${p1.type} ${p1.username}, p2: ${p2.type} ${p2.username}, winner: ${winner?.type} ${winner?.username}`);
-	console.log(`Adding to DB: p1:${p1id}, p2:${p2id}, winner:${winnerId}`);
+	// console.log(`p1: ${p1.type} ${p1.username}, p2: ${p2.type} ${p2.username}, winner: ${winner?.type} ${winner?.username}`);
+	// console.log(`Adding to DB: p1:${p1id}, p2:${p2id}, winner:${winnerId}`);
 	const result = await query(
 		'INSERT INTO matches (player1, player2, winner, started_at, ended_at) VALUES ($1, $2, $3, $4, $5) RETURNING *;', [p1id, p2id, winnerId, startDate, endDate]
 	);

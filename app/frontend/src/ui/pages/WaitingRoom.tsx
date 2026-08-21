@@ -4,6 +4,7 @@ import MainButton from "../components/MainButton";
 import { closeSocket, sendMessage, getSocket } from "../../services/websocket";
 import { useMatch, useSetMatch, useClearMatch } from "../../store/matchData"
 import { useSetGameData } from "../../store/gameData";
+
 import CenteredLayout from "../layouts/CenteredLayout"
 import SecondaryButton from "../components/SecondaryButton";
 import { createCancelGameMessage, createPlayGameMessage } from "../../../../shared/messages";
@@ -31,7 +32,7 @@ const WaitingRoom = () => {
 
 		const handleMessage = (event: MessageEvent) => {
 			const data = JSON.parse(event.data);
-			console.log("Received:", data);
+			console.log("[WR] Received:", data);
 
 			if (data.type === "match-state") {
 				setMatch({
@@ -63,22 +64,22 @@ const WaitingRoom = () => {
 
 			if (data.type === "game-canceled"){
 				clearMatch();
-				closeSocket();
+				//closeSocket();
 				navigate("/lobby");
 			}
 
 			if (data.type === "left-match"){
 				clearMatch();
-				closeSocket();
+				//closeSocket();
 				navigate("/lobby");
 			}
 
 			if (data.type === "error") {
 				clearMatch();
-				closeSocket();
+				//closeSocket();
 				navigate("/lobby");
 			}
-
+			
 		}
 
 		socket.addEventListener("message", handleMessage);
@@ -87,14 +88,14 @@ const WaitingRoom = () => {
 			socket.removeEventListener("message", handleMessage);
 		}
 	}, [matchId, navigate]);
-
+	
 	const requiredPlayers = match?.requiredPlayers ?? 0;
 	const connectedPlayers = match?.players.length ?? 0;
 
 	const statusMessage = (connectedPlayers: number, requiredPlayers: number) => {
-		if (match?.status === "canceled")
+		if (match?.status === "canceled") 
 			return "Host disconnected, please return to main menu!";
-		if (connectedPlayers < requiredPlayers)
+		if (connectedPlayers < requiredPlayers) 
 			return "Waiting for players ...";
 		if (match?.host === username)
 			return "All players connected. Ready to start!";
@@ -104,11 +105,11 @@ const WaitingRoom = () => {
 	const handlePlay = () => {
 		if (!matchId) return;
 		sendMessage(createPlayGameMessage(matchId));
-		console.log("Starting game request sent...");
+		console.log("[WR] Starting game request sent...");
 	};
 
 	const handleCancel = () => {
-		console.log("remove the game")
+		console.log("[WR] remove the game")
 		if (!matchId) return;
 		sendMessage(createCancelGameMessage(matchId));
 	}

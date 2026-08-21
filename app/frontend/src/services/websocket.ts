@@ -1,3 +1,4 @@
+import { createLeaveMatchMessage } from "../../../shared/messages";
 
 let socket: WebSocket | null = null;
 let currentMatchId: string | null = null;
@@ -23,15 +24,15 @@ export function openSocket(matchId: string, username: string): WebSocket {
 	currentMatchId = matchId;
 
 	socket.onopen = () => {
-		console.log("WebSocket connected");
+		console.log("[WS/open] WebSocket connected");
 	}
 
 	socket.onerror = (error) => {
-		console.error("WebSocket error: ", error);
+		console.error("[WS/error] WebSocket error: ", error);
 	}
 
 	socket.onclose = () => {
-		console.log("Websocket disconnected");
+		console.log("[WS/close] Websocket disconnected");
 		socket = null;
 		currentMatchId = null;
 	}
@@ -50,9 +51,12 @@ export function getSocket(): WebSocket | null {
 }
 
 export function closeSocket() {
-	if (socket){
-		socket.close();
-		socket = null;
-		currentMatchId = null;
-	}
+
+	if (!socket)
+		return;
+
+	sendMessage(createLeaveMatchMessage())
+	socket.close();
+	socket = null;
+	currentMatchId = null;
 }

@@ -1,10 +1,10 @@
 import { WebSocketServer, WebSocket} from "ws";
 import type http from "http";
-import { broadcastMatch, matchSockets } from "../websocket/matchSockets.ts";
+import { broadcastMatch, matchSockets, handlePlayerLeave } from "../websocket/matchSockets.ts";
 import { lobbyMatches, matches, broadcast } from "../controllers/gameController.ts";
 
-import { handleMessage } from "../game/socketHandlersBE.ts";
-import { WsMessage } from "../../../shared/messages.ts"
+import { handleMessage, playerExit } from "../game/socketHandlersBE.ts";
+import { CreateExitMessage, createGameStateMessage, WsMessage } from "../../../shared/messages.ts"
 import { log } from "console";
 
 //export const games: GameState[] = [];
@@ -25,14 +25,14 @@ export function setupWebSocket(server: http.Server) {
 		const username = url.searchParams.get("username");
 
 		if (!matchId || !username) {
-			console.log("No match ID provided");
+			console.log("[WS/connected] No match ID provided");
 			socket.close();
 			return;
 		}
 
 		let match = matches.get(matchId);
 		if (!match) {
-			console.log(`Match not found: ${matchId}, Local mode?`);
+			console.log(`[WS/connected] Match not found: ${matchId}`);
 			//socket.send(JSON.stringify({ type: "error", message: "Match not found" }));
 			//socket.close();
 			//return;
@@ -42,13 +42,31 @@ export function setupWebSocket(server: http.Server) {
 			matchSockets.set(matchId, new Set());
 		}
 
-		matchSockets.get(matchId)?.add({
-			username: username,
-			ws: socket
-		});
+		const sockets = matchSockets.get(matchId)!;
+		const existingPlayer = [...sockets].find(player => player.username === username)
+
+		if (existingPlayer){
+			console.log(`[WS/connection] Player ${username} reconnected to match ${matchId}.`)
+			existingPlayer.ws = socket;
+			if (existingPlayer.disconnectTimer){
+				clearTimeout(existingPlayer.disconnectTimer)
+				existingPlayer.disconnectTimer = undefined;
+			}
+			if (match && match.status === "started" && match.state){
+				match.state?.updatePlayerSocket(socket, existingPlayer.username);
+				socket.send(JSON.stringify(createGameStateMessage(match.state, existingPlayer.username)));
+			}
+		}
+		else{
+			sockets?.add({
+				username: username,
+				ws: socket,
+				disconnectTimer: undefined
+			})
+		}
 
 		// Send the current match state to the newly connected client
-		if (match){
+		if (match && match.status !== "started"){
 			socket.send(JSON.stringify({
 			type: "match-state",
 			host: match.host,
@@ -57,13 +75,29 @@ export function setupWebSocket(server: http.Server) {
 			players: match.players,
 			status: match.status
 		 }));
+
 		}
 
 		 // use later for broadcasting messages to all clients in the match
 		 socket.on("message", (event) => {
-			console.log("Server received message");
-			// console.log(`No. of matches: ${matches.size}`);
+
 			const message: WsMessage = JSON.parse(event.toString());
+			console.log(`[WS/message] Server received message (type: ${message.type})`);
+			// console.log(`No. of matches: ${matches.size}`);
+
+			if (message.type === "leave-match"){
+				const sockets = matchSockets.get(matchId);
+				if (!sockets) return;
+				const player = [...sockets].find(
+					player => player.ws === socket
+				);
+				
+				if (!player) return;
+
+				handlePlayerLeave(matchId, player);
+
+				return;
+			}
 			//handleMessage(message, socket,	match, games)
 			if (!match)
 				match = matches.get(matchId);
@@ -83,72 +117,31 @@ export function setupWebSocket(server: http.Server) {
 
 			const sockets = matchSockets.get(matchId);
 			if (!sockets) return;
-			const disconnectedPlayer = [...sockets].find(player => player.ws === socket);
-			if (!disconnectedPlayer) return;
 
-			sockets.delete(disconnectedPlayer);
-			console.log(`Player ${disconnectedPlayer.username} disconnected from match ${matchId}`);
+			const player = [...sockets].find(
+				player => player.ws === socket
+			);
 
-			// Host leaves before game started, remove match and notify lobby
-			if (match && disconnectedPlayer.username === match.host && match.status !== "started") {
-				console.log(`Host ${match.host} disconnected. Ending match ${matchId}.`);
-				broadcast("lobby-update", { type: "removed", match });
-				match.status = "canceled";
-				broadcastMatch(matchId, {
-					type: "game-canceled",
-					host: match.host,
-					size: match.size,
-					requiredPlayers: 0,
-					players: [],
-					status: match.status
-				});
-				sockets.forEach((player) => {
-					if (player.ws)
-						player.ws.close();
-				});
-				matches.delete(matchId);
-				lobbyMatches.delete(matchId);
-				matchSockets.delete(matchId);
-				return;
-			}
+			if (!player) return;
 
-			// Normal player leaves
-			if (match){
-			const wasReady = match.status === "ready";
-			match.players = match.players.filter(player => player !== disconnectedPlayer.username);
-			if (wasReady) {
-				match.status = "waiting";
-				broadcast("lobby-update", { type: "created", match });
-				lobbyMatches.set(matchId, match);
-				broadcastMatch(matchId, {
-						type: "match-state",
-						host: match.host,
-						size: match.size,
-						requiredPlayers: match.requiredPlayers,
-						players: match.players,
-						status: match.status
-				});
-				console.log("Match ${matchId} is available again.");
-			}
-			else if (match.status === "started") {
-				const playerIndex = match.state?.playerNames.findIndex((name) => name === disconnectedPlayer.username);
-				if (playerIndex !== undefined && playerIndex >= 0)
-					match.state?.playerExit(socket, playerIndex);
-			}
-			else {
-				// update player count -> needs to be implemented in the frontend lobby
-				broadcast("lobby-update", { type: "updated", match });
-			}
+			console.log(`[WS/close] Player ${player.username} disconnected from match ${matchId}`)
 
-			if (sockets.size === 0) {
-				console.log(`All players disconnected from match ${matchId}. Cleaning up.`);
-				lobbyMatches.delete(matchId);
-				matchSockets.delete(matchId);
-				matches.delete(matchId);
-			}
+			player.ws = null;
 
-		}
+			player.disconnectTimer = setTimeout(() => {
+				if (player.ws !== null){
+					return;
+				}
 
+				console.log(`[WS/close] Player ${player.username} did not reconnect`)
+
+				handlePlayerLeave(matchId, player);
+				// if (match && match.status === "started" && match.state){
+				// 	const playerIndex = match.state?.getPlayerIndex(username);
+				// 	playerExit(CreateExitMessage(matchId, playerIndex), socket, match)
+				// }
+					
+			}, 5000);
 		});
 	});
 

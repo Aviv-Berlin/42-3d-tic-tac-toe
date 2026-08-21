@@ -152,7 +152,7 @@ export class GameState {
         this.gameData.gameEnd = Date.now();
         this.disributeMessage(createEndMessage(this.gameData, winningPositions, -1));
         try{
-            createMatchEntry(this.gameData.player1, this.gameData.player2, winnerData, this.gameData.gameStart, this.gameData.gameEnd, this.gameData.moves);}
+            createMatchEntry(this.gameData.player1, this.gameData.player2, winnerData, this.gameData.gameStart, this.gameData.gameEnd, this.gameData.size, this.gameData.moves);}
         catch (error) {
             console.error(error);}
     }
@@ -164,7 +164,7 @@ export class GameState {
         this.gameData.gameEnd = Date.now();
         this.disributeMessage(createEndMessage(this.gameData, null, -1));
         try{
-            createMatchEntry(this.gameData.player1, this.gameData.player2, null, this.gameData.gameStart, this.gameData.gameEnd, this.gameData.moves);}
+            createMatchEntry(this.gameData.player1, this.gameData.player2, null, this.gameData.gameStart, this.gameData.gameEnd, this.gameData.size, this.gameData.moves);}
         catch (error) {
             console.error(error);}
     }
@@ -182,7 +182,7 @@ export class GameState {
 
 	public updatePlayerSocket(socket: WebSocket | null, username: string){
 		const player = this.players.find(p => p.type === "remote" && p.name === username);
-		
+
 		if (!player || player.type !== "remote") return;
 
 		player.socket = socket;

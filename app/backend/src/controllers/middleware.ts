@@ -1,5 +1,16 @@
 import { type Request, type Response, type NextFunction } from 'express';
+import userQueries from "../database/userQueries.ts";
 import jwt from 'jsonwebtoken';
+
+declare global {
+	namespace Express {
+	  interface Request {
+		userData?: {
+		  id: number;
+		};
+	  }
+	}
+  }
 
 const secret = process.env.SECRET
 if (!secret){
@@ -36,10 +47,13 @@ export const checkToken = (request: Request, response: Response, next: NextFunct
 		response.status(401).json({ error: 'misisng or invalid token' })
 		return;
 	}
-	// TODO: Next thing to implement is identifying the user by their token
-	// const user = await User.findById(decodedToken.id)
+	if (!request.userData)
+		request.userData = {id: decodedToken.id};
+	else
+		request.userData.id = decodedToken.id;
+	// const user = userQueries.getUserByID(decodedToken.id);
 	// if (!user) {
-	//	return response.status(400).json({ error: 'UserId missing or not valid' })
+	// 	return response.status(400).json({ error: 'UserId missing or not valid' })
 	// }
 	next()
 }

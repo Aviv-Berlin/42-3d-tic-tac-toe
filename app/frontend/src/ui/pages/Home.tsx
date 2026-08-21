@@ -22,7 +22,7 @@ const Home = () => {
       <div className="flex flex-col gap-12">
         <div className="flex flex-col gap-2">
           <p className="text-lg">{`Welcome back ${username}!`}</p>
-          <p className="text-5xl font-serif italic">Ready to play?</p>
+          <p className="text-5xl font-ibm">Ready to play?</p>
         </div>
         <div className="flex flex-col md:flex-row gap-4">
           <MainButton onClick={() => handleClick("online")}>PLAY ONLINE</MainButton>

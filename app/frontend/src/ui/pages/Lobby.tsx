@@ -65,10 +65,10 @@ const Lobby = () => {
             <div className="absolute left-0">
               <SecondaryButton onClick={() => navigate('/home')}>← Back</SecondaryButton>
             </div>
-            <h1 className="text-xl">Mode: <span className="font-serif italic">Online</span></h1>
+            <h1 className="text-xl">Mode: <span className="font-ibm">Online</span></h1>
           </div>
           <div className="flex flex-col gap-4 items-center">
-            <p className="text-xl font-serif italic">There are currently no active games.</p>
+            <p className="text-xl font-ibm">There are currently no active games.</p>
             <MainButton onClick={() => navigate('/game-settings?game-mode=online')}>
               + Create Game
             </MainButton>

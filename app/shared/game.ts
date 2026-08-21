@@ -21,6 +21,7 @@ export interface ActiveGame {
 export interface Move {
   pos: GridPosition;
   player: CellState;
+  time: Date;
 }
 
 export interface GameData {

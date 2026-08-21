@@ -4,6 +4,7 @@ import { GameData, PlayerData } from "../../../shared/game.js";
 import { WebSocket } from "ws";
 import { AiPlayer } from "./AIPlayer.ts"
 import { WsMessage, createEndMessage, createGameStartMessage, CreateTurnMessage, createMoveMessage } from "../../../shared/messages.ts"
+import { createMatchEntry } from "../database/gameQueries.ts";
 
 
 interface RemotePlayer {
@@ -88,7 +89,8 @@ export class GameState {
         //do we need to do here a check that the right player actually made the move?
         this.moveCounter++;
         this.boardState[pos.x][pos.y][pos.z] = playerState;
-        this.gameData.moves.push({ pos: pos, player: playerState });
+        const timeNow = new Date();
+        this.gameData.moves.push({ pos: pos, player: playerState, time: timeNow});
         this.disributeMessage(createMoveMessage(this.gameData.gameID, playerState, this.currentPlayerIndex, pos));
         const winningPositions = checkWin(this.boardState, pos, playerState, this.N);
         if (winningPositions) {
@@ -149,6 +151,10 @@ export class GameState {
         this.gameData.winner = winnerData;
         this.gameData.gameEnd = Date.now();
         this.disributeMessage(createEndMessage(this.gameData, winningPositions, -1));
+        try{
+            createMatchEntry(this.gameData.player1, this.gameData.player2, winnerData, this.gameData.gameStart, this.gameData.gameEnd, this.gameData.moves);}
+        catch (error) {
+            console.error(error);}
     }
 
     private endGameDraw() {
@@ -157,6 +163,10 @@ export class GameState {
         this.gameData.isDraw = true;
         this.gameData.gameEnd = Date.now();
         this.disributeMessage(createEndMessage(this.gameData, null, -1));
+        try{
+            createMatchEntry(this.gameData.player1, this.gameData.player2, null, this.gameData.gameStart, this.gameData.gameEnd, this.gameData.moves);}
+        catch (error) {
+            console.error(error);}
     }
 
     public dispose(): void {

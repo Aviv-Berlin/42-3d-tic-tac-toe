@@ -9,9 +9,14 @@ export async function getGameHistory(request: Request, response: Response) {
 	if (!id)
 		return response.status(400).json({
 			error: 'no user id in token'
-		});;
+		});
 	try{
 		const games = await statsQueries.getUserGames(id);
+		if (!games) {
+			return response.status(400).json({
+				error: 'invalid user id'
+			});
+		}
 		return games;
 	}
 	catch (error) {

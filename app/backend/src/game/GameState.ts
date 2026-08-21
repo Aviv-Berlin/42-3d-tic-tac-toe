@@ -46,23 +46,23 @@ export class GameState {
 
     public async startGame(): Promise<void> {
         if (this.gameData.gameStart > 0){
-			console.log("game already started")
+			console.log("[startGame] game already started")
             return ;
 		}
         if (this.players.length < this.nPlayers) {
-            console.log(`Still waiting for players`);
+            console.log(`[startGame] Still waiting for players`);
             return ;
         }
         this.gameData.gameStart = Date.now();
         const msg = createGameStartMessage(this.gameData.gameID, this.playerNames, this.nPlayers, 0);
-        console.log("Sending game-start messages");
+        console.log("[startGame] Sending game-start messages");
         this.disributeMessage(msg);
-        console.log("Finished sending game-start messages");
+        console.log("[startGame] Finished sending game-start messages");
 
 
         if (this.gameData.moves === null)
             this.gameData.moves = [];
-        console.log(`handing yourTurn to player`);
+        console.log(`[startGame] handing yourTurn to player`);
         this.currentPlayerIndex = Math.floor(Math.random() * this.players.length);
         this.disributeMessage(CreateTurnMessage(this.gameData.gameID, this.currentPlayerIndex));
 	}
@@ -170,6 +170,14 @@ export class GameState {
         return this.gameData.gameID;
     }
 
+	public updatePlayerSocket(socket: WebSocket | null, username: string){
+		const player = this.players.find(p => p.type === "remote" && p.name === username);
+		
+		if (!player || player.type !== "remote") return;
+
+		player.socket = socket;
+	}
+
     public addPlayer(socket: WebSocket | null, name: string) {
         for (const player of this.players) {
             if (player.type === "remote" && player.socket === socket) {
@@ -177,12 +185,12 @@ export class GameState {
             }
         }
         if (this.players.length >= this.nPlayers) {
-            console.log(`enough players already ${this.players.length} ${this.nPlayers}`)
+            //console.log(`enough players already ${this.players.length} ${this.nPlayers}`)
             return;
         }
         this.players.push({ type: "remote", name, socket });
         this.playerNames.push(name);
-        console.log(`players: ${Array.from(this.playerNames)}`);
+        //console.log(`players: ${Array.from(this.playerNames)}`);
     }
 
     public addAiPlayer(ai: AiPlayer, name: string): void {
@@ -194,7 +202,21 @@ export class GameState {
         return this.boardState;
     }
 
+	public getReconnectState(username: string) {
+    return {
+		boardState: this.boardState,
+		playerNames: this.playerNames,
+		currentPlayerIndex: this.currentPlayerIndex,
+		gameData: this.gameData,
+		//
+        localPlayerIndex: this.playerNames.indexOf(username),
+        guestPlayerIndex: this.playerNames.indexOf("guest"),
+    	};
+	}
 
+	public getPlayerIndex(username: string){
+		return this.playerNames.indexOf(username)
+	}
 
     public removeGame(games: GameState[]) {
         const index = games.findIndex(game => game.getID() === this.gameData.gameID);

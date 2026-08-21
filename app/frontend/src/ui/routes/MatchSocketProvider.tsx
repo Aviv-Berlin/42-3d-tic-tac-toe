@@ -13,14 +13,14 @@ const MatchSocketProvider = () => {
 		);
 
 		if (!matchPath) {
-			console.log("User left match");
+			console.log("[PROVIDER] User left match");
 			closeSocket();
 			return;
 		}
 
 		const matchId = matchPath[2];
 
-		console.log("User is in match:", matchId);
+		console.log("[PROVIDER] User is in match:", matchId);
 		openSocket(matchId, username);
 	}, [location.pathname]);
 

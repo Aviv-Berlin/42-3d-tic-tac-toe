@@ -32,7 +32,6 @@ function joinGame(message: JoinGameMessage, ws: WebSocket, match: Match) {
 
 function StartGame(message: StartGameMessage, match: Match){
 	// const data = message.payload.gameData;
-	console.log("in StartGame")
 	const game = match.state;
 	if (game)
 		game.startGame();
@@ -52,11 +51,11 @@ export function makeMove(message: MoveMessage, ws: WebSocket, match: Match) {
 	}
 }
 
-function playerExit(message: ExitMessage, ws: WebSocket, match: Match) {
+export function playerExit(message: ExitMessage, ws: WebSocket, match: Match) {
 	const data = message.payload;
 	const game = match.state;
 	if (!game) {
-		console.log(`Invalid gameID ${data.gameID}`);
+		console.log(`[playerExit] Invalid gameID ${data.gameID}`);
 		ws.send(JSON.stringify(`Invalid gameID ${data.gameID}`));
 		return ;
 	}
@@ -65,33 +64,30 @@ function playerExit(message: ExitMessage, ws: WebSocket, match: Match) {
 
 
 export function handleMessage(message: WsMessage, ws: WebSocket, match: Match | null) {
-	//console.log(`Received message: ${message}`);
-	console.log(`TYPE: ${message.type} \n`)
+
 	switch (message.type) {
 			case "play-local":
 				PlayLocal(message, ws);
-				console.log(`Received play-local msg: ${message}`);
+				//console.log(`Received play-local msg: ${message}`);
 				break;
 			case "play-game":
 				if (match)
 					PlayGame(message, ws, match);
-				console.log(`Received play-game msg: ${message}`);
+				//console.log(`Received play-game msg: ${message}`);
 				break;
 			case "cancel-game":
 				CancelGame(message, ws);
-				console.log(`Received cancel-game msg: ${message}`);
+				//console.log(`Received cancel-game msg: ${message}`);
 				break;
 			case "start-game":
-				if (!match)
-					console.log("match is null")
 				if (match)
 					StartGame(message, match);
-				console.log(`Received start-game msg: ${message}`);
+				//console.log(`Received start-game msg: ${message}`);
 				break;
 			case "join-game":
 				if (match)
 					joinGame(message, ws, match); // prev. joinGame
-				console.log(`Received join-game msg: ${message}`);
+				//console.log(`Received join-game msg: ${message}`);
 				break;
 			case "move":
 				if (match)
@@ -102,7 +98,7 @@ export function handleMessage(message: WsMessage, ws: WebSocket, match: Match | 
 					playerExit(message, ws, match);
 				break;
 			default:
-				console.log(`Unknown message: ${message}`);
+				//console.log(`Unknown message: ${message}`);
 		}
 }
 

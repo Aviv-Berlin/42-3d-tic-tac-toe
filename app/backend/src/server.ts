@@ -51,7 +51,7 @@ setupWebSocket(server);
 
 // Start everything
 server.listen(process.env.PORT, () => {
-	console.log(`Server running on port ${process.env.PORT}`);
+	console.log(`[SERVER] Server running on port ${process.env.PORT}`);
 });
 
 // CHECKOUT DIFF!!!

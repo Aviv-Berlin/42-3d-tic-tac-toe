@@ -66,7 +66,6 @@ const GameSettings = () => {
           navigate(`/game/${data.id}?game-mode=${gameMode}&level=${level}&size=${data.size}`);
         }
       }
-
       socket.addEventListener("message", handleMessage);
       socket.addEventListener("open", () => {
         sendMessage(createPlayLocalMessage(match));

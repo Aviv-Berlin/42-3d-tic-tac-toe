@@ -3,9 +3,10 @@ import { LocalPlayer } from "./LocalPlayer"
 import { GameData } from "../../../shared/game";
 import { GridPosition, CellState, PLAYER_STATES } from "../../../shared/game/Types"
 import { WsMessage } from "../../../shared/messages"
-import { createMoveMessage, createExitMessage } from "../../../shared/messages"
+import { createMoveMessage, CreateExitMessage } from "../../../shared/messages"
 import { Board } from "./Board"
-
+import game from "../services/game";
+//import { useSetGameData } from "../store/gameData";
 
 export class GameServerConnection {
     private boardState: CellState [][][] = [];
@@ -37,6 +38,7 @@ export class GameServerConnection {
     }
 
     public async handleMessage(message: WsMessage) {
+		//const setGameData = useSetGameData(); move to component
         console.log("Received message:", message);
         switch (message.type) {
             case "game-start":
@@ -86,10 +88,83 @@ export class GameServerConnection {
                 setTimeout(() => {this.onExit();}, 3000);
                 break;
 
+			case "game-state":
+    			const state = message.payload;
+				
+				this.boardState = state.boardState;
+    			this.playerNames = state.playerNames;
+    			this.localPlayerIndex = state.localPlayerIndex;
+    			this.guestPlayerIndex = state.guestPlayerIndex;
+    			this.currentPlayerIndex = state.currentPlayerIndex;
+    			this.gameData = state.gameData;
+				//setGameData(state.gameData) move to component
+				console.log("GameData:", this.gameData);
+
+    			// restore board 
+    			this.renderBoard();
+
+				// restore end of game
+				if (this.gameData.isFinished){
+					this.restoreEnd();
+					break;
+				}
+			
+    			// Restore whose turn it is
+    			this.restoreTurn();
+				break;
+
             default:
                 console.log(`Unknown message: ${message}`);
         }
     }
+
+	public renderBoard(){
+		for (let x = 0; x < this.N; x++) {
+    			    for (let y = 0; y < this.N; y++) {
+    			        for (let z = 0; z < this.N; z++) {
+    			            const player = this.boardState[x][y][z];
+						
+    			            if (player !== CellState.Empty) {
+    			                this.board.placeMoveMesh(
+    			                    { x, y, z },
+    			                    player,
+    			                    false
+    			                );
+    			            }
+    			        }
+    			    }
+    			}
+	}
+
+	public async restoreEnd(){
+                this.board.hidePreview();
+                if (this.gameData.winner) {
+                    await this.ui.displayWinner(this.gameData.winner.username, "WINS!");
+                }
+
+                else if (this.gameData.endMessage) {
+    				const whoLeft = this.playerNames.find(name =>
+        			this.gameData.endMessage?.startsWith(`${name} has left the game`)
+    				);
+					if (whoLeft){
+						await this.ui.displayWinner(whoLeft, "left game");
+					}
+				}
+				else {
+                    await this.ui.displayWinner("No one", "wins");
+                }
+                setTimeout(() => {this.onExit();}, 3000);
+	}
+
+	public async restoreTurn(){
+		await this.ui.playerTitle(this.playerNames[this.currentPlayerIndex]);
+                if (this.currentPlayerIndex === this.localPlayerIndex)
+                    this.localPlayer.yourTurn(this.boardState, this.N, PLAYER_STATES[this.localPlayerIndex]);
+                else if (this.currentPlayerIndex === this.guestPlayerIndex)
+                    this.guestPlayer.yourTurn(this.boardState, this.N, PLAYER_STATES[this.guestPlayerIndex]);
+                else
+                    this.board.hidePreview();
+	}
 
     public register(player: LocalPlayer): void {
         if (this.players.length >= this.nPlayers)
@@ -110,7 +185,7 @@ export class GameServerConnection {
     }
 
     public exitGame() {
-        this.ws.send(JSON.stringify(createExitMessage(this.gameID, this.localPlayerIndex)));
+        this.ws.send(JSON.stringify(CreateExitMessage(this.gameID, this.localPlayerIndex)));
         this.onExit();
     }
 

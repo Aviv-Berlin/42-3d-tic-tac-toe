@@ -41,5 +41,7 @@ export async function getMatchReplay(id: number) {
 export default {
 	getUserGames,
 	getUserWins,
+	getUserDraws,
+	getUserLosses,
 	getMatchReplay
 };

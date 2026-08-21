@@ -2,15 +2,29 @@ import { type Request, type Response, type NextFunction } from 'express';
 import userQueries from "../database/userQueries.ts";
 import jwt from 'jsonwebtoken';
 
+/*
 declare global {
 	namespace Express {
 	  interface Request {
-		userData?: {
+		//userData: {
+		//  id: number;
+		//  id_str: string;
+		//};
+		userData: {
 		  id: number;
+		  username: string;
 		};
 	  }
 	}
   }
+*/
+
+export interface ValidatedRequest extends Request {
+	userData: {
+	  id: number;
+	  username: string;
+	};
+}
 
 const secret = process.env.SECRET
 if (!secret){
@@ -28,7 +42,18 @@ const getTokenFrom = (request: Request) => {
 	return (token_cookie)
 }
 
-export const checkToken = (request: Request, response: Response, next: NextFunction) => {
+export const deriveUsername = async ( request: ValidatedRequest, response: Response, next: NextFunction) => {
+	const user = await userQueries.getUserByID(decodedToken.id);
+	// TODO: does getUserByID really return null if not found?
+	if (!user || !user.username || !user.id) {
+		response.status(401).json({ error: 'token does not correspond to a user' })
+		return;
+	}
+	request.userData.id = user.id;
+	request.userData.username = user.username;
+}
+
+export const checkToken = async (request: Request, response: Response, next: NextFunction) => {
 	const token = getTokenFrom(request)
 	if (!token) {
 		console.log("Error: checkToken(): missing token");
@@ -47,13 +72,12 @@ export const checkToken = (request: Request, response: Response, next: NextFunct
 		response.status(401).json({ error: 'misisng or invalid token' })
 		return;
 	}
-	if (!request.userData)
-		request.userData = {id: decodedToken.id};
-	else
-		request.userData.id = decodedToken.id;
-	// const user = userQueries.getUserByID(decodedToken.id);
-	// if (!user) {
-	// 	return response.status(400).json({ error: 'UserId missing or not valid' })
-	// }
+	request.userData.username = "";
+	request.userData.id = 0;
+	deriveUsername(request, response, next);	
 	next()
 }
+
+// Ref:
+// https://blog.logrocket.com/extend-express-request-object-typescript/
+//  https://stackoverflow.com/questions/37377731/extend-express-request-object-using-typescript

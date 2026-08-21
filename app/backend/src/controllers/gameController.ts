@@ -83,24 +83,29 @@ export async function createMatch(request: Request, response: Response) {
 		});
 	}
 
-	const existingMatch = Array.from(lobbyMatches.values()).find(match => match.host === body.host);
+//	const existingMatch = Array.from(lobbyMatches.values()).find(match => match.host === body.host);
+	const existingMatch = Array.from(lobbyMatches.values()).find(match => match.host === request.userData.username);
 	if (existingMatch) {
-		console.log(`[createMatch] Host ${body.host} already has a match.`);
+		//console.log(`[createMatch] Host ${body.host} already has a match.`);
+		console.log(`[createMatch] Host ${request.userData.username} already has a match.`);
 		return response.status(400).json({
 			error: "You already have a hosted match"
 		});
 	}
-	console.log('[createMatch] match created by host:', body.host);
+	//console.log('[createMatch] match created by host:', body.host);
+	console.log('[createMatch] match created by host:', request.userData.username);
 
 	const matchId = crypto.randomUUID(); // Generate a unique match ID
 	const newMatch: Match = {
 		id: matchId,
-		host: body.host,
+		//host: body.host,
+		host: request.userData.username,
 		mode: "online",
 		level: 0,
 		size: body.size,
 		requiredPlayers: body.requiredPlayers,
-		players: [body.host],
+		//players: [body.host],
+		players: [request.userData.username],
 		status: "waiting",
 		state: null
 	}

@@ -2,13 +2,14 @@ import { query } from "./db.ts";
 import userQueries from "./userQueries.ts";
 import { PlayerData, Move } from "../../../shared/game.ts";
 
-interface MatchEntry {
+export interface MatchEntry {
 	id: number,
 	player1: number,
 	player2: number,
 	winner: number,
 	started_at: Date,
 	ended_at: Date,
+	board_size: number
   }
 // Creating a game
 export async function createMatchEntry(p1: PlayerData, p2: PlayerData, winner: PlayerData | null, start: number, end: number, board_size: number, moves: Move[]) {

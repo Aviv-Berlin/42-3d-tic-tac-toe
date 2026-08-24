@@ -55,7 +55,7 @@ CREATE TABLE matches(
 	winner INT REFERENCES users(id), -- NULL on draw
 	started_at TIMESTAMPTZ DEFAULT NOW(),
 	ended_at TIMESTAMPTZ,
-	board_size INT NOT NULL,
+	board_size INT NOT NULL
 );
 
 CREATE TABLE moves(

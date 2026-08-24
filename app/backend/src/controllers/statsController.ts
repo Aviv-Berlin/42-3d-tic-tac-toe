@@ -1,6 +1,37 @@
 import statsQueries from "../database/statsQueries.ts";
 import { type Request, type Response } from 'express';
+import { GameData, Move, PlayerData } from '../../../shared/game.ts';
+import { MatchEntry } from '../database/gameQueries.ts';
 
+function convertToGameData(rows: MatchEntry[]): GameData[] {
+
+	const all_games : GameData[] = [];
+	for (let i = 0; i < 5; i++){
+		if (!rows[i]){
+			break;
+		}
+		// TEMPORARY DUMMY VALUES / WORK IN PROGRESS
+		// properly translating database query results into GameData is
+		// do-able but will require a lot of code. Should be separate PR.
+		const game : GameData = {
+			player1: { type: "real", username: `Player #${rows[i].player1}`},
+			player2: { type: "real", username: `Player #${rows[i].player2}`},
+			level: 0,
+			gameMode: "online",
+			winner: { type: "real", username: `Player #${rows[i].player1}`},
+			moves: [],
+			size: 3,
+			isFinished: true,
+			isDraw: true,
+			gameStart: 2038,
+			gameEnd: 256,
+			gameID: "fake_game_id",
+			endMessage: null
+		}
+		all_games.push(game);
+	}
+	return (all_games);
+}
 
 export async function getGameHistory(request: Request, response: Response) {
 	const id = request.userData?.id;
@@ -15,7 +46,7 @@ export async function getGameHistory(request: Request, response: Response) {
 				error: 'invalid user id'
 			});
 		}
-		const games = result.rows;
+		const games: GameData[] = convertToGameData(result.rows);
 		return response.status(200).json(games);
 	}
 	catch (error) {

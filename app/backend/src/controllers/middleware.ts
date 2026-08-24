@@ -1,5 +1,18 @@
 import { type Request, type Response, type NextFunction } from 'express';
+import userQueries from "../database/userQueries.ts";
 import jwt from 'jsonwebtoken';
+
+
+declare global {
+	namespace Express {
+	  interface Request {
+		userData: {
+		  id: number;
+		  username: string;
+		};
+	  }
+	}
+  }
 
 const secret = process.env.SECRET
 if (!secret){
@@ -11,13 +24,13 @@ const getTokenFrom = (request: Request) => {
 	const cookie = request.cookies;
 	if (!cookie){
 		console.log('getTokenFrom... !cookies')
-		return null // TODO temp hack what should it actually return
+		return null
 	}
 	const token_cookie = cookie['token']
 	return (token_cookie)
 }
 
-export const checkToken = (request: Request, response: Response, next: NextFunction) => {
+export const checkToken = async (request: Request, response: Response, next: NextFunction) => {
 	const token = getTokenFrom(request)
 	if (!token) {
 		console.log("Error: checkToken(): missing token");
@@ -36,10 +49,14 @@ export const checkToken = (request: Request, response: Response, next: NextFunct
 		response.status(401).json({ error: 'misisng or invalid token' })
 		return;
 	}
-	// TODO: Next thing to implement is identifying the user by their token
-	// const user = await User.findById(decodedToken.id)
-	// if (!user) {
-	//	return response.status(400).json({ error: 'UserId missing or not valid' })
-	// }
-	next()
+	const user = await userQueries.getUserByID(decodedToken.id);
+	if (!user || !user.username || !user.id) {
+		response.status(401).json({ error: 'token does not correspond to a user' })
+		return;
+	}
+	request.userData = {
+		id: user.id,
+		username: user.username,
+	};
+	next();
 }

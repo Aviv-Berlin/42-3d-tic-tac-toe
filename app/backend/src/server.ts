@@ -43,7 +43,7 @@ app.use("/v1/auth", authRoutes);
 // add middleware for token verification for game routes
 
 app.use("/v1/game", checkToken, gameRoutes);
-app.use("/v1/game", checkToken, statsRoutes);
+app.use("/v1/stats", checkToken, statsRoutes);
 
 // HTTP Server
 const server = http.createServer(app);

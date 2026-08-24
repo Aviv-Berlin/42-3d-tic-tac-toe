@@ -13,6 +13,7 @@ router.get('/profile/draws', stats.getDrawTotal);
 router.get('/profile/losses', stats.getLossTotal);
 
 //get list of moves for a game
-router.post('/game-moves', stats.getMoves);
+// router.post('/game-moves', stats.getMoves);
+// TODO
 
 export default router;

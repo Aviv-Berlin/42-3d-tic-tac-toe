@@ -102,5 +102,5 @@ export default {
 	getWinTotal,
 	getDrawTotal,
 	getLossTotal,
-
+	//getMoves // TODO
 };

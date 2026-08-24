@@ -9,13 +9,14 @@ export async function getGameHistory(request: Request, response: Response) {
 			error: 'no user id in token'
 		});
 	try{
-		const games = await statsQueries.getUserGames(id);
-		if (!games) {
+		const result = await statsQueries.getUserGames(id);
+		if (!result || !result.rows) {
 			return response.status(400).json({
 				error: 'invalid user id'
 			});
 		}
-		return games;
+		const games = result.rows;
+		return response.status(200).json(games);
 	}
 	catch (error) {
 		console.error(error);
@@ -38,7 +39,7 @@ export async function getWinTotal(request: Request, response: Response) {
 				error: 'invalid user id'
 			});
 		}
-		return wins;
+		return response.status(200).json(wins);
 	}
 	catch (error) {
 		console.error(error);
@@ -61,7 +62,7 @@ export async function getDrawTotal(request: Request, response: Response) {
 				error: 'invalid user id'
 			});
 		}
-		return draws;
+		return response.status(200).json(draws);
 	}
 	catch (error) {
 		console.error(error);
@@ -84,7 +85,7 @@ export async function getLossTotal(request: Request, response: Response) {
 				error: 'invalid user id'
 			});
 		}
-		return losses;
+		return response.status(200).json(losses);
 	}
 	catch (error) {
 		console.error(error);

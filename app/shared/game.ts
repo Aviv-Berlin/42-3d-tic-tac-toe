@@ -39,3 +39,13 @@ export interface GameData {
   gameID: string;
   endMessage: string | null;
 }
+
+export type Outcome = "WIN" | "LOSS" | "DRAW";
+
+export interface GameSummary {
+  outcome: Outcome;
+  opponent: string;
+  gameMode: GameMode;
+  size: number;
+  moves: Move[];
+}

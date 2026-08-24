@@ -1,12 +1,37 @@
+import { useState, useEffect } from 'react';
 import ProfileLayout from '../layouts/ProfileLayout';
 import GameRecap from '../components/GameRecap';
 import { GameData } from '../../../../shared/game'
+import statsService from "../../services/stats";
+import { getErrorMessage } from "../../utils/errors";
 
 const Profile = () => {
 
   // this array will need to be fetched from the backend
   // im using the same interface that gets passed to babylon
   // send only the last 5 games
+
+  const [games, setGames] = useState<GameData[]>([]);
+  const [winTotal, setWinTotal] = useState(0);
+  const [drawTotal, setDrawTotal] = useState(0);
+  const [lossTotal, setLossTotal] = useState(0);
+  const [errorMessage, setErrorMessage] = useState('');
+
+  const fillStats = async () => {
+    try {
+      const response = await statsService.getGameHistory();
+      console.log("Retrieved gameHistory");
+      setGames(response.data);
+    } catch (err) {
+      setErrorMessage(getErrorMessage(err));
+    }
+  };
+
+  useEffect(() => {
+    fillStats(); 
+  }, []);
+
+  /*
   const games: GameData[] = [
     {
       player1: {
@@ -81,7 +106,7 @@ const Profile = () => {
 	  endMessage: null
     }
   ];
-
+*/
   return (
     <ProfileLayout>
       <div className="border-r p-8 flex flex-col gap-4">

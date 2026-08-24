@@ -82,30 +82,30 @@ export async function createMatch(request: Request, response: Response) {
 			error: 'match data incomplete'
 		});
 	}
-
-//	const existingMatch = Array.from(lobbyMatches.values()).find(match => match.host === body.host);
-	const existingMatch = Array.from(lobbyMatches.values()).find(match => match.host === request.userData.username);
+	if (!request.userData || !request.userData.id || !request.userData.username) {
+		return response.status(400).json({
+			error: 'missing or invalid token'
+		});
+	}
+	const gameHost = request.userData.username;
+	const existingMatch = Array.from(lobbyMatches.values()).find(match => match.host === gameHost);
 	if (existingMatch) {
-		//console.log(`[createMatch] Host ${body.host} already has a match.`);
-		console.log(`[createMatch] Host ${request.userData.username} already has a match.`);
+		console.log(`[createMatch] Host ${gameHost} already has a match.`);
 		return response.status(400).json({
 			error: "You already have a hosted match"
 		});
 	}
-	//console.log('[createMatch] match created by host:', body.host);
-	console.log('[createMatch] match created by host:', request.userData.username);
+	console.log('[createMatch] match created by host:', gameHost);
 
 	const matchId = crypto.randomUUID(); // Generate a unique match ID
 	const newMatch: Match = {
 		id: matchId,
-		//host: body.host,
-		host: request.userData.username,
+		host: gameHost,
 		mode: "online",
 		level: 0,
 		size: body.size,
 		requiredPlayers: body.requiredPlayers,
-		//players: [body.host],
-		players: [request.userData.username],
+		players: [gameHost],
 		status: "waiting",
 		state: null
 	}
@@ -127,6 +127,13 @@ export async function joinMatch(request: Request, response: Response) {
 	const match = lobbyMatches.get(body.matchId);
 
 	//console.log(`[LOBBY] Player ${body.player} requests to join match ${body.matchId} (host: ${match?.host})`);
+	
+	if (!request.userData || !request.userData.id || !request.userData.username) {
+		return response.status(400).json({
+			error: 'missing or invalid token'
+		});
+	}
+	const gamePlayer = request.userData.username;
 
 	if (!match) {
 		return response.status(404).json({
@@ -134,7 +141,7 @@ export async function joinMatch(request: Request, response: Response) {
 		});
 	}
 
-	if (match.players.includes(body.player)) {
+	if (match.players.includes(gamePlayer)) {
 		return response.status(400).json({
 			error: 'player already in match'
 		});
@@ -153,8 +160,8 @@ export async function joinMatch(request: Request, response: Response) {
 	}
 
 	// Add player to the match
-	match.players.push(body.player);
-	console.log(`[joinMatch] Player ${body.player} joined match ${body.matchId} (host: ${match?.host})`);
+	match.players.push(gamePlayer);
+	console.log(`[joinMatch] Player ${gamePlayer} joined match ${body.matchId} (host: ${match?.host})`);
 	broadcastMatch(match.id, {
 		type: "match-state",
 		host: match.host,

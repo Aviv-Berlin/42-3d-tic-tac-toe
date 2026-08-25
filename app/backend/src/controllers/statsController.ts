@@ -36,7 +36,7 @@ function convertToGameData(rows: MatchEntry[]): GameData[] {
 }
 */
 
-function convertToGameSummary(row: MatchEntry, id: number): GameSummary[] {
+async function convertToGameSummary(row: MatchEntry, id: number) {
 
 	const opponent_id = row.player1 === id ? row.player2 : row.player1;
 	const outcome =
@@ -48,11 +48,11 @@ function convertToGameSummary(row: MatchEntry, id: number): GameSummary[] {
 		opponent_id === 1 ? "local" :
 		"online";
 	const summary: GameSummary = {
-		opponent: userQueries.getUserByID(opponent_id),
+		opponent: await userQueries.getUserByID(opponent_id),
 		outcome: outcome,
-		gameMode: mode;
-		size: row.board_size;
-		moves: null; // TODO
+		gameMode: mode,
+		size: row.board_size,
+		moves: null // TODO
 	}
 	return (summary);
 }
@@ -81,7 +81,7 @@ export async function getGameHistory(request: Request, response: Response) {
 			all_games.push(game);
 		}
 	}
-		return response.status(200).json(games);
+		return response.status(200).json(all_games);
 	}
 	catch (error) {
 		console.error(error);

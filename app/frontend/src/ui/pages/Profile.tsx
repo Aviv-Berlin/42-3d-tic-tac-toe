@@ -1,17 +1,13 @@
 import { useState, useEffect } from 'react';
 import ProfileLayout from '../layouts/ProfileLayout';
 import GameRecap from '../components/GameRecap';
-import { GameData } from '../../../../shared/game'
+import { GameHistory } from '../../../../shared/game'
 import statsService from "../../services/stats";
 import { getErrorMessage } from "../../utils/errors";
 
 const Profile = () => {
-
-  // this array will need to be fetched from the backend
-  // im using the same interface that gets passed to babylon
-  // send only the last 5 games
-
-  const [games, setGames] = useState<GameData[]>([]);
+  
+  const [games, setGames] = useState<GameHistory[]>([]);
   const [winTotal, setWinTotal] = useState(0);
   const [drawTotal, setDrawTotal] = useState(0);
   const [lossTotal, setLossTotal] = useState(0);
@@ -20,7 +16,7 @@ const Profile = () => {
   const fillStats = async () => {
     try {
       const response = await statsService.getGameHistory();
-      console.log("Retrieved gameHistory");
+      console.log("Retrieved GameHistory");
       setGames(response.data);
     } catch (err) {
       setErrorMessage(getErrorMessage(err));
@@ -36,7 +32,7 @@ const Profile = () => {
       <div className="border-r p-8 flex flex-col gap-4">
         <h2 className="text-3xl font-serif italic">Recent Games</h2>
         {games.map((game, i) => (
-          <GameRecap key={i} gameData={game} />
+          <GameRecap key={i} gameHistory={game} />
         ))}
       </div>
       <div className="flex flex-col p-8 gap-4">

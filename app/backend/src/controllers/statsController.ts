@@ -1,7 +1,7 @@
 import statsQueries from "../database/statsQueries.ts";
 import userQueries from "../database/userQueries.ts";
 import { type Request, type Response } from 'express';
-import { GameSummary } from '../../../shared/game.ts';
+import { GameHistory } from '../../../shared/game.ts';
 import { MatchEntry } from '../database/gameQueries.ts';
 
 /*
@@ -36,7 +36,7 @@ function convertToGameData(rows: MatchEntry[]): GameData[] {
 }
 */
 
-async function convertToGameSummary(row: MatchEntry, id: number) {
+async function convertToGameHistory(row: MatchEntry, id: number) {
 
 	const opponent_id = row.player1 === id ? row.player2 : row.player1;
 	const outcome =
@@ -47,7 +47,7 @@ async function convertToGameSummary(row: MatchEntry, id: number) {
 		opponent_id === 0 ? "ai" :
 		opponent_id === 1 ? "local" :
 		"online";
-	const summary: GameSummary = {
+	const summary: GameHistory = {
 		opponent: await userQueries.getUserByID(opponent_id),
 		outcome: outcome,
 		gameMode: mode,
@@ -73,12 +73,12 @@ export async function getGameHistory(request: Request, response: Response) {
 				error: 'invalid user id'
 			});
 		}
-		const all_games : GameSummary[] = [];
+		const all_games : GameHistory[] = [];
 		for (let i = 0; i < 5; i++){
 			if (!result.rows[i]){
 				break;
 			}
-			const game: GameSummary = await convertToGameSummary(result.rows[i], id);
+			const game: GameHistory = await convertToGameHistory(result.rows[i], id);
 			all_games.push(game);
 		}
 		return response.status(200).json(all_games);

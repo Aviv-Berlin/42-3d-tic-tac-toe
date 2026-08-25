@@ -42,7 +42,7 @@ export interface GameData {
 
 export type Outcome = "WIN" | "LOSS" | "DRAW";
 
-export interface GameSummary {
+export interface GameHistory {
   outcome: Outcome;
   opponent: string;
   gameMode: GameMode;

@@ -1,7 +1,7 @@
 import statsQueries from "../database/statsQueries.ts";
 import userQueries from "../database/userQueries.ts";
 import { type Request, type Response } from 'express';
-import { GameData, Move, PlayerData, GameSummary } from '../../../shared/game.ts';
+import { GameSummary } from '../../../shared/game.ts';
 import { MatchEntry } from '../database/gameQueries.ts';
 
 /*
@@ -52,7 +52,7 @@ async function convertToGameSummary(row: MatchEntry, id: number) {
 		outcome: outcome,
 		gameMode: mode,
 		size: row.board_size,
-		moves: null // TODO
+		//moves: null // TODO
 	}
 	return (summary);
 }
@@ -77,10 +77,10 @@ export async function getGameHistory(request: Request, response: Response) {
 		for (let i = 0; i < 5; i++){
 			if (!result.rows[i]){
 				break;
-			const game: GameSummary = convertToGameSummary(result.rows);
+			}
+			const game: GameSummary = await convertToGameSummary(result.rows[i], id);
 			all_games.push(game);
 		}
-	}
 		return response.status(200).json(all_games);
 	}
 	catch (error) {

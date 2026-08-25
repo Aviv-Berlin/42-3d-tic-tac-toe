@@ -47,5 +47,5 @@ export interface GameSummary {
   opponent: string;
   gameMode: GameMode;
   size: number;
-  moves: Move[];
+  //moves: Move[]; // TODO
 }

@@ -1,7 +1,5 @@
 import { query } from "./db.ts";
 
-
-
 export async function getUserGames(id: number) {
 	const result = await query(
 		'SELECT * FROM matches WHERE player1 = $1 OR player2 = $1 ORDER BY started_at DESC;', [id]

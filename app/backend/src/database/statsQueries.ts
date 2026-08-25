@@ -13,21 +13,21 @@ export async function getUserWins(id: number) {
 	const result = await query(
 		'SELECT COUNT(*) FROM matches WHERE (player1 = $1 OR player2 = $1) AND winner = $1;', [id]
 	);
-	return result.rows[0];
+	return Number(result.rows[0].count);
 }
 
 export async function getUserDraws(id: number) {
 	const result = await query(
-		'SELECT COUNT(*) FROM matches WHERE (player1 = $1 OR player2 = $1) AND winner == null;', [id]
+		'SELECT COUNT(*) FROM matches WHERE (player1 = $1 OR player2 = $1) AND winner IS null;', [id]
 	);
-	return result.rows[0];
+	return Number(result.rows[0].count);
 }
 
 export async function getUserLosses(id: number) {
 	const result = await query(
-		'SELECT COUNT(*) FROM matches WHERE (player1 = $1 OR player2 = $1) AND winner != null AND winner != $1;', [id]
+		'SELECT COUNT(*) FROM matches WHERE (player1 = $1 OR player2 = $1) AND winner IS NOT null AND winner != $1;', [id]
 	);
-	return result.rows[0];
+	return Number(result.rows[0].count);
 }
 
 export async function getMatchReplay(id: number) {

@@ -15,12 +15,18 @@ const Profile = () => {
 
   const fillStats = async () => {
     try {
-      const response = await statsService.getGameHistory();
-      console.log("Retrieved GameHistory");
-      setGames(response.data);
+      const history_response = await statsService.getGameHistory();
+      const win_response = await statsService.getWinTotal();
+      const draw_response = await statsService.getDrawTotal();
+      const loss_response = await statsService.getLossTotal();
+      setGames(history_response.data);
+      setWinTotal(win_response.data);
+      setDrawTotal(draw_response.data);
+      setLossTotal(loss_response.data);
+      console.log("Retrieved stats");
     } catch (err) {
       setErrorMessage(getErrorMessage(err));
-    }
+    } 
   };
 
   useEffect(() => {
@@ -39,27 +45,27 @@ const Profile = () => {
         <h2 className="text-3xl font-serif italic">Stats</h2>
         <div className="flex gap-2 items-baseline justify-between">
           <p className="text-xl">Rank:</p>
-          <p className="text-2xl font-serif italic">1234</p>
+          <p className="text-2xl font-serif italic">Under construction</p>
         </div>
         <div className="flex gap-2 items-baseline justify-between">
           <p className="text-xl">Games:</p>
-          <p className="text-2xl font-serif italic">42</p>
+          <p className="text-2xl font-serif italic">Under construction</p>
         </div>
         <div className="flex gap-2 items-baseline justify-between">
           <p className="text-xl">Wins:</p>
-          <p className="text-2xl font-serif italic">30</p>
+          <p className="text-2xl font-serif italic">{winTotal}</p>
         </div>
         <div className="flex gap-2 items-baseline justify-between">
           <p className="text-xl">Draws:</p>
-          <p className="text-2xl font-serif italic">3</p>
+          <p className="text-2xl font-serif italic">{drawTotal}</p>
         </div>
         <div className="flex gap-2 items-baseline justify-between">
           <p className="text-xl">Losses:</p>
-          <p className="text-2xl font-serif italic">9</p>
+          <p className="text-2xl font-serif italic">{lossTotal}</p>
         </div>
         <div className="flex gap-2 items-baseline justify-between">
           <p className="text-xl">Win ratio:</p>
-          <p className="text-2xl font-serif italic">68%</p>
+          <p className="text-2xl font-serif italic">Under construction</p>
         </div>
 
       </div>

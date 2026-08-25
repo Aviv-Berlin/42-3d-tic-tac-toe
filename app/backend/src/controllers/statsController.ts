@@ -47,8 +47,9 @@ async function convertToGameHistory(row: MatchEntry, id: number) {
 		opponent_id === 0 ? "ai" :
 		opponent_id === 1 ? "local" :
 		"online";
+	const opponentUser = await userQueries.getUserByID(opponent_id);
 	const summary: GameHistory = {
-		opponent: await userQueries.getUserByID(opponent_id),
+		opponent: opponentUser.username,
 		outcome: outcome,
 		gameMode: mode,
 		size: row.board_size,

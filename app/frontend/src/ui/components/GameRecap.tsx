@@ -15,7 +15,7 @@ const GameRecap = ( { gameHistory }: GameRecapProps) => {
       <p className="text-xl">{gameHistory.outcome}</p>
       <div className="hidden sm:flex flex-row gap-8">
         <p className="text-sm">{gameHistory.opponent}</p>
-        <p className="text-sm">`Board size: ${size}x${size}x${size}`</p>
+        <p className="text-sm">{`Board size: ${size}x${size}x${size}`}</p>
       </div>
       <SecondaryButton onClick={() => console.log("click")}>REPLAY</SecondaryButton>
     </div>

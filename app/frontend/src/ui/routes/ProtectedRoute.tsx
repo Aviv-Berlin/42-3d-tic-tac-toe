@@ -15,7 +15,7 @@ const ProtectedRoute = () => {
   }
   useEffect(() => {
     checkToken();
-  })
+  }, [])
 	return <Outlet />
 }
 

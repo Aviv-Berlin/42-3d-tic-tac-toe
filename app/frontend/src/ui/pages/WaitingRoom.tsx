@@ -47,7 +47,7 @@ const WaitingRoom = () => {
 				});
 			}
 
-			if (data.type === "game-init") {
+      if (data.type === "game-init") {
 				setMatch({
 					id: matchId,
 					host: data.host,
@@ -79,7 +79,7 @@ const WaitingRoom = () => {
 				//closeSocket();
 				navigate("/lobby");
 			}
-			
+
 		}
 
 		socket.addEventListener("message", handleMessage);
@@ -88,14 +88,14 @@ const WaitingRoom = () => {
 			socket.removeEventListener("message", handleMessage);
 		}
 	}, [matchId, navigate]);
-	
+
 	const requiredPlayers = match?.requiredPlayers ?? 0;
 	const connectedPlayers = match?.players.length ?? 0;
 
 	const statusMessage = (connectedPlayers: number, requiredPlayers: number) => {
-		if (match?.status === "canceled") 
+		if (match?.status === "canceled")
 			return "Host disconnected, please return to main menu!";
-		if (connectedPlayers < requiredPlayers) 
+		if (connectedPlayers < requiredPlayers)
 			return "Waiting for players ...";
 		if (match?.host === username)
 			return "All players connected. Ready to start!";

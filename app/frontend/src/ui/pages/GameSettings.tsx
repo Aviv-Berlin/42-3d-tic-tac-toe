@@ -72,7 +72,7 @@ const GameSettings = () => {
       }, { once: true });
     } else {
       try {
-        const response = await gameService.createLobby(username, size);
+        const response = await gameService.createLobby(size);
         console.log("Created match:", response.data.match);
         navigate(`/waiting/${response.data.match.id}`);
       } catch (err) {

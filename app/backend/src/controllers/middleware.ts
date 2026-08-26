@@ -12,7 +12,7 @@ declare global {
 		};
 	  }
 	}
-  }
+}
 
 const secret = process.env.SECRET
 if (!secret){

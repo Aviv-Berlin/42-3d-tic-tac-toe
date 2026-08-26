@@ -6,7 +6,6 @@ import { AiPlayer } from "../game/AIPlayer.ts";
 import { GameData} from "../../../shared/game.ts";
 import  createPlayers from "../../../frontend/src/utils/players.ts"
 import { CancelGameMessage, PlayGameMessage, PlayLocalMessage } from "../../../shared/messages.ts"
-import { match } from "assert";
 
 
 export interface PlayerConnection {
@@ -292,12 +291,12 @@ export function handlePlayerLeave(matchId: string, disconnectedPlayer: PlayerCon
 			// update player count -> needs to be implemented in the frontend lobby
 			broadcast("lobby-update", { type: "updated", match });
 		}
-		
+
 		if (sockets.size === 0) {
 			console.log(`[WR/PlayerLeave] All players disconnected from match ${matchId}. Cleaning up.`);
 			lobbyMatches.delete(matchId);
 			matchSockets.delete(matchId);
 			matches.delete(matchId);
-		}	
+		}
 	}
 }

@@ -1,5 +1,4 @@
 import { create } from 'zustand'
-import { persist } from 'zustand/middleware'
 import { GameData } from '../../../shared/game'
 
 interface GameDataStore {
@@ -8,13 +7,10 @@ interface GameDataStore {
 }
 
 const useGameDataStore = create<GameDataStore>()(
-  persist(
-    (set) => ({
-      gameData: null,
-      setGameData: (gameData: GameData) => set({ gameData: gameData }),
-    }),
-    { name: 'gameData' }
-  )
+  (set) => ({
+    gameData: null,
+    setGameData: (gameData: GameData) => set({ gameData: gameData }),
+  })
 )
 
 export const useGameData = () => useGameDataStore((state) => state.gameData);

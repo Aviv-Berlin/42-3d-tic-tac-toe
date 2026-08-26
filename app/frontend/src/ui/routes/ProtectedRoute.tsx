@@ -1,9 +1,9 @@
 import { Navigate, Outlet } from 'react-router-dom'
-import axios from 'axios'
+import { useUsername } from '../../store/username'
 
 const ProtectedRoute = () => {
-	const loggedIn = window.localStorage.getItem('username')
-	if (!loggedIn) {
+  const username = useUsername();
+	if (!username) {
   	  return <Navigate to="/login" replace />
   	}
 	return <Outlet />

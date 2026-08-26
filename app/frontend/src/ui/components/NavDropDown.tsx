@@ -2,7 +2,7 @@ import { useState, useRef, useEffect } from 'react'
 import { Link, useNavigate } from 'react-router-dom'
 import { ChevronUp, ChevronDown } from 'lucide-react';
 import DropDownButton from './DropDownButton'
-import { useUsername } from '../../store/username'
+import { useSetUsername, useUsername } from '../../store/username'
 import auth from '../../services/auth'
 
 const NavDropDown = () => {
@@ -13,11 +13,12 @@ const NavDropDown = () => {
   const navigate = useNavigate();
 
   const username = useUsername();
+  const setUsername = useSetUsername();
 
   const handleLogOut = async () => {
     try {
       await auth.logout();
-      window.localStorage.removeItem('username');
+      setUsername('');
       navigate('/login');
     } catch (err) {
       console.log(err);

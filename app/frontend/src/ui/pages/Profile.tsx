@@ -6,7 +6,7 @@ import statsService from "../../services/stats";
 import { getErrorMessage } from "../../utils/errors";
 
 const Profile = () => {
-  
+
   const [games, setGames] = useState<GameHistory[]>([]);
   const [winTotal, setWinTotal] = useState(0);
   const [drawTotal, setDrawTotal] = useState(0);
@@ -26,11 +26,11 @@ const Profile = () => {
       console.log("Retrieved stats");
     } catch (err) {
       setErrorMessage(getErrorMessage(err));
-    } 
+    }
   };
 
   useEffect(() => {
-    fillStats(); 
+    fillStats();
   }, []);
 
   return (

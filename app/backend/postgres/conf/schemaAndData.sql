@@ -115,7 +115,8 @@ CREATE TABLE public.matches (
     player2 integer NOT NULL,
     winner integer,
     started_at timestamp with time zone DEFAULT now(),
-    ended_at timestamp with time zone
+    ended_at timestamp with time zone,
+    board_size integer NOT NULL,
 );
 
 
@@ -268,7 +269,7 @@ COPY public.moves (move_nr, match_id, coord_x, coord_y, coord_z, player, played_
 -- Data for Name: matches; Type: TABLE DATA; Schema: public; Owner: -
 --
 
-COPY public.matches (id, player1, player2, winner, started_at, ended_at) FROM stdin;
+COPY public.matches (id, player1, player2, winner, started_at, ended_at, board_size) FROM stdin;
 \.
 
 

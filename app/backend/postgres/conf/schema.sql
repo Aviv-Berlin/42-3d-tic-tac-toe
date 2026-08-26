@@ -54,7 +54,8 @@ CREATE TABLE matches(
 	-- game_type (spped game, normal game) - extra table customizations? (power ups, limit, size)
 	winner INT REFERENCES users(id), -- NULL on draw
 	started_at TIMESTAMPTZ DEFAULT NOW(),
-	ended_at TIMESTAMPTZ
+	ended_at TIMESTAMPTZ,
+	board_size INT NOT NULL
 );
 
 CREATE TABLE moves(

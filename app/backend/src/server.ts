@@ -1,5 +1,5 @@
 import "dotenv/config";
-import express from "express";
+import express, { response } from "express";
 import cookieParser from 'cookie-parser';
 import cors from "cors";
 import http from "http";
@@ -44,6 +44,7 @@ app.use("/v1/auth", authRoutes);
 
 app.use("/v1/game", checkToken, gameRoutes);
 app.use("/v1/stats", checkToken, statsRoutes);
+app.use("/v1/me", checkToken, (_req, res) => res.end());
 
 // HTTP Server
 const server = http.createServer(app);

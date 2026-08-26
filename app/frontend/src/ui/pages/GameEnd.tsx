@@ -22,7 +22,6 @@ const GameEnd = () => {
   const gameLength = Math.floor((gameData.gameEnd - gameData.gameStart) / 1000);
 
   const handleBackToHome = () => {
-    window.localStorage.removeItem('gameData');
     navigate('/');
   }
 

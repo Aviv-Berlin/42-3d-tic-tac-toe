@@ -8,8 +8,6 @@ import { useUsername } from "../../store/username";
 import gameService from "../../services/game";
 import { getErrorMessage } from "../../utils/errors";
 
-//const token = localStorage.getItem("token");
-
 const Lobby = () => {
   const [errorMessage, setErrorMessage] = useState('');
   const navigate = useNavigate();

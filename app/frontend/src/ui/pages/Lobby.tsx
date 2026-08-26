@@ -13,7 +13,6 @@ import { getErrorMessage } from "../../utils/errors";
 const Lobby = () => {
   const [errorMessage, setErrorMessage] = useState('');
   const navigate = useNavigate();
-  const username = useUsername();
   const [activeGames, setActiveGames] = useState<ActiveGame[]>([]);
   const [joinedMatchId, setJoinedMatchId] = useState('');
 

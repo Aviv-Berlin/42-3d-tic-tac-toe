@@ -6,12 +6,11 @@ import statsService from "../../services/stats";
 import { getErrorMessage } from "../../utils/errors";
 
 const Profile = () => {
-  
+
   const [games, setGames] = useState<GameHistory[]>([]);
   const [winTotal, setWinTotal] = useState(0);
   const [drawTotal, setDrawTotal] = useState(0);
   const [lossTotal, setLossTotal] = useState(0);
-  const [errorMessage, setErrorMessage] = useState('');
 
   const fillStats = async () => {
     try {
@@ -25,12 +24,12 @@ const Profile = () => {
       setLossTotal(loss_response.data);
       console.log("Retrieved stats");
     } catch (err) {
-      setErrorMessage(getErrorMessage(err));
-    } 
+      console.log(err);
+    }
   };
 
   useEffect(() => {
-    fillStats(); 
+    fillStats();
   }, []);
 
   return (

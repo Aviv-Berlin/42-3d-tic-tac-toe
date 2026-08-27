@@ -91,7 +91,7 @@ export function setupWebSocket(server: http.Server) {
 				const player = [...sockets].find(
 					player => player.ws === socket
 				);
-				
+
 				if (!player) return;
 
 				handlePlayerLeave(matchId, player);
@@ -140,7 +140,7 @@ export function setupWebSocket(server: http.Server) {
 				// 	const playerIndex = match.state?.getPlayerIndex(username);
 				// 	playerExit(CreateExitMessage(matchId, playerIndex), socket, match)
 				// }
-					
+
 			}, 5000);
 		});
 	});

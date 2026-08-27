@@ -11,7 +11,7 @@ const DifficultySettings = ({level, setLevel}: DifficultySettingsProps) => {
     <div className="flex flex-col items-center gap-4">
       <h1 className="text-xl">Difficulty:</h1>
       <div className="flex flex-col sm:flex-row gap-4">
-        <div className="flex flex-col gap-1 items-center">
+        <div className={`flex flex-col gap-1 items-center ${level === 1 ? "text-dark-orange" : ""}`}>
           <GameSettingButton selected={level === 1} onClick={() => setLevel(1)}>
             <div className="w-full h-full relative flex justify-center items-center">
               <BabylonImage type={"easy"} />
@@ -19,7 +19,7 @@ const DifficultySettings = ({level, setLevel}: DifficultySettingsProps) => {
           </GameSettingButton>
           <p className="text-xs">easy</p>
         </div>
-        <div className="flex flex-col gap-1 items-center">
+        <div className={`flex flex-col gap-1 items-center ${level === 2 ? "text-dark-orange" : ""}`}>
           <GameSettingButton selected={level === 2} onClick={() => setLevel(2)}>
             <div className="w-full h-full relative flex justify-center items-center">
               <BabylonImage type={"medium"} />
@@ -27,7 +27,7 @@ const DifficultySettings = ({level, setLevel}: DifficultySettingsProps) => {
           </GameSettingButton>
           <p className="text-xs">medium</p>
         </div>
-        <div className="flex flex-col gap-1 items-center">
+        <div className={`flex flex-col gap-1 items-center ${level === 3 ? "text-dark-orange" : ""}`}>
           <GameSettingButton selected={level === 3} onClick={() => setLevel(3)}>
             <div className="w-full h-full relative flex justify-center items-center">
               <BabylonImage type={"hard"} />

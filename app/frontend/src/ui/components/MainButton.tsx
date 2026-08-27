@@ -6,7 +6,7 @@ interface MainButtonProps extends React.ButtonHTMLAttributes<HTMLButtonElement> 
 const MainButton = ({ disabled = false, children, ...props }: MainButtonProps) => {
   return (
     <button
-      className={`border bg-white rounded-md border-black px-6 py-4 text-xl ${disabled ? "opacity-40 cursor-not-allowed hover:bg-white" : "cursor-pointer hover:bg-mauve-200"}`}
+      className={`rounded-md py-4 text-xl ${disabled ? "opacity-40 cursor-not-allowed" : "cursor-pointer"}`}
       {...props}
     >{children}</button>
   )

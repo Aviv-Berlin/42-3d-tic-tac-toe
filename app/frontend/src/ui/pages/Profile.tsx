@@ -5,11 +5,13 @@ import { GameHistory } from '../../../../shared/game'
 import statsService from "../../services/stats";
 
 const Profile = () => {
-
   const [games, setGames] = useState<GameHistory[]>([]);
   const [winTotal, setWinTotal] = useState(0);
   const [drawTotal, setDrawTotal] = useState(0);
   const [lossTotal, setLossTotal] = useState(0);
+
+  const gamesTotal = winTotal + drawTotal + lossTotal;
+  const winRatio = (winTotal / gamesTotal * 100).toFixed(2);
 
   const fillStats = async () => {
     try {
@@ -47,7 +49,7 @@ const Profile = () => {
         </div>
         <div className="flex gap-2 items-baseline justify-between">
           <p className="text-xl">Games:</p>
-          <p className="text-2xl font-serif italic">Under construction</p>
+          <p className="text-2xl font-serif italic">{gamesTotal}</p>
         </div>
         <div className="flex gap-2 items-baseline justify-between">
           <p className="text-xl">Wins:</p>
@@ -63,7 +65,7 @@ const Profile = () => {
         </div>
         <div className="flex gap-2 items-baseline justify-between">
           <p className="text-xl">Win ratio:</p>
-          <p className="text-2xl font-serif italic">Under construction</p>
+          <p className="text-2xl font-serif italic">{winRatio}%</p>
         </div>
 
       </div>

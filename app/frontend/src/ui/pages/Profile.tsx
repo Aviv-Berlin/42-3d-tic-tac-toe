@@ -3,7 +3,6 @@ import ProfileLayout from '../layouts/ProfileLayout';
 import GameRecap from '../components/GameRecap';
 import { GameHistory } from '../../../../shared/game'
 import statsService from "../../services/stats";
-import { getErrorMessage } from "../../utils/errors";
 
 const Profile = () => {
 

@@ -44,14 +44,14 @@ const Login = () => {
         <BabylonImage type="logo" />
       </div>
       <AuthCard>
-        <h1 className="text-2xl">Log in</h1>
+        <h1 className="text-3xl">Log in</h1>
         <form className="flex flex-col" onSubmit={handleSubmit}>
           <Input name="username" value={form.username} handler={handleChange} submit={submit}/>
           <Input name="password" value={form.password} handler={handleChange} submit={submit}/>
           <SubmitButton>Log in</SubmitButton>
         </form>
-        <p className="">Don&apos;t have an account? <Link className="hover:underline underline-offset-4" to="/register">Sign up</Link></p>
-        <p className="text-red-400 min-h-6">{errorMessage}</p>
+        <p className="">Don&apos;t have an account? <Link className="hover:text-dark-orange" to="/register">Sign up</Link></p>
+        <p className="text-dark-orange min-h-6">{errorMessage}</p>
       </AuthCard>
     </AuthLayout>
   )

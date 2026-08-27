@@ -42,14 +42,14 @@ const NavDropDown = () => {
         <p>{username}</p>
         { open ? <ChevronUp /> : <ChevronDown /> }
       </DropDownButton>
-      <div className={`absolute right-0 flex flex-col overflow-hidden bg-white border rounded-md mt-6 w-40 items-center ${open ? "visible" : "invisible"}`}>
-        <Link to="/profile" className="px-4 py-2 hover:bg-mauve-200 cursor-pointer flex gap-2 w-full justify-center">
+      <div className={`absolute right-0 flex flex-col overflow-hidden bg-light-grey border mt-6 w-40 items-center ${open ? "visible" : "invisible"}`}>
+        <Link to="/profile" className="px-4 py-2 hover:text-dark-orange cursor-pointer flex gap-2 w-full justify-center">
           Profile
         </Link>
-        <Link to="/settings" className="px-4 py-2 hover:bg-mauve-200 cursor-pointer flex gap-2 w-full justify-center">
+        <Link to="/settings" className="px-4 py-2 hover:text-dark-orange cursor-pointer flex gap-2 w-full justify-center">
           Settings
         </Link>
-        <button onClick={handleLogOut} className="px-4 py-2 hover:bg-mauve-200 cursor-pointer flex gap-2 w-full justify-center">
+        <button onClick={handleLogOut} className="px-4 py-2 hover:text-dark-orange cursor-pointer flex gap-2 w-full justify-center">
           Log out
         </button>
       </div>

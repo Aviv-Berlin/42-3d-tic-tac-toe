@@ -63,12 +63,12 @@ const Lobby = () => {
             <div className="absolute left-0">
               <SecondaryButton onClick={() => navigate('/home')}>← Back</SecondaryButton>
             </div>
-            <h1 className="text-xl">Mode: <span className="font-ibm">Online</span></h1>
+            <h1 className="text-lg">Mode: <span className="underline underline-offset-4">Online</span></h1>
           </div>
           <div className="flex flex-col gap-4 items-center">
-            <p className="text-xl font-ibm">There are currently no active games.</p>
+            <p>There are currently no active games.</p>
             <MainButton onClick={() => navigate('/game-settings?game-mode=online')}>
-              + Create Game
+              CREATE GAME
             </MainButton>
           </div>
         </div>
@@ -83,19 +83,19 @@ const Lobby = () => {
           <div className="sm:absolute sm:left-0">
             <SecondaryButton onClick={() => navigate('/home')}>← Back</SecondaryButton>
           </div>
-          <h1 className="text-xl">Mode: <span className="font-serif italic">Online</span></h1>
+          <h1 className="text-xl">Mode: <span className="underline underline-offset-4">Online</span></h1>
         </div>
         <div className="flex flex-col gap-4">
           <div className="flex justify-between items-center">
             <h2 className="text-3xl font-serif italic">Games Lobby</h2>
             <SecondaryButton onClick={() => navigate('/game-settings?game-mode=online')}>
-              + Create Game
+              CREATE GAME
             </SecondaryButton>
           </div>
           <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-4">
             {activeGames.map((game) => (
               <div key={game.id} className="flex flex-col">
-                <div key={game.id} className="flex justify-between items-end border rounded-md p-4 bg-white">
+                <div key={game.id} className="flex justify-between items-end border p-4 bg-light-grey">
                   <div key={game.id} className="flex flex-col">
                     <h3 className="text-2xl font-serif italic">{game.host}&apos;s game</h3>
                     <span>Host: {game.host}</span>

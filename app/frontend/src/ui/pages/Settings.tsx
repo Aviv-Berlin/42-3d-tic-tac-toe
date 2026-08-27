@@ -87,12 +87,12 @@ const Settings = () => {
         <div className="sm:absolute sm:left-0">
           <SecondaryButton onClick={() => navigate('/home')}>← Back</SecondaryButton>
         </div>
-        <h1 className="text-4xl font-serif italic mb-8">Settings</h1>
+        <h1 className="text-3xl mb-8">Settings</h1>
         {triggerChangeUsername &&
           <div className="w-80 flex flex-col gap-4">
             <SecondaryButton onClick={reset}>Cancel</SecondaryButton>
-            <h2 className="text-2xl font-serif italic">Change username</h2>
-            <form className="flex flex-col gap" onSubmit={handleSubmitChangeUsername}>
+            <h2 className="text-2xl mt-8">Change username</h2>
+            <form className="flex flex-col" onSubmit={handleSubmitChangeUsername}>
               <Input name="new username" value={newUsername} handler={handleChangeUsername} submit={submit}
                 validate={() => newUsername.length > 0} message="Username cannot be empty"/>
               <SubmitButton>Change username</SubmitButton>
@@ -102,8 +102,8 @@ const Settings = () => {
         {triggerChangePassword &&
           <div className="w-80 flex flex-col gap-4">
             <SecondaryButton onClick={reset}>Cancel</SecondaryButton>
-            <h2 className="text-2xl font-serif italic">Change password</h2>
-            <form className="flex flex-col gap" onSubmit={handleSubmitChangePassword}>
+            <h2 className="text-2xl mt-8">Change password</h2>
+            <form className="flex flex-col" onSubmit={handleSubmitChangePassword}>
               <Input name="old password" value={oldPassword} handler={handleChangeOldPassword}/>
               <Input name="new password" value={newPassword} handler={handleChangeNewPassword} submit={submit}
                 validate={() => newPassword.length >= 8} message="Passwords must be at least 8 characters long" />
@@ -114,9 +114,9 @@ const Settings = () => {
         {triggerDeleteAccount &&
           <div className="w-80 flex flex-col gap-4">
             <SecondaryButton onClick={reset}>Cancel</SecondaryButton>
-            <h2 className="text-2xl font-serif italic">Delete account</h2>
+            <h2 className="text-2xl mt-8">Delete account</h2>
             <p>Deleting your account will remove your information from our database. This is not reversible.</p>
-            <form className="flex flex-col gap" onSubmit={handleSubmitDeleteAccount}>
+            <form className="flex flex-col" onSubmit={handleSubmitDeleteAccount}>
               <Input name="password" value={oldPassword} handler={handleChangeOldPassword} submit={submit} />
               <SubmitButton>Delete account</SubmitButton>
             </form>

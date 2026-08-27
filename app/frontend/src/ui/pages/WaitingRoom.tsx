@@ -116,9 +116,9 @@ const WaitingRoom = () => {
 
 	return (
 	<CenteredLayout>
-		<h1 className="text-5xl font-serif italic">WAITING ROOM</h1>
+		<h1 className="text-3xl">WAITING ROOM</h1>
 		<p>Players: {connectedPlayers}/{requiredPlayers}</p>
-		<p className="font-serif italic">
+		<p>
 			{statusMessage(connectedPlayers, requiredPlayers)}
 		</p>
 		{match?.host === username && (

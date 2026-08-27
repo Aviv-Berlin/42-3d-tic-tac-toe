@@ -44,7 +44,7 @@ const Register = () => {
         <BabylonImage type="logo" />
       </div>
       <AuthCard>
-        <h1 className="text-2xl font-serif italic">Sign up</h1>
+        <h1 className="text-3xl">Sign up</h1>
         <form className="flex flex-col" onSubmit={handleSubmit}>
           <Input name="username" value={form.username} handler={handleChange} submit={submit}
             validate={() => form.username.length <= 16} message="Username is too long"/>
@@ -56,8 +56,8 @@ const Register = () => {
             validate={() => form.password === form.confirmPassword} message="Passwords don't match" submit={submit}/>
           <SubmitButton>Sign up</SubmitButton>
         </form>
-      <p>Already registered? <Link className="text-black hover:underline underline-offset-4" to="/login">Log in</Link></p>
-      <p className="text-red-400 min-h-6">{errorMessage}</p>
+      <p>Already registered? <Link className="hover:text-dark-orange" to="/login">Log in</Link></p>
+      <p className="text-dark-orange min-h-6">{errorMessage}</p>
       </AuthCard>
     </AuthLayout>
   )

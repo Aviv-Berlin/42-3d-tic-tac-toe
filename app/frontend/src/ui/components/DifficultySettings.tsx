@@ -9,7 +9,7 @@ interface DifficultySettingsProps {
 const DifficultySettings = ({level, setLevel}: DifficultySettingsProps) => {
   return (
     <div className="flex flex-col items-center gap-4">
-      <h1 className="text-3xl font-serif italic">Difficulty:</h1>
+      <h1 className="text-xl">Difficulty:</h1>
       <div className="flex flex-col sm:flex-row gap-4">
         <GameSettingButton selected={level === 1} onClick={() => setLevel(1)}>
           <div className="w-full h-full relative flex justify-center items-center">

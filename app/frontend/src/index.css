@@ -2,25 +2,27 @@
 
 @utility bg-grid {
   background-image:
-    linear-gradient(to right, rgba(255, 60, 5, 0.18) 1px, transparent 1px),
-    linear-gradient(to bottom, rgba(255, 60, 5, 0.18) 1px, transparent 1px);
+    linear-gradient(to right, rgba(160, 160, 160, 0.18) 1px, transparent 1px),
+    linear-gradient(to bottom, rgba(160, 160, 160, 0.18) 1px, transparent 1px);
   background-size: 60px 60px;
 }
 
 @font-face {
-	font-family: "IBM Plex Mono", monospace;
-	src: url('/IBM/IBM_Plex_Mono/IBMPlexMono-Regular.ttf');
+	font-family: "IBM Plex Mono";
+	src: url('/IBM/IBM_Plex_Mono/IBMPlexMono-Regular.ttf') format('truetype');
 	font-weight: 400;
 	font-style: normal;
 }
 
 @theme {
-    --font-ibm: 'IBM Plex Mono', 'sans-serif';
-    --color-surface: #FAFAFA;
-    --color-accent: #FF7700;
+    --font-ibm: 'IBM Plex Mono';
+    --color-light-grey: #E5E5E5;
+    --color-dark-grey: #737373;
+    --color-light-orange: #DD5500;
+    --color-dark-orange: #C44600;
 }
 
 body {
     font-family: var(--font-ibm);
-    background-color: var(--color-surface);
+    background-color: var(--color-light-grey);
 }

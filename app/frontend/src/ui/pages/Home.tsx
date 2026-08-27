@@ -22,29 +22,29 @@ const Home = () => {
     <CenteredLayout>
       <div className="flex flex-col gap-4">
         <div className="flex flex-col gap-2">
-          <p className="text-lg font-mono">{`Welcome back ${username}!`}</p>
-          <p className="text-5xl font-mono">Ready to play?</p>
+          <p>Welcome back <span className="text-dark-orange">{username}</span>!</p>
+          <p className="text-4xl">Ready to <span className="text-dark-orange">play</span>?</p>
         </div>
         <div className="flex flex-col sm:flex-row gap-16">
           <MainButton onClick={() => handleClick("online")}>
-            <div className="flex flex-col items-center gap-2">
-              <div className="w-20 h-20 relative flex justify-center items-center hover:border border-accent">
+            <div className="flex flex-col items-center gap-2 hover:text-dark-orange">
+              <div className="w-20 h-20 relative flex justify-center items-center hover:border border-dark-orange">
                 <BabylonImage type={"online"} />
               </div>
-              <p className="text-xs font-mono">play online</p>
+              <p className="text-xs">play online</p>
             </div>
           </MainButton>
           <MainButton onClick={() => handleClick("ai")}>
-            <div className="flex flex-col items-center gap-2">
-              <div className="w-20 h-20 relative flex justify-center items-center hover:border border-accent">
+            <div className="flex flex-col items-center gap-2 hover:text-dark-orange">
+              <div className="w-20 h-20 relative flex justify-center items-center hover:border border-dark-orange">
                 <BabylonImage type={"ai"} />
               </div>
               <p className="text-xs font-mono">play vs AI</p>
             </div>
           </MainButton>
           <MainButton onClick={() => handleClick("local")}>
-            <div className="flex flex-col items-center gap-2">
-              <div className="w-20 h-20 relative flex justify-center items-center hover:border border-accent">
+            <div className="flex flex-col items-center gap-2 hover:text-dark-orange">
+              <div className="w-20 h-20 relative flex justify-center items-center hover:border border-dark-orange">
                 <BabylonImage type={"local"} />
               </div>
               <p className="text-xs font-mono">play locally</p>

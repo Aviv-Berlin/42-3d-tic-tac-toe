@@ -46,7 +46,7 @@ const Profile = () => {
         <h2 className="text-3xl font-serif italic">Stats</h2>
         <div className="flex gap-2 items-baseline justify-between">
           <p className="text-xl">Rank:</p>
-          <p className="text-2xl font-serif italic">Under construction</p>
+          <p className="text-2xl font-serif italic">-</p>
         </div>
         <div className="flex gap-2 items-baseline justify-between">
           <p className="text-xl">Games:</p>

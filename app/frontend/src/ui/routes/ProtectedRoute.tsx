@@ -5,9 +5,9 @@ import { useSetUsername } from '../../store/username';
 
 const ProtectedRoute = () => {
   const navigate = useNavigate();
+  const setUsername = useSetUsername();
 
   const checkToken = async () => {
-    const setUsername = useSetUsername();
     try {
       const response = await meService.getUsername();
       setUsername(response.data.username);

@@ -7,13 +7,10 @@ interface UsernameStore {
 }
 
 const useUsernameStore = create<UsernameStore>()(
-  persist(
-    (set) => ({
-      username: '',
-      setUsername: (username: string) => set({ username: username }),
-    }),
-    { name: 'username' }
-  )
+  (set) => ({
+    username: '',
+    setUsername: (username: string) => set({ username: username }),
+  })
 )
 
 export const useUsername = () => useUsernameStore((state) => state.username)

@@ -3,6 +3,7 @@ import MainButton from '../components/MainButton';
 import { GameMode } from '../../../../shared/game';
 import CenteredLayout from '../layouts/CenteredLayout';
 import { useUsername } from '../../store/username';
+import BabylonImage from '../components/BabylonImage';
 
 const Home = () => {
   const navigate = useNavigate();
@@ -25,9 +26,30 @@ const Home = () => {
           <p className="text-5xl font-ibm">Ready to play?</p>
         </div>
         <div className="flex flex-col md:flex-row gap-4">
-          <MainButton onClick={() => handleClick("online")}>PLAY ONLINE</MainButton>
-          <MainButton onClick={() => handleClick("ai")}>PLAY VS AI</MainButton>
-          <MainButton onClick={() => handleClick("local")}>PLAY LOCALLY</MainButton>
+          <MainButton onClick={() => handleClick("online")}>
+            <div className="flex flex-col items-center gap-2 px-8">
+              <div className="w-20 h-20 relative flex justify-center items-center">
+                <BabylonImage type={"online"} />
+              </div>
+              <p className="text-xs font-mono">play online</p>
+            </div>
+          </MainButton>
+          <MainButton onClick={() => handleClick("ai")}>
+            <div className="flex flex-col items-center gap-2 px-8">
+              <div className="w-20 h-20 relative flex justify-center items-center">
+                <BabylonImage type={"ai"} />
+              </div>
+              <p className="text-xs font-mono">play vs AI</p>
+            </div>
+          </MainButton>
+          <MainButton onClick={() => handleClick("local")}>
+            <div className="flex flex-col items-center gap-2 px-8">
+              <div className="w-20 h-20 relative flex justify-center items-center">
+                <BabylonImage type={"local"} />
+              </div>
+              <p className="text-xs font-mono">play locally</p>
+            </div>
+          </MainButton>
         </div>
       </div>
     </CenteredLayout>

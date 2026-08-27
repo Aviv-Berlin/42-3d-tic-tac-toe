@@ -16,14 +16,21 @@ const Game = () => {
 //   const socket = getSocket()
 //   console.log("socket: ", socket);
 
-  const gameData = useGameData();
-  if (!gameData) return;
-  console.log("Match in Game:", gameData);
-  sendMessage(createStartGameMessage(gameData));
+const gameData = useGameData();
+const gameModeParam = searchParams.get('game-mode');
+
+	 useEffect(() => {
+        if (!gameData) return;
+        console.log("[GAME] Send startGameMessage, Game:", gameData);
+        sendMessage(createStartGameMessage(gameData));
+    }, [gameData]);
+
+//   if (!gameData) return;
+//   console.log("[GAME] Send startGameMessage, Game:", gameData);
+//   sendMessage(createStartGameMessage(gameData));
 
   //const username = useUsername() ?? "stranger";
 
-  const gameModeParam = searchParams.get('game-mode');
   const sizeParam = searchParams.get('size');
   const levelParam = searchParams.get('level');
 

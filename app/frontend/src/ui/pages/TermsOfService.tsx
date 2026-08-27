@@ -29,6 +29,7 @@ const TermsOfService = () => {
       <h2 className="text-2xl mt-4">Contact</h2>
       <p>For any question, you can contact us at any of these emails:</p>
       <a className="underline underline-offset-4" href="mailto:akosloff@student.42berlin.de">akosloff@student.42berlin.de</a>
+      <a className="underline underline-offset-4" href="mailto:hallison@student.42berlin.de">hallison@student.42berlin.de</a>
       <a className="underline underline-offset-4" href="mailto:lhagemos@student.42berlin.de">lhagemos@student.42berlin.de</a>
       <a className="underline underline-offset-4" href="mailto:sgaspari@student.42berlin.de">sgaspari@student.42berlin.de</a>
       <a className="underline underline-offset-4" href="mailto:smoon@student.42berlin.de">smoon@student.42berlin.de</a>

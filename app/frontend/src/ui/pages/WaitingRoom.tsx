@@ -1,9 +1,10 @@
 import { useEffect } from "react";
 import {useParams, useNavigate } from "react-router-dom";
 import MainButton from "../components/MainButton";
-import { closeSocket, sendMessage, getSocket } from "../../services/websocket";
+import { sendMessage, getSocket } from "../../services/websocket";
 import { useMatch, useSetMatch, useClearMatch } from "../../store/matchData"
 import { useSetGameData } from "../../store/gameData";
+
 import CenteredLayout from "../layouts/CenteredLayout"
 import SecondaryButton from "../components/SecondaryButton";
 import { createCancelGameMessage, createPlayGameMessage } from "../../../../shared/messages";
@@ -31,7 +32,7 @@ const WaitingRoom = () => {
 
 		const handleMessage = (event: MessageEvent) => {
 			const data = JSON.parse(event.data);
-			console.log("Received:", data);
+			console.log("[WR] Received:", data);
 
 			if (data.type === "match-state") {
 				setMatch({
@@ -46,7 +47,7 @@ const WaitingRoom = () => {
 				});
 			}
 
-			if (data.type === "game-init") {
+      if (data.type === "game-init") {
 				setMatch({
 					id: matchId,
 					host: data.host,
@@ -63,19 +64,19 @@ const WaitingRoom = () => {
 
 			if (data.type === "game-canceled"){
 				clearMatch();
-				closeSocket();
+				//closeSocket();
 				navigate("/lobby");
 			}
 
 			if (data.type === "left-match"){
 				clearMatch();
-				closeSocket();
+				//closeSocket();
 				navigate("/lobby");
 			}
 
 			if (data.type === "error") {
 				clearMatch();
-				closeSocket();
+				//closeSocket();
 				navigate("/lobby");
 			}
 
@@ -104,11 +105,11 @@ const WaitingRoom = () => {
 	const handlePlay = () => {
 		if (!matchId) return;
 		sendMessage(createPlayGameMessage(matchId));
-		console.log("Starting game request sent...");
+		console.log("[WR] Starting game request sent...");
 	};
 
 	const handleCancel = () => {
-		console.log("remove the game")
+		console.log("[WR] remove the game")
 		if (!matchId) return;
 		sendMessage(createCancelGameMessage(matchId));
 	}

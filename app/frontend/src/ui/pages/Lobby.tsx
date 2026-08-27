@@ -4,7 +4,6 @@ import MainLayout from "../layouts/MainLayout";
 import { ActiveGame } from "../../../../shared/game";
 import MainButton from "../components/MainButton";
 import SecondaryButton from "../components/SecondaryButton";
-import { useUsername } from "../../store/username";
 import gameService from "../../services/game";
 import { getErrorMessage } from "../../utils/errors";
 
@@ -13,13 +12,12 @@ import { getErrorMessage } from "../../utils/errors";
 const Lobby = () => {
   const [errorMessage, setErrorMessage] = useState('');
   const navigate = useNavigate();
-  const username = useUsername();
   const [activeGames, setActiveGames] = useState<ActiveGame[]>([]);
   const [joinedMatchId, setJoinedMatchId] = useState('');
 
   const joinMatch = async (matchId: string) => {
     try {
-      const response = await gameService.joinMatch(matchId, username);
+      const response = await gameService.joinMatch(matchId);
     	console.log("Joined match:", response.data.match);
     	navigate(`/waiting/${response.data.match.id}`);
     } catch (err) {

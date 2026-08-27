@@ -21,6 +21,7 @@ export interface ActiveGame {
 export interface Move {
   pos: GridPosition;
   player: CellState;
+  time: Date;
 }
 
 export interface GameData {
@@ -37,4 +38,14 @@ export interface GameData {
   gameEnd: number;
   gameID: string;
   endMessage: string | null;
+}
+
+export type Outcome = "WIN" | "LOSS" | "DRAW";
+
+export interface GameHistory {
+  outcome: Outcome;
+  opponent: string;
+  gameMode: GameMode;
+  size: number;
+  //moves: Move[]; // TODO
 }

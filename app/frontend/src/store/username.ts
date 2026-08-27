@@ -1,5 +1,4 @@
 import { create } from 'zustand'
-import { persist } from 'zustand/middleware'
 
 interface UsernameStore {
   username: string;
@@ -7,13 +6,10 @@ interface UsernameStore {
 }
 
 const useUsernameStore = create<UsernameStore>()(
-  persist(
-    (set) => ({
-      username: '',
-      setUsername: (username: string) => set({ username: username }),
-    }),
-    { name: 'username' }
-  )
+  (set) => ({
+    username: '',
+    setUsername: (username: string) => set({ username: username }),
+  })
 )
 
 export const useUsername = () => useUsernameStore((state) => state.username)

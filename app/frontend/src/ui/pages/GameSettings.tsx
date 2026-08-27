@@ -12,6 +12,8 @@ import { openSocket, sendMessage } from '../../services/websocket';
 import { createPlayLocalMessage } from '../../../../shared/messages';
 import { Match } from "../../../../backend/src/controllers/gameController"
 import { AiLevel } from '../../../../shared/game';
+import gameService from '../../services/game';
+import { getErrorMessage } from '../../utils/errors';
 
 const GameSettings = () => {
   const [errorMessage, setErrorMessage] = useState("");
@@ -26,77 +28,58 @@ const GameSettings = () => {
 
   const isValid = gameMode === "online" || gameMode === "ai" || gameMode === "local";
 
-
   const setGameData = useSetGameData();
-
 
   useEffect(() => {
     if (!isValid) navigate('/not-found');
   }, [isValid]);
 
   if (!isValid) return null;
-  
+
   const gameModeDisplay = normalizeGameMode(gameMode);
 
 
   const handleConfirm = async () => {
-	
-	if (gameMode === "ai" || gameMode === "local") {
 
-		const matchId = crypto.randomUUID();
-		const match: Match =  {
-			id: matchId,
-			host: username,
-			mode: gameMode,
-			level: level as AiLevel,
-			size: size,
-			requiredPlayers: 2,
-			players: [username],
-			status: "ready",
-			state: null
-		}
-		const socket = openSocket(matchId, username);
+    if (gameMode === "ai" || gameMode === "local") {
 
-		const handleMessage = (event: MessageEvent) => {
-			const data = JSON.parse(event.data);
-			if (data.type === "game-init"){
-				console.log("game-init msg frontend received");
-				setGameData(data.gameData)
-				socket.removeEventListener("message", handleMessage);
-				navigate(`/game/${data.id}?game-mode=${gameMode}&level=${level}&size=${data.size}`);
-			}
-		}
-		
-		socket.addEventListener("message", handleMessage);
-		socket.addEventListener("open", () => {
-			sendMessage(createPlayLocalMessage(match));
-		}, { once: true });
- 	}
+      const matchId = crypto.randomUUID();
+      const match: Match = {
+        id: matchId,
+        host: username,
+        mode: gameMode,
+        level: level as AiLevel,
+        size: size,
+        requiredPlayers: 2,
+        players: [username],
+        status: "ready",
+        state: null
+      }
+      const socket = openSocket(matchId, username);
 
-
-	else {
-	const response = await fetch("/v1/game/lobby/create", 
-	{
-		method: "POST",
-		headers: {
-			"Content-Type": "application/json",
-		},
-		body: JSON.stringify({ 
-			host: username, 
-			size, 
-			requiredPlayers: 2
-		}),
-	})
-
-	const data = await response.json();
-	if (!response.ok) {
-		console.error(data.error);
-		return;
-	}
-	console.log("Created match:", data.match);
-	navigate(`/waiting/${data.match.id}`);
+      const handleMessage = (event: MessageEvent) => {
+        const data = JSON.parse(event.data);
+        if (data.type === "game-init") {
+          console.log("game-init msg frontend received");
+          setGameData(data.gameData)
+          socket.removeEventListener("message", handleMessage);
+          navigate(`/game/${data.id}?game-mode=${gameMode}&level=${level}&size=${data.size}`);
+        }
+      }
+      socket.addEventListener("message", handleMessage);
+      socket.addEventListener("open", () => {
+        sendMessage(createPlayLocalMessage(match));
+      }, { once: true });
+    } else {
+      try {
+        const response = await gameService.createLobby(size);
+        console.log("Created match:", response.data.match);
+        navigate(`/waiting/${response.data.match.id}`);
+      } catch (err) {
+        setErrorMessage(getErrorMessage(err));
+      }
+    }
   }
-}
 
   return (
     <MainLayout>

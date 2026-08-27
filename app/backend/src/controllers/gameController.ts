@@ -35,26 +35,23 @@ export async function lobby(request: Request, response: Response){
 	'Connection': 'keep-alive',
 	});
 
-	console.log('current matches:', Array.from(lobbyMatches.values()));
-
 	// Send initial comment to establish the connection
 	// Comments start with a colon and are ignored by EventSource / clients
 	response.write(': Connected to lobby\n\n');
 
 	// Add this client to the set
 	clients.add(response);
+	console.log(`[LOBBY] client connected (current matches: ${lobbyMatches.size} / total clients: ${clients.size})`);
 
 	sendEvent(response, 'lobby-update', {
 		type: "initial",
 		matches: Array.from(lobbyMatches.values())
 	})
 
-	console.log(`Client connected. Total clients: ${clients.size}`);
-
 	// Handle client disconnect
 	request.on('close', () => {
 		clients.delete(response);
-		console.log(`Client disconnected. Total clients: ${clients.size}`);
+		console.log(`[LOBBY] client disconnected (current matches: ${lobbyMatches.size} / total clients: ${clients.size})`);
 	});
 }
 
@@ -85,26 +82,30 @@ export async function createMatch(request: Request, response: Response) {
 			error: 'match data incomplete'
 		});
 	}
-
-	console.log('Creating match as host:', body.host);
-
-	const existingMatch = Array.from(lobbyMatches.values()).find(match => match.host === body.host);
+	if (!request.userData || !request.userData.id || !request.userData.username) {
+		return response.status(400).json({
+			error: 'missing or invalid token'
+		});
+	}
+	const gameHost = request.userData.username;
+	const existingMatch = Array.from(lobbyMatches.values()).find(match => match.host === gameHost);
 	if (existingMatch) {
-		console.log(`Host ${body.host} already has a match.`);
+		console.log(`[createMatch] Host ${gameHost} already has a match.`);
 		return response.status(400).json({
 			error: "You already have a hosted match"
 		});
 	}
+	console.log('[createMatch] match created by host:', gameHost);
 
 	const matchId = crypto.randomUUID(); // Generate a unique match ID
 	const newMatch: Match = {
 		id: matchId,
-		host: body.host,
+		host: gameHost,
 		mode: "online",
 		level: 0,
 		size: body.size,
 		requiredPlayers: body.requiredPlayers,
-		players: [body.host],
+		players: [gameHost],
 		status: "waiting",
 		state: null
 	}
@@ -125,8 +126,14 @@ export async function joinMatch(request: Request, response: Response) {
 	const body = request.body;
 	const match = lobbyMatches.get(body.matchId);
 
-	console.log(`Player ${body.player} is trying to join match ${body.matchId}`);
-	console.log('found match:', match);
+	//console.log(`[LOBBY] Player ${body.player} requests to join match ${body.matchId} (host: ${match?.host})`);
+	
+	if (!request.userData || !request.userData.id || !request.userData.username) {
+		return response.status(400).json({
+			error: 'missing or invalid token'
+		});
+	}
+	const gamePlayer = request.userData.username;
 
 	if (!match) {
 		return response.status(404).json({
@@ -134,7 +141,7 @@ export async function joinMatch(request: Request, response: Response) {
 		});
 	}
 
-	if (match.players.includes(body.player)) {
+	if (match.players.includes(gamePlayer)) {
 		return response.status(400).json({
 			error: 'player already in match'
 		});
@@ -153,8 +160,8 @@ export async function joinMatch(request: Request, response: Response) {
 	}
 
 	// Add player to the match
-	match.players.push(body.player);
-	console.log('added player to match:', match);
+	match.players.push(gamePlayer);
+	console.log(`[joinMatch] Player ${gamePlayer} joined match ${body.matchId} (host: ${match?.host})`);
 	broadcastMatch(match.id, {
 		type: "match-state",
 		host: match.host,
@@ -174,7 +181,7 @@ export async function joinMatch(request: Request, response: Response) {
 			match: match
 		});
 		lobbyMatches.delete(match.id);
-		console.log('match is ready, removed from lobby:');
+		console.log('[joinMatch] match is full - removed from lobby');
 	}
 	else {
 		broadcast('lobby-update', {
@@ -188,55 +195,9 @@ export async function joinMatch(request: Request, response: Response) {
 	});
 }
 
-// export async function createGame(request: Request, response: Response){
-// 	const body = request.body;
-
-// 	if (!body.size || !body.username || !body.gameMode || !body.level) {
-// 		return response.status(400).json({
-// 			error: 'match settings incomplete'
-// 		});
-// 	}
-
-// 	console.log('Creating local/ai match:', body.host);
-
-// 	 // Generate a unique match ID
-// 	const newMatch: Match = {
-// 		id: body.matchId,
-// 		host: body.username,
-// 		mode: body.gameMode,
-// 		level: body.level,
-// 		size: body.size,
-// 		requiredPlayers: 2,
-// 		players: [body.host],
-// 		status: "ready",
-// 		state: null
-// 	}
-
-// 	const players = new Set<PlayerConnection>();
-// 	players.add({
-// 		username: newMatch.host,
-// 		ws: body.socket
-// 	})
-// 	const gameData = initGame(newMatch, players);
-
-// 	return response.status(201).json({
-// 		message: 'match created',
-// 		gameData: gameData
-// 	});
-// }
-
 
 export default {
 	lobby,
 	createMatch,
 	joinMatch,
-	//createGame
 };
-
-// generate a real match ID with crypto.randomUUID() or similar, instead of using host as the match ID. This will allow multiple matches to be hosted by the same user and avoid potential conflicts. (?)
-// store player identity properly instead of localStorage.getItem("username") in the frontend, and validate it on the backend with authentication/JWT
-// create the WebSocket server. Seperate from lobby routes e.g. ws://localhost:3001/game/:matchID
-
-
-// check how to transform from http to websocket connection!!!!
-// once player created a match or joined one, fronted need to navigate them to game room and open websocket connection to the game room, and then the game room will handle the game logic and send updates to the players in the room.

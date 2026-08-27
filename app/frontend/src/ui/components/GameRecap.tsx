@@ -1,25 +1,18 @@
-import { useUsername } from '../../store/username'
-import { GameData } from '../../../../shared/game'
-import { getGameEndMessage } from '../../utils/gameData'
-import SecondaryButton from './SecondaryButton'
+import { GameHistory } from '../../../../shared/game'
 
 interface GameRecapProps {
-  key: number,
-  gameData: GameData,
+  gameHistory: GameHistory,
 }
 
-// to be fixed once real data is fetched
-const GameRecap = ({ gameData }: GameRecapProps) => {
-  const username = useUsername();
-  const result = getGameEndMessage(gameData, username)
+const GameRecap = ( { gameHistory }: GameRecapProps) => {
+  const size = gameHistory.size;
   return (
     <div className="border bg-white rounded-md px-8 py-4 flex flex-row justify-between items-center">
-      <p className="text-xl">{result}</p>
-      <div className="hidden sm:flex flex-row gap-8">
-        <p className="text-sm">against AI</p>
-        <p className="text-sm">Board size: 3x3x3</p>
+      <p className="text-xl">{gameHistory.outcome}</p>
+      <div className="hidden sm:flex flex-row gap-12">
+        <p className="text-sm">{`Opponent: ${ gameHistory.opponent }`}</p>
+        <p className="text-sm">{`Board size: ${size}x${size}x${size}`}</p>
       </div>
-      <SecondaryButton onClick={() => console.log("click")}>REPLAY</SecondaryButton>
     </div>
   )
 }

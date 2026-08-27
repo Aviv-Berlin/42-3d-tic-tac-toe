@@ -1,5 +1,4 @@
 import CenteredLayout from '../layouts/CenteredLayout'
-import MainButton from '../components/MainButton'
 import SecondaryButton from '../components/SecondaryButton'
 import { useNavigate } from 'react-router-dom'
 import { getGameEndMessage } from '../../utils/gameData'

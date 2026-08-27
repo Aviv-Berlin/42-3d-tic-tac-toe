@@ -6,10 +6,10 @@ import jwt from 'jsonwebtoken';
 declare global {
 	namespace Express {
 	  interface Request {
-		userData: {
-		  id: number;
-		  username: string;
-		};
+  		userData: {
+  		  id: number;
+  		  username: string;
+  		};
 	  }
 	}
 }
@@ -46,7 +46,7 @@ export const checkToken = async (request: Request, response: Response, next: Nex
 	console.log(`decoded Token id = ${decodedToken.id}`)
 	if (!decodedToken.id) {
 		console.log("Error: checkToken(): token contains invalid id");
-		response.status(401).json({ error: 'misisng or invalid token' })
+		response.status(401).json({ error: 'missing or invalid token' })
 		return;
 	}
 	const user = await userQueries.getUserByID(decodedToken.id);

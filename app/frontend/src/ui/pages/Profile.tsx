@@ -11,7 +11,7 @@ const Profile = () => {
   const [lossTotal, setLossTotal] = useState(0);
 
   const gamesTotal = winTotal + drawTotal + lossTotal;
-  const winRatio = (winTotal / gamesTotal * 100).toFixed(2);
+  const winRatio = gamesTotal ? (winTotal / gamesTotal * 100).toFixed(2) : Number(0).toFixed(2);
 
   const fillStats = async () => {
     try {
@@ -68,7 +68,6 @@ const Profile = () => {
           <p className="text-xl">Win ratio:</p>
           <p className="text-2xl font-serif italic">{winRatio}%</p>
         </div>
-
       </div>
     </ProfileLayout>
   )

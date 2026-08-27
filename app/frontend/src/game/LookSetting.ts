@@ -66,12 +66,12 @@ export const LOOKS: Look[] = [
 
     {
         backgroundColor: new BABYLON.Color4(0.9, 0.9, 0.9),
-        cubeColor: new BABYLON.Color3(0.67, 0.7, 0.71),
+        cubeColor: BABYLON.Color3.FromHexString('#C44600'),
         cubeAlpha: 0,
-        edgeColor: new BABYLON.Color4(1, 0, 0, 0.2),
+        edgeColor: BABYLON.Color4.FromHexString("#C44600"),
         edgeWidth: 2, // 3d grid lin width
         renderEdges: true, // 3d grid
-        textColor: new BABYLON.Color3(1, 0, 0), // Username, EXIT, etc
+        textColor: BABYLON.Color3.FromHexString('#C44600'), // Username, EXIT, etc
         playerColors: [
             new BABYLON.Color3(1, 0.5, 0),   // Player 1 - orange
             new BABYLON.Color3(0, 0.3, 0.7), // Player 2 - blue
@@ -209,5 +209,3 @@ export const LOOKS: Look[] = [
         previewAlpha: 0.2,
     },
 ];
-
-

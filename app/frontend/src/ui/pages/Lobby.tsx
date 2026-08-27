@@ -4,7 +4,6 @@ import MainLayout from "../layouts/MainLayout";
 import { ActiveGame } from "../../../../shared/game";
 import MainButton from "../components/MainButton";
 import SecondaryButton from "../components/SecondaryButton";
-import { useUsername } from "../../store/username";
 import gameService from "../../services/game";
 import { getErrorMessage } from "../../utils/errors";
 

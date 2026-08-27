@@ -11,6 +11,7 @@ import PrivacyPolicy from './pages/PrivacyPolicy'
 import TermsOfService from './pages/TermsOfService'
 import NotFound from './pages/NotFound'
 import ProtectedRoute from './routes/ProtectedRoute'
+import ProtectedLogin from './routes/ProtectedLogin'
 import MatchSocketProvider from './routes/MatchSocketProvider'
 import Lobby from './pages/Lobby'
 import GameEnd from './pages/GameEnd'
@@ -22,9 +23,11 @@ const App = () => {
 	  <Routes>
 			<Route element={<MatchSocketProvider />}>
         <Route path="/" element={<Navigate to="/home" />} />
-        <Route path="/register" element={<Register />} />
-        <Route path="/register-success" element={<RegisterSuccess />} />
-        <Route path="/login" element={<Login />} />
+        <Route element={<ProtectedLogin />}>
+        	<Route path="/register" element={<Register />} />
+        	<Route path="/register-success" element={<RegisterSuccess />} />
+        	<Route path="/login" element={<Login />} />
+		</Route>
         <Route element={<ProtectedRoute />}>
           <Route path="/home" element={<Home />} />
           <Route path="/game-settings" element={<GameSettings />} />

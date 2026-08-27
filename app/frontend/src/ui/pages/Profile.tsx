@@ -5,11 +5,13 @@ import { GameHistory } from '../../../../shared/game'
 import statsService from "../../services/stats";
 
 const Profile = () => {
-
   const [games, setGames] = useState<GameHistory[]>([]);
   const [winTotal, setWinTotal] = useState(0);
   const [drawTotal, setDrawTotal] = useState(0);
   const [lossTotal, setLossTotal] = useState(0);
+
+  const gamesTotal = winTotal + drawTotal + lossTotal;
+  const winRatio = gamesTotal ? (winTotal / gamesTotal * 100).toFixed(2) : Number(0).toFixed(2);
 
   const fillStats = async () => {
     try {
@@ -38,16 +40,17 @@ const Profile = () => {
         {games.map((game, i) => (
           <GameRecap key={i} gameHistory={game} />
         ))}
+        {!games.length && <p className="italic">You haven&apos;t played any game yet!</p>}
       </div>
       <div className="flex flex-col p-8 gap-4">
         <h2 className="text-3xl font-serif italic">Stats</h2>
         <div className="flex gap-2 items-baseline justify-between">
           <p className="text-xl">Rank:</p>
-          <p className="text-2xl font-serif italic">Under construction</p>
+          <p className="text-2xl font-serif italic">-</p>
         </div>
         <div className="flex gap-2 items-baseline justify-between">
           <p className="text-xl">Games:</p>
-          <p className="text-2xl font-serif italic">Under construction</p>
+          <p className="text-2xl font-serif italic">{gamesTotal}</p>
         </div>
         <div className="flex gap-2 items-baseline justify-between">
           <p className="text-xl">Wins:</p>
@@ -63,9 +66,8 @@ const Profile = () => {
         </div>
         <div className="flex gap-2 items-baseline justify-between">
           <p className="text-xl">Win ratio:</p>
-          <p className="text-2xl font-serif italic">Under construction</p>
+          <p className="text-2xl font-serif italic">{winRatio}%</p>
         </div>
-
       </div>
     </ProfileLayout>
   )

@@ -44,6 +44,7 @@ app.use("/v1/auth", authRoutes);
 
 app.use("/v1/game", checkToken, gameRoutes);
 app.use("/v1/stats", checkToken, statsRoutes);
+app.use("/v1/me", checkToken, (req, res) => res.json({username: req.userData.username}));
 
 // HTTP Server
 const server = http.createServer(app);

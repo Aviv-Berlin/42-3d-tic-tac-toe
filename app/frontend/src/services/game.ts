@@ -2,12 +2,12 @@ import axios from "axios";
 
 const baseUrl = "/v1/game";
 
-const joinMatch = (matchId: string, username: string) => {
+const joinMatch = (matchId: string) => {
   const url = `${baseUrl}/lobby/join`;
   return axios.post(url, { matchId });
 };
 
-const createLobby = (username: string, size: number) => {
+const createLobby = (size: number) => {
   const url = `${baseUrl}/lobby/create`;
   return axios.post(url, { size, requiredPlayers: 2 });
 };

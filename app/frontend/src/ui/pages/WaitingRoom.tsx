@@ -1,7 +1,7 @@
 import { useEffect } from "react";
 import {useParams, useNavigate } from "react-router-dom";
 import MainButton from "../components/MainButton";
-import { closeSocket, sendMessage, getSocket } from "../../services/websocket";
+import { sendMessage, getSocket } from "../../services/websocket";
 import { useMatch, useSetMatch, useClearMatch } from "../../store/matchData"
 import { useSetGameData } from "../../store/gameData";
 

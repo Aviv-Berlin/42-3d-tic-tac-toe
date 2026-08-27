@@ -24,7 +24,7 @@ const ProtectedRoute = () => {
   }, [])
 
   if (retrieved) return <Outlet />
-  return <p>LOADING</p>
+  return null;
 }
 
 export default ProtectedRoute

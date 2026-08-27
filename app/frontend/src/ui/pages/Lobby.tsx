@@ -2,10 +2,10 @@ import { useNavigate } from "react-router-dom";
 import { useState, useEffect } from "react";
 import MainLayout from "../layouts/MainLayout";
 import { ActiveGame } from "../../../../shared/game";
-import MainButton from "../components/MainButton";
 import SecondaryButton from "../components/SecondaryButton";
 import gameService from "../../services/game";
 import { getErrorMessage } from "../../utils/errors";
+import PrimaryButton from "../components/PrimaryButton";
 
 //const token = localStorage.getItem("token");
 
@@ -67,9 +67,9 @@ const Lobby = () => {
           </div>
           <div className="flex flex-col gap-4 items-center">
             <p>There are currently no active games.</p>
-            <MainButton onClick={() => navigate('/game-settings?game-mode=online')}>
+            <PrimaryButton onClick={() => navigate('/game-settings?game-mode=online')}>
               CREATE GAME
-            </MainButton>
+            </PrimaryButton>
           </div>
         </div>
       </MainLayout>
@@ -105,7 +105,7 @@ const Lobby = () => {
                     Join
                   </SecondaryButton>
                 </div>
-                {joinedMatchId && joinedMatchId === game.id && <p className="text-red-400 min-h-6">{errorMessage}</p>}
+                {joinedMatchId && joinedMatchId === game.id && <p className="text-dark-orange min-h-6">{errorMessage}</p>}
               </div>
             ))}
           </div>

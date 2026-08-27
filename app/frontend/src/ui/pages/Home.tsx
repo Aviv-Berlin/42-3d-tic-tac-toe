@@ -20,7 +20,7 @@ const Home = () => {
 
   return (
     <CenteredLayout>
-      <div className="flex flex-col gap-4">
+      <div className="flex flex-col gap-10">
         <div className="flex flex-col gap-2">
           <p>Welcome back <span className="text-dark-orange">{username}</span>!</p>
           <p className="text-4xl">Ready to <span className="text-dark-orange">play</span>?</p>
@@ -28,7 +28,7 @@ const Home = () => {
         <div className="flex flex-col sm:flex-row gap-16">
           <MainButton onClick={() => handleClick("online")}>
             <div className="flex flex-col items-center gap-2 hover:text-dark-orange">
-              <div className="w-20 h-20 relative flex justify-center items-center hover:border border-dark-orange">
+              <div className="w-20 h-20 relative flex justify-center items-center border border-dark-grey hover:border-dark-orange">
                 <BabylonImage type={"online"} />
               </div>
               <p className="text-xs">play online</p>
@@ -36,7 +36,7 @@ const Home = () => {
           </MainButton>
           <MainButton onClick={() => handleClick("ai")}>
             <div className="flex flex-col items-center gap-2 hover:text-dark-orange">
-              <div className="w-20 h-20 relative flex justify-center items-center hover:border border-dark-orange">
+              <div className="w-20 h-20 relative flex justify-center items-center border border-dark-grey hover:border-dark-orange">
                 <BabylonImage type={"ai"} />
               </div>
               <p className="text-xs font-mono">play vs AI</p>
@@ -44,7 +44,7 @@ const Home = () => {
           </MainButton>
           <MainButton onClick={() => handleClick("local")}>
             <div className="flex flex-col items-center gap-2 hover:text-dark-orange">
-              <div className="w-20 h-20 relative flex justify-center items-center hover:border border-dark-orange">
+              <div className="w-20 h-20 relative flex justify-center items-center border border-dark-grey hover:border-dark-orange">
                 <BabylonImage type={"local"} />
               </div>
               <p className="text-xs font-mono">play locally</p>

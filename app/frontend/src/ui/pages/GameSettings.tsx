@@ -1,6 +1,6 @@
 import { useState, useEffect } from 'react';
 import { useNavigate, useSearchParams } from 'react-router-dom';
-import MainButton from '../components/MainButton'
+import PrimaryButton from '../components/PrimaryButton'
 import SecondaryButton from '../components/SecondaryButton';
 import MainLayout from '../layouts/MainLayout';
 import BoardSizeSettings from '../components/BoardSizeSettings'
@@ -92,7 +92,9 @@ const GameSettings = () => {
         </div>
         <BoardSizeSettings size={size} setSize={setSize}/>
         {gameMode === "ai" && <DifficultySettings level={level} setLevel={setLevel}/>}
-        <MainButton onClick={handleConfirm}>CONFIRM</MainButton>
+        <PrimaryButton onClick={handleConfirm}>
+          CONFIRM
+        </PrimaryButton>
         <p className="text-dark-orange min-h-6">{errorMessage}</p>
       </div>
     </MainLayout>

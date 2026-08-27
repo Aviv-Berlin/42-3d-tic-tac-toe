@@ -40,6 +40,7 @@ const Profile = () => {
         {games.map((game, i) => (
           <GameRecap key={i} gameHistory={game} />
         ))}
+        {!games.length && <p className="italic">You haven&apos;t played any game yet!</p>}
       </div>
       <div className="flex flex-col p-8 gap-4">
         <h2 className="text-3xl font-serif italic">Stats</h2>

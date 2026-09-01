@@ -1,6 +1,6 @@
 import { useState, useEffect } from 'react';
 import { useNavigate, useSearchParams } from 'react-router-dom';
-import MainButton from '../components/MainButton'
+import PrimaryButton from '../components/PrimaryButton'
 import SecondaryButton from '../components/SecondaryButton';
 import MainLayout from '../layouts/MainLayout';
 import BoardSizeSettings from '../components/BoardSizeSettings'
@@ -88,12 +88,14 @@ const GameSettings = () => {
           <div className="absolute left-0">
             <SecondaryButton onClick={() => navigate('/home')}>← Back</SecondaryButton>
           </div>
-          <h1 className="text-xl">Mode: <span className="font-serif italic">{gameModeDisplay}</span></h1>
+          <h1 className="text-lg">Mode: <span className="underline underline-offset-4">{gameModeDisplay}</span></h1>
         </div>
         <BoardSizeSettings size={size} setSize={setSize}/>
         {gameMode === "ai" && <DifficultySettings level={level} setLevel={setLevel}/>}
-        <MainButton onClick={handleConfirm}>CONFIRM</MainButton>
-        <p className="text-red-400 min-h-6">{errorMessage}</p>
+        <PrimaryButton onClick={handleConfirm}>
+          CONFIRM
+        </PrimaryButton>
+        <p className="text-dark-orange min-h-6">{errorMessage}</p>
       </div>
     </MainLayout>
   )

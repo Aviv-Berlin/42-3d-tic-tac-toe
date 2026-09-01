@@ -3,7 +3,7 @@ import TextLayout from '../layouts/TextLayout'
 const PrivacyPolicy = () => {
   return (
     <TextLayout>
-      <h1 className="text-4xl self-center">Privacy Policy</h1>
+      <h1 className="text-3xl self-center mb-4">Privacy Policy</h1>
       <p>This Privacy Policy describes how your personal information is collected and used when you use this web app.</p>
 
       <h2 className="text-2xl mt-4">What we collect</h2>

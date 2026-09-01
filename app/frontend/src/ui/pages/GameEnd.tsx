@@ -34,9 +34,9 @@ const GameEnd = () => {
           <SecondaryButton onClick={handleBackToHome}>Back to Home</SecondaryButton>
           <SecondaryButton onClick={() => navigate("/replay")}>View Replay</SecondaryButton>
         </div>
-        <h1 className="text-5xl font-serif italic text-center">{message}</h1>
+        <h1 className="text-3xl text-center">{message}</h1>
         <div className="flex flex-col gap-2">
-          <h2 className="text-2xl font-serif italic">Game Stats</h2>
+          <h2 className="text-xl">Game Stats</h2>
           <p>- Number of moves: {numMoves}</p>
           <p>- Game duration: {gameLength} seconds</p>
         </div>

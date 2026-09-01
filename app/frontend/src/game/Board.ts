@@ -38,9 +38,12 @@ export class Board {
                 return BABYLON.MeshBuilder.CreateBox(name, { size }, this.scene);
 
             case MeshStyle.Sphere:
-                return BABYLON.MeshBuilder.CreateSphere(name, { diameter: size * settings.diameterScale }, this.scene);
-
-            case MeshStyle.Cylinders: { 
+                //return BABYLON.MeshBuilder.CreateSphere(name, { diameter: size * settings.diameterScale }, this.scene);
+                const sphere = BABYLON.MeshBuilder.CreateSphere(name, { diameter: size * settings.diameterScale * 0.8 }, this.scene);
+				//sphere.position.y = 1;
+				return sphere;
+            
+			case MeshStyle.Cylinders: { 
                 const height =  size * settings.heightScale;
                 const diameter = size * settings.diameterScale;
                 const cylinderY = BABYLON.MeshBuilder.CreateCylinder(`${name}Y`, { height, diameter }, this.scene);
@@ -59,7 +62,7 @@ export class Board {
                 const plane = BABYLON.MeshBuilder.CreatePlane( name, 
                     { width: size, height: size, sideOrientation: BABYLON.Mesh.DOUBLESIDE}, this.scene);
                 plane.rotation.x = settings.rotationX;
-                return plane;
+				return plane;
             }
         }
     }

@@ -8,7 +8,7 @@ import { LOOKS, Look, DEFAULT_PLAYER_COLORS} from "./LookSetting"
 
 
 export class Materials {
-    
+
     public readonly cube: StandardMaterial;
     public readonly buttonCube: StandardMaterial;
     public readonly playerMaterials: StandardMaterial[];
@@ -21,7 +21,10 @@ export class Materials {
         const look = this.getLook();
         scene.clearColor = look.backgroundColor.clone();
         const light = new BABYLON.HemisphericLight("light", new BABYLON.Vector3(0, 1, 0), scene);
-        light.intensity = 0.7;
+        const light2 = new BABYLON.HemisphericLight("light", new BABYLON.Vector3(0, -1, 0), scene);
+		light.intensity = 0.7;
+		light.diffuse = new BABYLON.Color3(1,1,1);
+        light2.intensity = 0.7;
 
         this.cube = new StandardMaterial("cubeMat", scene);
         this.cube.diffuseColor = look.cubeColor.clone();
@@ -30,7 +33,7 @@ export class Materials {
         this.cube.disableDepthWrite = true;
 
         this.buttonCube = new StandardMaterial("buttonCube", scene);
-        this.buttonCube.diffuseColor = new BABYLON.Color3(0, 0, 0);
+        this.buttonCube.diffuseColor = BABYLON.Color3.FromHexString('#C44600');
         this.buttonCube.alpha = 1;
 
         const playerColors = this.getPlayerColors();
@@ -46,15 +49,15 @@ export class Materials {
         mesh.edgesWidth = look.edgeWidth;
         mesh.edgesColor = look.edgeColor.clone();
     }
-    
-    
+
+
 
     public applyLook(index: number): void {
         const look = LOOKS[index];
 
         if (!look)
             throw new Error(`Unknown look index: ${index}`);
-        
+
         this.currentLookIndex = index;
         this.scene.clearColor.copyFrom(look.backgroundColor);
         this.cube.diffuseColor.copyFrom(look.cubeColor);

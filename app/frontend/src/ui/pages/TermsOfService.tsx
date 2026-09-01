@@ -3,7 +3,7 @@ import TextLayout from '../layouts/TextLayout'
 const TermsOfService = () => {
   return (
     <TextLayout>
-      <h1 className="text-4xl self-center">Terms of Service</h1>
+      <h1 className="text-3xl self-center mb-4">Terms of Service</h1>
       <p>These Terms of Service govern your use of this web app. By creating an account or using the app, you agree to these Terms.</p>
 
       <h2 className="text-2xl mt-4">Accounts</h2>

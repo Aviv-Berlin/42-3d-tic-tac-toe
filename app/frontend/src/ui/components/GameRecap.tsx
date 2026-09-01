@@ -1,4 +1,7 @@
 import { GameHistory } from '../../../../shared/game'
+import SecondaryButton from './SecondaryButton';
+import { useNavigate } from 'react-router-dom';
+import { useSetGameData } from '../../store/gameData';
 
 interface GameRecapProps {
   gameHistory: GameHistory,
@@ -6,6 +9,9 @@ interface GameRecapProps {
 
 const GameRecap = ( { gameHistory }: GameRecapProps) => {
   const size = gameHistory.size;
+  const navigate = useNavigate();
+  const setGameData = useSetGameData();
+
   return (
     <div className="border bg-light-grey px-8 py-4 flex flex-row justify-between items-center">
       <p className="text-l">{gameHistory.outcome}</p>
@@ -13,6 +19,12 @@ const GameRecap = ( { gameHistory }: GameRecapProps) => {
         <p className="text-xs">{`Opponent: ${ gameHistory.opponent }`}</p>
         <p className="text-xs">{`Board size: ${size}x${size}x${size}`}</p>
       </div>
+	  <SecondaryButton onClick={() => {
+		setGameData(gameHistory.gameData);
+		navigate('/replay')}}
+		>
+			Replay
+	  </SecondaryButton>
     </div>
   )
 }

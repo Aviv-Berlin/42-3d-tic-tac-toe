@@ -47,5 +47,5 @@ export interface GameHistory {
   opponent: string;
   gameMode: GameMode;
   size: number;
-  //moves: Move[]; // TODO
+  gameData: GameData;
 }

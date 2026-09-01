@@ -36,10 +36,18 @@ export async function getMatchReplay(id: number) {
 	return result;
 }
 
+export async function getRecentGames(id: number, limit: number) {
+	const result = await query(
+		'SELECT * FROM matches WHERE player1 = $1 OR player2 = $1 ORDER BY started_at DESC LIMIT $2;', [id, limit]
+	);
+	return result;
+}
+
 export default {
 	getUserGames,
 	getUserWins,
 	getUserDraws,
 	getUserLosses,
-	getMatchReplay
+	getMatchReplay,
+	getRecentGames
 };

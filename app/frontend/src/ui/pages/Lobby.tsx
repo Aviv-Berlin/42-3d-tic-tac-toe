@@ -87,7 +87,7 @@ const Lobby = () => {
         </div>
         <div className="flex flex-col gap-4">
           <div className="flex justify-between items-center">
-            <h2 className="text-3xl font-serif italic">Games Lobby</h2>
+            <h2 className="text-3xl">Games Lobby</h2>
             <SecondaryButton onClick={() => navigate('/game-settings?game-mode=online')}>
               CREATE GAME
             </SecondaryButton>
@@ -97,7 +97,7 @@ const Lobby = () => {
               <div key={game.id} className="flex flex-col">
                 <div key={game.id} className="flex justify-between items-end border p-4 bg-light-grey">
                   <div key={game.id} className="flex flex-col">
-                    <h3 className="text-2xl font-serif italic">{game.host}&apos;s game</h3>
+                    <h3 className="text-2xl">{game.host}&apos;s game</h3>
                     <span>Host: {game.host}</span>
                     <span>Size: {game.size}x{game.size}x{game.size}</span>
                   </div>

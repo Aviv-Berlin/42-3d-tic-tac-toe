@@ -21,29 +21,29 @@ import WaitingRoom from './pages/WaitingRoom'
 const App = () => {
   return (
 	  <Routes>
-			<Route element={<MatchSocketProvider />}>
-        <Route path="/" element={<Navigate to="/home" />} />
-        <Route element={<ProtectedLogin />}>
-        	<Route path="/register" element={<Register />} />
-        	<Route path="/register-success" element={<RegisterSuccess />} />
-        	<Route path="/login" element={<Login />} />
-		</Route>
-        <Route element={<ProtectedRoute />}>
+      <Route path="/" element={<Navigate to="/home" />} />
+      <Route element={<ProtectedLogin />}>
+       	<Route path="/register" element={<Register />} />
+       	<Route path="/register-success" element={<RegisterSuccess />} />
+       	<Route path="/login" element={<Login />} />
+      </Route>
+      <Route element={<ProtectedRoute />}>
+        <Route element={<MatchSocketProvider />}>
           <Route path="/home" element={<Home />} />
           <Route path="/game-settings" element={<GameSettings />} />
           <Route path="/lobby" element={<Lobby />} />
-          	<Route path="/waiting/:matchId" element={<WaitingRoom />} />
-          	<Route path="/game/:matchId" element={<Game />} />
+         	<Route path="/waiting/:matchId" element={<WaitingRoom />} />
+         	<Route path="/game/:matchId" element={<Game />} />
           <Route path="/game-end" element={<GameEnd />} />
           <Route path="/replay" element={<Replay />} />
           <Route path="/waiting-room" element={<WaitingRoom />} />
           <Route path="/profile" element={<Profile />} />
           <Route path="/settings" element={<Settings />} />
         </Route>
-        <Route path="/privacy" element={<PrivacyPolicy />} />
-        <Route path="/terms" element={<TermsOfService />} />
-        <Route path="*" element={<NotFound />} />
-	 	  </Route>
+      </Route>
+      <Route path="/privacy" element={<PrivacyPolicy />} />
+      <Route path="/terms" element={<TermsOfService />} />
+      <Route path="*" element={<NotFound />} />
     </Routes>
   )
 }

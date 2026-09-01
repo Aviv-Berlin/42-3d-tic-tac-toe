@@ -1,6 +1,13 @@
+import { useEffect } from 'react'
 import TextLayout from '../layouts/TextLayout'
+import { closeSocket } from '../../services/websocket'
 
 const TermsOfService = () => {
+
+  useEffect(() => {
+    closeSocket();
+  });
+
   return (
     <TextLayout>
       <h1 className="text-3xl self-center mb-4">Terms of Service</h1>

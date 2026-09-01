@@ -36,37 +36,37 @@ const Profile = () => {
   return (
     <ProfileLayout>
       <div className="border-r p-8 flex flex-col gap-4">
-        <h2 className="text-3xl mb-4">Recent Games</h2>
+        <h2 className="text-2xl mb-4">Recent Games <span className="text-sm">(LAST 5 GAMES PLAYED)</span></h2>
         {games.map((game, i) => (
           <GameRecap key={i} gameHistory={game} />
         ))}
         {!games.length && <p className="italic">You haven&apos;t played any game yet!</p>}
       </div>
       <div className="flex flex-col p-8 gap-4">
-        <h2 className="text-3xl mb-4">Stats</h2>
+        <h2 className="text-2xl mb-4">Stats</h2>
         <div className="flex gap-2 items-baseline justify-between">
-          <p className="text-lg">RANK:</p>
-          <p className="text-2xl">-</p>
+          <p className="text-md">RANK:</p>
+          <p className="text-xl">-</p>
         </div>
         <div className="flex gap-2 items-baseline justify-between">
-          <p className="text-lg">GAMES:</p>
-          <p className="text-2xl">{gamesTotal}</p>
+          <p className="text-md">GAMES:</p>
+          <p className="text-xl">{gamesTotal}</p>
         </div>
         <div className="flex gap-2 items-baseline justify-between">
-          <p className="text-lg">WINS:</p>
-          <p className="text-2xl">{winTotal}</p>
+          <p className="text-md">WINS:</p>
+          <p className="text-xl">{winTotal}</p>
         </div>
         <div className="flex gap-2 items-baseline justify-between">
-          <p className="text-lg">DRAWS:</p>
-          <p className="text-2xl">{drawTotal}</p>
+          <p className="text-md">DRAWS:</p>
+          <p className="text-xl">{drawTotal}</p>
         </div>
         <div className="flex gap-2 items-baseline justify-between">
-          <p className="text-lg">LOSSES:</p>
-          <p className="text-2xl">{lossTotal}</p>
+          <p className="text-md">LOSSES:</p>
+          <p className="text-xl">{lossTotal}</p>
         </div>
         <div className="flex gap-2 items-baseline justify-between">
-          <p className="text-lg">WIN RATIO:</p>
-          <p className="text-2xl">{winRatio}%</p>
+          <p className="text-md">WIN RATIO:</p>
+          <p className="text-xl">{winRatio}%</p>
         </div>
       </div>
     </ProfileLayout>

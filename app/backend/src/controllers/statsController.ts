@@ -6,7 +6,7 @@ import { MatchEntry } from '../database/gameQueries.ts';
 import { GameData, Move } from '../../../shared/game.ts';
 import { GridPosition, CellState } from '../../../shared/game/Types.ts';
 
-async function createGameData(row: MatchEntry, id: number) {
+async function convertToGameData(row: MatchEntry, id: number) {
 
 	const user_id = row.player1 === id ? row.player1 : row.player2;
 	const opponent_id = row.player1 === id ? row.player2 : row.player1;
@@ -66,7 +66,7 @@ async function createGameData(row: MatchEntry, id: number) {
 	}
 	return (summary);
 }
-async function convertToGameHistory(gameData: GameData) {
+async function createGameHistory(gameData: GameData) {
 	
 	const outcome =
 		gameData.winner === null ? "DRAW" :
@@ -103,8 +103,8 @@ export async function getGameHistory(request: Request, response: Response) {
 			if (!result.rows[i]){
 				break;
 			}
-			const game: GameData = await createGameData(result.rows[i], id);
-			const history: GameHistory = await convertToGameHistory(game);
+			const game: GameData = await convertToGameData(result.rows[i], id);
+			const history: GameHistory = await createGameHistory(game);
 			recent_games.push(history);
 		}
 		return response.status(200).json(recent_games);

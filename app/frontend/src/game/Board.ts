@@ -55,6 +55,7 @@ export class Board {
                 if (!merged)
                     throw new Error("Failed to merge cylinders");
                 merged.name = name;
+                merged.metadata = { isCylinder: true };
                 return merged;
             }
 
@@ -320,6 +321,11 @@ export class Board {
             mesh = this.createStyledMesh(look.moveStyle1, this.cellSize * look.moveSizeScale, "moveMesh");
         else {
             mesh = this.createStyledMesh(look.moveStyle2, this.cellSize * look.moveSizeScale, "moveMesh");        
+        }
+        if (mesh.metadata?.isCylinder) {
+            mesh.rotation.y = Math.PI / 4;
+            mesh.rotation.x = Math.PI / 4;
+            mesh.rotation.z = Math.PI / 4;
         }
         mesh.position = this.getPosition(pos.x, pos.y, pos.z, look.moveOffset);
         mesh.material = isPreview ? this.materials.getPreviewMaterial(playerState) : this.materials.getPlayerMaterial(playerState);

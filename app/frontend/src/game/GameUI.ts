@@ -6,6 +6,7 @@ import { Board } from "./Board"
 import { GameServerConnection } from "./GameServerConnection"
 import { LOOKS, Look, DEFAULT_PLAYER_COLORS} from "./LookSetting"
 import { TextCubeFactory } from "./TextCubeFactory";
+import { Plane } from "lucide-react";
 
 type CubeRowAnchor = "left" | "center" | "right";
 
@@ -37,7 +38,9 @@ export class GameUI {
     private ui: GUI.AdvancedDynamicTexture;
     private playerNameRow: BABYLON.TransformNode | null = null;
     private exitRow: BABYLON.TransformNode | null = null;
+    private exitButton: GUI.Button | null = null;
     private lookRow: BABYLON.TransformNode | null = null;
+    private lookButton:  GUI.Button | null = null;
     private instructions: GUI.TextBlock | null = null;
     private scene: Scene;
     private onExit: () => void;
@@ -56,8 +59,10 @@ export class GameUI {
         this.textCubeFactory =
         new TextCubeFactory(scene, materials);
         this.ui = GUI.AdvancedDynamicTexture.CreateFullscreenUI("UI", true, scene);
-        this.createExitCubeRow();
-        this.createLookCubeRow();
+        //this.createExitCubeRow();
+        this.createExitButton();
+        this.createLookButton();
+        //this.createLookCubeRow();
         this.displayInstructions();
     }
 
@@ -69,6 +74,7 @@ export class GameUI {
         this.board.refreshPreview();
         this.textCubeFactory.refreshLook();
         this.board.refreshTextCubes();
+        this.applyButtonLook();
     }
 
     public register(game: GameServerConnection): void {
@@ -107,7 +113,76 @@ export class GameUI {
     }
 
 
+    private createExitButton(): void {
+        const button = GUI.Button.CreateSimpleButton("diamondButton", "EXIT");
+        button.width = "70px";
+        button.height = "70px";
+        button.thickness = 3;
+        // top-right corner
+        button.horizontalAlignment = GUI.Control.HORIZONTAL_ALIGNMENT_RIGHT;
+        button.verticalAlignment = GUI.Control.VERTICAL_ALIGNMENT_TOP;
+        button.top = "30px";
+        button.left = "-30px";
+        // rotate square → diamond
+        button.rotation = Math.PI / 4;
+        const text = button.textBlock;
+        if (text) {
+            text.rotation = -Math.PI / 4;
+            text.fontSize = 16;
+        }
+        this.exitButton = button;
+        this.applyButtonLook();
+        this.ui.addControl(button);
+        button.onPointerUpObservable.add(() => {
+            if (this.game)
+                this.game.exitGame()
+        });
+    }
 
+        private createLookButton(): void {
+        const button = GUI.Button.CreateSimpleButton("diamondButton", "LOOK");
+        button.width = "80px";
+        button.height = "80px";
+        button.cornerRadius = 55;
+        button.thickness = 3;
+        // top-right corner
+        button.horizontalAlignment = GUI.Control.HORIZONTAL_ALIGNMENT_RIGHT;
+        button.verticalAlignment = GUI.Control.VERTICAL_ALIGNMENT_BOTTOM;
+        button.top = "-30px";
+        button.left = "-30px";
+        const text = button.textBlock;
+        if (text) {
+            text.fontSize = 16;
+        }
+        this.lookButton = button;
+        this.applyButtonLook();
+        this.ui.addControl(button);
+        button.onPointerUpObservable.add(() => {
+            this.toggleLook();
+        });
+    }
+
+    private applyButtonLook(): void {
+        if (!this.exitButton)
+            return;
+        const look = this.materials.getLook();
+        const backgroundColor = look.textCubeColor ?? look.cubeColor;
+        const backgroundAlpha = look.textCubeAlpha ?? look.cubeAlpha;
+        this.exitButton.background = `rgba(${backgroundColor.r * 255},
+            ${backgroundColor.g * 255}, ${backgroundColor.b * 255},
+            ${backgroundAlpha})`;
+        this.exitButton.color = look.edgeColor.toHexString();
+        if (this.exitButton.textBlock)
+            this.exitButton.textBlock.color = look.textColor.toHexString();
+        if (!this.lookButton)
+            return;
+        this.lookButton.background = `rgba(${backgroundColor.r * 255},
+            ${backgroundColor.g * 255}, ${backgroundColor.b * 255},
+            ${backgroundAlpha})`;
+        this.lookButton.color = look.edgeColor.toHexString();
+        if (this.lookButton.textBlock)
+            this.lookButton.textBlock.color = look.textColor.toHexString();
+    }
 
     private createExitCubeRow(): void {
         const camera = this.scene.activeCamera;
@@ -152,6 +227,7 @@ export class GameUI {
 
     private displayInstructions() {
         this.instructions = new GUI.TextBlock();
+        this.instructions.isHitTestVisible = false;
         this.instructions.color = "gray";
         this.instructions.fontSize = 20;
         this.instructions.textHorizontalAlignment = GUI.Control.HORIZONTAL_ALIGNMENT_LEFT;

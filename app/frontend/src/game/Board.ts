@@ -275,7 +275,9 @@ export class Board {
         finalMesh.position = new BABYLON.Vector3(0, 0, 0);
         const material = new BABYLON.StandardMaterial("buttonCube", this.scene);
         //material.diffuseColor = new BABYLON.Color3(1, 1, 1);
-        material.emissiveColor = new BABYLON.Color3(0, 0, 0);
+        material.emissiveColor = BABYLON.Color3.FromHexString("#963400");
+        //material.emissiveColor = new BABYLON.Color3(0, 0, 0);
+        //material.diffuseColor = BABYLON.Color3.FromHexString("#e5e5e5");
         material.alpha = 1;
         material.disableLighting = true;
         finalMesh.material = material;
@@ -313,7 +315,12 @@ export class Board {
 
     private createMoveMesh(pos: GridPosition, playerState: CellState, isPreview: boolean): Mesh {
         const look = this.materials.getLook();
-        const mesh = this.createStyledMesh(look.moveStyle, this.cellSize * look.moveSizeScale, "moveMesh");
+        let mesh: BABYLON.Mesh;
+        if (playerState === CellState.Player1)
+            mesh = this.createStyledMesh(look.moveStyle1, this.cellSize * look.moveSizeScale, "moveMesh");
+        else {
+            mesh = this.createStyledMesh(look.moveStyle2, this.cellSize * look.moveSizeScale, "moveMesh");        
+        }
         mesh.position = this.getPosition(pos.x, pos.y, pos.z, look.moveOffset);
         mesh.material = isPreview ? this.materials.getPreviewMaterial(playerState) : this.materials.getPlayerMaterial(playerState);
         mesh.renderingGroupId = 0;

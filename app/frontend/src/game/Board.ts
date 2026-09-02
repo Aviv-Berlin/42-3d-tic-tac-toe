@@ -78,7 +78,7 @@ export class Board {
                 for (let z = 0; z < this.N; z++) {               
                     const finalMesh = this.createStyledMesh(this.materials.getLook().boardStyle, this.cellSize, "boardMesh");
                     finalMesh.scaling.set(scale, scale, scale);
-                    finalMesh.position = this.getPosition(x, y, z);
+                    finalMesh.position = this.getPosition(x, y, z, 0);
                     finalMesh.material = this.materials.cube;
                     finalMesh.metadata = { gridPosition: { x, y, z}};
                     this.boardMeshes.push(finalMesh);
@@ -97,11 +97,11 @@ export class Board {
             for (let y = 0; y < N; y++) {
                 for (let z = 0; z < N; z++) {
                     const finalMesh = BABYLON.MeshBuilder.CreateBox("smallCube", { size: this.cellSize },  this.scene);
-                    finalMesh.position = this.getPosition(x, y, z);
+                    finalMesh.position = this.getPosition(x, y, z, 0);
                     finalMesh.material = this.materials.buttonCube;
                     finalMesh.enableEdgesRendering();
                     finalMesh.edgesWidth = 15.0;
-                    finalMesh.edgesColor = new BABYLON.Color4(1, 1, 1, 1);
+                    finalMesh.edgesColor =  BABYLON.Color4.FromHexString("#e5e5e5");
                     finalMesh.metadata = { gridPosition: { x, y, z}};
                     this.boardMeshes.push(finalMesh);
                 }
@@ -153,7 +153,7 @@ export class Board {
 
                     const finalMesh = this.textCubeFactory.createTextCube(letter, {name: `logo-${x}-${y}-${z}`,
                             size: this.cellSize, letterFace, renderEdges: true,  cubeColor: BABYLON.Color3.White(), ignoreLighting: true});
-                    finalMesh.position = this.getPosition(x, y, z);
+                    finalMesh.position = this.getPosition(x, y, z, 0);
                     finalMesh.metadata = { gridPosition: { x, y, z } };
                     this.boardMeshes.push(finalMesh);
                 }
@@ -169,11 +169,11 @@ export class Board {
 
         for (let y = 0; y < N; y++) {
                     const finalMesh = BABYLON.MeshBuilder.CreateBox("smallCube", { size: this.cellSize },  this.scene);
-                    finalMesh.position = this.getPosition(1, y, 1);
+                    finalMesh.position = this.getPosition(1, y, 1, 0);
                     finalMesh.material = this.materials.buttonCube;
                     finalMesh.enableEdgesRendering();
                     finalMesh.edgesWidth = 15.0;
-                    finalMesh.edgesColor = new BABYLON.Color4(1, 1, 1, 1);
+                    finalMesh.edgesColor =  BABYLON.Color4.FromHexString("#e5e5e5");
                     finalMesh.metadata = { gridPosition: { x: 1, y, z: 1}};
                     this.boardMeshes.push(finalMesh);
         }
@@ -303,10 +303,10 @@ export class Board {
         this.cubesShrink = !this.cubesShrink;
     }
 
-    private getPosition(x: number, y: number, z: number): BABYLON.Vector3 {
+    private getPosition(x: number, y: number, z: number, posOffset: number): BABYLON.Vector3 {
         const step = this.cellSize + this.materials.getLook().boardGap;;
         return new BABYLON.Vector3
-			((x - this.offset) * step, (y - this.offset) * step, (z - this.offset) * step);
+			((x - this.offset) * step, (y - this.offset + posOffset) * step, (z - this.offset) * step);
     }
 
 
@@ -314,7 +314,7 @@ export class Board {
     private createMoveMesh(pos: GridPosition, playerState: CellState, isPreview: boolean): Mesh {
         const look = this.materials.getLook();
         const mesh = this.createStyledMesh(look.moveStyle, this.cellSize * look.moveSizeScale, "moveMesh");
-        mesh.position = this.getPosition(pos.x, pos.y, pos.z);
+        mesh.position = this.getPosition(pos.x, pos.y, pos.z, look.moveOffset);
         mesh.material = isPreview ? this.materials.getPreviewMaterial(playerState) : this.materials.getPlayerMaterial(playerState);
         mesh.renderingGroupId = 0;
         mesh.isPickable = false;

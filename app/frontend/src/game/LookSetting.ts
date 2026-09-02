@@ -42,6 +42,7 @@ export interface Look {
     playerColors?: PlayerColors;
     boardStyle: MeshStyle;
     moveStyle: MeshStyle;
+    moveOffset: number,
     boardSize: number,
     boardGap: number;
     moveSizeScale: number,
@@ -80,6 +81,7 @@ export const LOOKS: Look[] = [
         ],
         boardStyle: MeshStyle.Plane,
         moveStyle: MeshStyle.Sphere,
+        moveOffset: 0.3,
         boardSize: 2.5,
         boardGap: 0,
         moveSizeScale: 0.7,
@@ -101,6 +103,7 @@ export const LOOKS: Look[] = [
         ],
         boardStyle: MeshStyle.Box,
         moveStyle: MeshStyle.Sphere,
+        moveOffset: 0,
         boardSize: 2.5,
         boardGap: 0,
         moveSizeScale: 0.7,
@@ -117,6 +120,7 @@ export const LOOKS: Look[] = [
         textColor: new BABYLON.Color3(1, 1, 1),
         boardStyle: MeshStyle.Box,
         moveStyle: MeshStyle.Sphere,
+        moveOffset: 0,
         boardSize: 2.5,
         boardGap: 0,
         moveSizeScale: 0.7,
@@ -139,6 +143,7 @@ export const LOOKS: Look[] = [
         ],
         boardStyle: MeshStyle.Box,
         moveStyle: MeshStyle.Sphere,
+        moveOffset: 0,
         boardSize: 2.5,
         boardGap: 0.02,
         moveSizeScale: 0.7,
@@ -155,6 +160,7 @@ export const LOOKS: Look[] = [
         textColor: new BABYLON.Color3(0.85, 0.85, 0.85),
         boardStyle: MeshStyle.Sphere, // sphere
         moveStyle: MeshStyle.Sphere,
+        moveOffset: 0,
         boardSize: 2.5,
         boardGap: 0.02,
         moveSizeScale: 0.7,
@@ -171,6 +177,7 @@ export const LOOKS: Look[] = [
         textColor: new BABYLON.Color3(0.85, 0.85, 0.85),
         boardStyle: MeshStyle.Cylinders,
         moveStyle: MeshStyle.Sphere,
+        moveOffset: 0,
         boardSize: 2.5,
         boardGap: 0.02,
         moveSizeScale: 0.7,
@@ -187,6 +194,7 @@ export const LOOKS: Look[] = [
         textColor: new BABYLON.Color3(0.85, 0.85, 0.85),
         boardStyle: MeshStyle.Plane, // plane
         moveStyle: MeshStyle.Box,
+        moveOffset: 0.3,
         boardSize: 2.5,
         boardGap: 0.05,
         moveSizeScale: 0.7,
@@ -203,6 +211,7 @@ export const LOOKS: Look[] = [
         textColor: new BABYLON.Color3(0.85, 0.85, 0.85),
         boardStyle: MeshStyle.Box, // default cube
         moveStyle: MeshStyle.Sphere,
+        moveOffset: 0,
         boardSize: 2.5,
         boardGap: 0.02,
         moveSizeScale: 0.7,

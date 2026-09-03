@@ -245,10 +245,6 @@ export class GameUI {
         const camera = this.scene.activeCamera;
         if (!camera)
             throw new Error("No active camera found");
-        const pos: GridPosition = { x: -2.2, y: 2, z: 5 };
-        const moveIndicator = this.board.createMoveMesh(pos, CellState.Player2, false);
-        moveIndicator.parent = camera;
-        moveIndicator.scaling = new BABYLON.Vector3(0.5, 0.5, 0.5);
         if (player === undefined)
             player = "player name error!"
         if (this.playerNameRow === null) {

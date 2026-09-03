@@ -89,7 +89,7 @@ export const LOOKS: Look[] = [
         ],
         boardStyle: MeshStyle.Plane,
         moveStyle1: MeshStyle.Jacks,
-        moveStyle2: MeshStyle.Cylinders,
+        moveStyle2: MeshStyle.Sphere,
         moveOffset: 0.3,
         boardSize: 2.5,
         boardGap: 0,

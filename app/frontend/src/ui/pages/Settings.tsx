@@ -61,6 +61,7 @@ const Settings = () => {
 		//navigate('/success'); // navigate to a success page or show a success message
 	} catch (err) {
 		console.error(err);
+		// handle error, e.g., show an error message to the user
 	}
     // here we send the new username to the backend with a PUT request
     // ofc we need to check that the username is not already taken
@@ -81,6 +82,7 @@ const Settings = () => {
 		//navigate('/success'); // navigate to a success page or show a success message
 	} catch (err) {
 		console.error(err);
+		// handle error, e.g., show an error message to the user
 	}
 		
     // here we send the new and the old password to the backend with a PUT request
@@ -102,6 +104,7 @@ const Settings = () => {
 		navigate('/register');
 	} catch (err) {
 		console.error(err);
+		// handle error, e.g., show an error message to the user
 	}
     // here we delete the account with a DELETE request
     // check if the password matches with what stored in the db

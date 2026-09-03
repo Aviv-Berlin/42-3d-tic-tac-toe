@@ -7,6 +7,6 @@ router.post('/username', settings.changeUsername);
 
 router.post('/password', settings.changePassword);
 
-router.post('/delete', settings.deleteAccount);
+router.delete('/delete', settings.deleteAccount);
 
 export default router;

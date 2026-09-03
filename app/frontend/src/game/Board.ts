@@ -69,6 +69,7 @@ export class Board {
             	case MeshStyle.Jacks: { 
                 const height =  size * settings.heightScale;
                 const diameter = size * settings.diameterScale;
+                const posOffset = height / 1.65;
                 const cylinderY = BABYLON.MeshBuilder.CreateCylinder(`${name}Y`, { height, diameter }, this.scene);
                 const cylinderX = BABYLON.MeshBuilder.CreateCylinder(`${name}X`, { height, diameter }, this.scene);
                 const cylinderZ = BABYLON.MeshBuilder.CreateCylinder(`${name}Z`, { height, diameter }, this.scene);
@@ -76,10 +77,10 @@ export class Board {
                 const sphere2 = BABYLON.MeshBuilder.CreateSphere(`${name}2`, { diameter: size / 3 }, this.scene);
                 const sphere3 = BABYLON.MeshBuilder.CreateSphere(`${name}3`, { diameter: size / 3 }, this.scene);
                 const sphere4 = BABYLON.MeshBuilder.CreateSphere(`${name}4`, { diameter: size / 3 }, this.scene);
-                sphere1.position = new BABYLON.Vector3(0.25, 0, 0);
-                sphere2.position = new BABYLON.Vector3(-0.25, 0, 0);
-                sphere3.position = new BABYLON.Vector3(0, 0.25, 0);
-                sphere4.position = new BABYLON.Vector3(0, -0.25, 0);
+                sphere1.position = new BABYLON.Vector3(posOffset, 0, 0);
+                sphere2.position = new BABYLON.Vector3(-posOffset, 0, 0);
+                sphere3.position = new BABYLON.Vector3(0, posOffset, 0);
+                sphere4.position = new BABYLON.Vector3(0, -posOffset, 0);
 
                 cylinderX.rotation.x = Math.PI / 2;
                 cylinderZ.rotation.z = Math.PI / 2;

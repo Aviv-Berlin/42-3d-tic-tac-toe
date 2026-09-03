@@ -19,7 +19,7 @@ const Canvas = ({gameData}: CanvasProps) => {
     if (!canvasRef.current || !gameData) return;
 
     return createBabylonGame(canvasRef.current, gameData, () => {
-      setGameData(gameData);
+      //setGameData(gameData);
       navigate('/game-end');
     });
   }, []);

@@ -4,6 +4,8 @@ let socket: WebSocket | null = null;
 let currentMatchId: string | null = null;
 
 export function openSocket(matchId: string, username: string): WebSocket {
+
+	console.log("[openSocket] Username:", username);
 	if (socket && socket.readyState !== WebSocket.CLOSED && currentMatchId === matchId)
 		return socket;
 

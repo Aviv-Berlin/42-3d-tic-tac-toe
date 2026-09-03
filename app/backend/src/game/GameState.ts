@@ -234,6 +234,10 @@ export class GameState {
             games.splice(index, 1);
     }
 
+	public isFinished(): boolean {
+		return this.gameData.isFinished;
+	}
+
     public handleDisconnect(ws: WebSocket) {
         for (let i = 0; i < this.players.length; i++) {
             const player = this.players[i];

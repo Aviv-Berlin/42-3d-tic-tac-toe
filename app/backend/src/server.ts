@@ -5,6 +5,7 @@ import cors from "cors";
 import http from "http";
 
 import authRoutes from "./routes/authRoutes.ts";
+import settingsRoutes from "./routes/settingsRoutes.ts";
 import gameRoutes from "./routes/gameRoutes.ts";
 import statsRoutes from './routes/statsRoutes.ts';
 import { setupWebSocket } from "./websocket/wsServer.ts";
@@ -43,6 +44,7 @@ app.use("/v1/auth", authRoutes);
 // add middleware for token verification for game routes
 
 app.use("/v1/game", checkToken, gameRoutes);
+app.use("/v1/settings", checkToken, settingsRoutes);
 app.use("/v1/stats", checkToken, statsRoutes);
 app.use("/v1/me", checkToken, (req, res) => res.json({username: req.userData.username}));
 

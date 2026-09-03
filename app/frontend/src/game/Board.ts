@@ -65,6 +65,33 @@ export class Board {
                 plane.rotation.x = settings.rotationX;
 				return plane;
             }
+
+            	case MeshStyle.Jacks: { 
+                const height =  size * settings.heightScale;
+                const diameter = size * settings.diameterScale;
+                const cylinderY = BABYLON.MeshBuilder.CreateCylinder(`${name}Y`, { height, diameter }, this.scene);
+                const cylinderX = BABYLON.MeshBuilder.CreateCylinder(`${name}X`, { height, diameter }, this.scene);
+                const cylinderZ = BABYLON.MeshBuilder.CreateCylinder(`${name}Z`, { height, diameter }, this.scene);
+                const sphere1 = BABYLON.MeshBuilder.CreateSphere(`${name}1`, { diameter: size / 3  }, this.scene);
+                const sphere2 = BABYLON.MeshBuilder.CreateSphere(`${name}2`, { diameter: size / 3 }, this.scene);
+                const sphere3 = BABYLON.MeshBuilder.CreateSphere(`${name}3`, { diameter: size / 3 }, this.scene);
+                const sphere4 = BABYLON.MeshBuilder.CreateSphere(`${name}4`, { diameter: size / 3 }, this.scene);
+                sphere1.position = new BABYLON.Vector3(0.25, 0, 0);
+                sphere2.position = new BABYLON.Vector3(-0.25, 0, 0);
+                sphere3.position = new BABYLON.Vector3(0, 0.25, 0);
+                sphere4.position = new BABYLON.Vector3(0, -0.25, 0);
+
+                cylinderX.rotation.x = Math.PI / 2;
+                cylinderZ.rotation.z = Math.PI / 2;
+                const merged = BABYLON.Mesh.MergeMeshes([cylinderY, cylinderX, cylinderZ, sphere1, sphere2, sphere3, sphere4], true);
+                if (!merged)
+                    throw new Error("Failed to merge cylinders");
+                merged.name = name;
+                merged.rotation.y = Math.PI / 4;
+                merged.rotation.x = Math.PI / 4;
+                merged.rotation.z = Math.PI / 4;
+                return merged;
+            }
         }
     }
 
@@ -314,7 +341,7 @@ export class Board {
 
 
 
-    private createMoveMesh(pos: GridPosition, playerState: CellState, isPreview: boolean): Mesh {
+    public createMoveMesh(pos: GridPosition, playerState: CellState, isPreview: boolean): Mesh {
         const look = this.materials.getLook();
         let mesh: BABYLON.Mesh;
         if (playerState === CellState.Player1)
@@ -322,11 +349,7 @@ export class Board {
         else {
             mesh = this.createStyledMesh(look.moveStyle2, this.cellSize * look.moveSizeScale, "moveMesh");        
         }
-        if (mesh.metadata?.isCylinder) {
-            mesh.rotation.y = Math.PI / 4;
-            mesh.rotation.x = Math.PI / 4;
-            mesh.rotation.z = Math.PI / 4;
-        }
+
         mesh.position = this.getPosition(pos.x, pos.y, pos.z, look.moveOffset);
         mesh.material = isPreview ? this.materials.getPreviewMaterial(playerState) : this.materials.getPlayerMaterial(playerState);
         mesh.renderingGroupId = 0;

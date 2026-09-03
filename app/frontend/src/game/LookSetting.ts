@@ -5,6 +5,7 @@ export enum MeshStyle {
     Sphere = "sphere",
     Cylinders = "cylinders",
     Plane = "plane",
+    Jacks = "jacks",
 }
 
 export const MESH_STYLE_SETTINGS = {
@@ -26,6 +27,12 @@ export const MESH_STYLE_SETTINGS = {
     [MeshStyle.Plane]: {
         type: MeshStyle.Plane,
         rotationX: Math.PI / 2,
+    },
+
+        [MeshStyle.Jacks]: {
+        type: MeshStyle.Jacks,
+        heightScale: 1.05,
+        diameterScale: 0.2,
     },
 } as const;
 
@@ -81,8 +88,8 @@ export const LOOKS: Look[] = [
             DEFAULT_PLAYER_COLORS[3],
         ],
         boardStyle: MeshStyle.Plane,
-        moveStyle1: MeshStyle.Cylinders,
-        moveStyle2: MeshStyle.Sphere,
+        moveStyle1: MeshStyle.Jacks,
+        moveStyle2: MeshStyle.Cylinders,
         moveOffset: 0.3,
         boardSize: 2.5,
         boardGap: 0,

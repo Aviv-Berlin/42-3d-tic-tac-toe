@@ -4,9 +4,9 @@ import * as GUI from "@babylonjs/gui";
 import { Materials } from "./Materials"
 import { Board } from "./Board"
 import { GameServerConnection } from "./GameServerConnection"
-import { LOOKS, Look, DEFAULT_PLAYER_COLORS} from "./LookSetting"
+import { LOOKS } from "./LookSetting"
 import { TextCubeFactory } from "./TextCubeFactory";
-import { Plane } from "lucide-react";
+import { GridPosition, CellState } from "../../../shared/game/Types"
 
 type CubeRowAnchor = "left" | "center" | "right";
 
@@ -229,7 +229,7 @@ export class GameUI {
         this.instructions = new GUI.TextBlock();
         this.instructions.isHitTestVisible = false;
         this.instructions.color = "gray";
-        this.instructions.fontSize = 20;
+        this.instructions.fontSize = 15;
         this.instructions.textHorizontalAlignment = GUI.Control.HORIZONTAL_ALIGNMENT_LEFT;
         this.instructions.horizontalAlignment = GUI.Control.HORIZONTAL_ALIGNMENT_LEFT;
         this.instructions.textVerticalAlignment = GUI.Control.VERTICAL_ALIGNMENT_BOTTOM;
@@ -241,21 +241,27 @@ export class GameUI {
     }
 
     public async playerTitle(player: string): Promise<void> {
+
         const camera = this.scene.activeCamera;
         if (!camera)
             throw new Error("No active camera found");
+        const pos: GridPosition = { x: -2.2, y: 2, z: 5 };
+        const moveIndicator = this.board.createMoveMesh(pos, CellState.Player2, false);
+        moveIndicator.parent = camera;
+        moveIndicator.scaling = new BABYLON.Vector3(0.5, 0.5, 0.5);
         if (player === undefined)
             player = "player name error!"
         if (this.playerNameRow === null) {
             this.playerNameRow = this.createTextCubeRow(Array.from(player.toUpperCase()), {
                 name: "playerName",
                 parent: camera,
-                position: new BABYLON.Vector3(-30, 14, 40), cubeSize: 2, gap: 0.25,
+                position: new BABYLON.Vector3(-28, 14, 40), cubeSize: 2, gap: 0.25,
                 anchor: "left",
                 alwaysOnTop :true,
             });
             return ;
         }
+
         const previousRow = this.playerNameRow;
         const exitAnimation = this.animateCubeRow(previousRow , { position: new BABYLON.Vector3(-30, -20, 40), scale: 1, anchor: "left"},
             false, 30, 3, 60).then(() => { this.disposeTextCubeRow(previousRow )});
@@ -264,7 +270,7 @@ export class GameUI {
         const newPlayer = this.createTextCubeRow(Array.from(player.toUpperCase()), {
                 name: "playerName",
                 parent: camera,
-                position: new BABYLON.Vector3(-30, 14, 40), cubeSize: 2, gap: 0.25,
+                position: new BABYLON.Vector3(-28, 14, 40), cubeSize: 2, gap: 0.25,
                 anchor: "left",
                 alwaysOnTop :true,
             }

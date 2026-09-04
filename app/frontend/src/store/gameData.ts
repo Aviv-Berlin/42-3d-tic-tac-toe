@@ -19,3 +19,4 @@ const useGameDataStore = create<GameDataStore>()(
 
 export const useGameData = () => useGameDataStore((state) => state.gameData);
 export const useSetGameData = () => useGameDataStore((state) => state.setGameData);
+export const setGameData = (gameData: GameData) =>  useGameDataStore.getState().setGameData(gameData);

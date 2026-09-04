@@ -5,6 +5,7 @@ export enum MeshStyle {
     Sphere = "sphere",
     Cylinders = "cylinders",
     Plane = "plane",
+    Jacks = "jacks",
 }
 
 export const MESH_STYLE_SETTINGS = {
@@ -27,6 +28,12 @@ export const MESH_STYLE_SETTINGS = {
         type: MeshStyle.Plane,
         rotationX: Math.PI / 2,
     },
+
+        [MeshStyle.Jacks]: {
+        type: MeshStyle.Jacks,
+        heightScale: 1.05,
+        diameterScale: 0.2,
+    },
 } as const;
 
 export interface Look {
@@ -41,7 +48,9 @@ export interface Look {
     textColor: BABYLON.Color3;
     playerColors?: PlayerColors;
     boardStyle: MeshStyle;
-    moveStyle: MeshStyle;
+    moveStyle1: MeshStyle;
+    moveStyle2: MeshStyle;
+    moveOffset: number,
     boardSize: number,
     boardGap: number;
     moveSizeScale: number,
@@ -79,7 +88,9 @@ export const LOOKS: Look[] = [
             DEFAULT_PLAYER_COLORS[3],
         ],
         boardStyle: MeshStyle.Plane,
-        moveStyle: MeshStyle.Sphere,
+        moveStyle1: MeshStyle.Jacks,
+        moveStyle2: MeshStyle.Sphere,
+        moveOffset: 0.3,
         boardSize: 2.5,
         boardGap: 0,
         moveSizeScale: 0.7,
@@ -100,7 +111,9 @@ export const LOOKS: Look[] = [
             DEFAULT_PLAYER_COLORS[3],
         ],
         boardStyle: MeshStyle.Box,
-        moveStyle: MeshStyle.Sphere,
+        moveStyle1: MeshStyle.Sphere,
+        moveStyle2: MeshStyle.Sphere,
+        moveOffset: 0,
         boardSize: 2.5,
         boardGap: 0,
         moveSizeScale: 0.7,
@@ -116,7 +129,9 @@ export const LOOKS: Look[] = [
         renderEdges: true,
         textColor: new BABYLON.Color3(1, 1, 1),
         boardStyle: MeshStyle.Box,
-        moveStyle: MeshStyle.Sphere,
+        moveStyle1: MeshStyle.Sphere,
+        moveStyle2: MeshStyle.Sphere,
+        moveOffset: 0,
         boardSize: 2.5,
         boardGap: 0,
         moveSizeScale: 0.7,
@@ -138,7 +153,9 @@ export const LOOKS: Look[] = [
             DEFAULT_PLAYER_COLORS[3],
         ],
         boardStyle: MeshStyle.Box,
-        moveStyle: MeshStyle.Sphere,
+        moveStyle1: MeshStyle.Sphere,
+        moveStyle2: MeshStyle.Sphere,
+        moveOffset: 0,
         boardSize: 2.5,
         boardGap: 0.02,
         moveSizeScale: 0.7,
@@ -154,7 +171,9 @@ export const LOOKS: Look[] = [
         renderEdges: false,
         textColor: new BABYLON.Color3(0.85, 0.85, 0.85),
         boardStyle: MeshStyle.Sphere, // sphere
-        moveStyle: MeshStyle.Sphere,
+        moveStyle1: MeshStyle.Sphere,
+        moveStyle2: MeshStyle.Sphere,
+        moveOffset: 0,
         boardSize: 2.5,
         boardGap: 0.02,
         moveSizeScale: 0.7,
@@ -170,7 +189,9 @@ export const LOOKS: Look[] = [
         renderEdges: false,
         textColor: new BABYLON.Color3(0.85, 0.85, 0.85),
         boardStyle: MeshStyle.Cylinders,
-        moveStyle: MeshStyle.Sphere,
+        moveStyle1: MeshStyle.Sphere,
+        moveStyle2: MeshStyle.Sphere,
+        moveOffset: 0,
         boardSize: 2.5,
         boardGap: 0.02,
         moveSizeScale: 0.7,
@@ -186,7 +207,9 @@ export const LOOKS: Look[] = [
         renderEdges: false,
         textColor: new BABYLON.Color3(0.85, 0.85, 0.85),
         boardStyle: MeshStyle.Plane, // plane
-        moveStyle: MeshStyle.Box,
+        moveStyle1: MeshStyle.Box,
+        moveStyle2: MeshStyle.Box,
+        moveOffset: 0.3,
         boardSize: 2.5,
         boardGap: 0.05,
         moveSizeScale: 0.7,
@@ -202,7 +225,9 @@ export const LOOKS: Look[] = [
         renderEdges: false,
         textColor: new BABYLON.Color3(0.85, 0.85, 0.85),
         boardStyle: MeshStyle.Box, // default cube
-        moveStyle: MeshStyle.Sphere,
+        moveStyle1: MeshStyle.Sphere,
+        moveStyle2: MeshStyle.Sphere,
+        moveOffset: 0,
         boardSize: 2.5,
         boardGap: 0.02,
         moveSizeScale: 0.7,

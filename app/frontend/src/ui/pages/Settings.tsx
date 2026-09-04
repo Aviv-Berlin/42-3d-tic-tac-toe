@@ -5,6 +5,9 @@ import { useState } from 'react';
 import Input from '../components/Input';
 import SubmitButton from '../components/SubmitButton';
 
+import settings from '../../services/settings';
+import { useUsername, useSetUsername } from '../../store/username';
+
 const Settings = () => {
   const [submit, setSubmit] = useState(false);
   const [newUsername, setNewUsername] = useState("");
@@ -13,7 +16,9 @@ const Settings = () => {
   const [triggerChangeUsername, setTriggerChangeUsername] = useState(false);
   const [triggerChangePassword, setTriggerChangePassword] = useState(false);
   const [triggerDeleteAccount, setTriggerDeleteAccount] = useState(false);
-
+  const username = useUsername();
+  const setUsername = useSetUsername();	
+  
   const navigate = useNavigate();
 
   const reset = () => {
@@ -41,24 +46,66 @@ const Settings = () => {
     setTriggerDeleteAccount(true);
   }
 
-  const handleSubmitChangeUsername = (e: React.FormEvent<HTMLFormElement>) => {
+  const handleSubmitChangeUsername = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
     setSubmit(true);
+
+	const form = {
+		oldUsername: username,
+		newUsername
+	}
+
+	try {
+		const response = await settings.changeUsername(form);
+		setUsername(response.data.username);
+		//navigate('/success'); // navigate to a success page or show a success message
+	} catch (err) {
+		console.error(err);
+		// handle error, e.g., show an error message to the user
+	}
     // here we send the new username to the backend with a PUT request
     // ofc we need to check that the username is not already taken
   }
 
-  const handleSubmitChangePassword = (e: React.FormEvent<HTMLFormElement>) => {
+  const handleSubmitChangePassword = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
     setSubmit(true);
+
+	const form = {
+		username,
+		oldPassword,
+		newPassword
+	}
+
+	try {
+		const response = await settings.changePassword(form);
+		//navigate('/success'); // navigate to a success page or show a success message
+	} catch (err) {
+		console.error(err);
+		// handle error, e.g., show an error message to the user
+	}
+		
     // here we send the new and the old password to the backend with a PUT request
     // check if the old password matches with what stored in the db
     // if it matches update with the new password
   }
 
-  const handleSubmitDeleteAccount = (e: React.FormEvent<HTMLFormElement>) => {
+  const handleSubmitDeleteAccount = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
     setSubmit(true);
+
+	const form = {
+		username,
+		password: oldPassword
+	}
+
+	try {
+		const response = await settings.deleteAccount(form);
+		navigate('/register');
+	} catch (err) {
+		console.error(err);
+		// handle error, e.g., show an error message to the user
+	}
     // here we delete the account with a DELETE request
     // check if the password matches with what stored in the db
   }

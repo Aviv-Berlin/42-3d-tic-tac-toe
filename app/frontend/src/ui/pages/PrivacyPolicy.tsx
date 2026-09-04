@@ -1,6 +1,13 @@
 import TextLayout from '../layouts/TextLayout'
+import { closeSocket } from '../../services/websocket';
+import { useEffect } from 'react';
 
 const PrivacyPolicy = () => {
+
+  useEffect(() => {
+    closeSocket();
+  });
+
   return (
     <TextLayout>
       <h1 className="text-3xl self-center mb-4">Privacy Policy</h1>

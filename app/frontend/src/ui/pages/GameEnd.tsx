@@ -6,6 +6,7 @@ import { useGameData } from '../../store/gameData'
 import { useUsername } from '../../store/username'
 
 const GameEnd = () => {
+
   const gameData = useGameData();
   const username = useUsername();
 

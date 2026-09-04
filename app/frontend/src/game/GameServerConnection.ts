@@ -6,7 +6,7 @@ import { WsMessage } from "../../../shared/messages"
 import { createMoveMessage, CreateExitMessage } from "../../../shared/messages"
 import { Board } from "./Board"
 import game from "../services/game";
-//import { useSetGameData } from "../store/gameData";
+import { setGameData } from "../store/gameData";
 
 export class GameServerConnection {
     private boardState: CellState [][][] = [];
@@ -39,7 +39,7 @@ export class GameServerConnection {
     }
 
     public async handleMessage(message: WsMessage) {
-		//const setGameData = useSetGameData(); move to component
+
         console.log("Received message:", message);
         switch (message.type) {
             case "game-start":
@@ -103,7 +103,7 @@ export class GameServerConnection {
     			this.guestPlayerIndex = state.guestPlayerIndex;
     			this.currentPlayerIndex = state.currentPlayerIndex;
     			this.gameData = state.gameData;
-				//setGameData(state.gameData) move to component
+				setGameData(this.gameData);
 				console.log("GameData:", this.gameData);
 
     			// restore board 

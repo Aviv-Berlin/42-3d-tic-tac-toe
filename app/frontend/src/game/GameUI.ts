@@ -4,7 +4,7 @@ import * as GUI from "@babylonjs/gui";
 import { Materials } from "./Materials"
 import { Board } from "./Board"
 import { GameServerConnection } from "./GameServerConnection"
-import { LOOKS } from "./LookSetting"
+import { LOOKS, PlayerColors } from './LookSetting';
 import { TextCubeFactory } from "./TextCubeFactory";
 import { GridPosition, CellState } from "../../../shared/game/Types"
 
@@ -37,6 +37,8 @@ export class GameUI {
 
     private ui: GUI.AdvancedDynamicTexture;
     private playerNameRow: BABYLON.TransformNode | null = null;
+    private player1Badge: GUI.Button | null = null;
+    private player2Badge: GUI.Button | null = null;
     private exitRow: BABYLON.TransformNode | null = null;
     private exitButton: GUI.Button | null = null;
     private lookRow: BABYLON.TransformNode | null = null;
@@ -182,6 +184,26 @@ export class GameUI {
         this.lookButton.color = look.edgeColor.toHexString();
         if (this.lookButton.textBlock)
             this.lookButton.textBlock.color = look.textColor.toHexString();
+        
+        if (!this.player1Badge)
+            return;
+        //if (look.playerColors[0] !== undefined)
+        this.player1Badge.background = `rgba(${backgroundColor.r * 255},
+            ${backgroundColor.g * 255}, ${backgroundColor.b * 255},
+            ${backgroundAlpha})`;
+        this.player1Badge.color = look.edgeColor.toHexString();
+        ;
+        if (this.player1Badge.textBlock)
+            this.player1Badge.textBlock.color = look.textColor.toHexString();
+
+        if (!this.player2Badge)
+            return;
+        this.player2Badge.background = `rgba(${backgroundColor.r * 255},
+            ${backgroundColor.g * 255}, ${backgroundColor.b * 255},
+            ${backgroundAlpha})`;
+        this.player2Badge.color = look.edgeColor.toHexString();
+        if (this.player2Badge.textBlock)
+            this.player2Badge.textBlock.color = look.textColor.toHexString();
     }
 
     private createExitCubeRow(): void {
@@ -238,6 +260,49 @@ export class GameUI {
         this.instructions.paddingBottom = "40px";
         this.instructions.text = "click on cube to place preview, double click or enter to place move\n1 to toggle cube sizes, mouse drag to rotate board, move with a,d,w,s,e,q";
         this.ui.addControl(this.instructions);
+    }
+
+    public playerBadges(player1: string, player2: string): void {
+        if (this.player1Badge === null) {
+            const button = GUI.Button.CreateSimpleButton("player1Badge", player1);
+            let width = player1.length * 40;
+            if (width < 90)
+                width = 90;
+            button.width = `${width}px`;
+            button.height = "90px";
+            button.thickness = 3;
+            button.horizontalAlignment = GUI.Control.HORIZONTAL_ALIGNMENT_LEFT;
+            button.verticalAlignment = GUI.Control.VERTICAL_ALIGNMENT_TOP;
+            button.top = "30px";
+            button.left = "30px";
+            const text = button.textBlock;
+            if (text) {
+                text.fontSize = 50;
+            }
+            this.player1Badge = button;
+            this.applyButtonLook();
+            this.ui.addControl(button);
+        }
+        if (this.player2Badge === null) {
+            this.player2Badge = GUI.Button.CreateSimpleButton("player2Badge", player2);
+            let width = player2.length * 40;
+            if (width < 90)
+                width = 90;
+            this.player2Badge.width = `${width}px`;
+            this.player2Badge.height = "90px";
+            this.player2Badge.thickness = 3;
+            this.player2Badge.horizontalAlignment = GUI.Control.HORIZONTAL_ALIGNMENT_LEFT;
+            this.player2Badge.verticalAlignment = GUI.Control.VERTICAL_ALIGNMENT_CENTER;
+            //this.player2Badge.top = "160px";
+            this.player2Badge.left = "30px";
+            const text = this.player2Badge.textBlock;
+            if (text) {
+                text.fontSize = 50;
+            }
+            //this.player2Badge = button;
+            this.applyButtonLook();
+            this.ui.addControl(this.player2Badge);
+        }
     }
 
     public async playerTitle(player: string): Promise<void> {

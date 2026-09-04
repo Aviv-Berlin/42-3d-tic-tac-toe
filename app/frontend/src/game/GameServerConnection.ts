@@ -16,6 +16,7 @@ export class GameServerConnection {
     private localPlayer!: LocalPlayer;
     private guestPlayer!: LocalPlayer;
     private localPlayerIndex: number = -1;
+    private otherPlayerIndex: number = -1;
     private guestPlayerIndex: number = -1;
     private players: LocalPlayer[] = [];
     private currentPlayerIndex: number = -1;
@@ -50,15 +51,20 @@ export class GameServerConnection {
                 this.playerNames = message.payload.playerNames;
                 this.nPlayers = message.payload.nPlayers;
                 this.localPlayerIndex = message.payload.youAre;
+                this.otherPlayerIndex = 0;
+                if (this.localPlayerIndex === 0)
+                    this.otherPlayerIndex = 1;
                 this.guestPlayerIndex = this.playerNames.findIndex(name => name === "guest");
                 this.gameID = message.payload.gameID;
+                this.ui.playerBadges(this.playerNames[this.localPlayerIndex], this.playerNames[this.otherPlayerIndex]);
                 break;
 
             case "turn":
                 console.log("TURN", { playsNow: message.payload.playsNow,  localPlayerIndex: this.localPlayerIndex,
                     isMyTurn: message.payload.playsNow === this.localPlayerIndex, guestPlayerIndex: this.guestPlayerIndex, isGuestTurn: message.payload.playsNow === this.guestPlayerIndex});
                 this.currentPlayerIndex = message.payload.playsNow;
-                await this.ui.playerTitle(this.playerNames[message.payload.playsNow]);
+                //await this.ui.playerTitleNew(this.playerNames[message.payload.playsNow]);
+                //this.ui.playerTitleNew(this.playerNames[message.payload.playsNow]);
                 if (message.payload.playsNow === this.localPlayerIndex)
                     this.localPlayer.yourTurn(this.boardState, this.N, PLAYER_STATES[this.localPlayerIndex]);
                 else if (message.payload.playsNow === this.guestPlayerIndex)

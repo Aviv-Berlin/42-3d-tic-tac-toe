@@ -176,6 +176,7 @@ export class GameUI {
         this.exitButton.color = look.edgeColor.toHexString();
         if (this.exitButton.textBlock)
             this.exitButton.textBlock.color = look.textColor.toHexString();
+        
         if (!this.lookButton)
             return;
         this.lookButton.background = `rgba(${backgroundColor.r * 255},
@@ -187,23 +188,32 @@ export class GameUI {
         
         if (!this.player1Badge)
             return;
-        //if (look.playerColors[0] !== undefined)
+        // if (look.playerColors?.[0])
+        //  this.player1Badge.color = look.playerColors[0].toHexString();
+        // else
+        //     this.player1Badge.color = look.edgeColor.toHexString();
+        this.player1Badge.color = look.textColor.toHexString();
         this.player1Badge.background = `rgba(${backgroundColor.r * 255},
             ${backgroundColor.g * 255}, ${backgroundColor.b * 255},
             ${backgroundAlpha})`;
-        this.player1Badge.color = look.edgeColor.toHexString();
         ;
         if (this.player1Badge.textBlock)
             this.player1Badge.textBlock.color = look.textColor.toHexString();
 
         if (!this.player2Badge)
             return;
+        if (look.playerColors?.[1]) {
+            this.player2Badge.color = look.playerColors[1].toHexString(); 
+            if (this.player2Badge.textBlock)
+                this.player2Badge.textBlock.color = look.playerColors[1].toHexString();
+        }
+        else
+            this.player2Badge.color = look.edgeColor.toHexString();
         this.player2Badge.background = `rgba(${backgroundColor.r * 255},
             ${backgroundColor.g * 255}, ${backgroundColor.b * 255},
             ${backgroundAlpha})`;
-        this.player2Badge.color = look.edgeColor.toHexString();
-        if (this.player2Badge.textBlock)
-            this.player2Badge.textBlock.color = look.textColor.toHexString();
+        //if (this.player2Badge.textBlock)
+        //   this.player2Badge.textBlock.color = look.textColor.toHexString();
     }
 
     private createExitCubeRow(): void {
@@ -270,7 +280,7 @@ export class GameUI {
                 width = 90;
             button.width = `${width}px`;
             button.height = "90px";
-            button.thickness = 3;
+            button.thickness = 6;
             button.horizontalAlignment = GUI.Control.HORIZONTAL_ALIGNMENT_LEFT;
             button.verticalAlignment = GUI.Control.VERTICAL_ALIGNMENT_TOP;
             button.top = "30px";
@@ -280,7 +290,6 @@ export class GameUI {
                 text.fontSize = 50;
             }
             this.player1Badge = button;
-            this.applyButtonLook();
             this.ui.addControl(button);
         }
         if (this.player2Badge === null) {
@@ -292,17 +301,34 @@ export class GameUI {
             this.player2Badge.height = "90px";
             this.player2Badge.thickness = 3;
             this.player2Badge.horizontalAlignment = GUI.Control.HORIZONTAL_ALIGNMENT_LEFT;
-            this.player2Badge.verticalAlignment = GUI.Control.VERTICAL_ALIGNMENT_CENTER;
-            //this.player2Badge.top = "160px";
+            this.player2Badge.verticalAlignment = GUI.Control.VERTICAL_ALIGNMENT_TOP;
+            this.player2Badge.top = "230px";
             this.player2Badge.left = "30px";
             const text = this.player2Badge.textBlock;
             if (text) {
                 text.fontSize = 50;
             }
             //this.player2Badge = button;
-            this.applyButtonLook();
             this.ui.addControl(this.player2Badge);
         }
+        const vs = GUI.Button.CreateSimpleButton("player2Badge", "vs");
+            
+            vs.width = "90px";
+            vs.height = "90px";
+            vs.thickness = 0;
+            vs.horizontalAlignment = GUI.Control.HORIZONTAL_ALIGNMENT_LEFT;
+            vs.verticalAlignment = GUI.Control.VERTICAL_ALIGNMENT_TOP;
+            vs.top = "130px";
+            vs.left = "30px";
+            vs.color = "black";
+            const text = vs.textBlock;
+            if (text) {
+                text.fontSize = 30;
+            }
+            //this.player2Badge = button;
+            this.ui.addControl(vs);
+        this.applyButtonLook();
+
     }
 
     public async playerTitle(player: string): Promise<void> {

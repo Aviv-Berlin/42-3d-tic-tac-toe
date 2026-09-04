@@ -66,12 +66,13 @@ export class Board {
 				return plane;
             }
 
-            	case MeshStyle.Jacks: { 
-                const height =  size * settings.heightScale;
+            	case MeshStyle.Jacks: {
+                const heightX =  size * settings.heightScale; 
+                const height =  size * settings.heightScale * 0.8;
                 const diameter = size * settings.diameterScale;
-                const posOffset = height / 1.65;
+                const posOffset = height / 1.5;
                 const cylinderY = BABYLON.MeshBuilder.CreateCylinder(`${name}Y`, { height, diameter }, this.scene);
-                const cylinderX = BABYLON.MeshBuilder.CreateCylinder(`${name}X`, { height, diameter }, this.scene);
+                const cylinderX = BABYLON.MeshBuilder.CreateCylinder(`${name}X`, { height: heightX, diameter }, this.scene);
                 const cylinderZ = BABYLON.MeshBuilder.CreateCylinder(`${name}Z`, { height, diameter }, this.scene);
                 const sphere1 = BABYLON.MeshBuilder.CreateSphere(`${name}1`, { diameter: size / 3  }, this.scene);
                 const sphere2 = BABYLON.MeshBuilder.CreateSphere(`${name}2`, { diameter: size / 3 }, this.scene);

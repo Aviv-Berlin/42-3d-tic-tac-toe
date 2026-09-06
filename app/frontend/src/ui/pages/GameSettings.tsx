@@ -43,36 +43,30 @@ const GameSettings = () => {
 
     if (gameMode === "ai" || gameMode === "local") {
 
-      const matchId = crypto.randomUUID();
-      const match: Match = {
-        id: matchId,
-        host: username,
-        mode: gameMode,
-        level: level as AiLevel,
-        size: size,
-        requiredPlayers: 2,
-        players: [username],
-        status: "ready",
-        state: null
-      }
-      const socket = openSocket(matchId, username);
-
-      const handleMessage = (event: MessageEvent) => {
-        const data = JSON.parse(event.data);
-        if (data.type === "game-init") {
-          console.log("game-init msg frontend received");
-          setGameData(data.gameData)
-          socket.removeEventListener("message", handleMessage);
-          navigate(`/game/${data.id}?game-mode=${gameMode}&level=${level}&size=${data.size}`);
-        }
-      }
-      socket.addEventListener("message", handleMessage);
-      socket.addEventListener("open", () => {
-        sendMessage(createPlayLocalMessage(match));
-      }, { once: true });
+       try {
+			const response = await gameService.createLocal(gameMode, level, size);
+			const match = response.data.match;
+			console.log("match created:", match);
+			const socket = openSocket(match.id, username);
+      		const handleMessage = (event: MessageEvent) => {
+       			const data = JSON.parse(event.data);
+      			if (data.type === "game-init") {
+          			console.log("game-init msg frontend received");
+          			setGameData(data.gameData)
+          			socket.removeEventListener("message", handleMessage);
+          			navigate(`/game/${data.id}?game-mode=${gameMode}&level=${level}&size=${data.size}`);
+    			}
+			};
+     		socket.addEventListener("message", handleMessage);
+      		socket.addEventListener("open", () => {
+        		sendMessage(createPlayLocalMessage(match.id));
+			}, { once: true });
+		} catch (err) {
+		   setErrorMessage(getErrorMessage(err));
+		}
     } else {
       try {
-        const response = await gameService.createLobby(size);
+        const response = await gameService.createOnline(size);
         console.log("Created match:", response.data.match);
         navigate(`/waiting/${response.data.match.id}`);
       } catch (err) {

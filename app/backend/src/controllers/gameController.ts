@@ -121,6 +121,43 @@ export async function createMatch(request: Request, response: Response) {
 	});
 }
 
+export async function createLocalMatch(request: Request, response: Response) {
+	const body = request.body;
+
+	if (!body.gameMode || !body.size || !body.level || !body.requiredPlayers) {
+		return response.status(400).json({
+			error: 'match data incomplete'
+		});
+	}
+
+	if (!request.userData || !request.userData.id || !request.userData.username) {
+		return response.status(400).json({
+			error: 'missing or invalid token'
+		});
+	}
+	const gameHost = request.userData.username;
+	console.log('[createMatch] match created by host:', gameHost);
+
+	const matchId = crypto.randomUUID(); // Generate a unique match ID
+	const newMatch: Match = {
+		id: matchId,
+		host: gameHost,
+		mode: body.gameMode,
+		level: body.level,
+		size: body.size,
+		requiredPlayers: body.requiredPlayers,
+		players: [gameHost],
+		status: "ready",
+		state: null
+	}
+	matches.set(matchId, newMatch);
+
+	return response.status(201).json({
+		message: 'match created',
+		match: newMatch
+	});
+}
+
 export async function joinMatch(request: Request, response: Response) {
 
 	const body = request.body;
@@ -200,4 +237,5 @@ export default {
 	lobby,
 	createMatch,
 	joinMatch,
+	createLocalMatch
 };

@@ -64,19 +64,16 @@ const WaitingRoom = () => {
 
 			if (data.type === "game-canceled"){
 				clearMatch();
-				//closeSocket();
 				navigate("/lobby");
 			}
 
 			if (data.type === "left-match"){
 				clearMatch();
-				//closeSocket();
 				navigate("/lobby");
 			}
 
 			if (data.type === "error") {
 				clearMatch();
-				//closeSocket();
 				navigate("/lobby");
 			}
 

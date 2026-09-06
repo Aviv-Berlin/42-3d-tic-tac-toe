@@ -55,6 +55,7 @@ export class Board {
                 if (!merged)
                     throw new Error("Failed to merge cylinders");
                 merged.name = name;
+                merged.metadata = { isCylinder: true };
                 return merged;
             }
 
@@ -63,6 +64,34 @@ export class Board {
                     { width: size, height: size, sideOrientation: BABYLON.Mesh.DOUBLESIDE}, this.scene);
                 plane.rotation.x = settings.rotationX;
 				return plane;
+            }
+
+            	case MeshStyle.Jacks: { 
+                const height =  size * settings.heightScale;
+                const diameter = size * settings.diameterScale;
+                const posOffset = height / 1.65;
+                const cylinderY = BABYLON.MeshBuilder.CreateCylinder(`${name}Y`, { height, diameter }, this.scene);
+                const cylinderX = BABYLON.MeshBuilder.CreateCylinder(`${name}X`, { height, diameter }, this.scene);
+                const cylinderZ = BABYLON.MeshBuilder.CreateCylinder(`${name}Z`, { height, diameter }, this.scene);
+                const sphere1 = BABYLON.MeshBuilder.CreateSphere(`${name}1`, { diameter: size / 3  }, this.scene);
+                const sphere2 = BABYLON.MeshBuilder.CreateSphere(`${name}2`, { diameter: size / 3 }, this.scene);
+                const sphere3 = BABYLON.MeshBuilder.CreateSphere(`${name}3`, { diameter: size / 3 }, this.scene);
+                const sphere4 = BABYLON.MeshBuilder.CreateSphere(`${name}4`, { diameter: size / 3 }, this.scene);
+                sphere1.position = new BABYLON.Vector3(posOffset, 0, 0);
+                sphere2.position = new BABYLON.Vector3(-posOffset, 0, 0);
+                sphere3.position = new BABYLON.Vector3(0, posOffset, 0);
+                sphere4.position = new BABYLON.Vector3(0, -posOffset, 0);
+
+                cylinderX.rotation.x = Math.PI / 2;
+                cylinderZ.rotation.z = Math.PI / 2;
+                const merged = BABYLON.Mesh.MergeMeshes([cylinderY, cylinderX, cylinderZ, sphere1, sphere2, sphere3, sphere4], true);
+                if (!merged)
+                    throw new Error("Failed to merge cylinders");
+                merged.name = name;
+                merged.rotation.y = Math.PI / 4;
+                merged.rotation.x = Math.PI / 4;
+                merged.rotation.z = Math.PI / 4;
+                return merged;
             }
         }
     }
@@ -78,7 +107,7 @@ export class Board {
                 for (let z = 0; z < this.N; z++) {               
                     const finalMesh = this.createStyledMesh(this.materials.getLook().boardStyle, this.cellSize, "boardMesh");
                     finalMesh.scaling.set(scale, scale, scale);
-                    finalMesh.position = this.getPosition(x, y, z);
+                    finalMesh.position = this.getPosition(x, y, z, 0);
                     finalMesh.material = this.materials.cube;
                     finalMesh.metadata = { gridPosition: { x, y, z}};
                     this.boardMeshes.push(finalMesh);
@@ -97,11 +126,11 @@ export class Board {
             for (let y = 0; y < N; y++) {
                 for (let z = 0; z < N; z++) {
                     const finalMesh = BABYLON.MeshBuilder.CreateBox("smallCube", { size: this.cellSize },  this.scene);
-                    finalMesh.position = this.getPosition(x, y, z);
+                    finalMesh.position = this.getPosition(x, y, z, 0);
                     finalMesh.material = this.materials.buttonCube;
                     finalMesh.enableEdgesRendering();
                     finalMesh.edgesWidth = 15.0;
-                    finalMesh.edgesColor = new BABYLON.Color4(1, 1, 1, 1);
+                    finalMesh.edgesColor =  BABYLON.Color4.FromHexString("#e5e5e5");
                     finalMesh.metadata = { gridPosition: { x, y, z}};
                     this.boardMeshes.push(finalMesh);
                 }
@@ -153,7 +182,7 @@ export class Board {
 
                     const finalMesh = this.textCubeFactory.createTextCube(letter, {name: `logo-${x}-${y}-${z}`,
                             size: this.cellSize, letterFace, renderEdges: true,  cubeColor: BABYLON.Color3.White(), ignoreLighting: true});
-                    finalMesh.position = this.getPosition(x, y, z);
+                    finalMesh.position = this.getPosition(x, y, z, 0);
                     finalMesh.metadata = { gridPosition: { x, y, z } };
                     this.boardMeshes.push(finalMesh);
                 }
@@ -169,11 +198,11 @@ export class Board {
 
         for (let y = 0; y < N; y++) {
                     const finalMesh = BABYLON.MeshBuilder.CreateBox("smallCube", { size: this.cellSize },  this.scene);
-                    finalMesh.position = this.getPosition(1, y, 1);
+                    finalMesh.position = this.getPosition(1, y, 1, 0);
                     finalMesh.material = this.materials.buttonCube;
                     finalMesh.enableEdgesRendering();
                     finalMesh.edgesWidth = 15.0;
-                    finalMesh.edgesColor = new BABYLON.Color4(1, 1, 1, 1);
+                    finalMesh.edgesColor =  BABYLON.Color4.FromHexString("#e5e5e5");
                     finalMesh.metadata = { gridPosition: { x: 1, y, z: 1}};
                     this.boardMeshes.push(finalMesh);
         }
@@ -275,7 +304,9 @@ export class Board {
         finalMesh.position = new BABYLON.Vector3(0, 0, 0);
         const material = new BABYLON.StandardMaterial("buttonCube", this.scene);
         //material.diffuseColor = new BABYLON.Color3(1, 1, 1);
-        material.emissiveColor = new BABYLON.Color3(0, 0, 0);
+        material.emissiveColor = BABYLON.Color3.FromHexString("#963400");
+        //material.emissiveColor = new BABYLON.Color3(0, 0, 0);
+        //material.diffuseColor = BABYLON.Color3.FromHexString("#e5e5e5");
         material.alpha = 1;
         material.disableLighting = true;
         finalMesh.material = material;
@@ -303,18 +334,24 @@ export class Board {
         this.cubesShrink = !this.cubesShrink;
     }
 
-    private getPosition(x: number, y: number, z: number): BABYLON.Vector3 {
+    private getPosition(x: number, y: number, z: number, posOffset: number): BABYLON.Vector3 {
         const step = this.cellSize + this.materials.getLook().boardGap;;
         return new BABYLON.Vector3
-			((x - this.offset) * step, (y - this.offset) * step, (z - this.offset) * step);
+			((x - this.offset) * step, (y - this.offset + posOffset) * step, (z - this.offset) * step);
     }
 
 
 
-    private createMoveMesh(pos: GridPosition, playerState: CellState, isPreview: boolean): Mesh {
+    public createMoveMesh(pos: GridPosition, playerState: CellState, isPreview: boolean): Mesh {
         const look = this.materials.getLook();
-        const mesh = this.createStyledMesh(look.moveStyle, this.cellSize * look.moveSizeScale, "moveMesh");
-        mesh.position = this.getPosition(pos.x, pos.y, pos.z);
+        let mesh: BABYLON.Mesh;
+        if (playerState === CellState.Player1)
+            mesh = this.createStyledMesh(look.moveStyle1, this.cellSize * look.moveSizeScale, "moveMesh");
+        else {
+            mesh = this.createStyledMesh(look.moveStyle2, this.cellSize * look.moveSizeScale, "moveMesh");        
+        }
+
+        mesh.position = this.getPosition(pos.x, pos.y, pos.z, look.moveOffset);
         mesh.material = isPreview ? this.materials.getPreviewMaterial(playerState) : this.materials.getPlayerMaterial(playerState);
         mesh.renderingGroupId = 0;
         mesh.isPickable = false;

@@ -7,17 +7,22 @@ const ProtectedLogin = () => {
   const [retrieved, setRetrieved] = useState(true);
 
   const checkToken = async () => {
-    try {
-      await meService.getUsername();
-	  setRetrieved(true);
-      navigate("/home");
+	try {
+		const response = await meService.getUsername();
+		if (response.data.username) {
+			setRetrieved(true);
+			navigate("/home");
+		}
+		else {
+			setRetrieved(false);
+		}
 	} catch (err) {
-		setRetrieved(false);
-    }
-  }
-  useEffect(() => {
-    checkToken();
-  }, [])
+	  	setRetrieved(false);
+ 	   }
+	}
+	useEffect(() => {
+		checkToken();
+	}, [])
 
   if (!retrieved) return <Outlet />
   return null;

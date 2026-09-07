@@ -75,43 +75,38 @@ const Settings = () => {
     e.preventDefault();
     setSubmit(true);
 
-	const form = {
-		username,
-		oldPassword,
-		newPassword
-	}
+  	const form = {
+  		username,
+  		oldPassword,
+  		newPassword
+  	}
 
-	try {
-		await settings.changePassword(form);
-		//navigate('/success'); // navigate to a success page or show a success message
-	} catch (err) {
-		console.error(err);
-		// handle error, e.g., show an error message to the user
-	}
-
-    // here we send the new and the old password to the backend with a PUT request
-    // check if the old password matches with what stored in the db
-    // if it matches update with the new password
+  	try {
+  		await settings.changePassword(form);
+  		setSuccessMessage("Password updated successfully!");
+      setTimeout(() => setSuccessMessage(""), 2000);
+  	} catch (err) {
+  		console.error(err);
+      setErrorMessage(getErrorMessage(err));
+  	}
   }
 
   const handleSubmitDeleteAccount = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
     setSubmit(true);
 
-	const form = {
-		username,
-		password: oldPassword
-	}
+  	const form = {
+  		username,
+  		password: oldPassword
+  	}
 
-	try {
-		await settings.deleteAccount(form);
-		navigate('/register');
-	} catch (err) {
-		console.error(err);
-		// handle error, e.g., show an error message to the user
-	}
-    // here we delete the account with a DELETE request
-    // check if the password matches with what stored in the db
+  	try {
+  		await settings.deleteAccount(form);
+  		navigate('/register');
+  	} catch (err) {
+  		console.error(err);
+      setErrorMessage(getErrorMessage(err));
+  	}
   }
 
   const handleChangeUsername = (e: React.ChangeEvent<HTMLInputElement>) => {

@@ -11,15 +11,15 @@ const ProtectedRoute = () => {
   const checkToken = async () => {
     try {
       const response = await meService.getUsername();
-	  if (response.data.username) {
+	  if (response.status === 302) {
+	  	setRetrieved(false);
+		console.log("Got redirect")
+		//navigate("/login")
+	  }
+	  else if (response.data.username) {
 		console.log("response.data.username = ", response.data.username)
       	setUsername(response.data.username);
       	setRetrieved(true);
-	  }
-	  else {
-	  	setRetrieved(false);
-		console.log("Got redirect")
-		navigate("/login")
 	  }
     } catch (err) {
       setRetrieved(false);

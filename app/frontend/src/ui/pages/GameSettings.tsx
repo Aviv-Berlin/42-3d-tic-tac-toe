@@ -14,6 +14,7 @@ import { Match } from "../../../../backend/src/controllers/gameController"
 import { AiLevel } from '../../../../shared/game';
 import gameService from '../../services/game';
 import { getErrorMessage } from '../../utils/errors';
+import { isAxiosError } from 'axios';
 
 const GameSettings = () => {
   const [errorMessage, setErrorMessage] = useState("");
@@ -73,10 +74,15 @@ const GameSettings = () => {
     } else {
       try {
         const response = await gameService.createLobby(size);
-        console.log("Created match:", response.data.match);
+		console.log("Created match:", response.data.match);
         navigate(`/waiting/${response.data.match.id}`);
       } catch (err) {
-        setErrorMessage(getErrorMessage(err));
+  		if (isAxiosError(err)) {
+			if (err.response?.status === 302) {
+				navigate('/login');
+			}
+		}
+		setErrorMessage(getErrorMessage(err));
       }
     }
   }

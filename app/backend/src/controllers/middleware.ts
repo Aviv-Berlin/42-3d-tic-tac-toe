@@ -35,7 +35,7 @@ export const checkToken = async (request: Request, response: Response, next: Nex
 	if (!token) {
 		console.log("Error: checkToken(): missing token");
 		//response.status(401).json({ error: 'missing token' })
-		response.redirect(302, '../login')
+		response.status(302).end();
 		return;
 	}
 	const decodedToken = jwt.verify(token, secretKey)

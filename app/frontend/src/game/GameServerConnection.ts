@@ -113,6 +113,7 @@ export class GameServerConnection {
     			this.restoreTurn();
 				break;
 
+
             default:
                 console.log(`Unknown message: ${message}`);
         }

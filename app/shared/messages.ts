@@ -15,14 +15,14 @@ export function createLeaveMatchMessage(): LeaveMatchMessage {
 export type PlayLocalMessage =
 { type: "play-local";
 	payload: {
-		match: Match
+		matchId: string
 	}
 }
 
-export function createPlayLocalMessage(match: Match): PlayLocalMessage {
+export function createPlayLocalMessage(matchId: string): PlayLocalMessage {
 	return {
 		type: "play-local",
-		payload: { match }
+		payload: { matchId }
 	}
 }
 

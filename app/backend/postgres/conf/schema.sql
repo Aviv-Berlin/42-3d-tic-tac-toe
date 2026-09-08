@@ -50,6 +50,7 @@ CREATE TABLE matches(
 	id SERIAL PRIMARY KEY,
 	player1 INT NOT NULL REFERENCES users(id),
 	player2 INT NOT NULL REFERENCES users(id),
+	difficulty INTEGER CHECK (difficulty IN (0, 1, 2, 3)),
 	-- size INT NOT NULL,
 	-- game_type (spped game, normal game) - extra table customizations? (power ups, limit, size)
 	winner INT REFERENCES users(id), -- NULL on draw

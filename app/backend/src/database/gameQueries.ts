@@ -12,7 +12,7 @@ export interface MatchEntry {
 	board_size: number
   }
 // Creating a game
-export async function createMatchEntry(p1: PlayerData, p2: PlayerData, winner: PlayerData | null, start: number, end: number, board_size: number, moves: Move[]) {
+export async function createMatchEntry(p1: PlayerData, p2: PlayerData, winner: PlayerData | null, difficulty: number, start: number, end: number, board_size: number, moves: Move[]) {
 	const p1user = await userQueries.getUserByUsername(p1.username);
 	const p1id = p1user.id;
 	const p2user = await userQueries.getUserByUsername(p2.username);
@@ -28,8 +28,8 @@ export async function createMatchEntry(p1: PlayerData, p2: PlayerData, winner: P
 	// console.log(`p1: ${p1.type} ${p1.username}, p2: ${p2.type} ${p2.username}, winner: ${winner?.type} ${winner?.username}`);
 	// console.log(`Adding to DB: p1:${p1id}, p2:${p2id}, winner:${winnerId}`);
 	const result = await query(
-		'INSERT INTO matches (player1, player2, winner, started_at, ended_at, board_size) VALUES ($1, $2, $3, $4, $5, $6) RETURNING *;',
-		[p1id, p2id, winnerId, startDate, endDate, board_size]
+		'INSERT INTO matches (player1, player2, winner, difficulty, started_at, ended_at, board_size) VALUES ($1, $2, $3, $4, $5, $6, $7) RETURNING *;',
+		[p1id, p2id, winnerId, difficulty, startDate, endDate, board_size]
 	);
 	createMoveHistory(moves, p1id, p2id, result.rows[0]);
 	console.log(`match added to database`);

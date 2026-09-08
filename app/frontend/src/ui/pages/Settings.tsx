@@ -64,10 +64,12 @@ const Settings = () => {
   		const response = await settings.changeUsername(form);
       setUsername(response.data.username);
       setSuccessMessage("Username updated successfully!");
+      setErrorMessage("");
       setTimeout(() => setSuccessMessage(""), 2000);
    	} catch (err) {
       console.error(err);
       setErrorMessage(getErrorMessage(err));
+      setSuccessMessage("");
    	}
   }
 
@@ -84,10 +86,12 @@ const Settings = () => {
   	try {
   		await settings.changePassword(form);
   		setSuccessMessage("Password updated successfully!");
+      setErrorMessage("");
       setTimeout(() => setSuccessMessage(""), 2000);
   	} catch (err) {
   		console.error(err);
       setErrorMessage(getErrorMessage(err));
+      setSuccessMessage("");
   	}
   }
 
@@ -106,6 +110,7 @@ const Settings = () => {
   	} catch (err) {
   		console.error(err);
       setErrorMessage(getErrorMessage(err));
+      setSuccessMessage("");
   	}
   }
 

@@ -17,5 +17,8 @@ router.post('/lobby/join', game.joinMatch);
 // once the host has set the game settings and created the match, send event to all clients in the lobby (broadcast)
 router.post('/lobby/create', game.createMatch);
 
+// [ Create a new local match (AI or local multiplayer) ]
+router.post('/local/create', game.createLocalMatch);
+
 
 export default router;

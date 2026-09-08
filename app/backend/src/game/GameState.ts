@@ -152,7 +152,7 @@ export class GameState {
         this.gameData.gameEnd = Date.now();
         this.disributeMessage(createEndMessage(this.gameData, winningPositions, -1));
         try{
-            createMatchEntry(this.gameData.player1, this.gameData.player2, winnerData, this.gameData.level, this.gameData.gameStart, this.gameData.gameEnd, this.gameData.size, this.gameData.moves);}
+            createMatchEntry(this.gameData);}
         catch (error) {
             console.error(error);}
     }
@@ -164,7 +164,7 @@ export class GameState {
         this.gameData.gameEnd = Date.now();
         this.disributeMessage(createEndMessage(this.gameData, null, -1));
         try{
-            createMatchEntry(this.gameData.player1, this.gameData.player2, null, this.gameData.level, this.gameData.gameStart, this.gameData.gameEnd, this.gameData.size, this.gameData.moves);}
+            createMatchEntry(this.gameData);}
         catch (error) {
             console.error(error);}
     }

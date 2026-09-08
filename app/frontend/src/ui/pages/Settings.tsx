@@ -7,18 +7,21 @@ import SubmitButton from '../components/SubmitButton';
 
 import settings from '../../services/settings';
 import { useUsername, useSetUsername } from '../../store/username';
+import { getErrorMessage } from '../../utils/errors';
 
 const Settings = () => {
   const [submit, setSubmit] = useState(false);
   const [newUsername, setNewUsername] = useState("");
   const [oldPassword, setOldPassword] = useState("");
   const [newPassword, setNewPassword] = useState("");
+  const [errorMessage, setErrorMessage] = useState("");
+  const [successMessage, setSuccessMessage] = useState("");
   const [triggerChangeUsername, setTriggerChangeUsername] = useState(false);
   const [triggerChangePassword, setTriggerChangePassword] = useState(false);
   const [triggerDeleteAccount, setTriggerDeleteAccount] = useState(false);
   const username = useUsername();
-  const setUsername = useSetUsername();	
-  
+  const setUsername = useSetUsername();
+
   const navigate = useNavigate();
 
   const reset = () => {
@@ -29,6 +32,8 @@ const Settings = () => {
     setNewUsername("");
     setOldPassword("");
     setNewPassword("");
+    setErrorMessage("");
+    setSuccessMessage("");
   }
 
   const handleTriggerChangeUsername = () => {
@@ -50,82 +55,78 @@ const Settings = () => {
     e.preventDefault();
     setSubmit(true);
 
-	const form = {
-		oldUsername: username,
-		newUsername
-	}
+  	const form = {
+  		oldUsername: username,
+  		newUsername
+  	}
 
-	try {
-		const response = await settings.changeUsername(form);
-		setUsername(response.data.username);
-		//navigate('/success'); // navigate to a success page or show a success message
-	} catch (err) {
-		console.error(err);
-		// handle error, e.g., show an error message to the user
-	}
-    // here we send the new username to the backend with a PUT request
-    // ofc we need to check that the username is not already taken
+  	try {
+  		const response = await settings.changeUsername(form);
+      setUsername(response.data.username);
+      setSuccessMessage("Username updated successfully!");
+      setErrorMessage("");
+      setTimeout(() => setSuccessMessage(""), 2000);
+   	} catch (err) {
+      console.error(err);
+      setErrorMessage(getErrorMessage(err));
+      setSuccessMessage("");
+   	}
   }
 
   const handleSubmitChangePassword = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
     setSubmit(true);
 
-	const form = {
-		username,
-		oldPassword,
-		newPassword
-	}
+  	const form = {
+  		username,
+  		oldPassword,
+  		newPassword
+  	}
 
-	try {
-		const response = await settings.changePassword(form);
-		//navigate('/success'); // navigate to a success page or show a success message
-	} catch (err) {
-		console.error(err);
-		// handle error, e.g., show an error message to the user
-	}
-		
-    // here we send the new and the old password to the backend with a PUT request
-    // check if the old password matches with what stored in the db
-    // if it matches update with the new password
+  	try {
+  		await settings.changePassword(form);
+  		setSuccessMessage("Password updated successfully!");
+      setErrorMessage("");
+      setTimeout(() => setSuccessMessage(""), 2000);
+  	} catch (err) {
+  		console.error(err);
+      setErrorMessage(getErrorMessage(err));
+      setSuccessMessage("");
+  	}
   }
 
   const handleSubmitDeleteAccount = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
     setSubmit(true);
 
-	const form = {
-		username,
-		password: oldPassword
-	}
+  	const form = {
+  		username,
+  		password: oldPassword
+  	}
 
-	try {
-		const response = await settings.deleteAccount(form);
-		navigate('/register');
-	} catch (err) {
-		console.error(err);
-		// handle error, e.g., show an error message to the user
-	}
-    // here we delete the account with a DELETE request
-    // check if the password matches with what stored in the db
+  	try {
+  		await settings.deleteAccount(form);
+  		navigate('/register');
+  	} catch (err) {
+  		console.error(err);
+      setErrorMessage(getErrorMessage(err));
+      setSuccessMessage("");
+  	}
   }
 
   const handleChangeUsername = (e: React.ChangeEvent<HTMLInputElement>) => {
     setNewUsername(e.target.value);
     setSubmit(false);
-    console.log(e.target.value);
   }
 
   const handleChangeOldPassword = (e: React.ChangeEvent<HTMLInputElement>) => {
     setOldPassword(e.target.value);
     setSubmit(false);
-    console.log(e.target.value);
   }
 
   const handleChangeNewPassword = (e: React.ChangeEvent<HTMLInputElement>) => {
     setNewPassword(e.target.value);
     setSubmit(false);
-    console.log(e.target.value);
   }
 
   return (
@@ -176,6 +177,8 @@ const Settings = () => {
             <SecondaryButton onClick={handleTriggerDeleteAccount}>Delete account</SecondaryButton>
           </div>
         }
+        {errorMessage && <p className='text-dark-orange'>{errorMessage}</p>}
+        {successMessage && <p>{successMessage}</p>}
       </div>
     </MainLayout>
   )

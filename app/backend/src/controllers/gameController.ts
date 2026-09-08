@@ -124,7 +124,7 @@ export async function createMatch(request: Request, response: Response) {
 export async function createLocalMatch(request: Request, response: Response) {
 	const body = request.body;
 
-	if (!body.gameMode || !body.level || !body.size || !body.requiredPlayers) {
+	if (!body.gameMode || !body.size || !body.level || !body.requiredPlayers) {
 		return response.status(400).json({
 			error: 'match data incomplete'
 		});
@@ -135,7 +135,6 @@ export async function createLocalMatch(request: Request, response: Response) {
 		});
 	}
 	const gameHost = request.userData.username;
-
 	console.log('[createMatch] match created by host:', gameHost);
 
 	const matchId = crypto.randomUUID(); // Generate a unique match ID
@@ -150,7 +149,6 @@ export async function createLocalMatch(request: Request, response: Response) {
 		status: "ready",
 		state: null
 	}
-
 	matches.set(matchId, newMatch);
 
 	return response.status(201).json({

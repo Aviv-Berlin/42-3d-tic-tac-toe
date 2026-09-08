@@ -18,6 +18,7 @@ router.post('/lobby/join', game.joinMatch);
 router.post('/lobby/create', game.createMatch);
 
 // [ Create a new local match (AI or local multiplayer) ]
+// match need to be registered in backend before socket opens
 router.post('/local/create', game.createLocalMatch);
 
 

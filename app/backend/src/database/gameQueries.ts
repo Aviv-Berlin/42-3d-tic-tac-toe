@@ -1,12 +1,13 @@
 import { query } from "./db.ts";
 import userQueries from "./userQueries.ts";
-import { PlayerData, Move, GameData } from "../../../shared/game.ts";
+import { PlayerData, Move, GameData, AiLevel } from "../../../shared/game.ts";
 
 export interface MatchEntry {
 	id: number,
 	player1: number,
 	player2: number,
 	winner: number,
+	difficulty: AiLevel,
 	started_at: Date,
 	ended_at: Date,
 	board_size: number

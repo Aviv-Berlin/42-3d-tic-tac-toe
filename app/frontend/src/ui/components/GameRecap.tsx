@@ -18,6 +18,7 @@ const GameRecap = ( { gameHistory }: GameRecapProps) => {
       <div className="hidden sm:flex flex-row gap-12">
         <p className="text-xs">{`Opponent: ${ gameHistory.opponent }`}</p>
         <p className="text-xs">{`Board size: ${size}x${size}x${size}`}</p>
+        <p className="text-xs">{`Difficulty: ${gameHistory.gameData.level}`}</p>
       </div>
 	  <SecondaryButton onClick={() => {
 		setGameData(gameHistory.gameData);

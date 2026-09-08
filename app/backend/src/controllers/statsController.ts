@@ -21,7 +21,7 @@ async function convertToGameData(row: MatchEntry, id: number) {
 		type: opponent.username === "ai" ? "ai" : opponent.username === "local" ? "guest" : "real",
 		username: opponent.username
 	};
-	const level = 0;
+	const level = row.difficulty;
 	const gameMode = opponent.username === "ai" ? "ai" : opponent.username === "local" ? "local" : "online";
 	const winner = user_id === row.winner ? player1 : opponent_id === row.winner ? player2 : null;
 	const size = row.board_size;
@@ -67,7 +67,7 @@ async function convertToGameData(row: MatchEntry, id: number) {
 	return (summary);
 }
 async function createGameHistory(gameData: GameData) {
-	
+
 	const outcome =
 		gameData.winner === null ? "DRAW" :
 		gameData.winner === gameData.player2 ? "LOSS" :
@@ -83,7 +83,7 @@ async function createGameHistory(gameData: GameData) {
 }
 
 export async function getGameHistory(request: Request, response: Response) {
-	
+
 	const id = request.userData?.id;
 	if (!id) {
 		return response.status(400).json({

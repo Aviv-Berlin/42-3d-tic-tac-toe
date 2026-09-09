@@ -2,34 +2,39 @@ import { useSearchParams, useNavigate } from 'react-router-dom';
 import { useEffect } from 'react';
 import GameLayout from '../layouts/GameLayout';
 import Canvas from '../components/Canvas';
-//import { GameMode, AiLevel } from '../../../../shared/game';
 import { sendMessage } from "../../services/websocket";
-//import { useUsername } from '../../store/username';
 import { useGameData } from "../../store/gameData"
-
 import { createStartGameMessage } from '../../../../shared/messages';
+import { getSocket } from "../../services/websocket";
+import { WsMessage } from "../../../../shared/messages";
 
 const Game = () => {
   const [searchParams] = useSearchParams();
   const navigate = useNavigate();
+  const ws = getSocket();
 
-//   const socket = getSocket()
-//   console.log("socket: ", socket);
+  if (!ws)
+	return null;
 
-const gameData = useGameData();
-const gameModeParam = searchParams.get('game-mode');
+
+  const gameData = useGameData();
+  const gameModeParam = searchParams.get('game-mode');
 
 	 useEffect(() => {
+
+		const handleMessage = (event: MessageEvent) => {
+			const data: WsMessage = JSON.parse(event.data);
+			if (data.type === "error") {
+			  console.error("[WS/error] WebSocket error: ", data.payload.message);
+			  navigate('/not-found');
+			}
+		}
+		ws.addEventListener("message", handleMessage)
         if (!gameData) return;
         console.log("[GAME] Send startGameMessage, Game:", gameData);
         sendMessage(createStartGameMessage(gameData));
-    }, [gameData]);
+    }, [gameData, navigate]);
 
-//   if (!gameData) return;
-//   console.log("[GAME] Send startGameMessage, Game:", gameData);
-//   sendMessage(createStartGameMessage(gameData));
-
-  //const username = useUsername() ?? "stranger";
 
   const sizeParam = searchParams.get('size');
   const levelParam = searchParams.get('level');
@@ -40,44 +45,15 @@ const gameModeParam = searchParams.get('game-mode');
                   (levelParam === "0" || levelParam === "1" || levelParam === "2" || levelParam === "3")
 				);
 
-  //let initialGameData: GameData | null = null;
-
   if (!isValid) {
     console.log("invalid search parameters");
   }
-//   if (isValid) {
-//     const size = Number(sizeParam);
-//     const gameMode = gameModeParam as GameMode;
-//     const level = Number(levelParam) as AiLevel;
-//   }
-    //const [player1, player2] = createPlayers(match.players, gameMode); //const [player1, player2] = createPlayers(username, gameMode);
-    //const uniqueGameName = globalThis.crypto.randomUUID();
-
-//     initialGameData = {
-//       player1, // = host
-//       player2,
-//       level,
-//       gameMode,
-//       moves: [],
-//       size,
-//       isFinished: false,
-//       isDraw: false,
-//       winner: null,
-//       gameStart: 0,
-//       gameEnd: 0,
-//       gameID: match.id
-//     };
-//   }
-
 
 
   useEffect(() => {
     if (!isValid) navigate('/not-found');
   }, [isValid]);
 
-//  const gameDataRef = useRef<GameData | null>(gameData);
-
-  //if (!isValid || !gameDataRef.current) return null;
   if (!isValid || !gameData) return null;
 
   return (

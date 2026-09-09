@@ -4,7 +4,7 @@ import { GameState } from "./GameState.ts";
 import { AiPlayer } from "./AIPlayer.ts";
 
 import { CancelGame, PlayGame, PlayLocal } from "../websocket/matchSockets.ts"
-import { Match } from "../controllers/gameController.ts";
+import { Match, matches } from "../controllers/gameController.ts";
 
 function joinGame(message: JoinGameMessage, ws: WebSocket, match: Match) {
 	const data = message.payload.gameData;
@@ -60,6 +60,7 @@ export function playerExit(message: ExitMessage, ws: WebSocket, match: Match) {
 		return ;
 	}
 	game.playerExit(ws, data.IAm);
+	matches.delete(match.id);
 }
 
 

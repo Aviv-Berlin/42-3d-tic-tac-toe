@@ -129,7 +129,6 @@ export async function createLocalMatch(request: Request, response: Response) {
 			error: 'match data incomplete'
 		});
 	}
-
 	if (!request.userData || !request.userData.id || !request.userData.username) {
 		return response.status(400).json({
 			error: 'missing or invalid token'
@@ -236,6 +235,6 @@ export async function joinMatch(request: Request, response: Response) {
 export default {
 	lobby,
 	createMatch,
+	createLocalMatch,
 	joinMatch,
-	createLocalMatch
 };

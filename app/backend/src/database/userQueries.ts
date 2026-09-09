@@ -84,12 +84,20 @@ export async function updateUsername(username: string, id: number) {
 	return result.rows[0];
 }
 
+export async function updatePassword(newPassword: string, id: number) {
+	const result = await query(
+		'UPDATE users SET pw_hash = $1, WHERE id = $4 RETURNING *;', [newPassword, id]
+	);
+
+	return result.rows[0];
+}
+
 export async function deleteUser(id: number) {
 	const result = await query(
 		'DELETE FROM users WHERE id = $1 RETURNING *;', [id]
 	);
-
-	return result.rows[0];
+	console.log("result of deleteUser query =", result);
+	//:return result.rows[0];
 }
 
 export default {
@@ -101,5 +109,6 @@ export default {
 	deleteUser,
 	createUser,
 	updateUser,
-	updateUsername
+	updateUsername,
+	updatePassword
 };

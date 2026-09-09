@@ -20,9 +20,9 @@ export async function changeUsername(request: Request, response: Response) {
 			});
 		}
 
-		const user = await userQueries.getUserByUsername(body.oldUsername);
+		const userID = await userQueries.getUserIdByUsername(body.oldUsername);
 	
-		const updatedUser = await userQueries.updateUser(body.newUsername, user.email, user.pw_hash, user.id);
+		const updatedUser = await userQueries.updateUsername(body.newUsername, userID);
 	
 		return response.status(201).json({
 			username: updatedUser.username,
@@ -46,10 +46,15 @@ export async function changePassword(request: Request, response: Response) {
 		});
 	}
 
+	if (!request.userData || !request.userData.id || !request.userData.username) {
+		return response.status(400).json({
+			error: 'missing or invalid token'
+		});
+	}
 	try{
-		const user = await userQueries.getUserByUsername(body.username);
+		const hashedPW = await userQueries.getHashedPasswordByID(request.userData.id);
 
-		const pwMatch = await bcrypt.compare(body.oldPassword, user.pw_hash);
+		const pwMatch = await bcrypt.compare(body.oldPassword, hashedPW);
 		if (!pwMatch) {
 			return response.status(401).json({
 				error: 'bad credentials'
@@ -58,7 +63,7 @@ export async function changePassword(request: Request, response: Response) {
 
 		const newPwHash = await bcrypt.hash(body.newPassword, 10);
 	
-		const updatedUser = await userQueries.updateUser(body.username, user.email, newPwHash, user.id);
+		const updatedUser = await userQueries.updatePassword(newPwHash, request.userData.id);
 	
 		return response.status(201).json({
 			username: updatedUser.username,
@@ -71,27 +76,33 @@ export async function changePassword(request: Request, response: Response) {
 		});
 	}
 }
-
 export async function deleteAccount(request: Request, response: Response) {
 	const body = request.body;
 
 	if (!body.username || !body.password) {
+		// TODO we don't need this username
 		return response.status(400).json({
 			error: 'data incomplete'
 		});
 	}
+	
+	if (!request.userData || !request.userData.id || !request.userData.username) {
+		return response.status(400).json({
+			error: 'missing or invalid token'
+		});
+	}
 
 	try{
-		const user = await userQueries.getUserByUsername(body.username);
-
-		const pwMatch = await bcrypt.compare(body.password, user.pw_hash);
+		const pw = await userQueries.getHashedPasswordByID(request.userData.id);
+		const pwMatch = await bcrypt.compare(body.password, pw);
 		if (!pwMatch) {
 			return response.status(401).json({
 				error: 'bad credentials'
 			});
 		}
 
-		const deletedUser = await userQueries.deleteUser(user.id);
+		//const deletedUser = await userQueries.deleteUser(request.userData.id);
+		await userQueries.deleteUser(request.userData.id);
 	
 		return response.status(201).json({
 			username: deletedUser.username,
@@ -104,6 +115,47 @@ export async function deleteAccount(request: Request, response: Response) {
 		});
 	}
 }
+
+/*
+export async function deleteAccount(request: Request, response: Response) {
+	const body = request.body;
+
+	if (!body.username || !body.password) {
+		return response.status(400).json({
+			error: 'data incomplete'
+		});
+	}
+	
+	if (!request.userData || !request.userData.id || !request.userData.username) {
+		return response.status(400).json({
+			error: 'missing or invalid token'
+		});
+	}
+
+	try{
+		const pw = await userQueries.getHashedPasswordByID(request.userData.id);
+		const pwMatch = await bcrypt.compare(body.password, pw);
+		if (!pwMatch) {
+			return response.status(401).json({
+				error: 'bad credentials'
+			});
+		}
+
+		//const deletedUser = await userQueries.deleteUser(request.userData.id);
+		await userQueries.deleteUser(request.userData.id);
+	
+		return response.status(201).json({
+			username: deletedUser.username,
+		});
+	}
+	catch (error) {
+		console.error(error);
+		return response.status(500).json({
+			error: 'internal server error'
+		});
+	}
+}
+*/
 
 export default {
 	changeUsername,

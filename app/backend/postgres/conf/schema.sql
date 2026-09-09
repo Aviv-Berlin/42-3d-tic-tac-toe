@@ -17,7 +17,8 @@ CREATE TABLE users(
 
 INSERT INTO users (username, email, pw_hash) VALUES
 ('guest', 'guest@example.com', 'trG45Vm'),
-('ai', 'ai@example.com', 'trG45Vu');
+('ai', 'ai@example.com', 'trG45Vu'),
+('deleted', 'deleted@example.com', 'trG45Vm');
 
 CREATE TABLE friendships(
 	id SERIAL PRIMARY KEY,

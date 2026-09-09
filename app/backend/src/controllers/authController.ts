@@ -11,7 +11,13 @@ export async function register(request: Request, response: Response) {
 		return response.status(400).json({
 			error: 'registration data incomplete'
 		});
-	}
+  }
+
+  if (body.username.length > 10) {
+    return response.status(400).json({
+      error: 'username too large'
+    });
+  }
 
 	try{
 		const existingUsername = await userQueries.getUserByUsername(body.username);
@@ -20,18 +26,18 @@ export async function register(request: Request, response: Response) {
 				error: 'username already exists'
 			});
 		}
-	
+
 		const existingEmail = await userQueries.getUserByEmail(body.email);
 		if (existingEmail) {
 			return response.status(409).json({
 				error: 'email already registered'
 			});
 		}
-	
+
 		const passwordHash = await bcrypt.hash(body.password, 10);
-		
+
 		const newUser = await userQueries.createUser(body.username, body.email, passwordHash);
-	
+
 		return response.status(201).json({
 			username: newUser.username,
 			email: newUser.email
@@ -43,7 +49,7 @@ export async function register(request: Request, response: Response) {
 			error: 'internal server error'
 		});
 	}
-	
+
 }
 
 // Login an existing user

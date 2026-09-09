@@ -25,6 +25,15 @@ export async function getUserByUsername(username: string) {
 	return result.rows[0];
 }
 
+export async function getUserIdByUsername(username: string) {
+	const result = await query(
+		'SELECT id FROM users WHERE username = $1;', [username]
+	);
+
+	return result.rows[0];
+}
+
+
 export async function getUserByEmail(email: string) {
 	const result = await query(
 		'SELECT * FROM users WHERE email = $1;', [email]
@@ -80,6 +89,7 @@ export default {
 	getAllUsers,
 	getUserByID,
 	getUserByUsername,
+	getUserIdByUsername
 	getUserByEmail,
 	deleteUser,
 	createUser,

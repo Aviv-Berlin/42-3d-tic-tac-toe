@@ -50,6 +50,14 @@ export async function getUserByID(id: number) {
 	return result.rows[0];
 }
 
+export async function getHashedPasswordByID(id: number) {
+	const result = await query(
+		'SELECT pw_hash FROM users WHERE id = $1;', [id]
+	);
+
+	return result.rows[0];
+}
+
 // 2. Get All Users
 export async function getAllUsers() {
 	const result = await query(
@@ -91,6 +99,7 @@ export default {
 	getUserByUsername,
 	getUserIdByUsername,
 	getUserByEmail,
+	getHashedPasswordByID:
 	deleteUser,
 	createUser,
 	updateUser

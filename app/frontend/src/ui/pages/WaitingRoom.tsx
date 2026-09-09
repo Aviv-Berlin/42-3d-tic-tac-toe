@@ -1,6 +1,6 @@
 import { useEffect } from "react";
 import {useParams, useNavigate } from "react-router-dom";
-import MainButton from "../components/MainButton";
+import PrimaryButton from "../components/PrimaryButton";
 import { sendMessage, getSocket } from "../../services/websocket";
 import { useMatch, useSetMatch, useClearMatch } from "../../store/matchData"
 import { useSetGameData } from "../../store/gameData";
@@ -121,11 +121,11 @@ const WaitingRoom = () => {
 		{match?.host === username && (
 			<>
 				{connectedPlayers === requiredPlayers && (
-					<MainButton onClick={handlePlay}>PLAY</MainButton>
+					<PrimaryButton onClick={handlePlay}>PLAY</PrimaryButton>
 				)}
 
 				{connectedPlayers !== requiredPlayers && (
-					<MainButton disabled>PLAY</MainButton>
+					<PrimaryButton disabled>PLAY</PrimaryButton>
 				)}
 			</>
 		)}

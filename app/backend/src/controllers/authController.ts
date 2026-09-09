@@ -14,14 +14,14 @@ export async function register(request: Request, response: Response) {
 	}
 
 	try{
-		const existingUsername = await userQueries.getUserByUsername(body.username);
+		const existingUsername = await userQueries.getUserIdByUsername(body.username);
 		if (existingUsername) {
 			return response.status(409).json({
 				error: 'username already exists'
 			});
 		}
 	
-		const existingEmail = await userQueries.getUserByEmail(body.email);
+		const existingEmail = await userQueries.getUserIdByEmail(body.email);
 		if (existingEmail) {
 			return response.status(409).json({
 				error: 'email already registered'

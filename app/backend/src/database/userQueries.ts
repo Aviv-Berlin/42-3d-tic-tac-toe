@@ -34,9 +34,9 @@ export async function getUserIdByUsername(username: string) {
 }
 
 
-export async function getUserByEmail(email: string) {
+export async function getUserIdByEmail(email: string) {
 	const result = await query(
-		'SELECT * FROM users WHERE email = $1;', [email]
+		'SELECT id FROM users WHERE email = $1;', [email]
 	);
 
 	return result.rows[0];
@@ -98,7 +98,7 @@ export default {
 	getUserByID,
 	getUserByUsername,
 	getUserIdByUsername,
-	getUserByEmail,
+	getUserIdByEmail,
 	getHashedPasswordByID:
 	deleteUser,
 	createUser,

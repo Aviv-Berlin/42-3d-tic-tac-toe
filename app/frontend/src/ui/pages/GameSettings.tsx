@@ -42,29 +42,46 @@ const GameSettings = () => {
   const handleConfirm = async () => {
 
     if (gameMode === "ai" || gameMode === "local") {
+    try {
+      const response = await gameService.createLocal(gameMode, level, size);
+      const match = response.data.match;
 
-       try {
-			const response = await gameService.createLocal(gameMode, level, size);
-			const match = response.data.match;
-			console.log("match created:", match);
-			const socket = openSocket(match.id, username);
-      		const handleMessage = (event: MessageEvent) => {
-       			const data = JSON.parse(event.data);
-      			if (data.type === "game-init") {
-          			console.log("game-init msg frontend received");
-          			setGameData(data.gameData)
-          			socket.removeEventListener("message", handleMessage);
-          			navigate(`/game/${data.id}?game-mode=${gameMode}&level=${level}&size=${data.size}`);
-    			}
-			};
-     		socket.addEventListener("message", handleMessage);
-      		socket.addEventListener("open", () => {
-        		sendMessage(createPlayLocalMessage(match.id));
-			}, { once: true });
-		} catch (err) {
-		   setErrorMessage(getErrorMessage(err));
+      console.log("match created:", match);
+
+      const socket = openSocket(match.id, username);
+
+      const handleMessage = (event: MessageEvent) => {
+        const data = JSON.parse(event.data);
+
+        if (data.type === "game-init") {
+          console.log("game-init msg frontend received");
+
+          setGameData(data.gameData);
+
+          socket.removeEventListener("message", handleMessage);
+
+          navigate(
+            `/game/${data.id}?game-mode=${gameMode}&level=${level}&size=${data.size}`
+          );
+        }
+		if (data.type === "error") {
+			console.error("[WS/error] WebSocket error: ", data.payload.message);
+			setErrorMessage(data.payload.message);
 		}
-    } else {
+      };
+
+      socket.addEventListener("message", handleMessage);
+
+      socket.addEventListener("open", () => {
+        sendMessage(createPlayLocalMessage(match.id));
+      });
+
+    } catch (err) {
+      setErrorMessage(getErrorMessage(err));
+    }
+
+    return;
+  }
       try {
         const response = await gameService.createOnline(size);
         console.log("Created match:", response.data.match);
@@ -72,7 +89,6 @@ const GameSettings = () => {
       } catch (err) {
         setErrorMessage(getErrorMessage(err));
       }
-    }
   }
 
   return (

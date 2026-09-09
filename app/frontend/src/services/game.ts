@@ -15,11 +15,11 @@ const createOnline = (size: number) => {
 
 const createLocal = (gameMode: GameMode, level: number, size: number) => {
   const url = `${baseUrl}/local/create`;
-  return axios.post(url, { gameMode, size, level, requiredPlayers: 2 });
+  return axios.post(url, { gameMode, level, size, requiredPlayers: 2 });
 };
 
 const createEventSource = () => {
   return new EventSource(`${baseUrl}/lobby`);
 };
 
-export default { joinMatch, createOnline, createEventSource, createLocal };
+export default { joinMatch, createOnline, createLocal, createEventSource };

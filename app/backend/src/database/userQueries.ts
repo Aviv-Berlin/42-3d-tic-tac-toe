@@ -76,6 +76,14 @@ export async function updateUser(username: string, email: string, pw_hash: strin
 	return result.rows[0];
 }
 
+export async function updateUsername(username: string, id: number) {
+	const result = await query(
+		'UPDATE users SET username = $1, WHERE id = $4 RETURNING *;', [username, id]
+	);
+
+	return result.rows[0];
+}
+
 export async function deleteUser(id: number) {
 	const result = await query(
 		'DELETE FROM users WHERE id = $1 RETURNING *;', [id]
@@ -92,5 +100,6 @@ export default {
 	getHashedPasswordByID:
 	deleteUser,
 	createUser,
-	updateUser
+	updateUser,
+	updateUsername
 };

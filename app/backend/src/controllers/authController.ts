@@ -57,7 +57,6 @@ export async function login(request: Request, response: Response) {
 	}
 
 	try{
-		//const user = await userQueries.getUserByUsername(body.username);
 		const userID = await userQueries.getUserIdByUsername(body.username);
 		if (!userID) {
 			return response.status(404).json({

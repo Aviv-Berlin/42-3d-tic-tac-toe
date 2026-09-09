@@ -13,7 +13,7 @@ export async function changeUsername(request: Request, response: Response) {
 	}
 
 	try{
-		const existingUsername = await userQueries.getUserByUsername(body.newUsername);
+		const existingUsername = await userQueries.getUserIdByUsername(body.newUsername);
 		if (existingUsername) {
 			return response.status(409).json({
 				error: 'username already exists'

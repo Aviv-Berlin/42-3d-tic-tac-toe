@@ -115,6 +115,13 @@ export function CreateExitMessage(gameID: string, IAm: number): ExitMessage {
 }
 
 //server -> client
+
+export type ErrorMessage =
+{ type: "error";
+	payload: {
+		message: string;
+	}
+}
 export type GameStateMessage =
 { type: "game-state";
 		payload: {
@@ -231,6 +238,7 @@ export type WsMessage =
   | TurnMessage
   | EndMessage
   | ExitMessage
+  | ErrorMessage
 
 
 export default {

@@ -47,7 +47,7 @@ const WaitingRoom = () => {
 				});
 			}
 
-      if (data.type === "game-init") {
+			if (data.type === "game-init") {
 				setMatch({
 					id: matchId,
 					host: data.host,
@@ -72,10 +72,11 @@ const WaitingRoom = () => {
 				navigate("/lobby");
 			}
 
-			if (data.type === "error") {
-				clearMatch();
-				navigate("/lobby");
-			}
+			// if (data.type === "error") {
+			// 	clearMatch();
+			// 	//closeSocket();
+			// 	navigate("/lobby");
+			// }
 
 		}
 

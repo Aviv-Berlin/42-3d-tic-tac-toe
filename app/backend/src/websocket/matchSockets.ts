@@ -99,7 +99,6 @@ export function PlayLocal(message: PlayLocalMessage, socket: WebSocket) {
 		ws
 	})
 
-	//matches.set(match.id, match);
 	matchSockets.set(match.id, sockets);
 
 	const gameData = initGame(match, sockets);

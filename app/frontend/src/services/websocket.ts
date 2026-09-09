@@ -5,12 +5,9 @@ let currentMatchId: string | null = null;
 
 export function openSocket(matchId: string, username: string): WebSocket {
 
-	console.log("[openSocket] Username:", username);
+	console.log(`[openSocket] Username: ${username}, matchId: ${matchId}`);
 	if (socket && socket.readyState !== WebSocket.CLOSED && currentMatchId === matchId)
 		return socket;
-
-	console.log("username: ", username);
-	console.log("matchId:", matchId);
 
 	const loc = window.location;
 	let uri;
@@ -32,6 +29,15 @@ export function openSocket(matchId: string, username: string): WebSocket {
 	socket.onerror = (error) => {
 		console.error("[WS/error] WebSocket error: ", error);
 	}
+
+	socket.onmessage = (event: MessageEvent) => {
+    const data = JSON.parse(event.data);
+
+    if (data.type === "error") {
+        console.log("[WS/error message]", data.message);
+    }
+	}
+
 
 	socket.onclose = () => {
 		console.log("[WS/close] Websocket disconnected");

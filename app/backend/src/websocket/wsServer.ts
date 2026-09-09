@@ -33,9 +33,12 @@ export function setupWebSocket(server: http.Server) {
 		let match = matches.get(matchId);
 		if (!match) {
 			console.log(`[WS/connected] Match not found: ${matchId}`);
-			//socket.send(JSON.stringify({ type: "error", message: "Match not found" }));
+			socket.send(JSON.stringify({ type: "error", message: "Match not found" }));
 			//socket.close();
-			//return;
+			return;
+		}
+		else {
+			console.log(`[WS/connected] Match found: ${matchId}`);
 		}
 
 		if (!matchSockets.has(matchId)) {
@@ -95,6 +98,9 @@ export function setupWebSocket(server: http.Server) {
 				if (!player) return;
 
 				handlePlayerLeave(matchId, player);
+				if (match && match.status === "started" && match.state && !match.state.isFinished()){
+					playerExit(CreateExitMessage(matchId, match.state?.getPlayerIndex(player.username) ?? -1), socket, match)
+				}
 
 				return;
 			}
@@ -136,10 +142,10 @@ export function setupWebSocket(server: http.Server) {
 				console.log(`[WS/close] Player ${player.username} did not reconnect`)
 
 				handlePlayerLeave(matchId, player);
-				// if (match && match.status === "started" && match.state){
-				// 	const playerIndex = match.state?.getPlayerIndex(username);
-				// 	playerExit(CreateExitMessage(matchId, playerIndex), socket, match)
-				// }
+				if (match && match.status === "started" && match.state && !match.state.isFinished()){
+					const playerIndex = match.state?.getPlayerIndex(username);
+					playerExit(CreateExitMessage(matchId, playerIndex), socket, match)
+				}
 
 			}, 5000);
 		});

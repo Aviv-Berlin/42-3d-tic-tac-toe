@@ -42,43 +42,53 @@ const GameSettings = () => {
   const handleConfirm = async () => {
 
     if (gameMode === "ai" || gameMode === "local") {
+    try {
+      const response = await gameService.createLocal(gameMode, level, size);
+      const match = response.data.match;
 
-      const matchId = crypto.randomUUID();
-      const match: Match = {
-        id: matchId,
-        host: username,
-        mode: gameMode,
-        level: level as AiLevel,
-        size: size,
-        requiredPlayers: 2,
-        players: [username],
-        status: "ready",
-        state: null
-      }
-      const socket = openSocket(matchId, username);
+      console.log("match created:", match);
+
+      const socket = openSocket(match.id, username);
 
       const handleMessage = (event: MessageEvent) => {
         const data = JSON.parse(event.data);
+
         if (data.type === "game-init") {
           console.log("game-init msg frontend received");
-          setGameData(data.gameData)
+
+          setGameData(data.gameData);
+
           socket.removeEventListener("message", handleMessage);
-          navigate(`/game/${data.id}?game-mode=${gameMode}&level=${level}&size=${data.size}`);
+
+          navigate(
+            `/game/${data.id}?game-mode=${gameMode}&level=${level}&size=${data.size}`
+          );
         }
-      }
+		if (data.type === "error") {
+			console.error("[WS/error] WebSocket error: ", data.payload.message);
+			setErrorMessage(data.payload.message);
+		}
+      };
+
       socket.addEventListener("message", handleMessage);
+
       socket.addEventListener("open", () => {
-        sendMessage(createPlayLocalMessage(match));
-      }, { once: true });
-    } else {
+        sendMessage(createPlayLocalMessage(match.id));
+      });
+
+    } catch (err) {
+      setErrorMessage(getErrorMessage(err));
+    }
+
+    return;
+  }
       try {
-        const response = await gameService.createLobby(size);
+        const response = await gameService.createOnline(size);
         console.log("Created match:", response.data.match);
         navigate(`/waiting/${response.data.match.id}`);
       } catch (err) {
         setErrorMessage(getErrorMessage(err));
       }
-    }
   }
 
   return (

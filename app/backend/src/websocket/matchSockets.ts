@@ -84,7 +84,12 @@ export function initGame(match: Match, sockets: Set<PlayerConnection>) {
 
 export function PlayLocal(message: PlayLocalMessage, socket: WebSocket) {
 
-	const match = message.payload.match;
+	const match = matches.get(message.payload.matchId);
+
+	if (!match) {
+		console.error(`[WR/PlayLocal] Match ${message.payload.matchId} not found.`);
+		return;
+	}
 	const username = match.host;
 	const ws = socket;
 
@@ -94,7 +99,6 @@ export function PlayLocal(message: PlayLocalMessage, socket: WebSocket) {
 		ws
 	})
 
-	matches.set(match.id, match);
 	matchSockets.set(match.id, sockets);
 
 	const gameData = initGame(match, sockets);

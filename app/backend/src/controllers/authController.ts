@@ -57,14 +57,16 @@ export async function login(request: Request, response: Response) {
 	}
 
 	try{
-		const user = await userQueries.getUserByUsername(body.username);
-		if (!user) {
+		//const user = await userQueries.getUserByUsername(body.username);
+		const userID = await userQueries.getUserIdByUsername(body.username);
+		if (!userID) {
 			return response.status(404).json({
 				error: 'username not found'
 			});
 		}
 
-		const pwMatch = await bcrypt.compare(body.password, user.pw_hash);
+		const hashedPW = await userQueries.getHashedPasswordByID(userID);
+		const pwMatch = await bcrypt.compare(body.password, hashedPW);
 		if (!pwMatch) {
 			return response.status(401).json({
 				error: 'bad credentials'
@@ -72,15 +74,15 @@ export async function login(request: Request, response: Response) {
 		}
 
 		const userForToken = {
-			username: user.username,
-			id: user.id
+			username: body.username,
+			id: userID
 		}
 
 		//const token = jwt.sign(userForToken, process.env.SECRET as string, { expiresIn: '1h' });
 		const token = jwt.sign(userForToken, process.env.SECRET as string);
 
 		return response.cookie('token', token).status(200).send({
-			username: user.username, email: user.email
+			username: user.username, email: user.email // why are doign this again?
 		});
 
 	}

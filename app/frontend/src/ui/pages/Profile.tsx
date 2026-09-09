@@ -43,7 +43,7 @@ const Profile = () => {
         {!games.length && <p className="italic">You haven&apos;t played any game yet!</p>}
       </div>
       <div className="flex flex-col p-8 gap-4">
-        <h2 className="text-2xl mb-4">Stats</h2>
+        <h2 className="text-2xl mb-4">Stats <span className="text-sm">(FOR ONLINE GAMES)</span></h2>
         <div className="flex gap-2 items-baseline justify-between">
           <p className="text-md">RANK:</p>
           <p className="text-xl">-</p>

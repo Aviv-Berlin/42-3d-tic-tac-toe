@@ -33,9 +33,12 @@ export function setupWebSocket(server: http.Server) {
 		let match = matches.get(matchId);
 		if (!match) {
 			console.log(`[WS/connected] Match not found: ${matchId}`);
-			//socket.send(JSON.stringify({ type: "error", message: "Match not found" }));
+			socket.send(JSON.stringify({ type: "error", message: "Match not found" }));
 			//socket.close();
-			//return;
+			return;
+		}
+		else {
+			console.log(`[WS/connected] Match found: ${matchId}`);
 		}
 
 		if (!matchSockets.has(matchId)) {

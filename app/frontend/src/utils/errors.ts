@@ -3,8 +3,10 @@ import { isAxiosError } from "axios";
 export function getErrorMessage(err: unknown): string {
   if (isAxiosError(err)) {
     console.log(err.message);
+    console.log(err.response?.data?.error);
     if (err.response?.data?.error === "username not found" ||
-      err.response?.data?.error === "bad credentials") {
+      err.response?.data?.error === "bad credentials" ||
+      err.response?.data?.error === "data incomplete") {
       return "Invalid credentials. Please try again.";
     } else if (err.response?.data?.error === "username already exists") {
       return "Username already exists. Please choose a different one.";

@@ -39,6 +39,7 @@ export class GameUI {
     private playerNameRow: BABYLON.TransformNode | null = null;
     private player1Badge: GUI.Button | null = null;
     private player2Badge: GUI.Button | null = null;
+    private vsBadge: GUI.Button | null = null;
     private exitRow: BABYLON.TransformNode | null = null;
     private exitButton: GUI.Button | null = null;
     private lookRow: BABYLON.TransformNode | null = null;
@@ -214,6 +215,11 @@ export class GameUI {
             ${backgroundAlpha})`;
         //if (this.player2Badge.textBlock)
         //   this.player2Badge.textBlock.color = look.textColor.toHexString();
+        
+        if (!this.vsBadge)
+            return;
+        this.vsBadge.color = "black";
+
     }
 
     private createExitCubeRow(): void {
@@ -280,7 +286,7 @@ export class GameUI {
                 width = 90;
             button.width = `${width}px`;
             button.height = "90px";
-            button.thickness = 6;
+            button.thickness = 3;
             button.horizontalAlignment = GUI.Control.HORIZONTAL_ALIGNMENT_LEFT;
             button.verticalAlignment = GUI.Control.VERTICAL_ALIGNMENT_TOP;
             button.top = "30px";
@@ -308,25 +314,23 @@ export class GameUI {
             if (text) {
                 text.fontSize = 50;
             }
-            //this.player2Badge = button;
             this.ui.addControl(this.player2Badge);
         }
-        const vs = GUI.Button.CreateSimpleButton("player2Badge", "vs");
-            
-            vs.width = "90px";
-            vs.height = "90px";
-            vs.thickness = 0;
-            vs.horizontalAlignment = GUI.Control.HORIZONTAL_ALIGNMENT_LEFT;
-            vs.verticalAlignment = GUI.Control.VERTICAL_ALIGNMENT_TOP;
-            vs.top = "130px";
-            vs.left = "30px";
-            vs.color = "black";
-            const text = vs.textBlock;
+        if (this.vsBadge === null) {
+            this.vsBadge = GUI.Button.CreateSimpleButton("player2Badge", "vs");     
+            this.vsBadge.width = "90px";
+            this.vsBadge.height = "90px";
+            this.vsBadge.thickness = 0;
+            this.vsBadge.horizontalAlignment = GUI.Control.HORIZONTAL_ALIGNMENT_LEFT;
+            this.vsBadge.verticalAlignment = GUI.Control.VERTICAL_ALIGNMENT_TOP;
+            this.vsBadge.top = "130px";
+            this.vsBadge.left = "30px";
+            const text = this.vsBadge.textBlock;
             if (text) {
                 text.fontSize = 30;
             }
-            //this.player2Badge = button;
-            this.ui.addControl(vs);
+            this.ui.addControl(this.vsBadge);
+        }
         this.applyButtonLook();
 
     }

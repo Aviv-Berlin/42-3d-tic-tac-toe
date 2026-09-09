@@ -89,7 +89,7 @@ export default {
 	getAllUsers,
 	getUserByID,
 	getUserByUsername,
-	getUserIdByUsername
+	getUserIdByUsername,
 	getUserByEmail,
 	deleteUser,
 	createUser,

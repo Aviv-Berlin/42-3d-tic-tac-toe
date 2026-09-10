@@ -21,8 +21,11 @@ function calculateOnlineScore(game: GameData, p1: User, p2: User, winnerId: numb
 	let p1score = 0;
 	if (winnerId === p1.id)
 		p1score = game.size * 10 + scoreBonus;
-	else
-		p1score = -10 - (scoreBonus / 2);
+	else {
+		p1score = -10;
+		if (p1.online_score > p2.online_score)
+			p1score =- (scoreBonus / 2);
+	}
 	if (winnerId !== p1.id && winnerId !== p2.id)
 		p1score = 0;
 	return (Math.round(p1score));

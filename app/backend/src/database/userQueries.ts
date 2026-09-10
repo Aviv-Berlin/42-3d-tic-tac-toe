@@ -79,7 +79,7 @@ export async function updateUser(username: string, email: string, pw_hash: strin
 
 export async function updateUsername(username: string, id: number) {
 	const result = await query(
-		'UPDATE users SET username = $1 WHERE id = $4 RETURNING *;', [username, id]
+		'UPDATE users SET username = $1 WHERE id = $2 RETURNING *;', [username, id]
 	);
 
 	return result.rows[0]?.username;
@@ -87,7 +87,7 @@ export async function updateUsername(username: string, id: number) {
 
 export async function updatePassword(newPassword: string, id: number) {
 	const result = await query(
-		'UPDATE users SET pw_hash = $1 WHERE id = $4 RETURNING *;', [newPassword, id]
+		'UPDATE users SET pw_hash = $1 WHERE id = $2 RETURNING *;', [newPassword, id]
 	);
 
 	return result.rows[0]?.id;

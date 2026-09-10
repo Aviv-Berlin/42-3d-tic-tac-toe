@@ -27,8 +27,14 @@ const MatchSocketProvider = () => {
 			const data = JSON.parse(event.data);
 
 			console.log("[PROVIDER] Received:", data);
-			if (data.type === "error")
+			if (data.type === "error" && data.message === "Game already open in another tab"){
+				closeSocket();
+				navigate("/game-already-open");
+			}
+			else if (data.type === "error"){
+				closeSocket();
 				navigate("/not-found");
+			}
 		}
 
 		ws.addEventListener("message", handleMessage);

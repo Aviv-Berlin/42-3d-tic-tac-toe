@@ -173,10 +173,29 @@ export async function getLossTotal(request: Request, response: Response) {
 	}
 }
 
+export async function getRankData(request: Request, response: Response) {
+	const id = request.userData?.id;
+	if (!id)
+		return response.status(400).json({
+			error: 'no user id in token'
+		});
+	try{
+		const rankData = await userQueries.getUserScores(id);
+		return response.status(200).json(rankData);
+	}
+	catch (error) {
+		console.error(error);
+		return response.status(500).json({
+			error: 'internal server error'
+		});
+	}
+}
+
 export default {
 	getGameHistory,
 	getWinTotal,
 	getDrawTotal,
 	getLossTotal,
+	getRankData
 	//getMoves // TODO
 };

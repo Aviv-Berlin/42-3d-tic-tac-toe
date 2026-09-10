@@ -83,9 +83,31 @@ export async function updateUserScores(user: User, scoreChange: number, online: 
 	return result.rows[0];
 }
 
-export async function getFullScore(id: number) {
 
+// create rank data:
+// 	id | full_rank | full_score | online_rank | online_score | total_users
+// ----+-----------+------------+-------------+--------------+-------------
+//   4 |         1 |       1138 |           1 |         1021 |           2
+export async function getUserScores(id: number) {
+	const result = await query(`
+		SELECT *
+		FROM (
+			SELECT
+				id,
+				RANK() OVER (ORDER BY full_score DESC) AS full_rank,
+				full_score,
+				RANK() OVER (ORDER BY online_score DESC) AS online_rank,
+				online_score,
+				COUNT(*) OVER () AS total_users
+			FROM users
+			WHERE id NOT IN (1, 2, 3)
+		) ranked_users
+		WHERE id = $1;
+
+	`, [id]);
+	return result.rows[0];
 }
+
 
 export async function deleteUser(id: number) {
 	const result = await query(
@@ -102,5 +124,6 @@ export default {
 	getUserByEmail,
 	deleteUser,
 	createUser,
-	updateUser
+	updateUser,
+	getUserScores
 };

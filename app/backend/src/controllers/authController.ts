@@ -83,12 +83,9 @@ export async function login(request: Request, response: Response) {
 			id: userID
 		}
 
-		//const token = jwt.sign(userForToken, process.env.SECRET as string, { expiresIn: '1h' });
 		const token = jwt.sign(userForToken, process.env.SECRET as string);
 
-		return response.cookie('token', token).status(200).send({
-			username: body.username
-		});
+		return response.cookie('token', token).status(200).send();
 
 	}
 	catch (error) {

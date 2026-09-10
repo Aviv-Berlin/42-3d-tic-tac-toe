@@ -29,9 +29,8 @@ const Login = () => {
     setSubmit(true);
     if (!form.username || !form.password) return;
     try {
-      const response = await auth.login(form)
-      const username = response.data.username;
-      setUsername(username);
+      await auth.login(form)
+      setUsername(form.username);
       navigate("/home");
     } catch (err) {
       setErrorMessage(getErrorMessage(err));

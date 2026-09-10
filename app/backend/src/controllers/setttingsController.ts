@@ -6,7 +6,7 @@ import bcrypt from 'bcrypt';
 export async function changeUsername(request: Request, response: Response) {
 	const body = request.body;
 
-	if (!body.newUsername || !body.oldUsername) {
+	if (!body.newUsername) {
 		return response.status(400).json({
 			error: 'data incomplete'
 		});

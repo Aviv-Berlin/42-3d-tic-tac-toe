@@ -56,7 +56,6 @@ const Settings = () => {
     setSubmit(true);
 
   	const form = {
-  		oldUsername: username,
   		newUsername
   	}
 

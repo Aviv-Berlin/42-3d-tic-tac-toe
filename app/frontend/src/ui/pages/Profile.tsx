@@ -7,10 +7,10 @@ import statsService from "../../services/stats";
 interface RankData {
   id: number,
   fullRank: number,
-  full_score: number,
+  fullScore: number,
   onlineRank: number,
-  online_score: number,
-  total_users: number
+  onlineScore: number,
+  totalUsers: number
 }
 
 const Profile = () => {
@@ -18,8 +18,8 @@ const Profile = () => {
   const [winTotal, setWinTotal] = useState(0);
   const [drawTotal, setDrawTotal] = useState(0);
   const [lossTotal, setLossTotal] = useState(0);
-  const [rankData, setRankData] = useState({id: 0, fullRank: 0, full_score: 0, onlineRank: 0,
-                                            online_score: 0, total_users: 0} as RankData);
+  const [rankData, setRankData] = useState({id: 0, fullRank: 0, fullScore: 0, onlineRank: 0,
+                                            onlineScore: 0, totalUsers: 0} as RankData);
 
   const gamesTotal = winTotal + drawTotal + lossTotal;
   const winRatio = gamesTotal ? (winTotal / gamesTotal * 100).toFixed(2) : Number(0).toFixed(2);
@@ -59,7 +59,7 @@ const Profile = () => {
         <h2 className="text-2xl mb-4">Stats <span className="text-sm">(FOR ONLINE GAMES)</span></h2>
         <div className="flex gap-2 items-baseline justify-between">
           <p className="text-md">RANK:</p>
-          <p className="text-xl">{rankData.online_score}</p>
+          <p className="text-xl">{rankData.onlineScore}</p>
         </div>
         <div className="flex gap-2 items-baseline justify-between">
           <p className="text-md">GAMES:</p>

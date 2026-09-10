@@ -4,11 +4,30 @@ import GameRecap from '../components/GameRecap';
 import { GameHistory } from '../../../../shared/game'
 import statsService from "../../services/stats";
 
+interface RankData {
+  id: number,
+  full_rank: number,
+  full_score: number,
+  online_rank: number,
+  online_score: number,
+  total_users: number
+}
+
+let initialRankData: RankData = {
+  id: 0,
+  full_rank: 0,
+  full_score: 0,
+  online_rank: 0,
+  online_score: 0,
+  total_users: 0,
+};
+
 const Profile = () => {
   const [games, setGames] = useState<GameHistory[]>([]);
   const [winTotal, setWinTotal] = useState(0);
   const [drawTotal, setDrawTotal] = useState(0);
   const [lossTotal, setLossTotal] = useState(0);
+  const [rankData, setRankData] = useState<RankData>(initialRankData);
 
   const gamesTotal = winTotal + drawTotal + lossTotal;
   const winRatio = gamesTotal ? (winTotal / gamesTotal * 100).toFixed(2) : Number(0).toFixed(2);
@@ -19,10 +38,12 @@ const Profile = () => {
       const win_response = await statsService.getWinTotal();
       const draw_response = await statsService.getDrawTotal();
       const loss_response = await statsService.getLossTotal();
+      const rank_response = await statsService.getRankData();
       setGames(history_response.data);
       setWinTotal(win_response.data);
       setDrawTotal(draw_response.data);
       setLossTotal(loss_response.data);
+      setRankData(rank_response.data);
       console.log("Retrieved stats");
     } catch (err) {
       console.log(err);
@@ -46,7 +67,7 @@ const Profile = () => {
         <h2 className="text-2xl mb-4">Stats <span className="text-sm">(FOR ONLINE GAMES)</span></h2>
         <div className="flex gap-2 items-baseline justify-between">
           <p className="text-md">RANK:</p>
-          <p className="text-xl">-</p>
+          <p className="text-xl">{rankData.online_score}</p>
         </div>
         <div className="flex gap-2 items-baseline justify-between">
           <p className="text-md">GAMES:</p>

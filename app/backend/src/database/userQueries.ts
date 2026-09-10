@@ -15,17 +15,6 @@ export interface User {
   pw_hash: string
 }
 
-// Read data for all users or a single one
-// 1. Get User by userusername, Email or ID
-export async function getUserByUsername(username: string) {
-	const result = await query(
-		'SELECT * FROM users WHERE username = $1;', [username]
-	);
-	console.log("getUserByUsername result = ", result);
-	console.log("result.rows[0].username = ", result.rows[0]?.username);
-	return result.rows[0]?.username;
-}
-
 export async function getUserIdByUsername(username: string) {
 	const result = await query(
 		'SELECT id FROM users WHERE username = $1;', [username]
@@ -33,7 +22,6 @@ export async function getUserIdByUsername(username: string) {
 
 	return result.rows[0]?.id;
 }
-
 
 export async function getUserIdByEmail(email: string) {
 	const result = await query(
@@ -103,7 +91,6 @@ export async function deleteUser(id: number) {
 
 export default {
 	getUsernameByID,
-	getUserByUsername,
 	getUserIdByUsername,
 	getUserIdByEmail,
 	getHashedPasswordByID,

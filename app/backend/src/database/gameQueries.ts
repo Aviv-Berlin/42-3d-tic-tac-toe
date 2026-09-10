@@ -13,10 +13,8 @@ export interface MatchEntry {
   }
 // Creating a game
 export async function createMatchEntry(p1: PlayerData, p2: PlayerData, winner: PlayerData | null, start: number, end: number, board_size: number, moves: Move[]) {
-	const p1user = await userQueries.getUserByUsername(p1.username);
-	const p1id = p1user.id;
-	const p2user = await userQueries.getUserByUsername(p2.username);
-	const p2id = p2user.id;
+	const p1id = await userQueries.getUserIdByUsername(p1.username);
+	const p2id = await userQueries.getUserIdByUsername(p2.username);
 	let winnerId = null;
 	if (winner?.username === p1.username)
 		winnerId = p1id;

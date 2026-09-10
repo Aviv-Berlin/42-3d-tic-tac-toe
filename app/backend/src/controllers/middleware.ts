@@ -49,14 +49,14 @@ export const checkToken = async (request: Request, response: Response, next: Nex
 		response.status(401).json({ error: 'missing or invalid token' })
 		return;
 	}
-	const user = await userQueries.getUserByID(decodedToken.id);
-	if (!user || !user.username || !user.id) {
+	const username = await userQueries.getUsernameByID(decodedToken.id);
+	if (!username) {
 		response.status(401).json({ error: 'token does not correspond to a user' })
 		return;
 	}
 	request.userData = {
-		id: user.id,
-		username: user.username,
+		id: decodedToken.id,
+		username: username,
 	};
 	next();
 }

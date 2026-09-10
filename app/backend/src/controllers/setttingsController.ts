@@ -6,23 +6,23 @@ import bcrypt from 'bcrypt';
 export async function changeUsername(request: Request, response: Response) {
 	const body = request.body;
 
-	if (!body.newUsername || !body.oldUsername) {
+	if (!body.newUsername) {
 		return response.status(400).json({
 			error: 'data incomplete'
 		});
 	}
 
 	try{
-		const existingUsername = await userQueries.getUserByUsername(body.newUsername);
+		const existingUsername = await userQueries.getUserIdByUsername(body.newUsername);
 		if (existingUsername) {
 			return response.status(409).json({
 				error: 'username already exists'
 			});
 		}
 
-		const user = await userQueries.getUserByUsername(body.oldUsername);
+		const userID = await userQueries.getUserIdByUsername(body.oldUsername);
 	
-		const updatedUser = await userQueries.updateUser(body.newUsername, user.email, user.pw_hash, user.id);
+		const updatedUser = await userQueries.updateUsername(body.newUsername, userID);
 	
 		return response.status(201).json({
 			username: updatedUser.username,
@@ -40,16 +40,21 @@ export async function changeUsername(request: Request, response: Response) {
 export async function changePassword(request: Request, response: Response) {
 	const body = request.body;
 
-	if (!body.username || !body.oldPassword || !body.newPassword) {
+	if (!body.oldPassword || !body.newPassword) {
 		return response.status(400).json({
 			error: 'data incomplete'
 		});
 	}
 
+	if (!request.userData || !request.userData.id || !request.userData.username) {
+		return response.status(400).json({
+			error: 'missing or invalid token'
+		});
+	}
 	try{
-		const user = await userQueries.getUserByUsername(body.username);
+		const hashedPW = await userQueries.getHashedPasswordByID(request.userData.id);
 
-		const pwMatch = await bcrypt.compare(body.oldPassword, user.pw_hash);
+		const pwMatch = await bcrypt.compare(body.oldPassword, hashedPW);
 		if (!pwMatch) {
 			return response.status(401).json({
 				error: 'bad credentials'
@@ -58,7 +63,7 @@ export async function changePassword(request: Request, response: Response) {
 
 		const newPwHash = await bcrypt.hash(body.newPassword, 10);
 	
-		const updatedUser = await userQueries.updateUser(body.username, user.email, newPwHash, user.id);
+		const updatedUser = await userQueries.updatePassword(newPwHash, request.userData.id);
 	
 		return response.status(201).json({
 			username: updatedUser.username,
@@ -71,31 +76,41 @@ export async function changePassword(request: Request, response: Response) {
 		});
 	}
 }
-
 export async function deleteAccount(request: Request, response: Response) {
 	const body = request.body;
 
-	if (!body.username || !body.password) {
+	if (!body.password) {
 		return response.status(400).json({
 			error: 'data incomplete'
 		});
 	}
-
+	if (!request.userData || !request.userData.id || !request.userData.username) {
+		return response.status(400).json({
+			error: 'missing or invalid token'
+		});
+	}
 	try{
-		const user = await userQueries.getUserByUsername(body.username);
-
-		const pwMatch = await bcrypt.compare(body.password, user.pw_hash);
+		const pw = await userQueries.getHashedPasswordByID(request.userData.id);
+		if (!pw){
+			return response.status(500).json({
+				error: 'internal server error'
+			});
+		}
+		const pwMatch = await bcrypt.compare(body.password, pw);
 		if (!pwMatch) {
 			return response.status(401).json({
 				error: 'bad credentials'
 			});
 		}
 
-		const deletedUser = await userQueries.deleteUser(user.id);
-	
-		return response.status(201).json({
-			username: deletedUser.username,
-		});
+		const deletedUser = await userQueries.deleteUser(request.userData.id);
+
+		if (!deletedUser){
+			return response.status(500).json({
+				error: 'internal server error'
+			});
+		}
+		return response.status(204);
 	}
 	catch (error) {
 		console.error(error);

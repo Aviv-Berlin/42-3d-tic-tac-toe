@@ -12,7 +12,9 @@ export interface User {
   id: number,
   username: string,
   email: string,
-  pw_hash: string
+  pw_hash: string,
+  full_score: number,
+  online_score: number
 }
 
 // Read data for all users or a single one
@@ -63,6 +65,24 @@ export async function createUser(username: string, email: string, pw_hash: strin
 export async function updateUser(username: string, email: string, pw_hash: string, id: number) {
 	const result = await query(
 		'UPDATE users SET username = $1, email = $2, pw_hash = $3 WHERE id = $4 RETURNING *;', [username, email, pw_hash, id]
+	);
+
+	return result.rows[0];
+}
+
+export async function updateUserScores(user: User, scoreChange: number, online: boolean) {
+	let newFullScore = user.full_score + scoreChange;
+	if (newFullScore < 0)
+		newFullScore = 0;
+
+	let newOnlineScore = user.online_score;
+	if (online) {
+		let newOnlineScore = user.online_score + scoreChange;
+		if (newOnlineScore < 0)
+			newOnlineScore = 0;
+	}
+	const result = await query(
+		'UPDATE users SET full_score = $1, online_score = $2 WHERE id = $3 RETURNING *;', [newFullScore, newOnlineScore, user.id]
 	);
 
 	return result.rows[0];

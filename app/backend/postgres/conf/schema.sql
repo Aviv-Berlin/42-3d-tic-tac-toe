@@ -12,7 +12,9 @@ CREATE TABLE users(
 	username TEXT NOT NULL UNIQUE,
 	email TEXT NOT NULL UNIQUE,
 	pw_hash TEXT NOT NULL, -- adjust
-	last_seen TIMESTAMPTZ DEFAULT NOW()
+	last_seen TIMESTAMPTZ DEFAULT NOW(),
+	full_score INT DEFAULT 1000,
+	online_score INT DEFAULT 1000
 );
 
 INSERT INTO users (username, email, pw_hash) VALUES

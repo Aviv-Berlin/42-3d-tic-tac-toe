@@ -36,13 +36,7 @@ export async function createMatchEntry(game: GameData) {
 	console.log(`match added to database`);
 	return result.rows[0];
 }
-// move_nr INT NOT NULL,
-// 	match_id INT NOT NULL REFERENCES matches(id),
-// 	coord_x INT NOT NULL,
-// 	coord_y INT NOT NULL,
-// 	coord_z INT NOT NULL,
-// 	player INT NOT NULL REFERENCES users(id),
-// 	played_at INTERVAL NOT NULL,
+
 export async function createMoveHistory(moves: Move[], p1: number, p2: number, match: MatchEntry) {
 	const players = [0, p1, p2];
 	for (let i = 0; i < moves.length; i++) {

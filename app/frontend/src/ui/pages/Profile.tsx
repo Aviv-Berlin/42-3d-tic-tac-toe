@@ -6,44 +6,36 @@ import statsService from "../../services/stats";
 
 interface RankData {
   id: number,
-  full_rank: number,
+  fullRank: number,
   full_score: number,
-  online_rank: number,
+  onlineRank: number,
   online_score: number,
   total_users: number
 }
-
-let initialRankData: RankData = {
-  id: 0,
-  full_rank: 0,
-  full_score: 0,
-  online_rank: 0,
-  online_score: 0,
-  total_users: 0,
-};
 
 const Profile = () => {
   const [games, setGames] = useState<GameHistory[]>([]);
   const [winTotal, setWinTotal] = useState(0);
   const [drawTotal, setDrawTotal] = useState(0);
   const [lossTotal, setLossTotal] = useState(0);
-  const [rankData, setRankData] = useState<RankData>(initialRankData);
+  const [rankData, setRankData] = useState({id: 0, fullRank: 0, full_score: 0, onlineRank: 0,
+                                            online_score: 0, total_users: 0} as RankData);
 
   const gamesTotal = winTotal + drawTotal + lossTotal;
   const winRatio = gamesTotal ? (winTotal / gamesTotal * 100).toFixed(2) : Number(0).toFixed(2);
 
   const fillStats = async () => {
     try {
-      const history_response = await statsService.getGameHistory();
-      const win_response = await statsService.getWinTotal();
-      const draw_response = await statsService.getDrawTotal();
-      const loss_response = await statsService.getLossTotal();
-      const rank_response = await statsService.getRankData();
-      setGames(history_response.data);
-      setWinTotal(win_response.data);
-      setDrawTotal(draw_response.data);
-      setLossTotal(loss_response.data);
-      setRankData(rank_response.data);
+      const historyResponse = await statsService.getGameHistory();
+      const winResponse = await statsService.getWinTotal();
+      const drawResponse = await statsService.getDrawTotal();
+      const lossResponse = await statsService.getLossTotal();
+      const rankResponse = await statsService.getRankData();
+      setGames(historyResponse.data);
+      setWinTotal(winResponse.data);
+      setDrawTotal(drawResponse.data);
+      setLossTotal(lossResponse.data);
+      setRankData(rankResponse.data);
       console.log("Retrieved stats");
     } catch (err) {
       console.log(err);

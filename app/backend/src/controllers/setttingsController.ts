@@ -104,51 +104,13 @@ export async function deleteAccount(request: Request, response: Response) {
 		}
 
 		const deletedUser = await userQueries.deleteUser(request.userData.id);
-		await userQueries.deleteUser(request.userData.id);
-	
-		return response.status(201).json({
-			username: deletedUser.username,
-		});
-	}
-	catch (error) {
-		console.error(error);
-		return response.status(500).json({
-			error: 'internal server error'
-		});
-	}
-}
 
-/*
-export async function deleteAccount(request: Request, response: Response) {
-	const body = request.body;
-
-	if (!body.username || !body.password) {
-		return response.status(400).json({
-			error: 'data incomplete'
-		});
-	}
-	
-	if (!request.userData || !request.userData.id || !request.userData.username) {
-		return response.status(400).json({
-			error: 'missing or invalid token'
-		});
-	}
-
-	try{
-		const pw = await userQueries.getHashedPasswordByID(request.userData.id);
-		const pwMatch = await bcrypt.compare(body.password, pw);
-		if (!pwMatch) {
-			return response.status(401).json({
-				error: 'bad credentials'
+		if (!deletedUser){
+			return response.status(500).json({
+				error: 'internal server error'
 			});
 		}
-
-		//const deletedUser = await userQueries.deleteUser(request.userData.id);
-		await userQueries.deleteUser(request.userData.id);
-	
-		return response.status(201).json({
-			username: deletedUser.username,
-		});
+		return response.status(204);
 	}
 	catch (error) {
 		console.error(error);
@@ -157,7 +119,6 @@ export async function deleteAccount(request: Request, response: Response) {
 		});
 	}
 }
-*/
 
 export default {
 	changeUsername,

@@ -5,6 +5,7 @@ import { GameHistory, PlayerData } from '../../../shared/game.ts';
 import { MatchEntry } from '../database/gameQueries.ts';
 import { GameData, Move } from '../../../shared/game.ts';
 import { GridPosition, CellState } from '../../../shared/game/Types.ts';
+import { ExtdRequest } from "./middleware.ts";
 
 async function convertToGameData(row: MatchEntry, id: number) {
 
@@ -67,7 +68,7 @@ async function convertToGameData(row: MatchEntry, id: number) {
 	return (summary);
 }
 async function createGameHistory(gameData: GameData) {
-	
+
 	const outcome =
 		gameData.winner === null ? "DRAW" :
 		gameData.winner === gameData.player2 ? "LOSS" :
@@ -82,8 +83,8 @@ async function createGameHistory(gameData: GameData) {
 	return (summary);
 }
 
-export async function getGameHistory(request: Request, response: Response) {
-	
+export async function getGameHistory(request: ExtdRequest, response: Response) {
+
 	const id = request.userData?.id;
 	if (!id) {
 		return response.status(400).json({
@@ -117,7 +118,7 @@ export async function getGameHistory(request: Request, response: Response) {
 	}
 }
 
-export async function getWinTotal(request: Request, response: Response) {
+export async function getWinTotal(request: ExtdRequest, response: Response) {
 	const id = request.userData?.id;
 	if (!id) {
 		return response.status(400).json({
@@ -136,7 +137,7 @@ export async function getWinTotal(request: Request, response: Response) {
 	}
 }
 
-export async function getDrawTotal(request: Request, response: Response) {
+export async function getDrawTotal(request: ExtdRequest, response: Response) {
 	const id = request.userData?.id;
 	if (!id) {
 		return response.status(400).json({
@@ -155,7 +156,7 @@ export async function getDrawTotal(request: Request, response: Response) {
 	}
 }
 
-export async function getLossTotal(request: Request, response: Response) {
+export async function getLossTotal(request: ExtdRequest, response: Response) {
 	const id = request.userData?.id;
 	if (!id)
 		return response.status(400).json({

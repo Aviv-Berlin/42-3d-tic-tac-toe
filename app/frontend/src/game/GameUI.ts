@@ -7,6 +7,7 @@ import { GameServerConnection } from "./GameServerConnection"
 import { LOOKS, PlayerColors } from './LookSetting';
 import { TextCubeFactory } from "./TextCubeFactory";
 import { GridPosition, CellState } from "../../../shared/game/Types"
+import { CameraManager } from "./CameraManager";
 
 type CubeRowAnchor = "left" | "center" | "right";
 
@@ -50,15 +51,17 @@ export class GameUI {
     private materials: Materials;
     private winnerMessageRow: BABYLON.TransformNode | null = null;
     private board: Board;
+    private camera: CameraManager;
     private readonly textCubeFactory: TextCubeFactory;
     private game: GameServerConnection | null = null;
 
     
-    constructor(scene: Scene, onExit: () => void, materials: Materials, board: Board) {
+    constructor(scene: Scene, onExit: () => void, materials: Materials, board: Board, camera: CameraManager) {
         this.scene = scene;
         this.onExit = onExit;
         this.materials = materials;
         this.board = board;
+        this.camera = camera;
         this.textCubeFactory =
         new TextCubeFactory(scene, materials);
         this.ui = GUI.AdvancedDynamicTexture.CreateFullscreenUI("UI", true, scene);
@@ -72,11 +75,11 @@ export class GameUI {
     private toggleLook(): void {
         const nextLookIndex = (this.materials.getLookIndex() + 1) % LOOKS.length;
         this.materials.applyLook(nextLookIndex);
-        this.board.createBoard();
+        this.board.createBoard(false);
         this.board.refreshMoves();
         this.board.refreshPreview();
         this.textCubeFactory.refreshLook();
-        this.board.refreshTextCubes();
+        //this.board.refreshTextCubes();
         this.applyButtonLook();
     }
 
@@ -168,58 +171,61 @@ export class GameUI {
     private applyButtonLook(): void {
         if (!this.exitButton)
             return;
+
         const look = this.materials.getLook();
-        const backgroundColor = look.textCubeColor ?? look.cubeColor;
+        const backgroundColor = look.backgroundColor;
         const backgroundAlpha = look.textCubeAlpha ?? look.cubeAlpha;
-        this.exitButton.background = `rgba(${backgroundColor.r * 255},
-            ${backgroundColor.g * 255}, ${backgroundColor.b * 255},
-            ${backgroundAlpha})`;
-        this.exitButton.color = look.edgeColor.toHexString();
+
+        const background = `rgba(${backgroundColor.r * 255},
+            ${backgroundColor.g * 255}, ${backgroundColor.b * 255}, ${backgroundAlpha})`;
+
+        // Exit button
+        this.exitButton.background = background;
+        this.exitButton.color = look.edgeColor3.toHexString();
+
         if (this.exitButton.textBlock)
             this.exitButton.textBlock.color = look.textColor.toHexString();
-        
-        if (!this.lookButton)
-            return;
-        this.lookButton.background = `rgba(${backgroundColor.r * 255},
-            ${backgroundColor.g * 255}, ${backgroundColor.b * 255},
-            ${backgroundAlpha})`;
-        this.lookButton.color = look.edgeColor.toHexString();
-        if (this.lookButton.textBlock)
-            this.lookButton.textBlock.color = look.textColor.toHexString();
-        
-        if (!this.player1Badge)
-            return;
-        // if (look.playerColors?.[0])
-        //  this.player1Badge.color = look.playerColors[0].toHexString();
-        // else
-        //     this.player1Badge.color = look.edgeColor.toHexString();
-        this.player1Badge.color = look.textColor.toHexString();
-        this.player1Badge.background = `rgba(${backgroundColor.r * 255},
-            ${backgroundColor.g * 255}, ${backgroundColor.b * 255},
-            ${backgroundAlpha})`;
-        ;
-        if (this.player1Badge.textBlock)
-            this.player1Badge.textBlock.color = look.textColor.toHexString();
 
-        if (!this.player2Badge)
-            return;
-        if (look.playerColors?.[1]) {
-            this.player2Badge.color = look.playerColors[1].toHexString(); 
-            if (this.player2Badge.textBlock)
-                this.player2Badge.textBlock.color = look.playerColors[1].toHexString();
+        // Look button
+        if (this.lookButton) {
+            this.lookButton.background = background;
+            this.lookButton.color = look.edgeColor3.toHexString();
+
+            if (this.lookButton.textBlock)
+                this.lookButton.textBlock.color = look.textColor.toHexString();
         }
-        else
-            this.player2Badge.color = look.edgeColor.toHexString();
-        this.player2Badge.background = `rgba(${backgroundColor.r * 255},
-            ${backgroundColor.g * 255}, ${backgroundColor.b * 255},
-            ${backgroundAlpha})`;
-        //if (this.player2Badge.textBlock)
-        //   this.player2Badge.textBlock.color = look.textColor.toHexString();
-        
-        if (!this.vsBadge)
-            return;
-        this.vsBadge.color = "black";
 
+        // Player 1
+        if (this.player1Badge) {
+            const player1Color = look.player1Badge.toHexString();
+
+            this.player1Badge.background = background;
+            this.player1Badge.color = player1Color;
+
+            if (this.player1Badge.textBlock)
+                this.player1Badge.textBlock.color = player1Color;
+        }
+
+        // Player 2
+        if (this.player2Badge) {
+            const player1Color = look.player2Badge.toHexString();
+
+            this.player2Badge.background = background;
+            this.player2Badge.color = player1Color;
+
+            if (this.player2Badge.textBlock)
+                this.player2Badge.textBlock.color = player1Color;
+        }
+
+        // VS badge
+        if (this.vsBadge) {
+            const vsColor = look.vsColor.toHexString();
+
+            this.vsBadge.color = vsColor;
+
+            if (this.vsBadge.textBlock)
+                this.vsBadge.textBlock.color = vsColor;
+        }
     }
 
     private createExitCubeRow(): void {
@@ -278,46 +284,54 @@ export class GameUI {
         this.ui.addControl(this.instructions);
     }
 
-    public playerBadges(player1: string, player2: string): void {
-        if (this.player1Badge === null) {
-            const button = GUI.Button.CreateSimpleButton("player1Badge", player1);
-            let width = player1.length * 40;
-            if (width < 90)
-                width = 90;
-            button.width = `${width}px`;
-            button.height = "90px";
-            button.thickness = 3;
-            button.horizontalAlignment = GUI.Control.HORIZONTAL_ALIGNMENT_LEFT;
-            button.verticalAlignment = GUI.Control.VERTICAL_ALIGNMENT_TOP;
-            button.top = "30px";
-            button.left = "30px";
-            const text = button.textBlock;
-            if (text) {
-                text.fontSize = 50;
+    private createBadge(name: string): GUI.Button {
+        const badge = GUI.Button.CreateSimpleButton("name", name);
+        badge.height = "90px";
+        badge.thickness = 3;
+        const text = badge.textBlock;
+        const fontSize = 50;
+        if (text) {
+            text.fontSize = fontSize;
+            const measureCanvas = document.createElement("canvas");
+            const context = measureCanvas.getContext("2d");
+            if (context) {
+                context.font = `${fontSize}px Arial`;
+                let width = context.measureText(name).width + 50;
+                if (width < 90)
+                    width = 90;
+                badge.width = `${width}px`;
             }
-            this.player1Badge = button;
-            this.ui.addControl(button);
+        }
+        return badge;
+    }
+
+    public playerBadges(player1: string, player2: string): void {
+        // const look = this.materials.getLook();
+        // const meshPlayer1 = this.board.createStyledMesh(look.moveStyle1, 0.3, "player1DemoMesh");     
+        // meshPlayer1.position = new BABYLON.Vector3(-7,3,10);
+        // meshPlayer1.material = this.materials.getPlayerMaterial(1);
+        // meshPlayer1.renderingGroupId = 0;
+        // meshPlayer1.isPickable = false;
+        // meshPlayer1.parent = this.camera.getCamera();
+        
+        if (this.player1Badge === null) {
+            this.player1Badge = this.createBadge(player1);
+            this.player1Badge.horizontalAlignment = GUI.Control.HORIZONTAL_ALIGNMENT_LEFT;
+            this.player1Badge.verticalAlignment = GUI.Control.VERTICAL_ALIGNMENT_TOP;
+            this.player1Badge.top = "30px";
+            this.player1Badge.left = "30px";
+            this.ui.addControl(this.player1Badge);
         }
         if (this.player2Badge === null) {
-            this.player2Badge = GUI.Button.CreateSimpleButton("player2Badge", player2);
-            let width = player2.length * 40;
-            if (width < 90)
-                width = 90;
-            this.player2Badge.width = `${width}px`;
-            this.player2Badge.height = "90px";
-            this.player2Badge.thickness = 3;
+            this.player2Badge = this.createBadge(player2);
             this.player2Badge.horizontalAlignment = GUI.Control.HORIZONTAL_ALIGNMENT_LEFT;
             this.player2Badge.verticalAlignment = GUI.Control.VERTICAL_ALIGNMENT_TOP;
             this.player2Badge.top = "230px";
             this.player2Badge.left = "30px";
-            const text = this.player2Badge.textBlock;
-            if (text) {
-                text.fontSize = 50;
-            }
             this.ui.addControl(this.player2Badge);
         }
         if (this.vsBadge === null) {
-            this.vsBadge = GUI.Button.CreateSimpleButton("player2Badge", "vs");     
+            this.vsBadge = GUI.Button.CreateSimpleButton("vsBadge", "vs");     
             this.vsBadge.width = "90px";
             this.vsBadge.height = "90px";
             this.vsBadge.thickness = 0;
@@ -332,9 +346,17 @@ export class GameUI {
             this.ui.addControl(this.vsBadge);
         }
         this.applyButtonLook();
-
     }
 
+    public toggleBadge(is1: boolean) {
+        if (is1 && this.player1Badge && this.player2Badge) {
+            this.player1Badge.thickness = 6;
+            this.player2Badge.thickness = 3;
+        } else if (this.player1Badge && this.player2Badge) {
+            this.player1Badge.thickness = 3;
+            this.player2Badge.thickness = 6;
+        }
+    }
     public async playerTitle(player: string): Promise<void> {
 
         const camera = this.scene.activeCamera;

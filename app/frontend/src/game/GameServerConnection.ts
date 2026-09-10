@@ -56,6 +56,7 @@ export class GameServerConnection {
                     this.otherPlayerIndex = 1;
                 this.guestPlayerIndex = this.playerNames.findIndex(name => name === "guest");
                 this.gameID = message.payload.gameID;
+                await this.board.createBoard(true);
                 this.ui.playerBadges(this.playerNames[this.localPlayerIndex], this.playerNames[this.otherPlayerIndex]);
                 break;
 
@@ -65,12 +66,18 @@ export class GameServerConnection {
                 this.currentPlayerIndex = message.payload.playsNow;
                 //await this.ui.playerTitleNew(this.playerNames[message.payload.playsNow]);
                 //this.ui.playerTitleNew(this.playerNames[message.payload.playsNow]);
-                if (message.payload.playsNow === this.localPlayerIndex)
+                if (message.payload.playsNow === this.localPlayerIndex) {
+                    this.ui.toggleBadge(true);
                     this.localPlayer.yourTurn(this.boardState, this.N, PLAYER_STATES[this.localPlayerIndex]);
-                else if (message.payload.playsNow === this.guestPlayerIndex)
+                }
+                else if (message.payload.playsNow === this.guestPlayerIndex) {
+                    this.ui.toggleBadge(false);
                     this.guestPlayer.yourTurn(this.boardState, this.N, PLAYER_STATES[this.guestPlayerIndex]);
-                else
+                }
+                else {
+                    this.ui.toggleBadge(false);                
                     this.board.hidePreview();
+                }
                 break;
 
             case "move":

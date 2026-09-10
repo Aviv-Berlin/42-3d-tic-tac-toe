@@ -27,7 +27,7 @@ export class Board {
         this.moveMeshesGrid = Array.from({ length: N }, () => Array.from({ length: N }, () => Array<AbstractMesh | null>(N).fill(null))); //intialize sphereMeshes to null
     }
 
-    private createStyledMesh(style: MeshStyle, size: number, name: string): BABYLON.Mesh {
+    public createStyledMesh(style: MeshStyle, size: number, name: string): BABYLON.Mesh {
 
         const settings = MESH_STYLE_SETTINGS[style];
         switch (settings.type) {
@@ -95,7 +95,7 @@ export class Board {
         }
     }
 
-    public createBoard(): void {
+    public async createBoard(animate: boolean): Promise<void> {
         const scale = this.cubesShrink ? 0.25 : 1;
         this.cellSize = this.materials.getLook().boardSize / this.N;
         this.boardMeshes.forEach(mesh => mesh.dispose());
@@ -106,26 +106,40 @@ export class Board {
                 for (let z = 0; z < this.N; z++) {               
                     const finalMesh = this.createStyledMesh(this.materials.getLook().boardStyle, this.cellSize, "boardMesh");
                     finalMesh.scaling.set(scale, scale, scale);
-                    finalMesh.position = this.getPosition(x, y, z, 0);
                     finalMesh.material = this.materials.cube;
                     finalMesh.metadata = { gridPosition: { x, y, z}};
                     this.boardMeshes.push(finalMesh);
+                    if (this.materials.getLook().renderEdges)
+                        this.materials.applyCubeEdges(finalMesh, this.N, y);
+                    else
+                        finalMesh.disableEdgesRendering();
+                    if (!animate)
+                        finalMesh.position = this.getPosition(x, y, z, 0);
+                    else {
+                        const endPos = this.getPosition(x, y, z, 0);
+                        const startPos = this.getPosition(x, y, z, 0).add(new BABYLON.Vector3(0,20,0));
+                        const easing = new BABYLON.CubicEase();
+                        easing.setEasingMode(BABYLON.EasingFunction.EASINGMODE_EASEOUT);
+                        BABYLON.Animation.CreateAndStartAnimation("finalMesh", finalMesh, "positon",
+                            60, 60, startPos, endPos, BABYLON.Animation.ANIMATIONLOOPMODE_CONSTANT, easing);
+                    }
                 }
             }
         }
-        this.toggleCubeEdges(this.materials.getLook().renderEdges);
+        //this.toggleCubeEdges(this.materials.getLook().renderEdges);
+        //await Promise.all();
     }
 
 
 
-    public toggleCubeEdges(renderEdges: boolean): void {
-        for (const mesh of this.boardMeshes) {
-            if (renderEdges)
-                this.materials.applyCubeEdges(mesh);
-            else
-                mesh.disableEdgesRendering();
-        }
-    }
+    // public toggleCubeEdges(renderEdges: boolean): void {
+    //     for (const mesh of this.boardMeshes) {
+    //         if (renderEdges)
+    //             this.materials.applyCubeEdges(mesh, this.N, );
+    //         else
+    //             mesh.disableEdgesRendering();
+    //     }
+    // }
 
     public toggleCubeSize(): void {
         const scale = this.cubesShrink ? 1 : 0.25;

@@ -158,10 +158,10 @@ export class ButtonGraphics {
         const blackMaterial = new BABYLON.StandardMaterial("black", this.scene);
         blackMaterial.diffuseColor = new BABYLON.Color3(0, 0, 0);
         blackMaterial.alpha = 1;
-        const whiteMaterial = new BABYLON.StandardMaterial("white", this.scene);
-        whiteMaterial.emissiveColor = new BABYLON.Color3(1, 1, 1);
-        whiteMaterial.alpha = 1;
-        whiteMaterial.disableLighting = true;
+        const orngeMaterial = new BABYLON.StandardMaterial("orange", this.scene);
+        orngeMaterial.emissiveColor = BABYLON.Color3.FromHexString("#bf4300");
+        orngeMaterial.alpha = 1;
+        orngeMaterial.disableLighting = true;
 
         
         const computer = new BABYLON.TransformNode("computer", this.scene);
@@ -173,7 +173,7 @@ export class ButtonGraphics {
 
         const screen = BABYLON.MeshBuilder.CreateBox("screen", { width: 0.95, height: 0.67, depth: 0.1 },  this.scene);
         screen.position = new BABYLON.Vector3(0, 0.5, -0.07);
-        screen.material = whiteMaterial;
+        screen.material = orngeMaterial;
         screen.parent = computer;
 
         const keyboard = BABYLON.MeshBuilder.CreateBox("keyboard", { width: 1.1, height: 0.4, depth: 0.2 },  this.scene);
@@ -226,14 +226,14 @@ export class ButtonGraphics {
 
     }
 
-    public toggleCubeEdges(renderEdges: boolean): void {
-        for (const mesh of this.boardMeshes) {
-            if (renderEdges)
-                this.materials.applyCubeEdges(mesh);
-            else
-                mesh.disableEdgesRendering();
-        }
-    }
+    // public toggleCubeEdges(renderEdges: boolean): void {
+    //     for (const mesh of this.boardMeshes) {
+    //         if (renderEdges)
+    //             this.materials.applyCubeEdges(mesh);
+    //         else
+    //             mesh.disableEdgesRendering();
+    //     }
+    // }
 
 
 

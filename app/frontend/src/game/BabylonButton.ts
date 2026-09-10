@@ -91,9 +91,9 @@ export function babylonButton(canvas: HTMLCanvasElement, type: string): () => vo
   }
 
 
-  engine.runRenderLoop(() => {
-    scene.render();
-  });
+  // engine.runRenderLoop(() => {
+  //   scene.render();
+  // });
 
 
   const handleResize = () => {

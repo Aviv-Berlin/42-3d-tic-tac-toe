@@ -12,12 +12,15 @@ CREATE TABLE users(
 	username TEXT NOT NULL UNIQUE,
 	email TEXT NOT NULL UNIQUE,
 	pw_hash TEXT NOT NULL, -- adjust
-	last_seen TIMESTAMPTZ DEFAULT NOW()
+	last_seen TIMESTAMPTZ DEFAULT NOW(),
+	full_score INT DEFAULT 1000,
+	online_score INT DEFAULT 1000
 );
 
 INSERT INTO users (username, email, pw_hash) VALUES
 ('guest', 'guest@example.com', 'trG45Vm'),
-('ai', 'ai@example.com', 'trG45Vu');
+('ai', 'ai@example.com', 'trG45Vu'),
+('deleted', 'deleted@example.com', 'trG45Vm');
 
 CREATE TABLE friendships(
 	id SERIAL PRIMARY KEY,
@@ -50,6 +53,7 @@ CREATE TABLE matches(
 	id SERIAL PRIMARY KEY,
 	player1 INT NOT NULL REFERENCES users(id),
 	player2 INT NOT NULL REFERENCES users(id),
+	difficulty INTEGER CHECK (difficulty IN (0, 1, 2, 3)),
 	-- size INT NOT NULL,
 	-- game_type (spped game, normal game) - extra table customizations? (power ups, limit, size)
 	winner INT REFERENCES users(id), -- NULL on draw

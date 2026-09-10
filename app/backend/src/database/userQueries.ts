@@ -71,21 +71,20 @@ export async function updateUser(username: string, email: string, pw_hash: strin
 }
 
 export async function updateUserScores(user: User, scoreChange: number, online: boolean) {
-	let newFullScore = user.full_score + scoreChange;
-	if (newFullScore < 0)
-		newFullScore = 0;
-
-	let newOnlineScore = user.online_score;
-	if (online) {
-		let newOnlineScore = user.online_score + scoreChange;
-		if (newOnlineScore < 0)
-			newOnlineScore = 0;
-	}
+	let fullScore = scoreChange;
+	let onlineScore = scoreChange;
+	if (!online)
+		onlineScore = 0;
+	console.log(`updating online score for ${user.username} new score: ${onlineScore} online: ${online} full:${fullScore}`);
 	const result = await query(
-		'UPDATE users SET full_score = $1, online_score = $2 WHERE id = $3 RETURNING *;', [newFullScore, newOnlineScore, user.id]
+		'UPDATE users SET full_score = GREATEST(full_score + $1, 0), online_score = GREATEST(online_score + $2, 0) WHERE id = $3 RETURNING *;', [fullScore, onlineScore, user.id]
 	);
-
+	console.log(`new scores: full:${result.rows[0].full_score} online:${result.rows[0].online_score}`)
 	return result.rows[0];
+}
+
+export async function getFullScore(id: number) {
+
 }
 
 export async function deleteUser(id: number) {

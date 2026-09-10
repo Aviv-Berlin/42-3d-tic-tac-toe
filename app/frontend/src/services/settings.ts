@@ -1,18 +1,15 @@
 import axios from 'axios'
 
 interface ChangeUsernameForm {
-  oldUsername: string;
   newUsername: string;
 }
 
 interface ChangePasswordForm {
-  username: string;
   oldPassword: string;
   newPassword: string;
 }
 
 interface DeleteAccountForm {
-  username: string;
   password: string;
 }
 

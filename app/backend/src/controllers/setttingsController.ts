@@ -40,7 +40,7 @@ export async function changeUsername(request: Request, response: Response) {
 export async function changePassword(request: Request, response: Response) {
 	const body = request.body;
 
-	if (!body.username || !body.oldPassword || !body.newPassword) {
+	if (!body.oldPassword || !body.newPassword) {
 		return response.status(400).json({
 			error: 'data incomplete'
 		});

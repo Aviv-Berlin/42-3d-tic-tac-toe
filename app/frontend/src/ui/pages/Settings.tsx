@@ -77,7 +77,6 @@ const Settings = () => {
     setSubmit(true);
 
   	const form = {
-  		username,
   		oldPassword,
   		newPassword
   	}

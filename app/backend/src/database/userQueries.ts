@@ -57,13 +57,6 @@ export async function createUser(username: string, email: string, pw_hash: strin
 }
 
 // Update and delete a user
-export async function updateUser(username: string, email: string, pw_hash: string, id: number) {
-	const result = await query(
-		'UPDATE users SET username = $1, email = $2, pw_hash = $3 WHERE id = $4 RETURNING *;', [username, email, pw_hash, id]
-	);
-
-	return result.rows[0];
-}
 
 export async function updateUsername(username: string, id: number) {
 	const result = await query(
@@ -96,7 +89,6 @@ export default {
 	getHashedPasswordByID,
 	deleteUser,
 	createUser,
-	updateUser,
 	updateUsername,
 	updatePassword
 };

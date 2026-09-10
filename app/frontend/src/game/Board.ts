@@ -99,7 +99,8 @@ export class Board {
         const scale = this.cubesShrink ? 0.25 : 1;
         this.cellSize = this.materials.getLook().boardSize / this.N;
         this.boardMeshes.forEach(mesh => mesh.dispose());
-        this.boardMeshes = [];        
+        this.boardMeshes = [];
+        const animations: Promise<void>[] = [];       
 
         for (let x = 0; x < this.N; x++) {
             for (let y = 0; y < this.N; y++) {
@@ -117,17 +118,19 @@ export class Board {
                         finalMesh.position = this.getPosition(x, y, z, 0);
                     else {
                         const endPos = this.getPosition(x, y, z, 0);
-                        const startPos = this.getPosition(x, y, z, 0).add(new BABYLON.Vector3(0,20,0));
+                        const startPos = endPos.add(new BABYLON.Vector3(0,20,0));
                         const easing = new BABYLON.CubicEase();
                         easing.setEasingMode(BABYLON.EasingFunction.EASINGMODE_EASEOUT);
-                        BABYLON.Animation.CreateAndStartAnimation("finalMesh", finalMesh, "positon",
-                            60, 60, startPos, endPos, BABYLON.Animation.ANIMATIONLOOPMODE_CONSTANT, easing);
+                        const animationPromise = new Promise<void>((resolve) => {
+                        BABYLON.Animation.CreateAndStartAnimation("finalMesh", finalMesh, "position",
+                            60, 60, startPos, endPos, BABYLON.Animation.ANIMATIONLOOPMODE_CONSTANT, easing, resolve)});
+                        animations.push(animationPromise);
+                        await new Promise(resolve => setTimeout(resolve, 20));
                     }
                 }
             }
         }
-        //this.toggleCubeEdges(this.materials.getLook().renderEdges);
-        //await Promise.all();
+        await Promise.all(animations);
     }
 
 

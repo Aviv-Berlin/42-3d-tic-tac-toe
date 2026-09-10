@@ -5,7 +5,6 @@ import { GridPosition, CellState, PLAYER_STATES } from "../../../shared/game/Typ
 import { WsMessage } from "../../../shared/messages"
 import { createMoveMessage, CreateExitMessage } from "../../../shared/messages"
 import { Board } from "./Board"
-import game from "../services/game";
 import { setGameData } from "../store/gameData";
 
 export class GameServerConnection {
@@ -26,6 +25,7 @@ export class GameServerConnection {
     private gameID!: string;
     private ws: WebSocket;
     private onExit: () => void;
+    private boardAnimation: Promise<void> = Promise.resolve();
 
     constructor(gameData: GameData, ui: GameUI, board: Board, nPlayers: number, ws: WebSocket, onExit: () => void) {
         this.gameData = gameData;
@@ -56,11 +56,13 @@ export class GameServerConnection {
                     this.otherPlayerIndex = 1;
                 this.guestPlayerIndex = this.playerNames.findIndex(name => name === "guest");
                 this.gameID = message.payload.gameID;
-                await this.board.createBoard(true);
+                this.boardAnimation = this.board.createBoard(true);
+                await this.boardAnimation;
                 this.ui.playerBadges(this.playerNames[this.localPlayerIndex], this.playerNames[this.otherPlayerIndex]);
                 break;
 
             case "turn":
+                await this.boardAnimation;
                 console.log("TURN", { playsNow: message.payload.playsNow,  localPlayerIndex: this.localPlayerIndex,
                     isMyTurn: message.payload.playsNow === this.localPlayerIndex, guestPlayerIndex: this.guestPlayerIndex, isGuestTurn: message.payload.playsNow === this.guestPlayerIndex});
                 this.currentPlayerIndex = message.payload.playsNow;

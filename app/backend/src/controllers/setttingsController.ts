@@ -79,8 +79,7 @@ export async function changePassword(request: Request, response: Response) {
 export async function deleteAccount(request: Request, response: Response) {
 	const body = request.body;
 
-	if (!body.username || !body.password) {
-		// TODO we don't need this username
+	if (!body.password) {
 		return response.status(400).json({
 			error: 'data incomplete'
 		});

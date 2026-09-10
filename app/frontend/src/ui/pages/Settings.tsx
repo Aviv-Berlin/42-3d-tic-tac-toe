@@ -98,7 +98,6 @@ const Settings = () => {
     setSubmit(true);
 
   	const form = {
-  		username,
   		password: oldPassword
   	}
 

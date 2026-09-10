@@ -17,6 +17,7 @@ import Lobby from './pages/Lobby'
 import GameEnd from './pages/GameEnd'
 import Replay from './pages/Replay'
 import WaitingRoom from './pages/WaitingRoom'
+import AlreadyOpen from './pages/GameAlreadyOpen'
 
 const App = () => {
   return (
@@ -43,6 +44,7 @@ const App = () => {
       </Route>
       <Route path="/privacy" element={<PrivacyPolicy />} />
       <Route path="/terms" element={<TermsOfService />} />
+	  <Route path="/game-already-open" element={<AlreadyOpen />} />
       <Route path="*" element={<NotFound />} />
     </Routes>
   )

@@ -85,15 +85,18 @@ export async function deleteAccount(request: Request, response: Response) {
 			error: 'data incomplete'
 		});
 	}
-	
 	if (!request.userData || !request.userData.id || !request.userData.username) {
 		return response.status(400).json({
 			error: 'missing or invalid token'
 		});
 	}
-
 	try{
 		const pw = await userQueries.getHashedPasswordByID(request.userData.id);
+		if (!pw){
+			return response.status(500).json({
+				error: 'internal server error'
+			});
+		}
 		const pwMatch = await bcrypt.compare(body.password, pw);
 		if (!pwMatch) {
 			return response.status(401).json({
@@ -101,7 +104,7 @@ export async function deleteAccount(request: Request, response: Response) {
 			});
 		}
 
-		//const deletedUser = await userQueries.deleteUser(request.userData.id);
+		const deletedUser = await userQueries.deleteUser(request.userData.id);
 		await userQueries.deleteUser(request.userData.id);
 	
 		return response.status(201).json({

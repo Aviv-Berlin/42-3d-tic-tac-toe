@@ -21,8 +21,9 @@ export async function getUserByUsername(username: string) {
 	const result = await query(
 		'SELECT * FROM users WHERE username = $1;', [username]
 	);
-
-	return result.rows[0];
+	console.log("getUserByUsername result = ", result);
+	console.log("result.rows[0].username = ", result.rows[0]?.username);
+	return result.rows[0]?.username;
 }
 
 export async function getUserIdByUsername(username: string) {
@@ -30,7 +31,7 @@ export async function getUserIdByUsername(username: string) {
 		'SELECT id FROM users WHERE username = $1;', [username]
 	);
 
-	return result.rows[0];
+	return result.rows[0]?.id;
 }
 
 
@@ -39,7 +40,7 @@ export async function getUserIdByEmail(email: string) {
 		'SELECT id FROM users WHERE email = $1;', [email]
 	);
 
-	return result.rows[0];
+	return result.rows[0]?.id;
 }
 
 export async function getUsernameByID(id: number) {
@@ -47,7 +48,7 @@ export async function getUsernameByID(id: number) {
 		'SELECT username FROM users WHERE id = $1;', [id]
 	);
 
-	return result.rows[0];
+	return result.rows[0]?.username;
 }
 
 export async function getHashedPasswordByID(id: number) {
@@ -55,7 +56,7 @@ export async function getHashedPasswordByID(id: number) {
 		'SELECT pw_hash FROM users WHERE id = $1;', [id]
 	);
 
-	return result.rows[0];
+	return result.rows[0]?.pw_hash;
 }
 
 // Creating a user
@@ -64,7 +65,7 @@ export async function createUser(username: string, email: string, pw_hash: strin
 		'INSERT INTO users (username, email, pw_hash) VALUES ($1, $2, $3) RETURNING *;', [username, email, pw_hash]
 	);
 
-	return result.rows[0];
+	return result.rows[0]?.id;
 }
 
 // Update and delete a user
@@ -78,18 +79,18 @@ export async function updateUser(username: string, email: string, pw_hash: strin
 
 export async function updateUsername(username: string, id: number) {
 	const result = await query(
-		'UPDATE users SET username = $1, WHERE id = $4 RETURNING *;', [username, id]
+		'UPDATE users SET username = $1 WHERE id = $4 RETURNING *;', [username, id]
 	);
 
-	return result.rows[0];
+	return result.rows[0]?.username;
 }
 
 export async function updatePassword(newPassword: string, id: number) {
 	const result = await query(
-		'UPDATE users SET pw_hash = $1, WHERE id = $4 RETURNING *;', [newPassword, id]
+		'UPDATE users SET pw_hash = $1 WHERE id = $4 RETURNING *;', [newPassword, id]
 	);
 
-	return result.rows[0];
+	return result.rows[0]?.id;
 }
 
 export async function deleteUser(id: number) {
@@ -97,7 +98,7 @@ export async function deleteUser(id: number) {
 		'DELETE FROM users WHERE id = $1 RETURNING *;', [id]
 	);
 	console.log("result of deleteUser query =", result);
-	//:return result.rows[0];
+	return result.rows[0]?.id;
 }
 
 export default {
@@ -105,7 +106,7 @@ export default {
 	getUserByUsername,
 	getUserIdByUsername,
 	getUserIdByEmail,
-	getHashedPasswordByID:
+	getHashedPasswordByID,
 	deleteUser,
 	createUser,
 	updateUser,

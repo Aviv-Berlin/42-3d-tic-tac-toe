@@ -114,6 +114,7 @@ CREATE TABLE public.matches (
     player1 integer NOT NULL,
     player2 integer NOT NULL,
     winner integer,
+    difficulty integer,
     started_at timestamp with time zone DEFAULT now(),
     ended_at timestamp with time zone,
     board_size integer NOT NULL,

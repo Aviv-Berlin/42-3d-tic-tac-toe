@@ -3,15 +3,11 @@ import userQueries from "../database/userQueries.ts";
 import jwt from 'jsonwebtoken';
 
 
-declare global {
-	namespace Express {
-	  interface Request {
-  		userData: {
-  		  id: number;
-  		  username: string;
-  		};
-	  }
-	}
+export interface ExtdRequest extends Request {
+	userData: {
+		id: number;
+		username: string;
+	};
 }
 
 const secret = process.env.SECRET
@@ -30,7 +26,7 @@ const getTokenFrom = (request: Request) => {
 	return (token_cookie)
 }
 
-export const checkToken = async (request: Request, response: Response, next: NextFunction) => {
+export const checkToken = async (request: ExtdRequest, response: Response, next: NextFunction) => {
 	const token = getTokenFrom(request)
 	if (!token) {
 		console.log("Error: checkToken(): missing token");

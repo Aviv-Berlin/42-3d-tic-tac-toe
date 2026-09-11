@@ -9,27 +9,15 @@ import { getSocket } from "../../services/websocket";
 import { WsMessage } from "../../../../shared/messages";
 
 const Game = () => {
+  //console.log("[GAME] Game page called ...");
   const [searchParams] = useSearchParams();
   const navigate = useNavigate();
-  const ws = getSocket();
-
-  if (!ws)
-	return null;
-
 
   const gameData = useGameData();
   const gameModeParam = searchParams.get('game-mode');
 
 	 useEffect(() => {
 
-		const handleMessage = (event: MessageEvent) => {
-			const data: WsMessage = JSON.parse(event.data);
-			if (data.type === "error") {
-			  console.error("[WS/error] WebSocket error: ", data.payload.message);
-			  navigate('/not-found');
-			}
-		}
-		ws.addEventListener("message", handleMessage)
         if (!gameData) return;
         console.log("[GAME] Send startGameMessage, Game:", gameData);
         sendMessage(createStartGameMessage(gameData));

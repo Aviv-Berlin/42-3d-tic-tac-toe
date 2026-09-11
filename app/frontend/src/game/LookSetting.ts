@@ -15,7 +15,7 @@ export const MESH_STYLE_SETTINGS = {
 
     [MeshStyle.Sphere]: {
         type: MeshStyle.Sphere,
-        diameterScale: 1.1,
+        diameterScale: 1.4,
     },
 
     [MeshStyle.Cylinders]: {
@@ -42,11 +42,19 @@ export interface Look {
     cubeAlpha: number;
     textCubeColor?: BABYLON.Color3;
     textCubeAlpha?: number;
-    edgeColor: BABYLON.Color4;
+    edgeColor1: BABYLON.Color4;
+    edgeColor2: BABYLON.Color4;
+    edgeColor3: BABYLON.Color4;
+    edgeColor4: BABYLON.Color4;
+    edgeColor5: BABYLON.Color4;
     edgeWidth: number;
     renderEdges: boolean;
     textColor: BABYLON.Color3;
-    playerColors?: PlayerColors;
+    player1Color: BABYLON.Color3;
+    player2Color: BABYLON.Color3;
+    player1Badge: BABYLON.Color3;
+    player2Badge: BABYLON.Color3;
+    vsColor: BABYLON.Color3;
     boardStyle: MeshStyle;
     moveStyle1: MeshStyle;
     moveStyle2: MeshStyle;
@@ -59,178 +67,121 @@ export interface Look {
 
 export type PlayerColors = readonly [
     BABYLON.Color3,
-    BABYLON.Color3,
-    BABYLON.Color3,
     BABYLON.Color3
 ];
 
 export const DEFAULT_PLAYER_COLORS: PlayerColors = [
     new BABYLON.Color3(1, 0.16, 0.01), // Player 1
     new BABYLON.Color3(0.01, 0.89, 1), // Player 2
-    new BABYLON.Color3(0.35, 1, 0.2),  // Player 3
-    new BABYLON.Color3(0.9, 0.2, 1),   // Player 4
 ];
 
 export const LOOKS: Look[] = [
-
+    //0 default
     {
         backgroundColor: new BABYLON.Color4(0.9, 0.9, 0.9),
         cubeColor: BABYLON.Color3.FromHexString('#C44600'),
         cubeAlpha: 0,
-        edgeColor: BABYLON.Color4.FromHexString("#C44600"),
+        edgeColor1: BABYLON.Color4.FromHexString("#C44600"),
+        edgeColor2: BABYLON.Color4.FromHexString("#Ba4300"),
+        edgeColor3: BABYLON.Color4.FromHexString("#b03f00"),
+        edgeColor4: BABYLON.Color4.FromHexString("#a73c00"),
+        edgeColor5: BABYLON.Color4.FromHexString("#9d3800"),
         edgeWidth: 2, // 3d grid lin width
         renderEdges: true, // 3d grid
         textColor: BABYLON.Color3.FromHexString('#C44600'), // Username, EXIT, etc
-        playerColors: [
-            new BABYLON.Color3(1, 0.5, 0),   // Player 1 - orange
-            new BABYLON.Color3(0, 0.3, 0.7), // Player 2 - blue
-            DEFAULT_PLAYER_COLORS[2],
-            DEFAULT_PLAYER_COLORS[3],
-        ],
+        player1Color: BABYLON.Color3.FromHexString('#ff8000'),
+        player2Color: BABYLON.Color3.FromHexString('#004DB3'),
+        player1Badge: BABYLON.Color3.FromHexString('#C44600'),
+        player2Badge: BABYLON.Color3.FromHexString('#003d8d'),
+        vsColor: BABYLON.Color3.FromHexString('#000000'),
         boardStyle: MeshStyle.Plane,
         moveStyle1: MeshStyle.Jacks,
         moveStyle2: MeshStyle.Sphere,
         moveOffset: 0.3,
         boardSize: 2.5,
         boardGap: 0,
-        moveSizeScale: 0.7,
+        moveSizeScale: 0.6,
         previewAlpha: 0.2,
     },
+    //1 this will be the dark look
     {
-        backgroundColor: new BABYLON.Color4(1, 1, 1, 1),
-        cubeColor: new BABYLON.Color3(0.67, 0.7, 0.71),
+        backgroundColor: BABYLON.Color4.FromHexString('#282828FF'),
+        cubeColor: BABYLON.Color3.FromHexString('#806A25'),
         cubeAlpha: 0,
-        edgeColor: new BABYLON.Color4(0, 0, 0, 1),
+        edgeColor1: BABYLON.Color4.FromHexString('#D05652FF'),
+        edgeColor2: BABYLON.Color4.FromHexString("#D07152FF"),
+        edgeColor3: BABYLON.Color4.FromHexString("#D08C52FF"),
+        edgeColor4: BABYLON.Color4.FromHexString("#A87B3BFF"),
+        edgeColor5: BABYLON.Color4.FromHexString("#806A25FF"),        
         edgeWidth: 4,
         renderEdges: true,
-        textColor: new BABYLON.Color3(0, 0, 0),
-        playerColors: [
-            new BABYLON.Color3(0.1, 0.1, 0.1),   // Player 1 - dark gray
-            new BABYLON.Color3(1, 1, 1), // Player 2 - light gray
-            DEFAULT_PLAYER_COLORS[2],
-            DEFAULT_PLAYER_COLORS[3],
-        ],
-        boardStyle: MeshStyle.Box,
+        textColor: BABYLON.Color3.FromHexString('#CACACA'),
+        player1Color: BABYLON.Color3.FromHexString('#499ED3'),
+        player2Color: BABYLON.Color3.FromHexString('#FF0085'),
+        player1Badge: BABYLON.Color3.FromHexString('#3a7ba4'),
+        player2Badge: BABYLON.Color3.FromHexString('#c00063'),
+        vsColor: BABYLON.Color3.FromHexString('#CACACA'),
+        boardStyle: MeshStyle.Plane,
         moveStyle1: MeshStyle.Sphere,
         moveStyle2: MeshStyle.Sphere,
-        moveOffset: 0,
+        moveOffset: 0.3,
         boardSize: 2.5,
         boardGap: 0,
-        moveSizeScale: 0.7,
+        moveSizeScale: 0.6,
         previewAlpha: 0.2,
     },
-
+    //2 bubbles
     {
-        backgroundColor: new BABYLON.Color4(0, 0, 0, 1),
-        cubeColor: new BABYLON.Color3(0.67, 0.7, 0.71),
-        cubeAlpha: 0,
-        edgeColor: new BABYLON.Color4(1, 1, 1, 1),
-        edgeWidth: 4,
-        renderEdges: true,
-        textColor: new BABYLON.Color3(1, 1, 1),
-        boardStyle: MeshStyle.Box,
-        moveStyle1: MeshStyle.Sphere,
-        moveStyle2: MeshStyle.Sphere,
-        moveOffset: 0,
-        boardSize: 2.5,
-        boardGap: 0,
-        moveSizeScale: 0.7,
-        previewAlpha: 0.2,
-    },
-
-    {
-        backgroundColor: new BABYLON.Color4(0.4, 0.4, 1, 1),
-        cubeColor: new BABYLON.Color3(0.67, 0.7, 0.71),
-        cubeAlpha: 0.12,
-        edgeColor: new BABYLON.Color4(1, 1, 1, 1),
-        edgeWidth: 2,
-        renderEdges: false,
-        textColor: new BABYLON.Color3(1, 1, 0),
-        playerColors: [
-            new BABYLON.Color3(0, 0, 0.8),   // Player 1 - blue
-            new BABYLON.Color3(0, 0.8, 0), // Player 2 - green
-            DEFAULT_PLAYER_COLORS[2],
-            DEFAULT_PLAYER_COLORS[3],
-        ],
-        boardStyle: MeshStyle.Box,
-        moveStyle1: MeshStyle.Sphere,
-        moveStyle2: MeshStyle.Sphere,
-        moveOffset: 0,
-        boardSize: 2.5,
-        boardGap: 0.02,
-        moveSizeScale: 0.7,
-        previewAlpha: 0.2,
-    },
-
-    {
-        backgroundColor: new BABYLON.Color4(0.33, 0.30, 0.35, 1),
-        cubeColor: new BABYLON.Color3(0.67, 0.7, 0.71),
+        backgroundColor: BABYLON.Color4.FromHexString('#22223bFF'),
+        cubeColor: BABYLON.Color3.FromHexString('#abb3b5'),
         cubeAlpha: 0.4,
-        edgeColor: new BABYLON.Color4(1, 1, 1, 1),
+        edgeColor1: new BABYLON.Color4(0.6, 0.62, 0.63, 1),
+        edgeColor2: BABYLON.Color4.FromHexString("#999EA1FF"),
+        edgeColor3: BABYLON.Color4.FromHexString("#999EA1FF"),
+        edgeColor4: BABYLON.Color4.FromHexString("#999EA1FF"),
+        edgeColor5: BABYLON.Color4.FromHexString("#999EA1FF"),
         edgeWidth: 2,
         renderEdges: false,
         textColor: new BABYLON.Color3(0.85, 0.85, 0.85),
+        player1Color: BABYLON.Color3.FromHexString('#b0571e'),
+        player2Color: BABYLON.Color3.FromHexString('#968e24'),
+        player1Badge: BABYLON.Color3.FromHexString('#974a1a'),
+        player2Badge: BABYLON.Color3.FromHexString('#888120'),
+        vsColor: new BABYLON.Color3(0.85, 0.85, 0.85),
         boardStyle: MeshStyle.Sphere, // sphere
         moveStyle1: MeshStyle.Sphere,
         moveStyle2: MeshStyle.Sphere,
         moveOffset: 0,
         boardSize: 2.5,
-        boardGap: 0.02,
-        moveSizeScale: 0.7,
+        boardGap: 0.00,
+        moveSizeScale: 0.65,
         previewAlpha: 0.2,
     },
-
-    {
-        backgroundColor: new BABYLON.Color4(0.33, 0.30, 0.35, 1),
-        cubeColor: new BABYLON.Color3(0.67, 0.7, 0.71),
-        cubeAlpha: 0.4,
-        edgeColor: new BABYLON.Color4(1, 1, 1, 1),
-        edgeWidth: 2,
-        renderEdges: false,
-        textColor: new BABYLON.Color3(0.85, 0.85, 0.85),
-        boardStyle: MeshStyle.Cylinders,
-        moveStyle1: MeshStyle.Sphere,
-        moveStyle2: MeshStyle.Sphere,
-        moveOffset: 0,
-        boardSize: 2.5,
-        boardGap: 0.02,
-        moveSizeScale: 0.7,
-        previewAlpha: 0.2,
-    },
-
-    {
-        backgroundColor: new BABYLON.Color4(0.33, 0.30, 0.35, 1),
-        cubeColor: new BABYLON.Color3(0.67, 0.7, 0.71),
-        cubeAlpha: 0.4,
-        edgeColor: new BABYLON.Color4(1, 1, 1, 1),
-        edgeWidth: 2,
-        renderEdges: false,
-        textColor: new BABYLON.Color3(0.85, 0.85, 0.85),
-        boardStyle: MeshStyle.Plane, // plane
-        moveStyle1: MeshStyle.Box,
-        moveStyle2: MeshStyle.Box,
-        moveOffset: 0.3,
-        boardSize: 2.5,
-        boardGap: 0.05,
-        moveSizeScale: 0.7,
-        previewAlpha: 0.2,
-    },
-
-    {
-        backgroundColor: new BABYLON.Color4(0.33, 0.30, 0.35, 1),
-        cubeColor: new BABYLON.Color3(0.67, 0.7, 0.71),
-        cubeAlpha: 0.4,
-        edgeColor: new BABYLON.Color4(1, 1, 1, 1),
-        edgeWidth: 2,
-        renderEdges: false,
-        textColor: new BABYLON.Color3(0.85, 0.85, 0.85),
-        boardStyle: MeshStyle.Box, // default cube
-        moveStyle1: MeshStyle.Sphere,
-        moveStyle2: MeshStyle.Sphere,
-        moveOffset: 0,
-        boardSize: 2.5,
-        boardGap: 0.02,
-        moveSizeScale: 0.7,
-        previewAlpha: 0.2,
-    },
+    //3 planes? maybe Tokyo Night?with refelective planes?
+    // {
+    //     backgroundColor: BABYLON.Color4.FromHexString('#544D59FF'),
+    //     cubeColor: BABYLON.Color3.FromHexString('#abb3b5'),
+    //     cubeAlpha: 0.4,
+    //     edgeColor1: new BABYLON.Color4(0.60, 0.62, 0.63, 1),
+    //     edgeColor2: BABYLON.Color4.FromHexString("#D9D9D9FF"),
+    //     edgeColor3: BABYLON.Color4.FromHexString("#D9D9D9FF"),
+    //     edgeColor4: BABYLON.Color4.FromHexString("#D9D9D9FF"),
+    //     edgeColor5: BABYLON.Color4.FromHexString("#D9D9D9FF"),        
+    //     edgeWidth: 2,
+    //     renderEdges: false,
+    //     textColor: new BABYLON.Color3(0.85, 0.85, 0.85),
+    //     player1Color: BABYLON.Color3.FromHexString('#c064eb'),
+    //     player2Color: BABYLON.Color3.FromHexString('#5de8ef'),
+    //     player1Badge: BABYLON.Color3.FromHexString('#c064eb'),
+    //     player2Badge: BABYLON.Color3.FromHexString('#5de8ef'),
+    //     vsColor: BABYLON.Color3.FromHexString('#000000'),
+    //     boardStyle: MeshStyle.Plane, // plane
+    //     moveStyle1: MeshStyle.Sphere,
+    //     moveStyle2: MeshStyle.Sphere,
+    //     moveOffset: 0.3,
+    //     boardSize: 2.5,
+    //     boardGap: 0.05,
+    //     moveSizeScale: 0.6,
+    //     previewAlpha: 0.2,
+    // },
 ];

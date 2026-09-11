@@ -11,8 +11,10 @@ export class Materials {
 
     public readonly cube: StandardMaterial;
     public readonly buttonCube: StandardMaterial;
-    public readonly playerMaterials: StandardMaterial[];
-    public readonly previewMaterials: StandardMaterial[];
+    public player1Material: StandardMaterial;
+    public player2Material: StandardMaterial;
+    public player1Preview: StandardMaterial;
+    public player2Preview: StandardMaterial;
     private currentLookIndex = 0;
     private scene: Scene;
 
@@ -36,18 +38,30 @@ export class Materials {
         this.buttonCube.diffuseColor = BABYLON.Color3.FromHexString('#C44600');
         this.buttonCube.alpha = 1;
 
-        const playerColors = this.getPlayerColors();
-        this.playerMaterials = playerColors.map((color, index) =>
-                this.createPlayerMaterial(`player${index + 1}Material`, color, 1));
-        this.previewMaterials = playerColors.map((color, index) =>
-                this.createPlayerMaterial(`player${index + 1}PreviewMaterial`, color, look.previewAlpha));
+        this.player1Material = this.createPlayerMaterial(`player1Material`, look.player1Color, 1);
+        this.player2Material = this.createPlayerMaterial(`player1Material`, look.player2Color, 1);
+        this.player1Preview = this.createPlayerMaterial(`player1Material`, look.player1Color, look.previewAlpha);
+        this.player2Preview = this.createPlayerMaterial(`player1Material`, look.player2Color, look.previewAlpha);
+
     }
 
-    public applyCubeEdges(mesh: BABYLON.AbstractMesh): void {
+    public applyCubeEdges(mesh: BABYLON.AbstractMesh, N: number, y: number): void {
         const look = this.getLook();
         mesh.enableEdgesRendering();
         mesh.edgesWidth = look.edgeWidth;
-        mesh.edgesColor = look.edgeColor.clone();
+        switch (y) {
+            case N - 1: mesh.edgesColor = look.edgeColor1.clone(); break;
+            case 3: if (N === 5) mesh.edgesColor = look.edgeColor2.clone(); break;
+            case 2: if (N === 5 || N === 4) mesh.edgesColor = look.edgeColor3.clone(); break;
+            case 1: {
+                if (N === 3)
+                    mesh.edgesColor = look.edgeColor3.clone();
+                else
+                    mesh.edgesColor = look.edgeColor4.clone();
+                break;
+            }
+            case 0: mesh.edgesColor = look.edgeColor5.clone(); break;
+        } 
     }
 
 
@@ -63,34 +77,25 @@ export class Materials {
         this.cube.diffuseColor.copyFrom(look.cubeColor);
         this.cube.alpha = look.cubeAlpha;
 
-        const playerColors = this.getPlayerColors();
-        for (let i = 0; i < playerColors.length; i++) {
-            this.playerMaterials[i]?.diffuseColor.copyFrom(playerColors[i]);
-            this.previewMaterials[i]?.diffuseColor.copyFrom(playerColors[i]);
-            this.previewMaterials[i].alpha = look.previewAlpha;
-        }
+        this.player1Material.diffuseColor.copyFrom(look.player1Color);
+        this.player2Material.diffuseColor.copyFrom(look.player2Color);
+        this.player1Preview.diffuseColor.copyFrom(look.player1Color);
+        this.player2Preview.diffuseColor.copyFrom(look.player2Color);
+        this.player1Preview.alpha = look.previewAlpha;
+        this.player2Preview.alpha = look.previewAlpha;
+
     }
 
     public getPlayerMaterial(playerState: CellState): StandardMaterial {
-        const index = playerStateToIndex(playerState);
-        const material = this.playerMaterials[index];
-        if (material === undefined) {
-            throw new Error(
-                `No permanent material for ${playerState}`
-            );
-        }
-        return material;
+        if (playerState === 1)
+                return this.player1Material;
+        return this.player2Material;
     }
 
     public getPreviewMaterial(playerState: CellState): StandardMaterial {
-        const index = playerStateToIndex(playerState);
-        const material = this.previewMaterials[index];
-        if (material === undefined) {
-            throw new Error(
-                `No preview material for ${playerState}`
-            );
-        }
-        return material;
+        if (playerState === 1)
+                return this.player1Preview;
+        return this.player2Preview;
     }
 
     private createPlayerMaterial(name: string, color: Color3, alpha: number): StandardMaterial {
@@ -116,7 +121,5 @@ export class Materials {
         return this.currentLookIndex;
     }
 
-    private getPlayerColors(): readonly Color3[] {
-        return this.getLook().playerColors ?? DEFAULT_PLAYER_COLORS;
-    }
+
 }

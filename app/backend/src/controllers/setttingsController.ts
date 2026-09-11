@@ -25,6 +25,11 @@ export async function changeUsername(request: Request, response: Response) {
 			});
 		}
 		const updatedUsername = await userQueries.updateUsername(body.newUsername, request.userData.id);
+		if (!updatedUsername){
+			return response.status(500).json({
+				error: 'username could not be updated'
+			});
+		}
 		return response.status(201).json({
 			newUsername: updatedUsername
 		});

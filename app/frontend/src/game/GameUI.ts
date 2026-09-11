@@ -28,14 +28,15 @@ export class GameUI {
     private homePlayerIndex: number = 0;
 
     
-    constructor(scene: Scene, onExit: () => void, materials: Materials, board: Board, camera: CameraManager) {
+    constructor(scene: Scene, onExit: () => void, materials: Materials, board: Board, camera: CameraManager, displayExit: boolean) {
         this.scene = scene;
         this.onExit = onExit;
         this.materials = materials;
         this.board = board;
         this.camera = camera;
         this.ui = GUI.AdvancedDynamicTexture.CreateFullscreenUI("UI", true, scene);
-        this.createExitButton();
+        if (displayExit)
+            this.createExitButton();
         this.createLookButton();
         this.displayInstructions();
     }
@@ -108,8 +109,6 @@ export class GameUI {
     }
 
     private applyButtonLook(): void {
-        if (!this.exitButton)
-            return;
 
         const look = this.materials.getLook();
         const backgroundColor = look.backgroundColor;
@@ -119,12 +118,13 @@ export class GameUI {
             ${backgroundColor.g * 255}, ${backgroundColor.b * 255}, ${backgroundAlpha})`;
 
         // Exit button
-        this.exitButton.background = background;
-        this.exitButton.color = look.edgeColor3.toHexString();
+        if (this.exitButton) {
+            this.exitButton.background = background;
+            this.exitButton.color = look.edgeColor3.toHexString();
 
-        if (this.exitButton.textBlock)
-            this.exitButton.textBlock.color = look.textColor.toHexString();
-
+            if (this.exitButton.textBlock)
+                this.exitButton.textBlock.color = look.textColor.toHexString();
+        }
         // Look button
         if (this.lookButton) {
             this.lookButton.background = background;
@@ -133,6 +133,7 @@ export class GameUI {
             if (this.lookButton.textBlock)
                 this.lookButton.textBlock.color = look.textColor.toHexString();
         }
+
         let otherPlayerColor: string;
         let homePlayerColor: string;
         if (this.homePlayerIndex === 0) {
@@ -140,7 +141,7 @@ export class GameUI {
             otherPlayerColor = look.player2Color.toHexString();
         } else {
             homePlayerColor = look.player2Color.toHexString();
-            otherPlayerColor = look.player2Color.toHexString();
+            otherPlayerColor = look.player1Color.toHexString();
         }
 
         // home Player
@@ -263,7 +264,7 @@ export class GameUI {
 
 
 
-    public async displayWinner2(winner: string) {
+    public async displayWinner(winner: string) {
         let badge: GUI.Button | null = null;
         let newText: string;
         if (this.topPlayerBadge?.textBlock?.text === winner) {
@@ -294,7 +295,7 @@ export class GameUI {
         text.paddingLeft = "25px";
 
 
-        const duration = 1000;
+        const duration = 500;
         const startTime = performance.now();
 
         await new Promise<void>((resolve) => {

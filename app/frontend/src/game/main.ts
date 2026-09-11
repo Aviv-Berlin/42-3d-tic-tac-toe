@@ -8,7 +8,6 @@ import { CameraManager } from "./CameraManager";
 import { LocalPlayer } from "./LocalPlayer"
 import { GameData } from "../../../shared/game";
 import { WsMessage } from "../../../shared/messages"
-//import { createJoinGameMessage } from "../../../shared/messages"
 import { getSocket } from "../services/websocket";
 
 export function createBabylonGame(canvas: HTMLCanvasElement, gameData: GameData, onExit: () => void) {
@@ -20,7 +19,7 @@ export function createBabylonGame(canvas: HTMLCanvasElement, gameData: GameData,
   const materials = new Materials(scene);
   const camera = new CameraManager(scene, canvas);
   const board = new Board(gameData.size, scene, materials);
-  const ui = new GameUI(scene, onExit, materials, board, camera);
+  const ui = new GameUI(scene, onExit, materials, board, camera, true);
   
   const ws = getSocket();
   if (!ws) return;
@@ -48,22 +47,21 @@ export function createBabylonGame(canvas: HTMLCanvasElement, gameData: GameData,
   input.registerEvents();
 
   //temp to reduce rendering while I work, delete this later
-
-  const frameInterval = 1000 / 10;
-  let lastRender = 0;
-
-  engine.runRenderLoop(() => {
-      const now = performance.now();
-
-      if (now - lastRender >= frameInterval) {
-          scene.render();
-          lastRender = now;
-      }
-  });
+  // const frameInterval = 1000 / 10;
+  // let lastRender = 0;
 
   // engine.runRenderLoop(() => {
-  //     scene.render();
+  //     const now = performance.now();
+
+  //     if (now - lastRender >= frameInterval) {
+  //         scene.render();
+  //         lastRender = now;
+  //     }
   // });
+
+  engine.runRenderLoop(() => {
+      scene.render();
+  });
 
   const handleWheel = (event: WheelEvent) => { event.preventDefault();  };
   canvas.addEventListener("wheel", handleWheel, { passive: false });

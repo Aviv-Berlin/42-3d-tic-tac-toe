@@ -66,8 +66,6 @@ export class GameServerConnection {
                 console.log("TURN", { playsNow: message.payload.playsNow,  localPlayerIndex: this.localPlayerIndex,
                     isMyTurn: message.payload.playsNow === this.localPlayerIndex, guestPlayerIndex: this.guestPlayerIndex, isGuestTurn: message.payload.playsNow === this.guestPlayerIndex});
                 this.currentPlayerIndex = message.payload.playsNow;
-                //await this.ui.playerTitleNew(this.playerNames[message.payload.playsNow]);
-                //this.ui.playerTitleNew(this.playerNames[message.payload.playsNow]);
                 if (message.payload.playsNow === this.localPlayerIndex) {
                     this.ui.toggleBadge(true);
                     this.localPlayer.yourTurn(this.boardState, this.N, PLAYER_STATES[this.localPlayerIndex]);
@@ -94,14 +92,13 @@ export class GameServerConnection {
                 this.board.hidePreview();
                 if (message.payload.winningPos && this.gameData.winner) {
                     this.board.animateWin(message.payload.winningPos);
-                    await this.ui.displayWinner2(this.gameData.winner.username);
-                    // await this.ui.displayWinner(this.gameData.winner.username, "WINS!");
+                    await this.ui.displayWinner(this.gameData.winner.username);
                 }
                 else if (message.payload.whoExited !== -1) {
                     const text = this.playerNames[message.payload.whoExited] + " left game";
-                    await this.ui.displayWinner2(text);
+                    await this.ui.displayWinner(text);
                 } else {
-                    await this.ui.displayWinner2("Draw");
+                    await this.ui.displayWinner("Draw");
                 }
                 setTimeout(() => {this.onExit();}, 3000);
                 break;
@@ -158,31 +155,35 @@ export class GameServerConnection {
 	public async restoreEnd(){
                 this.board.hidePreview();
                 if (this.gameData.winner) {
-                    await this.ui.displayWinner(this.gameData.winner.username, "WINS!");
+                    await this.ui.displayWinner(this.gameData.winner.username);
                 }
 
                 else if (this.gameData.endMessage) {
-    				const whoLeft = this.playerNames.find(name =>
+    				let whoLeft = this.playerNames.find(name =>
         			this.gameData.endMessage?.startsWith(`${name} has left the game`)
     				);
 					if (whoLeft){
-						await this.ui.displayWinner(whoLeft, "left game");
+						whoLeft += " left game";
+                        await this.ui.displayWinner(whoLeft);
 					}
 				}
 				else {
-                    await this.ui.displayWinner("No one", "wins");
+                    await this.ui.displayWinner("Draw");
                 }
                 setTimeout(() => {this.onExit();}, 3000);
 	}
 
 	public async restoreTurn(){
-		await this.ui.playerTitle(this.playerNames[this.currentPlayerIndex]);
-                if (this.currentPlayerIndex === this.localPlayerIndex)
-                    this.localPlayer.yourTurn(this.boardState, this.N, PLAYER_STATES[this.localPlayerIndex]);
-                else if (this.currentPlayerIndex === this.guestPlayerIndex)
-                    this.guestPlayer.yourTurn(this.boardState, this.N, PLAYER_STATES[this.guestPlayerIndex]);
-                else
-                    this.board.hidePreview();
+        let is1 = false;
+        if (this.currentPlayerIndex === 0)
+            is1 = true;
+		this.ui.toggleBadge(is1);
+        if (this.currentPlayerIndex === this.localPlayerIndex)
+            this.localPlayer.yourTurn(this.boardState, this.N, PLAYER_STATES[this.localPlayerIndex]);
+        else if (this.currentPlayerIndex === this.guestPlayerIndex)
+            this.guestPlayer.yourTurn(this.boardState, this.N, PLAYER_STATES[this.guestPlayerIndex]);
+        else
+            this.board.hidePreview();
 	}
 
     public register(player: LocalPlayer): void {

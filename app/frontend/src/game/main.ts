@@ -47,8 +47,8 @@ export function createBabylonGame(canvas: HTMLCanvasElement, gameData: GameData,
   input.registerEvents();
 
   //temp to reduce rendering while I work, delete this later
-  // const frameInterval = 1000 / 10;
-  // let lastRender = 0;
+  const frameInterval = 1000 / 10;
+  let lastRender = 0;
 
   // engine.runRenderLoop(() => {
   //     const now = performance.now();

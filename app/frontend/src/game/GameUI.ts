@@ -137,11 +137,11 @@ export class GameUI {
         let otherPlayerColor: string;
         let homePlayerColor: string;
         if (this.homePlayerIndex === 0) {
-            homePlayerColor = look.player1Color.toHexString();
-            otherPlayerColor = look.player2Color.toHexString();
+            homePlayerColor = look.player1Badge.toHexString();
+            otherPlayerColor = look.player2Badge.toHexString();
         } else {
-            homePlayerColor = look.player2Color.toHexString();
-            otherPlayerColor = look.player1Color.toHexString();
+            homePlayerColor = look.player2Badge.toHexString();
+            otherPlayerColor = look.player1Badge.toHexString();
         }
 
         // home Player

@@ -15,7 +15,7 @@ export class Board {
     private boardMeshes: Mesh[] = [];
     private cubesShrink: boolean = false;
     private moveMeshesGrid: (AbstractMesh | null)[][][];
-    //private textCubeFactory: TextCubeFactory;
+    private previewPulse: BABYLON.Animatable | null = null;
 
     constructor(N: number, scene: Scene, materials: Materials)
 	{
@@ -218,14 +218,41 @@ export class Board {
     public showPreview(pos: GridPosition, player: CellState): void {
         this.hidePreview();
         this.previewMesh =  this.placeMoveMesh(pos, player, true);
+        this.startPreviewPulse(player);
     }
 
     public hidePreview(): void {
         if (!this.previewMesh)
             return;
 
+        if (this.previewPulse) {
+            this.previewPulse.stop();
+            this.previewPulse = null;
+        }
+
         this.previewMesh.dispose();
         this.previewMesh = null;
+    }
+
+    private startPreviewPulse(player: CellState): void {
+        const material = this.materials.getPreviewMaterial(player);
+        const previewAlpha = this.materials.getLook().previewAlpha;
+        material.alpha = previewAlpha;
+
+        const animation = new BABYLON.Animation("previewPulse", "alpha", 60,
+            BABYLON.Animation.ANIMATIONTYPE_FLOAT, BABYLON.Animation.ANIMATIONLOOPMODE_CYCLE);
+
+        animation.setKeys([{ frame: 0,   value: previewAlpha },
+            // stay at preview opacity for ~1.8 seconds
+            { frame: 40, value: previewAlpha },
+            // quickly become fully opaque
+            { frame: 45, value: 1 },
+            // stay fully opaque for ~0.2 seconds
+            { frame: 55, value: 1 },
+            // return to preview opacity
+            { frame: 60, value: previewAlpha },]);
+
+        this.previewPulse = this.scene.beginDirectAnimation(material, [animation], 0, 120, true);
     }
 
     public refreshPreview(): void {
@@ -234,12 +261,12 @@ export class Board {
 
         const pos = this.previewMesh.metadata?.gridPosition as GridPosition | undefined;
         const playerState = this.previewMesh.metadata?.playerState as CellState | undefined;
+
         if (!pos || playerState === undefined)
             return;
-        this.previewMesh.dispose();
-        this.previewMesh = this.createMoveMesh(pos, playerState, true);
-    }
 
+        this.showPreview(pos, playerState);
+    }
 
     public animateWin(winningPositions: GridPosition[] | null): void {
         if (!winningPositions) return;

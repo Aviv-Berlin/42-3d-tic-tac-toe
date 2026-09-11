@@ -56,9 +56,9 @@ export class GameServerConnection {
                     this.otherPlayerIndex = 1;
                 this.guestPlayerIndex = this.playerNames.findIndex(name => name === "guest");
                 this.gameID = message.payload.gameID;
+                this.ui.playerBadges(this.localPlayerIndex, this.playerNames[this.localPlayerIndex], this.playerNames[this.otherPlayerIndex]);                
                 this.boardAnimation = this.board.createBoard(true);
                 await this.boardAnimation;
-                this.ui.playerBadges(this.playerNames[this.localPlayerIndex], this.playerNames[this.otherPlayerIndex]);
                 break;
 
             case "turn":
@@ -83,6 +83,7 @@ export class GameServerConnection {
                 break;
 
             case "move":
+                await this.boardAnimation;  
                 this.board.hidePreview();
                 this.board.placeMoveMesh(message.payload.position, message.payload.player, false);
                 this.boardState[message.payload.position.x][message.payload.position.y][message.payload.position.z] = message.payload.player;
@@ -93,12 +94,14 @@ export class GameServerConnection {
                 this.board.hidePreview();
                 if (message.payload.winningPos && this.gameData.winner) {
                     this.board.animateWin(message.payload.winningPos);
-                    await this.ui.displayWinner(this.gameData.winner.username, "WINS!");
+                    await this.ui.displayWinner2(this.gameData.winner.username);
+                    // await this.ui.displayWinner(this.gameData.winner.username, "WINS!");
                 }
                 else if (message.payload.whoExited !== -1) {
-                    await this.ui.displayWinner(this.playerNames[message.payload.whoExited], "left game");
+                    const text = this.playerNames[message.payload.whoExited] + " left game";
+                    await this.ui.displayWinner2(text);
                 } else {
-                    await this.ui.displayWinner("No one", "wins");
+                    await this.ui.displayWinner2("Draw");
                 }
                 setTimeout(() => {this.onExit();}, 3000);
                 break;

@@ -123,14 +123,15 @@ export class Board {
                         easing.setEasingMode(BABYLON.EasingFunction.EASINGMODE_EASEOUT);
                         const animationPromise = new Promise<void>((resolve) => {
                         BABYLON.Animation.CreateAndStartAnimation("finalMesh", finalMesh, "position",
-                            60, 60, startPos, endPos, BABYLON.Animation.ANIMATIONLOOPMODE_CONSTANT, easing, resolve)});
+                            60, 30, startPos, endPos, BABYLON.Animation.ANIMATIONLOOPMODE_CONSTANT, easing, resolve)});
                         animations.push(animationPromise);
-                        await new Promise(resolve => setTimeout(resolve, 20));
+                        await new Promise(resolve => setTimeout(resolve, 30));
                     }
                 }
             }
         }
         await Promise.all(animations);
+        await new Promise(resolve => setTimeout(resolve, 1000));
     }
 
 

@@ -43,7 +43,7 @@ export const checkToken = async (request: Request, response: Response, next: Nex
 		response.status(401).json({ error: 'missing or invalid token' })
 		return;
 	}
-	console.log(`decoded Token id = ${decodedToken.id}`)
+	console.log(`decoded Token = ${decodedToken.id}, ${decodedToken.username}`);
 	if (!decodedToken.id) {
 		console.log("Error: checkToken(): token contains invalid id");
 		response.status(401).json({ error: 'missing or invalid token' })
@@ -53,6 +53,9 @@ export const checkToken = async (request: Request, response: Response, next: Nex
 	if (!username) {
 		response.status(401).json({ error: 'token does not correspond to a user' })
 		return;
+	}
+	if (username != decodedToken.username) {
+		response.status(500).json({ error: 'token id and username do not match'})
 	}
 	request.userData = {
 		id: decodedToken.id,

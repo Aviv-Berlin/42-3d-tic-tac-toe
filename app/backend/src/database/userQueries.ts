@@ -78,7 +78,6 @@ export async function deleteUser(id: number) {
 	const result = await query(
 		'DELETE FROM users WHERE id = $1 RETURNING *;', [id]
 	);
-	console.log("result of deleteUser query =", result);
 	return result.rows[0]?.id;
 }
 

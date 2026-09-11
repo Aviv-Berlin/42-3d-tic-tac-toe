@@ -11,6 +11,11 @@ export async function changeUsername(request: Request, response: Response) {
 			error: 'data incomplete'
 		});
 	}
+	if (!request.userData || !request.userData.id || !request.userData.username) {
+		return response.status(400).json({
+			error: 'missing or invalid token'
+		});
+	}
 
 	try{
 		const existingUsername = await userQueries.getUserIdByUsername(body.newUsername);
@@ -19,13 +24,9 @@ export async function changeUsername(request: Request, response: Response) {
 				error: 'username already exists'
 			});
 		}
-
-		const userID = await userQueries.getUserIdByUsername(body.oldUsername);
-	
-		const updatedUser = await userQueries.updateUsername(body.newUsername, userID);
-	
+		const updatedUsername = await userQueries.updateUsername(body.newUsername, request.userData.id);
 		return response.status(201).json({
-			username: updatedUser.username,
+			newUsername: updatedUsername
 		});
 	}
 	catch (error) {

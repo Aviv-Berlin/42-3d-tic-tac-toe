@@ -61,8 +61,7 @@ const Settings = () => {
 
   	try {
   		const response = await settings.changeUsername(form);
-		console.log("response = ", response);
-		setUsername(form.newUsername)
+		setUsername(response.data.newUsername)
 	  setSuccessMessage("Username updated successfully!");
       setErrorMessage("");
       setTimeout(() => setSuccessMessage(""), 2000);

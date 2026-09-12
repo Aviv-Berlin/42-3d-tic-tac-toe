@@ -3,66 +3,12 @@ A web-based multiplayer 3D Tic-Tac-Toe game built for the 42 Berlin ft_transcend
 
 ## How to install
 
-Run `npm install` both from `app/frontend` and `app/backend`.
+From the root of the repository run the script `install.sh`. It will run `npm run install` for both the frontend and the backend.
+
+## How to setup the database
+
+From the `app` directory run the script `setup_docker.sh`. It will prompt you to set up the variables necessary for running the Postgres database and the backend.
 
 ## How to run
 
 From the root of the repository run the script `run.sh`. It will start one instance of the backend (port `3001`) and three instances of the frontend (ports `5173`, `5174` and `5175`).
-
-## How to run the frontend in dev mode through Vite
-
-Change to the `frontend` directory:
-
-```bash
-cd app/frontend
-```
-
-Install dependencies:
-
-```bash
-npm install
-```
-
-Run vite through the script:
-
-```bash
-npm run dev
-```
-
-The web app will be available locally at:
-
-```bash
-http://localhost:5173
-```
-
-To run a second instance on a different port:
-
-```bash
-npm run dev:alt
-```
-
-Available at:
-
-```bash
-http://localhost:5174
-```
-
-## How to run the backend
-
-Change to the `backend` directory:
-
-```bash
-cd ../backend
-```
-
-Install dependencies:
-
-```bash
-npm install
-```
-
-Run node through the script:
-
-```bash
-npm run dev
-```

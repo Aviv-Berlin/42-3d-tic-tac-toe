@@ -10,7 +10,7 @@
 	  "esModuleInterop": true,
 	  "allowImportingTsExtensions": true,
 		"strict": true,
-		"rootDir": "src",
+		"rootDir": "..",
 		"outDir": "dist"
 	}
 }

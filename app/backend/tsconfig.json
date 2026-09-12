@@ -9,6 +9,8 @@
 	  "module": "nodenext",
 	  "esModuleInterop": true,
 	  "allowImportingTsExtensions": true,
-		"strict": true
+		"strict": true,
+		"rootDir": "src",
+		"outDir": "dist"
 	}
 }

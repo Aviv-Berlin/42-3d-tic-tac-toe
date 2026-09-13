@@ -78,12 +78,7 @@ export async function login(request: Request, response: Response) {
 			});
 		}
 
-		const userForToken = {
-			username: body.username,
-			id: userID
-		}
-
-		const token = jwt.sign(userForToken, process.env.SECRET as string);
+		const token = jwt.sign(userID, process.env.SECRET as string);
 
 		return response.cookie('token', token).status(200).send();
 

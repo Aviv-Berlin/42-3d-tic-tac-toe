@@ -1,12 +1,6 @@
-<<<<<<< HEAD
 import { query } from "./db.ts";
-import userQueries, { updateUserScores, getOnlineScoreByID } from "./userQueries.ts";
-import { Move, GameData, AiLevel } from "../../../shared/game.ts";
-=======
-import { query } from "./db";
-import userQueries, { updateUserScores, User } from "./userQueries";
+import userQueries, { updateUserScores, getOnlineScoreByID } from "./userQueries";
 import { Move, GameData, AiLevel } from "../../../shared/game";
->>>>>>> 96e309d (Add include directive to tsconfig)
 
 export interface MatchEntry {
 	id: number,

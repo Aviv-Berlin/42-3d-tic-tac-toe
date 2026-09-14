@@ -87,7 +87,7 @@ export async function updatePassword(newPassword: string, id: number) {
 }
 
 export async function updateUserScores(id: number, scoreChange: number, online: boolean) {
-	let fullScore = scoreChange;
+	const fullScore = scoreChange;
 	let onlineScore = scoreChange;
 	if (!online)
 		onlineScore = 0;

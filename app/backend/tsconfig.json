@@ -12,5 +12,6 @@
 		"strict": true,
 		"rootDir": "..",
 		"outDir": "dist"
-	}
+	},
+	"include": ["src/**/*", "types/**/*.d.ts"]
 }

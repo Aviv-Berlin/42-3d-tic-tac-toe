@@ -39,7 +39,7 @@ export const checkToken = async (request: ExtdRequest, response: Response, next:
 		response.status(401).json({ error: 'missing or invalid token' })
 		return;
 	}
-	console.log(`decoded Token = ${decodedToken.id}`);
+	console.log(`decoded Token id = ${decodedToken.id}`);
 	if (!decodedToken.id) {
 		console.log("Error: checkToken(): token contains invalid id");
 		response.status(401).json({ error: 'missing or invalid token' })

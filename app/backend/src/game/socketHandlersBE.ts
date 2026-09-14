@@ -1,4 +1,4 @@
-import { WsMessage, JoinGameMessage, MoveMessage, ExitMessage, StartGameMessage, createEndMessage } from "../../../shared/messages.ts"
+import { WsMessage, JoinGameMessage, MoveMessage, ExitMessage } from "../../../shared/messages.ts"
 import { WebSocket } from "ws";
 import { GameState } from "./GameState.ts";
 import { AiPlayer } from "./AIPlayer.ts";
@@ -30,8 +30,7 @@ function joinGame(message: JoinGameMessage, ws: WebSocket, match: Match) {
 	game.startGame();
 }
 
-function StartGame(message: StartGameMessage, match: Match){
-	// const data = message.payload.gameData;
+function StartGame(match: Match){
 	const game = match.state;
 	if (game)
 		game.startGame();
@@ -59,7 +58,7 @@ export function playerExit(message: ExitMessage, ws: WebSocket, match: Match) {
 		ws.send(JSON.stringify(`Invalid gameID ${data.gameID}`));
 		return ;
 	}
-	game.playerExit(ws, data.IAm);
+	game.playerExit(data.IAm);
 	matches.delete(match.id);
 }
 
@@ -82,7 +81,7 @@ export function handleMessage(message: WsMessage, ws: WebSocket, match: Match | 
 				break;
 			case "start-game":
 				if (match)
-					StartGame(message, match);
+					StartGame(match);
 				//console.log(`Received start-game msg: ${message}`);
 				break;
 			case "join-game":
@@ -102,5 +101,3 @@ export function handleMessage(message: WsMessage, ws: WebSocket, match: Match | 
 				//console.log(`Unknown message: ${message}`);
 		}
 }
-
-

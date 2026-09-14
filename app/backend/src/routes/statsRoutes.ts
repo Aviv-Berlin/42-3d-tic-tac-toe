@@ -12,6 +12,8 @@ router.get('/profile/draws', stats.getDrawTotal);
 
 router.get('/profile/losses', stats.getLossTotal);
 
+router.get('/profile/rank', stats.getRankData);
+
 // router.post('/game-moves', stats.getMoves); // TODO
 
 export default router;

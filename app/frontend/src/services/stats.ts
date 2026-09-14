@@ -22,4 +22,9 @@ const getLossTotal = () => {
   return axios.get(url);
 };
 
-export default { getGameHistory, getWinTotal, getDrawTotal, getLossTotal };
+const getRankData = () => {
+  const url = `${baseUrl}/profile/rank`;
+  return axios.get(url);
+};
+
+export default { getGameHistory, getWinTotal, getDrawTotal, getLossTotal, getRankData };

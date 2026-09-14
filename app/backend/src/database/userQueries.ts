@@ -12,7 +12,9 @@ export interface User {
   id: number,
   username: string,
   email: string,
-  pw_hash: string
+  pw_hash: string,
+  full_score: number,
+  online_score: number
 }
 
 export async function getUserIdByUsername(username: string) {
@@ -74,6 +76,45 @@ export async function updatePassword(newPassword: string, id: number) {
 	return result.rows[0]?.id;
 }
 
+export async function updateUserScores(user: User, scoreChange: number, online: boolean) {
+	let fullScore = scoreChange;
+	let onlineScore = scoreChange;
+	if (!online)
+		onlineScore = 0;
+	console.log(`updating online score for ${user.username} new score: ${onlineScore} online: ${online} full:${fullScore}`);
+	const result = await query(
+		'UPDATE users SET full_score = GREATEST(full_score + $1, 0), online_score = GREATEST(online_score + $2, 0) WHERE id = $3 RETURNING *;', [fullScore, onlineScore, user.id]
+	);
+	console.log(`new scores: full:${result.rows[0].full_score} online:${result.rows[0].online_score}`)
+	return result.rows[0];
+}
+
+
+// create rank data:
+// 	id | full_rank | full_score | online_rank | online_score | total_users
+// ----+-----------+------------+-------------+--------------+-------------
+//   4 |         1 |       1138 |           1 |         1021 |           2
+export async function getUserScores(id: number) {
+	const result = await query(`
+		SELECT *
+		FROM (
+			SELECT
+				id,
+				RANK() OVER (ORDER BY full_score DESC) AS full_rank,
+				full_score,
+				RANK() OVER (ORDER BY online_score DESC) AS online_rank,
+				online_score,
+				COUNT(*) OVER () AS total_users
+			FROM users
+			WHERE id NOT IN (1, 2, 3)
+		) ranked_users
+		WHERE id = $1;
+
+	`, [id]);
+	return result.rows[0];
+}
+
+
 export async function deleteUser(id: number) {
 	const result = await query(
 		'DELETE FROM users WHERE id = $1 RETURNING *;', [id]
@@ -89,5 +130,6 @@ export default {
 	deleteUser,
 	createUser,
 	updateUsername,
-	updatePassword
+	updatePassword,
+	getUserScores
 };

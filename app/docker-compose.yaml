@@ -8,6 +8,8 @@ services:
       POSTGRES_PASSWORD_FILE: /run/secrets/db_password
     secrets:
       - db_password
+    ports:
+      - "3001:3001"
     restart: always
   database:
     build: backend/postgres

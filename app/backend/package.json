@@ -6,6 +6,7 @@
   "author": "",
   "type": "module",
   "scripts": {
+    "start": "NODE_ENV=prod node backend/src/server.js",
     "dev": "tsx watch src/server.ts",
     "multiply": "tsc && node multiplier.ts",
     "build": "tsc",

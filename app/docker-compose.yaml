@@ -3,7 +3,7 @@ services:
     build: backend
     image: ttt_backend
     env_file:
-      - backend/postgres/postgres.env
+      - backend/.env
     environment:
       POSTGRES_PASSWORD_FILE: /run/secrets/db_password
     secrets:

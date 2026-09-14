@@ -1,6 +1,6 @@
 import { query } from "./db.ts";
 import userQueries, { updateUserScores, User } from "./userQueries.ts";
-import { PlayerData, Move, GameData, AiLevel } from "../../../shared/game.ts";
+import { Move, GameData, AiLevel } from "../../../shared/game.ts";
 
 export interface MatchEntry {
 	id: number,

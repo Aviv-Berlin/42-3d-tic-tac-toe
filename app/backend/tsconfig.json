@@ -7,10 +7,9 @@
 	  "noFallthroughCasesInSwitch": true,
 	  "module": "nodenext",
 	  "esModuleInterop": true,
-	  "allowImportingTsExtensions": true,
 		"strict": true,
 		"rootDir": "..",
 		"outDir": "dist"
 	},
-	"include": ["src/**/*", "types/**/*.d.ts"]
+	"include": ["src/**/*", "types/**/*.d.ts", "../shared/**/*"]
 }

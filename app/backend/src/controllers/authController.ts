@@ -1,4 +1,4 @@
-import userQueries from "../database/userQueries.ts";
+import userQueries from "../database/userQueries.js";
 import { type Request, type Response } from 'express';
 import bcrypt from 'bcrypt';
 import jwt from 'jsonwebtoken';

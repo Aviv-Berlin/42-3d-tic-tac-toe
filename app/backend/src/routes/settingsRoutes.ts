@@ -1,5 +1,5 @@
 import express from "express";
-import settings from '../controllers/setttingsController.ts';
+import settings from '../controllers/setttingsController.js';
 
 const router = express.Router();
 

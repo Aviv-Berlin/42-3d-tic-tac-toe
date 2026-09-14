@@ -1,10 +1,10 @@
 import { WebSocketServer, WebSocket} from "ws";
 import type http from "http";
-import { matchSockets, handlePlayerLeave } from "../websocket/matchSockets.ts";
-import { matches } from "../controllers/gameController.ts";
+import { matchSockets, handlePlayerLeave } from "../websocket/matchSockets.js";
+import { matches } from "../controllers/gameController.js";
 
-import { handleMessage, playerExit } from "../game/socketHandlersBE.ts";
-import { CreateExitMessage, createGameStateMessage, WsMessage } from "../../../shared/messages.ts"
+import { handleMessage, playerExit } from "../game/socketHandlersBE.js";
+import { CreateExitMessage, createGameStateMessage, WsMessage } from "../../../shared/messages.js"
 
 export function setupWebSocket(server: http.Server) {
 

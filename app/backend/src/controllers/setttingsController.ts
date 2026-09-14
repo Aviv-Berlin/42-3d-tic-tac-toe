@@ -1,9 +1,10 @@
 import userQueries from "../database/userQueries.ts";
-import { type Request, type Response } from 'express';
+import { type Response } from 'express';
+import { ExtdRequest } from './middleware.ts';
 import bcrypt from 'bcrypt';
 
 // Register a new user
-export async function changeUsername(request: Request, response: Response) {
+export async function changeUsername(request: ExtdRequest, response: Response) {
 	const body = request.body;
 
 	if (!body.newUsername || !body.oldUsername) {
@@ -37,7 +38,7 @@ export async function changeUsername(request: Request, response: Response) {
 	
 }
 
-export async function changePassword(request: Request, response: Response) {
+export async function changePassword(request: ExtdRequest, response: Response) {
 	const body = request.body;
 
 	if (!body.username || !body.oldPassword || !body.newPassword) {
@@ -72,7 +73,7 @@ export async function changePassword(request: Request, response: Response) {
 	}
 }
 
-export async function deleteAccount(request: Request, response: Response) {
+export async function deleteAccount(request: ExtdRequest, response: Response) {
 	const body = request.body;
 
 	if (!body.username || !body.password) {

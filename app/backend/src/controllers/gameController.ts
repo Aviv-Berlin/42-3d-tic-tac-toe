@@ -1,8 +1,8 @@
 //import userQueries from "../database/userQueries.ts";
-import { type Request, type Response } from 'express';
+import { type Response } from 'express';
 import { broadcastMatch } from "../websocket/matchSockets.ts";
 import { GameState } from '../game/GameState.ts';
-
+import { ExtdRequest } from './middleware.ts';
 import { GameMode, AiLevel } from '../../../shared/game.ts';
 //import { initGame } from "../websocket/matchSockets.ts"
 //import { PlayerConnection } from '../websocket/matchSockets.ts';
@@ -27,7 +27,7 @@ export const matches = new Map<string, Match>();
 
 
 // SSE endpoint function
-export async function lobby(request: Request, response: Response){
+export async function lobby(request: ExtdRequest, response: Response){
 	// Set headers for SSE
 	response.writeHead(200, {
 	'Content-Type': 'text/event-stream',
@@ -74,7 +74,7 @@ export function broadcast(event: string, data: unknown) {
 	});
 }
 
-export async function createMatch(request: Request, response: Response) {
+export async function createMatch(request: ExtdRequest, response: Response) {
 	const body = request.body;
 
 	if (!body.size || !body.requiredPlayers) {
@@ -121,7 +121,7 @@ export async function createMatch(request: Request, response: Response) {
 	});
 }
 
-export async function createLocalMatch(request: Request, response: Response) {
+export async function createLocalMatch(request: ExtdRequest, response: Response) {
 	const body = request.body;
 
 	if (!body.gameMode || !body.size || !body.level || !body.requiredPlayers) {
@@ -157,7 +157,7 @@ export async function createLocalMatch(request: Request, response: Response) {
 	});
 }
 
-export async function joinMatch(request: Request, response: Response) {
+export async function joinMatch(request: ExtdRequest, response: Response) {
 
 	const body = request.body;
 	const match = lobbyMatches.get(body.matchId);

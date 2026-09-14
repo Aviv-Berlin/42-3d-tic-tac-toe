@@ -16,9 +16,7 @@ export function replayGame(canvas: HTMLCanvasElement, gameData: GameData, onExit
   const materials = new Materials(scene);
   const camera = new CameraManager(scene, canvas);
   const board = new Board(gameData.size, scene, materials);
-  board.createBoard();
-  const ui = new GameUI(scene, onExit, materials, board);
-
+  const ui = new GameUI(scene, onExit, materials, board, camera, false);
   const replay = new Replay(gameData, ui, board, onExit);
   void replay.startReplay().catch((error: unknown) => {
     console.error("Replay failed", error);
@@ -28,18 +26,17 @@ export function replayGame(canvas: HTMLCanvasElement, gameData: GameData, onExit
     scene.render();
   });
 
+  const handleWheel = (event: WheelEvent) => { event.preventDefault();  };
+  canvas.addEventListener("wheel", handleWheel, { passive: false });
 
-  const handleResize = () => {
-    engine.resize();
-  };
+  const resizeObserver = new ResizeObserver(() => { engine.resize();  });
+  resizeObserver.observe(canvas);
 
-  window.addEventListener("resize", handleResize);
 
   return () => {
     replay.dispose();
     engine.stopRenderLoop();
     ui.dispose();
-    window.removeEventListener("resize", handleResize);
     scene.dispose();
     engine.dispose();
   };
@@ -68,11 +65,18 @@ export class Replay {
 
 
   public async startReplay(): Promise<void> {
+    this.ui.playerBadges(0, this.gameData.player1.username, this.gameData.player2.username);
+
+    await this.board.createBoard(true);
     const moves = this.gameData.moves;
     if (!moves || moves.length === 0) {
       console.warn("There are no moves to replay");
       return;
     }
+
+    let toggle = false;
+    if (moves[0].player === PLAYER_STATES[0])
+      toggle = true;
 
     for (const move of moves) {
       if (this.disposed)
@@ -86,7 +90,8 @@ export class Replay {
         console.warn("Unsupported player state in replay:", move.player);
         continue;
       }
-      await this.ui.playerTitle(username);
+      this.ui.toggleBadge(toggle);
+      toggle = !toggle;
       if (this.disposed)
         return;
       await delay(500);
@@ -103,9 +108,9 @@ export class Replay {
     if (winningPositions)
       this.board.animateWin(winningPositions);
     if (this.gameData.winner)
-      await this.ui.displayWinner(this.gameData.winner.username, "WINS!");
+      await this.ui.displayWinner(this.gameData.winner.username);
     else if (this.gameData.isDraw)
-      await this.ui.displayDraw();
+      await this.ui.displayWinner("Draw");
     else
       console.warn("Replay data has no winner and is not marked as a draw");
     if (this.disposed)

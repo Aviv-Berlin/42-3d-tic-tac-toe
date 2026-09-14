@@ -2,14 +2,43 @@
 
 3D Tic-Tac-Toe Web App
 
-## How to install
+## Set up after backend containerization
 
-From the root of the repository run the script `install.sh`. It will run `npm run install` for both the frontend and the backend.
+Some environment variables have been changed, so you will need the next steps!
 
-## How to setup the database and the backend
+### Install packages
 
-From the `app` directory run the script `setup_docker.sh`. It will prompt you to set up the variables necessary for running the Postgres database and the backend.
+From the root of the repository, run:
+```bash
+./install.sh
+```
 
-## How to run
+### Create environment and secret files
 
-From the root of the repository run the script `run.sh`. It will start one instance of the backend (port `3001`) and three instances of the frontend (ports `5173`, `5174` and `5175`).
+From `app`, run:
+```bash
+./setup_docker.sh
+```
+
+### Build the dist directory for the backend
+
+From `app/backend`, run:
+```bash
+npm run build
+```
+
+This will run the TypeScript compiler and store the JavaScript files in the `dist/` directory.
+
+### Build images and run containers (backend and database)
+
+From `app`, run:
+```bash
+docker compose up --build
+```
+
+### Run frontend (not containerized yet)
+
+From the root of the repository, run:
+```bash
+./run.sh
+```

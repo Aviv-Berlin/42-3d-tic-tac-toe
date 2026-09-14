@@ -1,4 +1,14 @@
 services:
+  backend:
+    build: backend
+    image: ttt_backend
+    env_file:
+      - backend/postgres/postgres.env
+    environment:
+      POSTGRES_PASSWORD_FILE: /run/secrets/db_password
+    secrets:
+      - db_password
+    restart: always
   database:
     build: backend/postgres
     image: ttt_database
@@ -13,19 +23,11 @@ services:
       # only exposed as long as postgres is the only container
     volumes:
       - postgres_volume:/var/lib/postgresql/data
-    #networks:
-    #  - ttt_network
     restart: always
 
 secrets:
     db_password:
       file: ./secrets/postgres-passwd
-
-# network will not be in use until backend is containerized
-#networks:
-#    ttt_network:
-#      name: ttt_network
-#      driver: bridge
 
 volumes:
   postgres_volume:

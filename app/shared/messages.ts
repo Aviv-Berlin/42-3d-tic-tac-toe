@@ -1,8 +1,7 @@
-import { GridPosition, CellState, PLAYER_STATES} from "./game/Types";
+import { GridPosition, CellState } from "./game/Types";
 import { GameData } from "./game";
 import { Match } from "../backend/src/controllers/gameController"
-import { PlayerConnection } from "../backend/src/websocket/matchSockets";
-import { GameState } from "../backend/src/game/GameState"; 
+import { GameState } from "../backend/src/game/GameState";
 
 //client -> server
 export type LeaveMatchMessage =

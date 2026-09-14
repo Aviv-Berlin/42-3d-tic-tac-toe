@@ -114,9 +114,7 @@ export async function deleteAccount(request: Request, response: Response) {
 				error: 'internal server error'
 			});
 		}
-		return response.status(200).json({
-			deletedID: deletedUserID
-		});
+		return response.clearCookie('token').status(200).send({});
 	}
 	catch (error) {
 		console.error(error);

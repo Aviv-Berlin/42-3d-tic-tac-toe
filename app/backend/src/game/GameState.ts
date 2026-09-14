@@ -118,7 +118,7 @@ export class GameState {
         }
     }
 
-    public playerExit(ws: WebSocket, playerIndex: number) {
+    public playerExit(playerIndex: number) {
         this.gameData.isFinished = true;
         this.gameData.gameEnd = Date.now();
         this.gameData.endMessage = `${this.playerNames[playerIndex]} has left the game`;

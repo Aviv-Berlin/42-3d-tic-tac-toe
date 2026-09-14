@@ -1,13 +1,10 @@
 import { WebSocketServer, WebSocket} from "ws";
 import type http from "http";
-import { broadcastMatch, matchSockets, handlePlayerLeave } from "../websocket/matchSockets.ts";
-import { lobbyMatches, matches, broadcast } from "../controllers/gameController.ts";
+import { matchSockets, handlePlayerLeave } from "../websocket/matchSockets.ts";
+import { matches } from "../controllers/gameController.ts";
 
 import { handleMessage, playerExit } from "../game/socketHandlersBE.ts";
 import { CreateExitMessage, createGameStateMessage, WsMessage } from "../../../shared/messages.ts"
-import { log } from "console";
-
-//export const games: GameState[] = [];
 
 export function setupWebSocket(server: http.Server) {
 
@@ -151,7 +148,7 @@ export function setupWebSocket(server: http.Server) {
 		});
 	});
 
-	const pingCheck = setInterval(() => {
+	setInterval(() => {
 		// console.log(`${Date.now()} setInterval`);
 		aliveSockets.forEach((alive, socket) => {
 			if (alive === false) {

@@ -25,7 +25,6 @@ const changePassword = (form: ChangePasswordForm) => {
 
 const deleteAccount = (form: DeleteAccountForm) => {
   const url = "/v1/settings/delete";
-
   return axios.delete(url, {
     data: form,
   });

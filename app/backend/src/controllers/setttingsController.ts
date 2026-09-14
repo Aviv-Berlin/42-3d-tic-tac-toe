@@ -84,7 +84,6 @@ export async function changePassword(request: Request, response: Response) {
 }
 export async function deleteAccount(request: Request, response: Response) {
 	const body = request.body;
-
 	if (!body.password) {
 		return response.status(400).json({
 			error: 'data incomplete'
@@ -108,15 +107,16 @@ export async function deleteAccount(request: Request, response: Response) {
 				error: 'bad credentials'
 			});
 		}
-
-		const deletedUser = await userQueries.deleteUser(request.userData.id);
-
-		if (!deletedUser){
+		const deletedUserID = await userQueries.deleteUser(request.userData.id);
+		
+		if (!deletedUserID){
 			return response.status(500).json({
 				error: 'internal server error'
 			});
 		}
-		return response.status(204);
+		return response.status(200).json({
+			deletedID: deletedUserID
+		});
 	}
 	catch (error) {
 		console.error(error);

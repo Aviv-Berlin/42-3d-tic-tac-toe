@@ -36,10 +36,7 @@ export class Board {
                 return BABYLON.MeshBuilder.CreateBox(name, { size }, this.scene);
 
             case MeshStyle.Sphere:
-                //return BABYLON.MeshBuilder.CreateSphere(name, { diameter: size * settings.diameterScale }, this.scene);
-                const sphere = BABYLON.MeshBuilder.CreateSphere(name, { diameter: size * settings.diameterScale * 0.8 }, this.scene);
-				//sphere.position.y = 1;
-				return sphere;
+                return BABYLON.MeshBuilder.CreateSphere(name, { diameter: size * settings.diameterScale * 0.8 }, this.scene);
             
 			case MeshStyle.Cylinders: { 
                 const height =  size * settings.heightScale;

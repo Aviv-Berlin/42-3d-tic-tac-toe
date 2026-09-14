@@ -81,15 +81,6 @@ export class Replay {
     for (const move of moves) {
       if (this.disposed)
         return;
-      let username: string;
-      if (move.player === PLAYER_STATES[0])
-        username = this.gameData.player1.username;
-      else if (move.player === PLAYER_STATES[1])
-        username = this.gameData.player2.username;
-      else {
-        console.warn("Unsupported player state in replay:", move.player);
-        continue;
-      }
       this.ui.toggleBadge(toggle);
       toggle = !toggle;
       if (this.disposed)

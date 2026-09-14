@@ -1,5 +1,5 @@
 import { type Request, type Response, type NextFunction } from 'express';
-import userQueries from "../database/userQueries.ts";
+import userQueries from "../database/userQueries.js";
 import jwt from 'jsonwebtoken';
 
 const secret = process.env.SECRET

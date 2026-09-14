@@ -71,7 +71,7 @@ export async function updateUser(username: string, email: string, pw_hash: strin
 }
 
 export async function updateUserScores(user: User, scoreChange: number, online: boolean) {
-	let fullScore = scoreChange;
+	const fullScore = scoreChange;
 	let onlineScore = scoreChange;
 	if (!online)
 		onlineScore = 0;

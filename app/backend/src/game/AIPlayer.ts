@@ -117,7 +117,7 @@ export class AiPlayer {
     }
 
     private scoreMove(boardState: CellState[][][], pos: GridPosition, N: number): MoveScore {
-        let score = -1;
+        const score = -1;
         if (boardState[pos.x][pos.y][pos.z] !== CellState.Empty)
             return { score, winsGame: false, blocksWin: false};
 

@@ -1,8 +1,8 @@
 import { type Request, type Response } from 'express';
-import { broadcastMatch } from "../websocket/matchSockets";
-import { GameState } from '../game/GameState';
+import { broadcastMatch } from "../websocket/matchSockets.js";
+import { GameState } from '../game/GameState.js';
 
-import { GameMode, AiLevel } from '../../../shared/game';
+import { GameMode, AiLevel } from '../../../shared/game.js';
 
 const clients = new Set<Response>();
 

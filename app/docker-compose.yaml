@@ -20,9 +20,6 @@ services:
       POSTGRES_PASSWORD_FILE: /run/secrets/db_password
     secrets:
       - db_password
-    ports:
-      - "5432:5432"
-      # only exposed as long as postgres is the only container
     volumes:
       - postgres_volume:/var/lib/postgresql/data
     restart: always

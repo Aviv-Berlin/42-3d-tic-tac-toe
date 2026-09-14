@@ -77,8 +77,10 @@ export async function login(request: Request, response: Response) {
 				error: 'bad credentials'
 			});
 		}
-
-		const token = jwt.sign(userID, process.env.SECRET as string);
+		const userIDforToken = {
+			id: userID
+		};
+		const token = jwt.sign(userIDforToken, process.env.SECRET as string);
 
 		return response.cookie('token', token).status(200).send();
 

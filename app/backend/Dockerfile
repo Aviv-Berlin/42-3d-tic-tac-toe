@@ -7,7 +7,7 @@ COPY package.json ./
 COPY tsconfig.json ./
 COPY src/ ./src
 
-RUN npm ci
+RUN npm install
 RUN npm run build
 
 # STAGE 2
@@ -17,7 +17,7 @@ WORKDIR /app
 
 COPY package.json ./
 
-RUN npm ci --omit=dev
+RUN npm install --omit=dev
 
 COPY --from=builder /app/dist ./dist
 

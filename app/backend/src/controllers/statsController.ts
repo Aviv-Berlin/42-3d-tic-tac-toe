@@ -1,10 +1,10 @@
-import statsQueries from "../database/statsQueries.ts";
-import userQueries from "../database/userQueries.ts";
+import statsQueries from "../database/statsQueries.js";
+import userQueries from "../database/userQueries.js";
 import { type Request, type Response } from 'express';
-import { GameHistory, PlayerData } from '../../../shared/game.ts';
-import { MatchEntry } from '../database/gameQueries.ts';
-import { GameData, Move } from '../../../shared/game.ts';
-import { GridPosition, CellState } from '../../../shared/game/Types.ts';
+import { GameHistory, PlayerData } from '../../../shared/game.js';
+import { MatchEntry } from '../database/gameQueries.js';
+import { GameData, Move } from '../../../shared/game.js';
+import { GridPosition, CellState } from '../../../shared/game/Types.js';
 
 async function convertToGameData(row: MatchEntry, id: number) {
 

@@ -1,4 +1,4 @@
-import { query } from "./db.ts";
+import { query } from "./db.js";
 
 export async function getUserGames(id: number) {
 	const result = await query(

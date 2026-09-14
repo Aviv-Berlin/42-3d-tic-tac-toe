@@ -1,10 +1,10 @@
-import { WsMessage, JoinGameMessage, MoveMessage, ExitMessage } from "../../../shared/messages.ts"
+import { WsMessage, JoinGameMessage, MoveMessage, ExitMessage } from "../../../shared/messages.js"
 import { WebSocket } from "ws";
-import { GameState } from "./GameState.ts";
-import { AiPlayer } from "./AIPlayer.ts";
+import { GameState } from "./GameState.js";
+import { AiPlayer } from "./AIPlayer.js";
 
-import { CancelGame, PlayGame, PlayLocal } from "../websocket/matchSockets.ts"
-import { Match, matches } from "../controllers/gameController.ts";
+import { CancelGame, PlayGame, PlayLocal } from "../websocket/matchSockets.js"
+import { Match, matches } from "../controllers/gameController.js";
 
 function joinGame(message: JoinGameMessage, ws: WebSocket, match: Match) {
 	const data = message.payload.gameData;

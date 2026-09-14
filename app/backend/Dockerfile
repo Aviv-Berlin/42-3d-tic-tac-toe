@@ -6,6 +6,6 @@ COPY package.json ./
 
 RUN npm install --omit=dev
 
-COPY ./dist ./dist
+COPY dist ./
 
-CMD [ "node", "./dist/backend/src/server.js" ]
+CMD [ "npm", "run", "start" ]

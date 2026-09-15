@@ -1,6 +1,6 @@
 import { query } from "./db.ts";
-import userQueries, { updateUserScores, User } from "./userQueries.ts";
-import { PlayerData, Move, GameData, AiLevel } from "../../../shared/game.ts";
+import userQueries, { updateUserScores, getOnlineScoreByID } from "./userQueries.ts";
+import { Move, GameData, AiLevel } from "../../../shared/game.ts";
 
 export interface MatchEntry {
 	id: number,
@@ -13,31 +13,33 @@ export interface MatchEntry {
 	board_size: number
   }
 
-function calculateOnlineScore(game: GameData, p1: User, p2: User, winnerId: number | null) {
-	const scoreDiff = Math.abs(p1.online_score - p2.online_score);
+async function calculateOnlineScore(game: GameData, p1ID: number, p2ID: number, winnerId: number | null) {
+	const p1Score = await getOnlineScoreByID(p1ID);
+	const p2Score = await getOnlineScoreByID(p2ID);
+	const scoreDiff = Math.abs(p1Score - p2Score);
 	let scoreBonus = scoreDiff / 30;
 	if (scoreBonus > 30)
 		scoreBonus = 30;
 	let p1score = 0;
-	if (winnerId === p1.id)
+	if (winnerId === p1ID)
 		p1score = game.size * 10 + scoreBonus;
 	else {
 		p1score = -10;
-		if (p1.online_score > p2.online_score)
+		if (p1ID > p2ID)
 			p1score =- (scoreBonus / 2);
 	}
-	if (winnerId !== p1.id && winnerId !== p2.id)
+	if (winnerId !== p1ID && winnerId !== p2ID)
 		p1score = 0;
 	return (Math.round(p1score));
 }
 
-function calculateAiScore(game: GameData, p1: User, p2: User, winnerId: number | null) {
+function calculateAiScore(game: GameData, p1ID: number, p2ID: number, winnerId: number | null) {
 	let p1score = 0;
-	if (winnerId === p1.id)
+	if (winnerId === p1ID)
 		p1score = game.level * game.size * 3;
 	else
 		p1score = -30 / game.level;
-	if (winnerId !== p1.id && winnerId !== p2.id)
+	if (winnerId !== p1ID && winnerId !== p2ID)
 		p1score = 0;
 	return (Math.round(p1score));
 }
@@ -66,16 +68,16 @@ export async function createMatchEntry(game: GameData) {
 	let p2score = 0;
 	let online = true;
 	if (p2id === 2) {
-		p1score = calculateAiScore(game, p1user, p2user, winnerId);
-		p2score = calculateAiScore(game, p2user, p1user, winnerId);
+		p1score = calculateAiScore(game, p1id, p2id, winnerId);
+		p2score = calculateAiScore(game, p2id, p1id, winnerId);
 		online = false;
 	}
 	else {
-		p1score = calculateOnlineScore(game, p1user, p2user, winnerId);
-		p2score = calculateOnlineScore(game, p2user, p1user, winnerId);
+		p1score = await calculateOnlineScore(game, p1id, p2id, winnerId);
+		p2score = await calculateOnlineScore(game, p2id, p1id, winnerId);
 	}
-	updateUserScores(p1user, p1score, online);
-	updateUserScores(p2user, p2score, online);
+	updateUserScores(p1id, p1score, online);
+	updateUserScores(p2id, p2score, online);
 	console.log(`match added to database`);
 	return result.rows[0];
 }

@@ -8,6 +8,7 @@ import { query } from "./db.ts";
 //	"SELECT * FROM users"
 // );
 
+/*
 export interface User {
   id: number,
   username: string,
@@ -16,6 +17,7 @@ export interface User {
   full_score: number,
   online_score: number
 }
+*/
 
 export async function getUserIdByUsername(username: string) {
 	const result = await query(
@@ -49,6 +51,14 @@ export async function getHashedPasswordByID(id: number) {
 	return result.rows[0]?.pw_hash;
 }
 
+export async function getOnlineScoreByID(id: number) {
+	const result = await query(
+		'SELECT online_score FROM users WHERE id = $1;', [id]
+	);
+
+	return result.rows[0]?.online_score;
+}
+
 // Creating a user
 export async function createUser(username: string, email: string, pw_hash: string) {
 	const result = await query(
@@ -76,17 +86,17 @@ export async function updatePassword(newPassword: string, id: number) {
 	return result.rows[0]?.id;
 }
 
-export async function updateUserScores(user: User, scoreChange: number, online: boolean) {
+export async function updateUserScores(id: number, scoreChange: number, online: boolean) {
 	let fullScore = scoreChange;
 	let onlineScore = scoreChange;
 	if (!online)
 		onlineScore = 0;
-	console.log(`updating online score for ${user.username} new score: ${onlineScore} online: ${online} full:${fullScore}`);
+	console.log(`updating online score for user #${id} new score: ${onlineScore} online: ${online} full:${fullScore}`);
 	const result = await query(
-		'UPDATE users SET full_score = GREATEST(full_score + $1, 0), online_score = GREATEST(online_score + $2, 0) WHERE id = $3 RETURNING *;', [fullScore, onlineScore, user.id]
+		'UPDATE users SET full_score = GREATEST(full_score + $1, 0), online_score = GREATEST(online_score + $2, 0) WHERE id = $3 RETURNING *;', [fullScore, onlineScore, id]
 	);
 	console.log(`new scores: full:${result.rows[0].full_score} online:${result.rows[0].online_score}`)
-	return result.rows[0];
+	return result.rows[0]?.online_score;
 }
 
 
@@ -127,6 +137,7 @@ export default {
 	getUserIdByUsername,
 	getUserIdByEmail,
 	getHashedPasswordByID,
+	getOnlineScoreByID,
 	deleteUser,
 	createUser,
 	updateUsername,

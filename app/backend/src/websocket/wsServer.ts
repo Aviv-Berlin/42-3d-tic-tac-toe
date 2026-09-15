@@ -104,6 +104,7 @@ export function setupWebSocket(server: http.Server) {
 				if (match && match.status === "started" && match.state && !match.state.isFinished()){
 					playerExit(CreateExitMessage(matchId, match.state?.getPlayerIndex(player.username) ?? -1), socket, match)
 				}
+				matches.delete(matchId);
 
 				return;
 			}

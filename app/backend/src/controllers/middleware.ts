@@ -39,20 +39,20 @@ export const checkToken = async (request: ExtdRequest, response: Response, next:
 		response.status(401).json({ error: 'missing or invalid token' })
 		return;
 	}
-	console.log(`decoded Token id = ${decodedToken.id}`)
+	console.log(`decoded Token id = ${decodedToken.id}`);
 	if (!decodedToken.id) {
 		console.log("Error: checkToken(): token contains invalid id");
 		response.status(401).json({ error: 'missing or invalid token' })
 		return;
 	}
-	const user = await userQueries.getUserByID(decodedToken.id);
-	if (!user || !user.username || !user.id) {
+	const username = await userQueries.getUsernameByID(decodedToken.id);
+	if (!username) {
 		response.status(401).json({ error: 'token does not correspond to a user' })
 		return;
 	}
 	request.userData = {
-		id: user.id,
-		username: user.username,
+		id: decodedToken.id,
+		username: username,
 	};
 	next();
 }

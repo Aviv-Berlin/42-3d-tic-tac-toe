@@ -1,4 +1,5 @@
-import type { Scene } from "@babylonjs/core";
+import * as BABYLON from "@babylonjs/core";
+import type { Scene, Mesh } from "@babylonjs/core";
 import * as GUI from "@babylonjs/gui";
 import { Materials } from "./Materials"
 import { Board } from "./Board"
@@ -7,6 +8,17 @@ import { LOOKS } from './LookSetting';
 import { CameraManager } from "./CameraManager";
 
 //check here if I need scene or camera
+
+export const ANCHORS = {
+    // [signX, signY]
+    "bottom-left": [-1, -1],
+    "bottom-right": [1, -1],
+    "center-left": [-1, 0],
+    "center-right": [1, 0],
+    "top-left": [-1, 1],
+    "top-right": [1, 1],
+};
+
 
 export class GameUI {
 
@@ -206,14 +218,96 @@ export class GameUI {
         return badge;
     }
 
+
+
+
+
+/* ------------------------------------------------------------------ */
+
+    export const createScene = function () {
+        const scene = new BABYLON.Scene(engine);
+        scene.clearColor = new BABYLON.Color4(0.06, 0.07, 0.10, 1);
+
+        const camera = new BABYLON.ArcRotateCamera(
+            "camera", -Math.PI / 2, Math.PI / 2.6, 10, BABYLON.Vector3.Zero(), scene
+        );
+        camera.attachControl(canvas, true);
+        camera.minZ = 0.1;            // must be smaller than HUD.distance
+
+        new BABYLON.HemisphericLight("light", new BABYLON.Vector3(0.4, 1, 0.2), scene);
+
+
+
+        // --- the 3D UI mesh ------------------------------------------------
+        const HUD = { anchor: "bottom-left", distance: 3, marginPx: 24, sizePx: 110 };
+
+        const hud = BABYLON.MeshBuilder.CreateTorusKnot(
+            "hudGizmo", { radius: 0.4, tube: 0.13, radialSegments: 96, tubularSegments: 24 }, scene
+        );
+        const hmat = new BABYLON.StandardMaterial("hmat", scene);
+        hmat.diffuseColor = new BABYLON.Color3(0.95, 0.62, 0.25);
+        hmat.emissiveColor = new BABYLON.Color3(0.35, 0.18, 0.04);
+        hud.material = hmat;
+
+        hud.parent = camera;
+        hud.renderingGroupId = 1;
+        hud.isPickable = false;
+
+        scene.onBeforeRenderObservable.add(() => {
+            pinToCorner(hud, camera, HUD);
+            hud.rotation.y += 0.01;      // rotation is local, so it does not move it
+            hud.rotation.x += 0.004;
+        });
+
+        return scene;
+    };
+
+    private pinToCorner(mesh: Mesh, opts) {
+        const o = Object.assign(
+            { anchor: "bottom-left", distance: 3, marginPx: 24, sizePx: 100 },
+            opts
+        );
+
+        const eng = this.scene.getEngine();
+        const w = eng.getRenderWidth();
+        const h = eng.getRenderHeight();
+        const aspect = w / h;
+        const d = o.distance;
+        let halfH, halfW;
+        halfH = d * Math.tan(this.camera.getCamera().fov / 2);
+        halfW = halfH * aspect;
+        const uPerPxX = (2 * halfW) / w;
+        const uPerPxY = (2 * halfH) / h;
+        const localRadius = mesh.getBoundingInfo().boundingSphere.radius;
+        const s = (o.sizePx * uPerPxY) / (2 * localRadius);
+        mesh.scaling.setAll(s);
+
+        const r = localRadius * s;
+
+        // --- 4. place it ----------------------------------------------------
+        const [sx, sy] = ANCHORS[o.anchor];
+        mesh.position.set(
+            sx * (halfW - o.marginPx * uPerPxX - r),
+            sy * (halfH - o.marginPx * uPerPxY - r),
+            d * (this.scene.useRightHandedSystem ? -1 : 1)
+        );
+    }
+
     public playerBadges(homePlayerIndex: number, localPlayer: string, otherPlayer: string): void {
-        // const look = this.materials.getLook();
-        // const meshPlayer1 = this.board.createStyledMesh(look.moveStyle1, 0.3, "player1DemoMesh");     
-        // meshPlayer1.position = new BABYLON.Vector3(-7,3,10);
-        // meshPlayer1.material = this.materials.getPlayerMaterial(1);
-        // meshPlayer1.renderingGroupId = 0;
-        // meshPlayer1.isPickable = false;
-        // meshPlayer1.parent = this.camera.getCamera();
+        const look = this.materials.getLook();
+        const meshPlayer1 = this.board.createStyledMesh(look.moveStyle1, 0.3, "player1DemoMesh");     
+        //meshPlayer1.position = new BABYLON.Vector3(-7,3,10);
+        meshPlayer1.material = this.materials.getPlayerMaterial(1);
+        meshPlayer1.renderingGroupId = 0;
+        meshPlayer1.isPickable = false;
+        const HUD = { anchor: "top-left", distance: 3, marginPx: 24, sizePx: 110 };
+
+        meshPlayer1.parent = this.camera.getCamera();
+                this.scene.onBeforeRenderObservable.add(() => {
+            this.pinToCorner(meshPlayer1, HUD);
+            meshPlayer1.rotation.y += 0.01;      // rotation is local, so it does not move it
+            meshPlayer1.rotation.x += 0.004;
+        });
 
         this.homePlayerIndex = homePlayerIndex;
         

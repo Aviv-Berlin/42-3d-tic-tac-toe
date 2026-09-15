@@ -103,7 +103,7 @@ export class GameServerConnection {
                 setTimeout(() => {this.onExit();}, 3000);
                 break;
 
-			case "game-state":
+			case "game-state": {
     			const state = message.payload;
 				
 				this.boardState = state.boardState;
@@ -122,7 +122,7 @@ export class GameServerConnection {
 				if (this.gameData.isFinished){
 					this.restoreEnd();
 					break;
-				}
+				}}
 			
     			// Restore whose turn it is
     			this.restoreTurn();

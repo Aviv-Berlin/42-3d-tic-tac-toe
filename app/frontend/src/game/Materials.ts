@@ -1,10 +1,9 @@
 import * as BABYLON from "@babylonjs/core";
 import type { Scene } from "@babylonjs/core/scene";
 import { StandardMaterial } from "@babylonjs/core/Materials/standardMaterial";
-import { Color3, Color4 } from "@babylonjs/core/Maths/math.color";
+import { Color3 } from "@babylonjs/core/Maths/math.color";
 import { CellState } from "../../../shared/game/Types";
-import { playerStateToIndex } from "../../../shared/game/Utils";
-import { LOOKS, Look, DEFAULT_PLAYER_COLORS} from "./LookSetting"
+import { LOOKS, Look } from "./LookSetting"
 
 
 export class Materials {

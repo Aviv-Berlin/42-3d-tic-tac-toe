@@ -377,7 +377,7 @@ export class TextCubeFactory {
     ): void {
 
         if (renderEdges)
-            this.materials.applyCubeEdges(cube);
+            this.materials.applyCubeEdges(cube, 3, 1);
         else
             cube.disableEdgesRendering();
     }

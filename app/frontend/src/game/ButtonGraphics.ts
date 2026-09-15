@@ -1,9 +1,7 @@
 import * as BABYLON from "@babylonjs/core";
-import type { AbstractMesh, Scene, Mesh } from "@babylonjs/core";
+import type { Scene, Mesh } from "@babylonjs/core";
 import { Materials } from "./Materials";
-import { GridPosition, CellState } from "../../../shared/game/Types"
 import { TextCubeFactory } from "./TextCubeFactory";
-import { MeshStyle, MESH_STYLE_SETTINGS } from "./LookSetting";
 
 export class ButtonGraphics {
     scene: Scene;
@@ -127,19 +125,19 @@ export class ButtonGraphics {
                 dashCount: 8, dashRatio: 0.2, }, this.scene);
 
         switch(type) {
-            case "online":
+            case "online": {
             const player2 = this.createPlayerLogo();
             player2.position = pos2;
             player2.rotation.y = -(Math.PI / 2);
-            break;
+            break;}
 
-            case "ai":
+            case "ai": {
             const computer = this.createComputerLogo();
             computer.position = pos2;
             computer.rotation.y = -(Math.PI / 2);
-            break;
+            break; }
 
-            case "local":
+            case "local": {
             line.dispose();
             player1.position = new BABYLON.Vector3(1, 0 , -0.2);
             const guest = this.createPlayerLogo();
@@ -147,6 +145,7 @@ export class ButtonGraphics {
             guest.rotation.y = -(Math.PI / 2);
             const localComputer = this.createComputerLogo();
             localComputer.position = new BABYLON.Vector3(0, 0 , 0.3);
+            break; }
         }
 
 

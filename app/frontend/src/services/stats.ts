@@ -7,21 +7,6 @@ const getGameHistory = () => {
   return axios.get(url);
 };
 
-const getWinTotal = () => {
-  const url = `${baseUrl}/profile/wins`;
-  return axios.get(url);
-};
-
-const getDrawTotal = () => {
-  const url = `${baseUrl}/profile/draws`;
-  return axios.get(url);
-};
-
-const getLossTotal = () => {
-  const url = `${baseUrl}/profile/losses`;
-  return axios.get(url);
-};
-
 const getRankData = () => {
   const url = `${baseUrl}/profile/rank`;
   return axios.get(url);

@@ -17,9 +17,6 @@ interface RankData {
 
 const Profile = () => {
   const [games, setGames] = useState<GameHistory[]>([]);
-  const [winTotal, setWinTotal] = useState(0);
-  const [drawTotal, setDrawTotal] = useState(0);
-  const [lossTotal, setLossTotal] = useState(0);
   const [rankData, setRankData] = useState({id: 0, fullRank: 0, fullScore: 0, onlineRank: 0,
                                             onlineScore: 0, totalUsers: 0} as RankData);
   const [stats, setStats] = useState({online: {wins: 0, draws: 0, losses: 0,},
@@ -31,15 +28,9 @@ const Profile = () => {
   const fillStats = async () => {
     try {
       const historyResponse = await statsService.getGameHistory();
-      const winResponse = await statsService.getWinTotal();
-      const drawResponse = await statsService.getDrawTotal();
-      const lossResponse = await statsService.getLossTotal();
       const rankResponse = await statsService.getRankData();
       const statsResponse = await statsService.getStats();
       setGames(historyResponse.data);
-      setWinTotal(winResponse.data);
-      setDrawTotal(drawResponse.data);
-      setLossTotal(lossResponse.data);
       setRankData(rankResponse.data);
       setStats(statsResponse.data);
       console.log("Retrieved stats");

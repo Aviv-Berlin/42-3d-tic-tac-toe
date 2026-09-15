@@ -38,9 +38,11 @@ export class AiPlayer {
                     this.yourTurn(this.game.getBoardState(),this.N);
                 break;
             case "move":
-
                 //this.switchPlayer();
                 break;
+			case "end":
+            // Handle game ending if the AI needs to do something
+           		break;
             default:
                 console.log(`Unknown message: ${message}`);
         }

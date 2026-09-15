@@ -1,13 +1,10 @@
 import { WebSocketServer, WebSocket} from "ws";
 import type http from "http";
-import { broadcastMatch, matchSockets, handlePlayerLeave } from "../websocket/matchSockets.ts";
-import { lobbyMatches, matches, broadcast } from "../controllers/gameController.ts";
-
+import { matchSockets, handlePlayerLeave } from "../websocket/matchSockets.ts";
+import { matches } from "../controllers/gameController.ts";
 import { handleMessage, playerExit } from "../game/socketHandlersBE.ts";
 import { CreateExitMessage, createGameStateMessage, WsMessage } from "../../../shared/messages.ts"
-import { log } from "console";
 
-//export const games: GameState[] = [];
 
 export function setupWebSocket(server: http.Server) {
 
@@ -47,6 +44,12 @@ export function setupWebSocket(server: http.Server) {
 
 		const sockets = matchSockets.get(matchId)!;
 		const existingPlayer = [...sockets].find(player => player.username === username)
+
+		if (existingPlayer && existingPlayer.ws){
+			console.log(`[WS/connected] Player already connected: ${matchId}`);
+			socket.send(JSON.stringify({ type: "error", message: "Game already open in another tab" }));
+			return;
+		}
 
 		if (existingPlayer){
 			console.log(`[WS/connection] Player ${username} reconnected to match ${matchId}.`)
@@ -101,10 +104,10 @@ export function setupWebSocket(server: http.Server) {
 				if (match && match.status === "started" && match.state && !match.state.isFinished()){
 					playerExit(CreateExitMessage(matchId, match.state?.getPlayerIndex(player.username) ?? -1), socket, match)
 				}
+				matches.delete(matchId);
 
 				return;
 			}
-			//handleMessage(message, socket,	match, games)
 			if (!match)
 				match = matches.get(matchId);
 			if (!match)
@@ -151,11 +154,12 @@ export function setupWebSocket(server: http.Server) {
 		});
 	});
 
-	const pingCheck = setInterval(() => {
+	setInterval(() => {
 		// console.log(`${Date.now()} setInterval`);
 		aliveSockets.forEach((alive, socket) => {
 			if (alive === false) {
 				console.log(`no pong received from socket, terminating`)
+				aliveSockets.delete(socket);
 				socket.terminate();
 				return;
 			}

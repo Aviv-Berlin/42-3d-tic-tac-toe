@@ -4,3 +4,14 @@ export interface Form {
   password: string;
   confirmPassword: string;
 }
+
+export interface Stats {
+	wins: number,
+	draws: number,
+	losses: number
+}
+
+export interface UserGameStats {
+	online: Stats,
+	all: Stats
+}

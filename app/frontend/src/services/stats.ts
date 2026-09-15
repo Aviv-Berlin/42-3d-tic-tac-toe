@@ -27,4 +27,9 @@ const getRankData = () => {
   return axios.get(url);
 };
 
-export default { getGameHistory, getWinTotal, getDrawTotal, getLossTotal, getRankData };
+const getStats = () => {
+  const url = `${baseUrl}/profile/stats`;
+  return axios.get(url);
+};
+
+export default { getGameHistory, getWinTotal, getDrawTotal, getLossTotal, getRankData, getStats };

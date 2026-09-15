@@ -192,11 +192,29 @@ export async function getRankData(request: ExtdRequest, response: Response) {
 	}
 }
 
+export async function getUserStats(request: ExtdRequest, response: Response) {
+	const id = request.userData?.id;
+	if (!id)
+		return response.status(400).json({
+			error: 'no user id in token'
+		});
+	try{
+		const losses = await statsQueries.getUserGameStats(id);
+		return response.status(200).json(losses);
+	}
+	catch (error) {
+		console.error(error);
+		return response.status(500).json({
+			error: 'internal server error'
+		});
+	}
+}
+
 export default {
 	getGameHistory,
 	getWinTotal,
 	getDrawTotal,
 	getLossTotal,
-	getRankData
-	//getMoves // TODO
+	getRankData,
+	getUserStats
 };

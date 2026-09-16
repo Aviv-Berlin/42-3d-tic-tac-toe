@@ -13,6 +13,12 @@ const GameEnd = () => {
 
   const navigate = useNavigate();
 
+  useEffect(() => {
+    if (gameData) {
+      window.localStorage.removeItem('gameData');
+    }
+  }, [gameData]);
+
   if (!gameData || !username) {
     console.log("missing gameData or username");
     return null;
@@ -23,15 +29,8 @@ const GameEnd = () => {
   const gameLength = Math.floor((gameData.gameEnd - gameData.gameStart) / 1000);
 
   const handleBackToHome = () => {
-    window.localStorage.removeItem('gameData');
     navigate('/');
   }
-
-  useEffect(() => {
-    if (gameData && username) {
-      window.localStorage.removeItem('gameData');
-    }
-  }, [gameData, username]);
 
   return (
     <CenteredLayout>

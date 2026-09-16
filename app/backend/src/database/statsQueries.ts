@@ -61,9 +61,6 @@ export async function getUserGameStats(id: number) {
 
 export default {
 	getUserGames,
-	getUserWins,
-	getUserDraws,
-	getUserLosses,
 	getMatchReplay,
 	getRecentGames,
 	getUserGameStats

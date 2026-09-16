@@ -1,18 +1,15 @@
 import axios from 'axios'
 
 interface ChangeUsernameForm {
-  oldUsername: string;
   newUsername: string;
 }
 
 interface ChangePasswordForm {
-  username: string;
   oldPassword: string;
   newPassword: string;
 }
 
 interface DeleteAccountForm {
-  username: string;
   password: string;
 }
 
@@ -28,7 +25,6 @@ const changePassword = (form: ChangePasswordForm) => {
 
 const deleteAccount = (form: DeleteAccountForm) => {
   const url = "/v1/settings/delete";
-
   return axios.delete(url, {
     data: form,
   });

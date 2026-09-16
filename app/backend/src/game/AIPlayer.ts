@@ -38,9 +38,11 @@ export class AiPlayer {
                     this.yourTurn(this.game.getBoardState(),this.N);
                 break;
             case "move":
-
                 //this.switchPlayer();
                 break;
+			case "end":
+            // Handle game ending if the AI needs to do something
+           		break;
             default:
                 console.log(`Unknown message: ${message}`);
         }
@@ -117,7 +119,7 @@ export class AiPlayer {
     }
 
     private scoreMove(boardState: CellState[][][], pos: GridPosition, N: number): MoveScore {
-        let score = -1;
+        const score = -1;
         if (boardState[pos.x][pos.y][pos.z] !== CellState.Empty)
             return { score, winsGame: false, blocksWin: false};
 

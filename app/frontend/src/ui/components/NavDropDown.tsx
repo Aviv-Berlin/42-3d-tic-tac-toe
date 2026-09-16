@@ -4,6 +4,7 @@ import { ChevronUp, ChevronDown } from 'lucide-react';
 import DropDownButton from './DropDownButton'
 import { useUsername } from '../../store/username'
 import auth from '../../services/auth'
+import { closeSocket } from '../../services/websocket';
 
 const NavDropDown = () => {
   const [open, setOpen] = useState(false);
@@ -17,6 +18,7 @@ const NavDropDown = () => {
   const handleLogOut = async () => {
     try {
       await auth.logout();
+	  closeSocket();
       navigate('/login');
     } catch (err) {
       console.log(err);

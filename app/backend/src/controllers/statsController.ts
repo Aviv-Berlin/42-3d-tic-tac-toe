@@ -11,18 +11,18 @@ async function convertToGameData(row: MatchEntry, id: number) {
 	const user_id = row.player1 === id ? row.player1 : row.player2;
 	const opponent_id = row.player1 === id ? row.player2 : row.player1;
 
-	const user = await userQueries.getUserByID(user_id);
-	const opponent = await userQueries.getUserByID(opponent_id);
+	const userUsername = await userQueries.getUsernameByID(user_id);
+	const opponentUsername = await userQueries.getUsernameByID(opponent_id);
 	const player1 : PlayerData = {
 		type: "real",
-		username: user.username
+		username: userUsername
 	};
 	const player2 : PlayerData = {
-		type: opponent.username === "ai" ? "ai" : opponent.username === "local" ? "guest" : "real",
-		username: opponent.username
+		type: opponentUsername === "ai" ? "ai" : opponentUsername === "local" ? "guest" : "real",
+		username: opponentUsername
 	};
 	const level = row.difficulty;
-	const gameMode = opponent.username === "ai" ? "ai" : opponent.username === "local" ? "local" : "online";
+	const gameMode = opponentUsername === "ai" ? "ai" : opponentUsername === "local" ? "local" : "online";
 	const winner = user_id === row.winner ? player1 : opponent_id === row.winner ? player2 : null;
 	const size = row.board_size;
 	const isFinished = true;
@@ -33,15 +33,15 @@ async function convertToGameData(row: MatchEntry, id: number) {
 	const endMessage = isDraw ? "Draw" : winner ? `${winner.username} won` : null;
 
 	const moves = await statsQueries.getMatchReplay(row.id);
-	let mv : Move[] = [];
+	const mv : Move[] = [];
 	for (let i = 0; i < moves.rows.length; i++) {
-		let pos : GridPosition = {
+		const pos : GridPosition = {
 			x: moves.rows[i].coord_x,
 			y: moves.rows[i].coord_y,
 			z: moves.rows[i].coord_z
 		};
-		let player : CellState = moves.rows[i].player === user_id ? CellState.Player1 : CellState.Player2;
-		let time : Date = moves.rows[i].played_at;
+		const player : CellState = moves.rows[i].player === user_id ? CellState.Player1 : CellState.Player2;
+		const time : Date = moves.rows[i].played_at;
 		mv.push({
 			pos: pos,
 			player: player,

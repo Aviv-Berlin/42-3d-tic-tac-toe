@@ -4,6 +4,7 @@ import { useNavigate } from 'react-router-dom'
 import { getGameEndMessage } from '../../utils/gameData'
 import { useGameData } from '../../store/gameData'
 import { useUsername } from '../../store/username'
+import { useEffect } from 'react'
 
 const GameEnd = () => {
 
@@ -26,7 +27,11 @@ const GameEnd = () => {
     navigate('/');
   }
 
-
+  useEffect(() => {
+    if (gameData && username) {
+      window.localStorage.removeItem('gameData');
+    }
+  }, [gameData, username]);
 
   return (
     <CenteredLayout>

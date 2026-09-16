@@ -42,14 +42,14 @@ export async function getUserGameStats(id: number) {
 				ELSE 'online' END;
 	`, [id]);
 	const online = {
-		wins: Number(result.rows[1].wins),
-		draws: Number(result.rows[1].draws),
-		losses: Number(result.rows[1].losses)
+		wins: Number(result.rows[1]?.wins ?? 0),
+		draws: Number(result.rows[1]?.draws ?? 0),
+		losses: Number(result.rows[1]?.losses ?? 0)
 	}
 	const all = {
-		wins: Number(result.rows[1].wins) + Number(result.rows[0].wins),
-		draws: Number(result.rows[1].draws) + Number(result.rows[0].draws),
-		losses: Number(result.rows[1].losses) + Number(result.rows[0].losses)
+		wins: Number(result.rows[1]?.wins ?? 0) + Number(result.rows[0]?.wins ?? 0),
+		draws: Number(result.rows[1]?.draws ?? 0) + Number(result.rows[0]?.draws ?? 0),
+		losses: Number(result.rows[1]?.losses ?? 0) + Number(result.rows[0]?.losses ?? 0)
 	}
 	const stats = {
 		online: online,

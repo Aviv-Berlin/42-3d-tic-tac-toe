@@ -132,6 +132,44 @@ export async function deleteUser(id: number) {
 	return result.rows[0]?.id;
 }
 
+export async function updateHistory(userId: number, placeholderID: number) {
+
+	await query(
+		`UPDATE matches
+		 SET player1 = $1
+		 WHERE player1 = $2;`,
+		[placeholderID, userId]
+	);
+
+	await query(
+		`UPDATE matches
+		 SET player2 = $1
+		 WHERE player2 = $2;`,
+		[placeholderID, userId]
+	);
+
+	await query(
+		`UPDATE matches
+		 SET winner = $1
+		 WHERE winner = $2;`,
+		[placeholderID, userId]
+	);
+
+	await query(
+		`UPDATE moves
+		 SET player = $1
+		 WHERE player = $2;`,
+		[placeholderID, userId]
+	);
+
+	await query(
+		`DELETE FROM friendships
+		 WHERE user_id = $1
+		    OR friend_id = $1;`,
+		[userId]
+	);
+}
+
 export default {
 	getUsernameByID,
 	getUserIdByUsername,

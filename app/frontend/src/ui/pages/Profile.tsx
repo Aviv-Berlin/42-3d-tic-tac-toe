@@ -45,7 +45,7 @@ const Profile = () => {
       <div className="flex flex-col p-8 gap-4">
         <h2 className="text-2xl mb-4">Stats <span className="text-sm">(FOR ALL GAMES)</span></h2>
         <div className="flex gap-2 items-baseline justify-between">
-          <p className="text-md">RANK:</p>
+          <p className="text-md">SCORE:</p>
           <p className="text-xl">{rankData.full_score}</p>
         </div>
         <div className="flex gap-2 items-baseline justify-between">

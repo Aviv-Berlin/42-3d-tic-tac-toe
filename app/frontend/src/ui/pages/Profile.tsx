@@ -3,22 +3,12 @@ import ProfileLayout from '../layouts/ProfileLayout';
 import GameRecap from '../components/GameRecap';
 import { GameHistory } from '../../../../shared/game'
 import statsService from "../../services/stats";
-import { Stats, UserGameStats } from "../../../../shared/form";
-
-
-interface RankData {
-  id: number,
-  fullRank: number,
-  fullScore: number,
-  onlineRank: number,
-  onlineScore: number,
-  totalUsers: number
-}
+import { Stats, UserGameStats, RankData } from "../../../../shared/form";
 
 const Profile = () => {
   const [games, setGames] = useState<GameHistory[]>([]);
-  const [rankData, setRankData] = useState({id: 0, fullRank: 0, fullScore: 0, onlineRank: 0,
-                                            onlineScore: 0, totalUsers: 0} as RankData);
+  const [rankData, setRankData] = useState({id: 0, full_rank: 0, full_score: 0, online_rank: 0,
+    online_score: 0, total_users: 0} as RankData);
   const [stats, setStats] = useState({online: {wins: 0, draws: 0, losses: 0,},
                                       all: {wins: 0, draws: 0, losses: 0,}} as UserGameStats);
 
@@ -43,6 +33,7 @@ const Profile = () => {
     fillStats();
   }, []);
 
+  console.log(rankData.full_score)
   return (
     <ProfileLayout>
       <div className="border-r p-8 flex flex-col gap-4">
@@ -56,7 +47,7 @@ const Profile = () => {
         <h2 className="text-2xl mb-4">Stats <span className="text-sm">(FOR ALL GAMES)</span></h2>
         <div className="flex gap-2 items-baseline justify-between">
           <p className="text-md">RANK:</p>
-          <p className="text-xl">{rankData.onlineScore}</p>
+          <p className="text-xl">{rankData.full_score}</p>
         </div>
         <div className="flex gap-2 items-baseline justify-between">
           <p className="text-md">GAMES:</p>

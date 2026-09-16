@@ -1,4 +1,4 @@
-import { useState } from 'react'
+import { useEffect, useState } from 'react'
 import { Link, useNavigate } from 'react-router-dom'
 import AuthLayout from '../layouts/AuthLayout'
 import AuthCard from '../components/AuthCard'
@@ -10,6 +10,7 @@ import BabylonImage from '../components/BabylonImage'
 import { getErrorMessage } from '../../utils/errors'
 
 const Login = () => {
+
   const [form, setForm] = useState({username: '', password: ''});
   const [submit, setSubmit] = useState(false);
   const [errorMessage, setErrorMessage] = useState('');
@@ -29,9 +30,8 @@ const Login = () => {
     setSubmit(true);
     if (!form.username || !form.password) return;
     try {
-      const response = await auth.login(form)
-      const username = response.data.username;
-      setUsername(username);
+      await auth.login(form)
+      setUsername(form.username);
       navigate("/home");
     } catch (err) {
       setErrorMessage(getErrorMessage(err));

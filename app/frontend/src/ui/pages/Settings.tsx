@@ -56,14 +56,13 @@ const Settings = () => {
     setSubmit(true);
 
   	const form = {
-  		oldUsername: username,
   		newUsername
   	}
 
   	try {
   		const response = await settings.changeUsername(form);
-      setUsername(response.data.username);
-      setSuccessMessage("Username updated successfully!");
+		setUsername(response.data.newUsername)
+	  setSuccessMessage("Username updated successfully!");
       setErrorMessage("");
       setTimeout(() => setSuccessMessage(""), 2000);
    	} catch (err) {
@@ -78,7 +77,6 @@ const Settings = () => {
     setSubmit(true);
 
   	const form = {
-  		username,
   		oldPassword,
   		newPassword
   	}
@@ -100,7 +98,6 @@ const Settings = () => {
     setSubmit(true);
 
   	const form = {
-  		username,
   		password: oldPassword
   	}
 

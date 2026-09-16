@@ -4,17 +4,17 @@ import cookieParser from 'cookie-parser';
 import cors from "cors";
 import http from "http";
 
-import authRoutes from "./routes/authRoutes.ts";
-import settingsRoutes from "./routes/settingsRoutes.ts";
-import gameRoutes from "./routes/gameRoutes.ts";
-import statsRoutes from './routes/statsRoutes.ts';
-import { setupWebSocket } from "./websocket/wsServer.ts";
-import { checkToken } from "./controllers/middleware.ts";
+import authRoutes from "./routes/authRoutes.js";
+import settingsRoutes from "./routes/settingsRoutes.js";
+import gameRoutes from "./routes/gameRoutes.js";
+import statsRoutes from './routes/statsRoutes.js';
+import { setupWebSocket } from "./websocket/wsServer.js";
+import { checkToken } from "./controllers/middleware.js";
 
 //import { WebSocketServer } from "ws";
-//import { GameState } from "./game/GameState.ts";
-//import { WsMessage } from "../../shared/messages.ts"
-//import { handleMessage } from "./game/socketHandlersBE.ts";
+//import { GameState } from "./game/GameState.js";
+//import { WsMessage } from "../../shared/messages.js"
+//import { handleMessage } from "./game/socketHandlersBE.js";
 
 const app = express();
 
@@ -93,7 +93,7 @@ server.listen(process.env.PORT, () => {
 //     	console.log(`Got `);
 
 // 	})
-// 	//ws.send(JSON.stringify(`Hello from server.ts!`));
+// 	//ws.send(JSON.stringify(`Hello from server.js!`));
 // });
 
 // const PORT = Number(process.env.PORT) || 3001;

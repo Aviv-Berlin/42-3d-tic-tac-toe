@@ -3,7 +3,7 @@
 // const result = await pool.query(
 //	"SELECT * FROM users"
 // );
-import { query } from "./db.ts";
+import { query } from "./db.js";
 // const result = await query(
 //	"SELECT * FROM users"
 // );

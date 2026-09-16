@@ -24,9 +24,10 @@ if [ ! -s "./backend/.env" ]
 then
 	printf "Missing ./backend/.env. Please create and fill this file:
 		SECRET=
-		PORT=
-		DB_HOST=
-		DB_PORT=
+		PORT=3001
+		DB_DEV_HOST=localhost
+		DB_PROD_HOST=database
+		DB_PORT=5432
 		DB_NAME=
 		DB_USER=
 	"

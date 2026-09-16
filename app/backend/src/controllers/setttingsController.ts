@@ -1,4 +1,4 @@
-import userQueries, { updateHistory } from "../database/userQueries.ts";
+import userQueries from "../database/userQueries.js";
 import { type Request, type Response } from 'express';
 import bcrypt from 'bcrypt';
 
@@ -30,6 +30,7 @@ export async function changeUsername(request: Request, response: Response) {
 				error: 'username could not be updated'
 			});
 		}
+
 		return response.status(201).json({
 			newUsername: updatedUsername
 		});
@@ -40,7 +41,7 @@ export async function changeUsername(request: Request, response: Response) {
 			error: 'internal server error'
 		});
 	}
-	
+
 }
 
 export async function changePassword(request: Request, response: Response) {
@@ -68,9 +69,9 @@ export async function changePassword(request: Request, response: Response) {
 		}
 
 		const newPwHash = await bcrypt.hash(body.newPassword, 10);
-	
+
 		const updatedUser = await userQueries.updatePassword(newPwHash, request.userData.id);
-	
+
 		return response.status(201).json({
 			username: updatedUser.username,
 		});
@@ -112,7 +113,7 @@ export async function deleteAccount(request: Request, response: Response) {
 		await updateHistory(request.userData.id, placeholderID);
 		
 		const deletedUserID = await userQueries.deleteUser(request.userData.id);
-		
+
 		if (!deletedUserID){
 			return response.status(500).json({
 				error: 'internal server error'

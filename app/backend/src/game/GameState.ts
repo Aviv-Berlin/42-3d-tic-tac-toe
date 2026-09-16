@@ -1,10 +1,10 @@
-import { checkWin } from "./GameCheckWin.ts";
-import { GridPosition, CellState } from "../../../shared/game/Types.ts";
+import { checkWin } from "./GameCheckWin.js";
+import { GridPosition, CellState } from "../../../shared/game/Types.js";
 import { GameData, PlayerData } from "../../../shared/game.js";
 import { WebSocket } from "ws";
-import { AiPlayer } from "./AIPlayer.ts"
-import { WsMessage, createEndMessage, createGameStartMessage, CreateTurnMessage, createMoveMessage } from "../../../shared/messages.ts"
-import { createMatchEntry } from "../database/gameQueries.ts";
+import { AiPlayer } from "./AIPlayer.js"
+import { WsMessage, createEndMessage, createGameStartMessage, CreateTurnMessage, createMoveMessage } from "../../../shared/messages.js"
+import { createMatchEntry } from "../database/gameQueries.js";
 
 
 interface RemotePlayer {
@@ -118,7 +118,7 @@ export class GameState {
         }
     }
 
-    public playerExit(ws: WebSocket, playerIndex: number) {
+    public playerExit(playerIndex: number) {
         this.gameData.isFinished = true;
         this.gameData.gameEnd = Date.now();
         this.gameData.endMessage = `${this.playerNames[playerIndex]} has left the game`;

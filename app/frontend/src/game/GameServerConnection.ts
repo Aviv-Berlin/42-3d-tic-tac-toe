@@ -115,8 +115,10 @@ export class GameServerConnection {
 				setGameData(this.gameData);
 				console.log("GameData:", this.gameData);
 
-    			// restore board 
+    			// restore board and player badges?
     			this.renderBoard();
+                this.ui.playerBadges(this.localPlayerIndex, this.playerNames[this.localPlayerIndex], this.playerNames[this.otherPlayerIndex]);                
+
 
 				// restore end of game
 				if (this.gameData.isFinished){
@@ -135,7 +137,8 @@ export class GameServerConnection {
     }
 
 	public renderBoard(){
-		for (let x = 0; x < this.N; x++) {
+		this.board.createBoard(false);
+        for (let x = 0; x < this.N; x++) {
     			    for (let y = 0; y < this.N; y++) {
     			        for (let z = 0; z < this.N; z++) {
     			            const player = this.boardState[x][y][z];

@@ -34,15 +34,15 @@ async function convertToGameData(row: MatchEntry, id: number) {
 	const endMessage = isDraw ? "Draw" : winner ? `${winner.username} won` : null;
 
 	const moves = await statsQueries.getMatchReplay(row.id);
-	let mv : Move[] = [];
+	const mv : Move[] = [];
 	for (let i = 0; i < moves.rows.length; i++) {
-		let pos : GridPosition = {
+		const pos : GridPosition = {
 			x: moves.rows[i].coord_x,
 			y: moves.rows[i].coord_y,
 			z: moves.rows[i].coord_z
 		};
-		let player : CellState = moves.rows[i].player === user_id ? CellState.Player1 : CellState.Player2;
-		let time : Date = moves.rows[i].played_at;
+		const player : CellState = moves.rows[i].player === user_id ? CellState.Player1 : CellState.Player2;
+		const time : Date = moves.rows[i].played_at;
 		mv.push({
 			pos: pos,
 			player: player,

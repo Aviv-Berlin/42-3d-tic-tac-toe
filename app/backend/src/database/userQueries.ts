@@ -121,7 +121,15 @@ export async function getUserScores(id: number) {
 		WHERE id = $1;
 
 	`, [id]);
-	return result.rows[0];
+	const data = {
+		id: Number(result.rows[0].id),
+		full_rank: Number(result.rows[0].full_rank),
+		full_score: Number(result.rows[0].full_score),
+		online_rank: Number(result.rows[0].online_rank),
+		online_score: Number(result.rows[0].online_score),
+		total_users: Number(result.rows[0].total_users)
+	}
+	return data;
 }
 
 
@@ -130,6 +138,44 @@ export async function deleteUser(id: number) {
 		'DELETE FROM users WHERE id = $1 RETURNING *;', [id]
 	);
 	return result.rows[0]?.id;
+}
+
+export async function updateHistory(userId: number, placeholderID: number) {
+
+	await query(
+		`UPDATE matches
+		 SET player1 = $1
+		 WHERE player1 = $2;`,
+		[placeholderID, userId]
+	);
+
+	await query(
+		`UPDATE matches
+		 SET player2 = $1
+		 WHERE player2 = $2;`,
+		[placeholderID, userId]
+	);
+
+	await query(
+		`UPDATE matches
+		 SET winner = $1
+		 WHERE winner = $2;`,
+		[placeholderID, userId]
+	);
+
+	await query(
+		`UPDATE moves
+		 SET player = $1
+		 WHERE player = $2;`,
+		[placeholderID, userId]
+	);
+
+	await query(
+		`DELETE FROM friendships
+		 WHERE user_id = $1
+		    OR friend_id = $1;`,
+		[userId]
+	);
 }
 
 export default {

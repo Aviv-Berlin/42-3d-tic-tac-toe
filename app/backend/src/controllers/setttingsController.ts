@@ -108,6 +108,10 @@ export async function deleteAccount(request: Request, response: Response) {
 				error: 'bad credentials'
 			});
 		}
+
+		const placeholderID = await userQueries.getUserIdByUsername("deleted");
+		await updateHistory(request.userData.id, placeholderID);
+		
 		const deletedUserID = await userQueries.deleteUser(request.userData.id);
 
 		if (!deletedUserID){

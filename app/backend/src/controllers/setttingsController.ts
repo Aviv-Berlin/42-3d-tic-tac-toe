@@ -24,20 +24,13 @@ export async function changeUsername(request: Request, response: Response) {
 				error: 'username already exists'
 			});
 		}
-<<<<<<< HEAD
 		const updatedUsername = await userQueries.updateUsername(body.newUsername, request.userData.id);
 		if (!updatedUsername){
 			return response.status(500).json({
 				error: 'username could not be updated'
 			});
 		}
-=======
 
-		const user = await userQueries.getUserByUsername(body.oldUsername);
-
-		const updatedUser = await userQueries.updateUser(body.newUsername, user.email, user.pw_hash, user.id);
-
->>>>>>> bdcd813 (Change import extensions)
 		return response.status(201).json({
 			newUsername: updatedUsername
 		});
@@ -76,15 +69,9 @@ export async function changePassword(request: Request, response: Response) {
 		}
 
 		const newPwHash = await bcrypt.hash(body.newPassword, 10);
-<<<<<<< HEAD
-	
+
 		const updatedUser = await userQueries.updatePassword(newPwHash, request.userData.id);
-	
-=======
 
-		const updatedUser = await userQueries.updateUser(body.username, user.email, newPwHash, user.id);
-
->>>>>>> bdcd813 (Change import extensions)
 		return response.status(201).json({
 			username: updatedUser.username,
 		});
@@ -121,23 +108,14 @@ export async function deleteAccount(request: Request, response: Response) {
 				error: 'bad credentials'
 			});
 		}
-<<<<<<< HEAD
 		const deletedUserID = await userQueries.deleteUser(request.userData.id);
-		
+
 		if (!deletedUserID){
 			return response.status(500).json({
 				error: 'internal server error'
 			});
 		}
 		return response.clearCookie('token').status(200).send({});
-=======
-
-		const deletedUser = await userQueries.deleteUser(user.id);
-
-		return response.status(201).json({
-			username: deletedUser.username,
-		});
->>>>>>> bdcd813 (Change import extensions)
 	}
 	catch (error) {
 		console.error(error);

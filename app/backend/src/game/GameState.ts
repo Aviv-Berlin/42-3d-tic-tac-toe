@@ -1,10 +1,10 @@
-import { checkWin } from "./GameCheckWin.ts";
-import { GridPosition, CellState } from "../../../shared/game/Types.ts";
+import { checkWin } from "./GameCheckWin";
+import { GridPosition, CellState } from "../../../shared/game/Types";
 import { GameData, PlayerData } from "../../../shared/game.js";
 import { WebSocket } from "ws";
-import { AiPlayer } from "./AIPlayer.ts"
-import { WsMessage, createEndMessage, createGameStartMessage, CreateTurnMessage, createMoveMessage } from "../../../shared/messages.ts"
-import { createMatchEntry } from "../database/gameQueries.ts";
+import { AiPlayer } from "./AIPlayer"
+import { WsMessage, createEndMessage, createGameStartMessage, CreateTurnMessage, createMoveMessage } from "../../../shared/messages"
+import { createMatchEntry } from "../database/gameQueries";
 
 
 interface RemotePlayer {

@@ -1,6 +1,12 @@
+<<<<<<< HEAD
 import { query } from "./db.ts";
 import userQueries, { updateUserScores, getOnlineScoreByID } from "./userQueries.ts";
 import { Move, GameData, AiLevel } from "../../../shared/game.ts";
+=======
+import { query } from "./db";
+import userQueries, { updateUserScores, User } from "./userQueries";
+import { Move, GameData, AiLevel } from "../../../shared/game";
+>>>>>>> 96e309d (Add include directive to tsconfig)
 
 export interface MatchEntry {
 	id: number,
@@ -85,7 +91,6 @@ export async function createMatchEntry(game: GameData) {
 export async function createMoveHistory(moves: Move[], p1: number, p2: number, match: MatchEntry) {
 	const players = [0, p1, p2];
 	for (let i = 0; i < moves.length; i++) {
-		moves[i];
 		await query(
 			'INSERT INTO moves (move_nr, match_id, coord_x, coord_y, coord_z, player, played_at) VALUES ($1, $2, $3, $4, $5, $6, $7) RETURNING *;',
 			[i + 1, match.id, moves[i].pos.x, moves[i].pos.y, moves[i].pos.z, players[moves[i].player], moves[i].time])

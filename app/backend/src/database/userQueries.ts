@@ -87,7 +87,7 @@ export async function updatePassword(newPassword: string, id: number) {
 }
 
 export async function updateUserScores(id: number, scoreChange: number, online: boolean) {
-	let fullScore = scoreChange;
+	const fullScore = scoreChange;
 	let onlineScore = scoreChange;
 	if (!online)
 		onlineScore = 0;
@@ -130,6 +130,44 @@ export async function deleteUser(id: number) {
 		'DELETE FROM users WHERE id = $1 RETURNING *;', [id]
 	);
 	return result.rows[0]?.id;
+}
+
+export async function updateHistory(userId: number, placeholderID: number) {
+
+	await query(
+		`UPDATE matches
+		 SET player1 = $1
+		 WHERE player1 = $2;`,
+		[placeholderID, userId]
+	);
+
+	await query(
+		`UPDATE matches
+		 SET player2 = $1
+		 WHERE player2 = $2;`,
+		[placeholderID, userId]
+	);
+
+	await query(
+		`UPDATE matches
+		 SET winner = $1
+		 WHERE winner = $2;`,
+		[placeholderID, userId]
+	);
+
+	await query(
+		`UPDATE moves
+		 SET player = $1
+		 WHERE player = $2;`,
+		[placeholderID, userId]
+	);
+
+	await query(
+		`DELETE FROM friendships
+		 WHERE user_id = $1
+		    OR friend_id = $1;`,
+		[userId]
+	);
 }
 
 export default {

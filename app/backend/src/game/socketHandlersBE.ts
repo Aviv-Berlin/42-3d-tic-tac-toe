@@ -1,4 +1,4 @@
-import { WsMessage, JoinGameMessage, MoveMessage, ExitMessage, StartGameMessage, createEndMessage } from "../../../shared/messages.ts"
+import { WsMessage, JoinGameMessage, MoveMessage, ExitMessage, StartGameMessage } from "../../../shared/messages.ts"
 import { WebSocket } from "ws";
 import { GameState } from "./GameState.ts";
 import { AiPlayer } from "./AIPlayer.ts";

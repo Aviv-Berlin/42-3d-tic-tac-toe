@@ -143,8 +143,8 @@ export async function getUserStats(request: ExtdRequest, response: Response) {
 			error: 'no user id in token'
 		});
 	try{
-		const losses = await statsQueries.getUserGameStats(id);
-		return response.status(200).json(losses);
+		const stats = await statsQueries.getUserGameStats(id);
+		return response.status(200).json(stats);
 	}
 	catch (error) {
 		console.error(error);

@@ -17,4 +17,4 @@ const getStats = () => {
   return axios.get(url);
 };
 
-export default { getGameHistory, getWinTotal, getDrawTotal, getLossTotal, getRankData, getStats };
+export default { getGameHistory, getRankData, getStats };

@@ -33,7 +33,6 @@ const Profile = () => {
     fillStats();
   }, []);
 
-  console.log(rankData.full_score)
   return (
     <ProfileLayout>
       <div className="border-r p-8 flex flex-col gap-4">

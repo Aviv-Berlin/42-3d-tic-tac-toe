@@ -4,6 +4,7 @@ import { useNavigate } from 'react-router-dom'
 import { getGameEndMessage } from '../../utils/gameData'
 import { useGameData } from '../../store/gameData'
 import { useUsername } from '../../store/username'
+import { useEffect } from 'react'
 
 const GameEnd = () => {
 
@@ -11,6 +12,12 @@ const GameEnd = () => {
   const username = useUsername();
 
   const navigate = useNavigate();
+
+  useEffect(() => {
+    if (gameData) {
+      window.localStorage.removeItem('gameData');
+    }
+  }, [gameData]);
 
   if (!gameData || !username) {
     console.log("missing gameData or username");
@@ -22,11 +29,8 @@ const GameEnd = () => {
   const gameLength = Math.floor((gameData.gameEnd - gameData.gameStart) / 1000);
 
   const handleBackToHome = () => {
-    window.localStorage.removeItem('gameData');
     navigate('/');
   }
-
-
 
   return (
     <CenteredLayout>

@@ -109,24 +109,28 @@ export class GameServerConnection {
 				this.boardState = state.boardState;
     			this.playerNames = state.playerNames;
     			this.localPlayerIndex = state.localPlayerIndex;
+                this.otherPlayerIndex = this.localPlayerIndex === 0 ? 1 : 0;
     			this.guestPlayerIndex = state.guestPlayerIndex;
     			this.currentPlayerIndex = state.currentPlayerIndex;
     			this.gameData = state.gameData;
+                this.gameID = this.gameData.gameID;
 				setGameData(this.gameData);
 				console.log("GameData:", this.gameData);
 
-    			// restore board 
+    			// restore board and player badges
     			this.renderBoard();
+                this.ui.playerBadges(this.localPlayerIndex, this.playerNames[this.localPlayerIndex], this.playerNames[this.otherPlayerIndex]);                
+
 
 				// restore end of game
 				if (this.gameData.isFinished){
 					this.restoreEnd();
 					break;
-				}}
+				}
 			
     			// Restore whose turn it is
     			this.restoreTurn();
-				break;
+				break;}
 
 
             default:
@@ -135,7 +139,8 @@ export class GameServerConnection {
     }
 
 	public renderBoard(){
-		for (let x = 0; x < this.N; x++) {
+		this.board.createBoard(false);
+        for (let x = 0; x < this.N; x++) {
     			    for (let y = 0; y < this.N; y++) {
     			        for (let z = 0; z < this.N; z++) {
     			            const player = this.boardState[x][y][z];
@@ -174,10 +179,7 @@ export class GameServerConnection {
 	}
 
 	public async restoreTurn(){
-        let is1 = false;
-        if (this.currentPlayerIndex === 0)
-            is1 = true;
-		this.ui.toggleBadge(is1);
+        this.ui.toggleBadge(this.currentPlayerIndex === this.localPlayerIndex);
         if (this.currentPlayerIndex === this.localPlayerIndex)
             this.localPlayer.yourTurn(this.boardState, this.N, PLAYER_STATES[this.localPlayerIndex]);
         else if (this.currentPlayerIndex === this.guestPlayerIndex)

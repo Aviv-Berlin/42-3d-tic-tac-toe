@@ -1,68 +1,44 @@
 # 42-3d-tic-tac-toe
-A web-based multiplayer 3D Tic-Tac-Toe game built for the 42 Berlin ft_transcendence project. Developed in TypeScript, the game features real-time multiplayer gameplay on a three-dimensional board rendered directly in the browser.
 
-## How to install
+3D Tic-Tac-Toe Web App
 
-Run `npm install` both from `app/frontend` and `app/backend`.
+## Set up after backend containerization
 
-## How to run
+Some environment variables have been changed, so you will need the next steps!
 
-From the root of the repository run the script `run.sh`. It will start one instance of the backend (port `3001`) and three instances of the frontend (ports `5173`, `5174` and `5175`).
+### Install packages
 
-## How to run the frontend in dev mode through Vite
-
-Change to the `frontend` directory:
-
+From the root of the repository, run:
 ```bash
-cd app/frontend
+./install.sh
 ```
 
-Install dependencies:
+### Create environment and secret files
 
+From `app`, run:
 ```bash
-npm install
+./setup_docker.sh
 ```
 
-Run vite through the script:
+### Build the dist directory for the backend
 
+From `app/backend`, run:
 ```bash
-npm run dev
+npm run build
 ```
 
-The web app will be available locally at:
+This will run the TypeScript compiler and store the JavaScript files in the `dist/` directory.
 
+### Build images and run containers (backend and database)
+
+From `app`, run:
 ```bash
-http://localhost:5173
+docker compose up --build
 ```
 
-To run a second instance on a different port:
+### Run frontend (not containerized yet)
 
+From the root of the repository, run:
 ```bash
-npm run dev:alt
-```
-
-Available at:
-
-```bash
-http://localhost:5174
-```
-
-## How to run the backend
-
-Change to the `backend` directory:
-
-```bash
-cd ../backend
-```
-
-Install dependencies:
-
-```bash
-npm install
-```
-
-Run node through the script:
-
-```bash
-npm run dev
+./run.sh
 ```

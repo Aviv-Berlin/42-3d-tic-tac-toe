@@ -1,6 +1,6 @@
-import { query } from "./db.ts";
-import userQueries, { updateUserScores, getOnlineScoreByID } from "./userQueries.ts";
-import { Move, GameData, AiLevel } from "../../../shared/game.ts";
+import { query } from "./db.js";
+import userQueries, { updateUserScores, getOnlineScoreByID } from "./userQueries.js";
+import { Move, GameData, AiLevel } from "../../../shared/game.js";
 
 export interface MatchEntry {
 	id: number,
@@ -48,7 +48,7 @@ function calculateAiScore(game: GameData, p1ID: number, p2ID: number, winnerId: 
 export async function createMatchEntry(game: GameData) {
 	const p1id = await userQueries.getUserIdByUsername(game.player1.username);
 	const p2id = await userQueries.getUserIdByUsername(game.player2.username);
-	
+
 		let winnerId = null;
 	if (game.winner?.username === game.player1.username)
 		winnerId = p1id;

@@ -1,7 +1,7 @@
-import { GridPosition, CellState, points, PLAYER_STATES } from "../../../shared/game/Types.ts"
-import { GameState } from "./GameState.ts";
-import { WsMessage } from "../../../shared/messages.ts"
-import { addGP } from "../../../shared/game/Utils.ts";
+import { GridPosition, CellState, points, PLAYER_STATES } from "../../../shared/game/Types.js"
+import { GameState } from "./GameState.js";
+import { WsMessage } from "../../../shared/messages.js"
+import { addGP } from "../../../shared/game/Utils.js";
 
 interface PositionScore {
     score: number;

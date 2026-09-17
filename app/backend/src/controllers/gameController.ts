@@ -1,12 +1,9 @@
-//import userQueries from "../database/userQueries.ts";
 import { type Request, type Response } from 'express';
-import { broadcastMatch } from "../websocket/matchSockets.ts";
-import { GameState } from '../game/GameState.ts';
+import { broadcastMatch } from "../websocket/matchSockets.js";
+import { GameState } from '../game/GameState.js';
 
-import { GameMode, AiLevel } from '../../../shared/game.ts';
-//import { initGame } from "../websocket/matchSockets.ts"
-//import { PlayerConnection } from '../websocket/matchSockets.ts';
-// Store connected clients
+import { GameMode, AiLevel } from '../../../shared/game.js';
+
 const clients = new Set<Response>();
 
 export interface Match {
@@ -163,7 +160,7 @@ export async function joinMatch(request: Request, response: Response) {
 	const match = lobbyMatches.get(body.matchId);
 
 	//console.log(`[LOBBY] Player ${body.player} requests to join match ${body.matchId} (host: ${match?.host})`);
-	
+
 	if (!request.userData || !request.userData.id || !request.userData.username) {
 		return response.status(400).json({
 			error: 'missing or invalid token'

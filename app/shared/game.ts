@@ -1,4 +1,4 @@
-import { GridPosition, CellState } from "./game/Types";
+import { GridPosition, CellState } from "./game/Types.js";
 
 export type PlayerType = "real" | "ai" | "guest";
 export type GameMode = "online" | "ai" | "local";

@@ -46,9 +46,12 @@ export class Board {
                 const cylinderZ = BABYLON.MeshBuilder.CreateCylinder(`${name}Z`, { height, diameter }, this.scene);
                 cylinderX.rotation.x = Math.PI / 2;
                 cylinderZ.rotation.z = Math.PI / 2;
-                const merged = BABYLON.Mesh.MergeMeshes([cylinderY, cylinderX, cylinderZ], true);
-                if (!merged)
-                    throw new Error("Failed to merge cylinders");
+                let merged = BABYLON.Mesh.MergeMeshes([cylinderY, cylinderX, cylinderZ], true);
+                if (!merged) {
+                    merged = cylinderX;
+                    cylinderY.dispose();
+                    cylinderZ.dispose();
+                }
                 merged.name = name;
                 merged.metadata = { isCylinder: true };
                 return merged;
@@ -80,9 +83,16 @@ export class Board {
 
                 cylinderX.rotation.x = Math.PI / 2;
                 cylinderZ.rotation.z = Math.PI / 2;
-                const merged = BABYLON.Mesh.MergeMeshes([cylinderY, cylinderX, cylinderZ, sphere1, sphere2, sphere3, sphere4], true);
-                if (!merged)
-                    throw new Error("Failed to merge cylinders");
+                let merged = BABYLON.Mesh.MergeMeshes([cylinderY, cylinderX, cylinderZ, sphere1, sphere2, sphere3, sphere4], true);
+                if (!merged) {
+                    merged = cylinderX;
+                    cylinderY.dispose();
+                    cylinderZ.dispose();
+                    sphere1.dispose();
+                    sphere2.dispose();
+                    sphere3.dispose();
+                    sphere4.dispose();
+                }
                 merged.name = name;
                 merged.rotation.y = Math.PI / 4;
                 merged.rotation.x = Math.PI / 4;
@@ -131,17 +141,6 @@ export class Board {
         await new Promise(resolve => setTimeout(resolve, 1000));
     }
 
-
-
-    // public toggleCubeEdges(renderEdges: boolean): void {
-    //     for (const mesh of this.boardMeshes) {
-    //         if (renderEdges)
-    //             this.materials.applyCubeEdges(mesh, this.N, );
-    //         else
-    //             mesh.disableEdgesRendering();
-    //     }
-    // }
-
     public toggleCubeSize(): void {
         const scale = this.cubesShrink ? 1 : 0.25;
         for(const mesh of this.boardMeshes)
@@ -156,7 +155,6 @@ export class Board {
     }
 
 
-
     public createMoveMesh(pos: GridPosition, playerState: CellState, isPreview: boolean): Mesh {
         const look = this.materials.getLook();
         let mesh: BABYLON.Mesh;
@@ -165,7 +163,6 @@ export class Board {
         else {
             mesh = this.createStyledMesh(look.moveStyle2, this.cellSize * look.moveSizeScale, "moveMesh");        
         }
-
         mesh.position = this.getPosition(pos.x, pos.y, pos.z, look.moveOffset);
         mesh.material = isPreview ? this.materials.getPreviewMaterial(playerState) : this.materials.getPlayerMaterial(playerState);
         mesh.renderingGroupId = 0;
@@ -198,15 +195,6 @@ export class Board {
         }
     }
 
-    public reset(): void {
-        this.hidePreview();
-        for (const moveMesh of this.moveMeshes)
-            moveMesh.dispose();
-            this.moveMeshes = [];
-            this.moveMeshesGrid = Array.from({ length: this.N }, () => Array.from( { length: this.N },
-                () => Array<AbstractMesh | null>(this.N).fill(null)));
-    }
-
     public getMoveMesh(pos: GridPosition): AbstractMesh | null {
         return this.moveMeshesGrid[pos.x][pos.y][pos.z];
     }
@@ -215,18 +203,15 @@ export class Board {
     public showPreview(pos: GridPosition, player: CellState): void {
         this.hidePreview();
         this.previewMesh =  this.placeMoveMesh(pos, player, true);
-        this.startPreviewPulse(player);
     }
 
     public hidePreview(): void {
         if (!this.previewMesh)
             return;
-
         if (this.previewPulse) {
             this.previewPulse.stop();
             this.previewPulse = null;
         }
-
         this.previewMesh.dispose();
         this.previewMesh = null;
     }
@@ -255,13 +240,10 @@ export class Board {
     public refreshPreview(): void {
         if (!this.previewMesh)
             return;
-
         const pos = this.previewMesh.metadata?.gridPosition as GridPosition | undefined;
         const playerState = this.previewMesh.metadata?.playerState as CellState | undefined;
-
         if (!pos || playerState === undefined)
             return;
-
         this.showPreview(pos, playerState);
     }
 

@@ -4,15 +4,11 @@ import { ButtonGraphics } from "./ButtonGraphics";
 import { CameraManager } from "./CameraManager";
 
 
-
-
 export function babylonButton(canvas: HTMLCanvasElement, type: string): () => void {
 
   const engine = new BABYLON.Engine(canvas, true);
-  //engine.setHardwareScalingLevel(0.25);
   const scene = new BABYLON.Scene(engine);
   const materials = new Materials(scene);
-  materials.applyLook(0);
   const camera = new CameraManager(scene, canvas);
   let graphics: ButtonGraphics; 
   switch (type) {

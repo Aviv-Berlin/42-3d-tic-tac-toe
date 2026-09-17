@@ -24,7 +24,7 @@ export function createBabylonGame(canvas: HTMLCanvasElement, gameData: GameData,
   const ws = getSocket();
   if (!ws) return;
 
-  const serverConnection = new GameServerConnection(gameData, ui, board, 2, ws, onExit);
+  const serverConnection = new GameServerConnection(gameData, ui, board, ws, onExit);
   
   const handleGameMessage = (event: MessageEvent) => {
     const data: WsMessage = JSON.parse(event.data);
@@ -47,20 +47,22 @@ export function createBabylonGame(canvas: HTMLCanvasElement, gameData: GameData,
   input.registerEvents();
 
   //temp to reduce rendering while I work, delete this later
-  // const frameInterval = 1000 / 10;
-  // let lastRender = 0;
-  // engine.runRenderLoop(() => {
-  //     const now = performance.now();
-
-  //     if (now - lastRender >= frameInterval) {
-  //         scene.render();
-  //         lastRender = now;
-  //     }
-  // });
-
+  const frameInterval = 1000 / 10;
+  let lastRender = 0;
   engine.runRenderLoop(() => {
-      scene.render();
+      const now = performance.now();
+
+      if (now - lastRender >= frameInterval) {
+          scene.render();
+          scene.activeCamera = camera.getCamera();
+          lastRender = now;
+      }
   });
+
+  // engine.runRenderLoop(() => {
+  //     scene.render();
+  //     scene.activeCamera = camera.getCamera();
+  // });
 
   const handleWheel = (event: WheelEvent) => { event.preventDefault();  };
   canvas.addEventListener("wheel", handleWheel, { passive: false });

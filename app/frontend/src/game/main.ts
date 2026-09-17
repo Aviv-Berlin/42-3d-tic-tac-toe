@@ -36,33 +36,32 @@ export function createBabylonGame(canvas: HTMLCanvasElement, gameData: GameData,
   ui.register(serverConnection);
   const player = new LocalPlayer(gameData.player1.username, serverConnection, board);
   serverConnection.register(player);
-  ////
+
   if (gameData.player2.type === "guest") {
     const guestPlayer = new LocalPlayer("guest",serverConnection, board);
     serverConnection.register(guestPlayer);
   }
-///
 
   const input = new InputManager(serverConnection, scene, board, camera);
   input.registerEvents();
 
   //temp to reduce rendering while I work, delete this later
-  const frameInterval = 1000 / 10;
-  let lastRender = 0;
-  engine.runRenderLoop(() => {
-      const now = performance.now();
-
-      if (now - lastRender >= frameInterval) {
-          scene.render();
-          scene.activeCamera = camera.getCamera();
-          lastRender = now;
-      }
-  });
-
+  // const frameInterval = 1000 / 10;
+  // let lastRender = 0;
   // engine.runRenderLoop(() => {
-  //     scene.render();
-  //     scene.activeCamera = camera.getCamera();
+  //     const now = performance.now();
+
+  //     if (now - lastRender >= frameInterval) {
+  //         scene.render();
+  //         scene.activeCamera = camera.getCamera();
+  //         lastRender = now;
+  //     }
   // });
+
+  engine.runRenderLoop(() => {
+      scene.render();
+      scene.activeCamera = camera.getCamera();
+  });
 
   const handleWheel = (event: WheelEvent) => { event.preventDefault();  };
   canvas.addEventListener("wheel", handleWheel, { passive: false });

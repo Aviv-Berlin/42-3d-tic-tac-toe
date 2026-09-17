@@ -151,7 +151,6 @@ export class TextCubeFactory {
         }
     }
 
-
     private applyEdges(cube: BABYLON.Mesh, renderEdges: boolean): void {
         if (renderEdges)
             this.materials.applyCubeEdges(cube, 3, 1);
@@ -165,7 +164,6 @@ export class TextCubeFactory {
         const blue = Math.round(color.b * 255);
         return `rgba(${red}, ${green}, ${blue}, ${alpha})`;
     }
-
 
     private configurePicking(cube: BABYLON.Mesh, onClick?: () => void): void {
         if (!onClick) {

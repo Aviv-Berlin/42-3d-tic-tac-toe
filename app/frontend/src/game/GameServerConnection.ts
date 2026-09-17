@@ -19,7 +19,6 @@ export class GameServerConnection {
     private guestPlayerIndex: number = -1;
     private players: LocalPlayer[] = [];
     private currentPlayerIndex: number = -1;
-    private nPlayers: number;
     private board: Board;
     private gameData: GameData;
     private gameID!: string;
@@ -27,12 +26,11 @@ export class GameServerConnection {
     private onExit: () => void;
     private boardAnimation: Promise<void> = Promise.resolve();
 
-    constructor(gameData: GameData, ui: GameUI, board: Board, nPlayers: number, ws: WebSocket, onExit: () => void) {
+    constructor(gameData: GameData, ui: GameUI, board: Board, ws: WebSocket, onExit: () => void) {
         this.gameData = gameData;
         this.N = gameData.size;
         this.ui = ui;
         this.board = board;
-        this.nPlayers = nPlayers;
         this.ws = ws;
         this.onExit = onExit;
         this.initBoard();
@@ -49,7 +47,6 @@ export class GameServerConnection {
                 console.log("playerNames[0]:", message.payload.playerNames[0]);
                 console.log("playerNames[1]:", message.payload.playerNames[1])
                 this.playerNames = message.payload.playerNames;
-                this.nPlayers = message.payload.nPlayers;
                 this.localPlayerIndex = message.payload.youAre;
                 this.otherPlayerIndex = 0;
                 if (this.localPlayerIndex === 0)

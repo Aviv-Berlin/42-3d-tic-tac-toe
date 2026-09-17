@@ -63,8 +63,6 @@ export class Materials {
         } 
     }
 
-
-
     public applyLook(index: number): void {
         const look = LOOKS[index];
 
@@ -104,10 +102,6 @@ export class Materials {
         }
         return material;
     }
-
-
-
-
 
     public getLook(): Look {
         return LOOKS[this.currentLookIndex];

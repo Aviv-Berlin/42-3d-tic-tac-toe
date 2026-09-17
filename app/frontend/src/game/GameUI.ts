@@ -7,8 +7,6 @@ import { GameServerConnection } from "./GameServerConnection"
 import { LOOKS } from './LookSetting';
 import { CameraManager } from "./CameraManager";
 
-//check here if I need scene or camera
-
 export const ANCHORS = {
     // [signX, signY]
     "bottom-left": [-1, -1],
@@ -60,43 +58,29 @@ export class GameUI {
         this.ui = GUI.AdvancedDynamicTexture.CreateFullscreenUI("UI", true, scene);
         
         const mainCamera = this.camera.getCamera();
-
-        // Reserve this layer for the badge meshes.
         mainCamera.layerMask &= ~this.badgeLayerMask;
-
         this.badgeCamera = new BABYLON.FreeCamera(
             "badgeCamera",
             BABYLON.Vector3.Zero(),
             scene
         );
-
         this.badgeCamera.mode = BABYLON.Camera.ORTHOGRAPHIC_CAMERA;
         this.badgeCamera.minZ = 0.01;
         this.badgeCamera.maxZ = 100;
         this.badgeCamera.layerMask = this.badgeLayerMask;
 
-        this.badgeCamera.setTarget(
-            new BABYLON.Vector3(
-                0,
-                0,
-                scene.useRightHandedSystem ? -1 : 1
-            )
-        );
+        this.badgeCamera.setTarget(new BABYLON.Vector3(0, 0, scene.useRightHandedSystem ? -1 : 1));
 
         // Render the board and GUI first, then the indicators.
         scene.activeCameras = [mainCamera, this.badgeCamera];
         scene.activeCamera = mainCamera;
-
         // Mouse interaction still uses the board's camera.
         scene.cameraToUseForPointers = mainCamera;
-
         // Render the fullscreen GUI only once, through the main camera.
         if (this.ui.layer) {
             this.ui.layer.layerMask = mainCamera.layerMask;
         }
-
         this.updateBadgeCamera();
-
         if (displayExit)
             this.createExitButton();
         this.createLookButton();
@@ -114,7 +98,6 @@ export class GameUI {
 
         const homeName = this.topPlayerBadge?.textBlock?.text;
         const otherName = this.midPlayerBadge?.textBlock?.text;
-
         if (homeName !== undefined && otherName !== undefined) {
             this.playerBadges(this.homePlayerIndex, homeName, otherName);
         } else {
@@ -160,7 +143,7 @@ export class GameUI {
         button.height = "80px";
         button.cornerRadius = 55;
         button.thickness = 3;
-        // top-right corner
+        // bottom-right corner
         button.horizontalAlignment = GUI.Control.HORIZONTAL_ALIGNMENT_RIGHT;
         button.verticalAlignment = GUI.Control.VERTICAL_ALIGNMENT_BOTTOM;
         button.top = "-30px";
@@ -185,7 +168,6 @@ export class GameUI {
         const look = this.materials.getLook();
         const backgroundColor = look.backgroundColor;
         const backgroundAlpha = look.textCubeAlpha ?? look.cubeAlpha;
-
         const background = `rgba(${backgroundColor.r * 255},
             ${backgroundColor.g * 255}, ${backgroundColor.b * 255}, ${backgroundAlpha})`;
 
@@ -218,21 +200,16 @@ export class GameUI {
 
         // home Player
         if (this.topPlayerBadge) {
-
-
             this.topPlayerBadge.background = background;
             this.topPlayerBadge.color = homePlayerColor;
-
             if (this.topPlayerBadge.textBlock)
                 this.topPlayerBadge.textBlock.color = homePlayerColor;
         }
 
         // otherPlayer - can be online, guest or ai
         if (this.midPlayerBadge) {
-
             this.midPlayerBadge.background = background;
             this.midPlayerBadge.color = otherPlayerColor;
-
             if (this.midPlayerBadge.textBlock)
                 this.midPlayerBadge.textBlock.color = otherPlayerColor;
         }
@@ -240,9 +217,7 @@ export class GameUI {
         // VS badge
         if (this.vsBadge) {
             const vsColor = look.vsColor.toHexString();
-
             this.vsBadge.color = vsColor;
-
             if (this.vsBadge.textBlock)
                 this.vsBadge.textBlock.color = vsColor;
         }
@@ -282,10 +257,8 @@ export class GameUI {
     private updateBadgeCamera(): void {
         const engine = this.scene.getEngine();
         const unitsPerPixel = 0.01;
-
         const halfW = engine.getRenderWidth() * unitsPerPixel / 2;
         const halfH = engine.getRenderHeight() * unitsPerPixel / 2;
-
         this.badgeCamera.orthoLeft = -halfW;
         this.badgeCamera.orthoRight = halfW;
         this.badgeCamera.orthoTop = halfH;

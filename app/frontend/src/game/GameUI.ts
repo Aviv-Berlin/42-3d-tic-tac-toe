@@ -279,50 +279,6 @@ export class GameUI {
         return badge;
     }
 
-
-
-
-
-
-    // export const createScene = function () {
-    //     const scene = new BABYLON.Scene(engine);
-    //     scene.clearColor = new BABYLON.Color4(0.06, 0.07, 0.10, 1);
-
-    //     const camera = new BABYLON.ArcRotateCamera(
-    //         "camera", -Math.PI / 2, Math.PI / 2.6, 10, BABYLON.Vector3.Zero(), scene
-    //     );
-    //     camera.attachControl(canvas, true);
-    //     camera.minZ = 0.1;            // must be smaller than HUD.distance
-
-    //     new BABYLON.HemisphericLight("light", new BABYLON.Vector3(0.4, 1, 0.2), scene);
-
-
-
-    //     // --- the 3D UI mesh ------------------------------------------------
-    //     const HUD = { anchor: "bottom-left", distance: 3, marginPx: 24, sizePx: 110 };
-
-    //     const hud = BABYLON.MeshBuilder.CreateTorusKnot(
-    //         "hudGizmo", { radius: 0.4, tube: 0.13, radialSegments: 96, tubularSegments: 24 }, scene
-    //     );
-    //     const hmat = new BABYLON.StandardMaterial("hmat", scene);
-    //     hmat.diffuseColor = new BABYLON.Color3(0.95, 0.62, 0.25);
-    //     hmat.emissiveColor = new BABYLON.Color3(0.35, 0.18, 0.04);
-    //     hud.material = hmat;
-
-    //     hud.parent = camera;
-    //     hud.renderingGroupId = 1;
-    //     hud.isPickable = false;
-
-    //     scene.onBeforeRenderObservable.add(() => {
-    //         pinToCorner(hud, camera, HUD);
-    //         hud.rotation.y += 0.01;      // rotation is local, so it does not move it
-    //         hud.rotation.x += 0.004;
-    //     });
-
-    //     return scene;
-    // };
-
-
     private updateBadgeCamera(): void {
         const engine = this.scene.getEngine();
         const unitsPerPixel = 0.01;
@@ -338,72 +294,23 @@ export class GameUI {
 
 
     private pinToCorner(mesh: Mesh, opts: pinOptions): void {
-        const placement = {
-            distance: 3,
-            marginXPx: 24,
-            marginYPx: 24,
-            sizePx: 60,
-            ...opts,
-        };
-
+        const placement = { distance: 3, marginXPx: 24, marginYPx: 24,
+            sizePx: 60, ...opts,};
         const engine = this.scene.getEngine();
         const unitsPerPixel = 0.01;
-
         const halfW = engine.getRenderWidth() * unitsPerPixel / 2;
         const halfH = engine.getRenderHeight() * unitsPerPixel / 2;
-
         const localRadius = mesh.getBoundingInfo().boundingSphere.radius;
         if (localRadius <= 0)
             return;
-
         const radius = placement.sizePx * unitsPerPixel / 2;
         mesh.scaling.setAll(radius / localRadius);
-
         const [sx, sy] = ANCHORS[placement.anchor];
 
-        mesh.position.set(
-            sx * (
-                halfW -
-                placement.marginXPx * unitsPerPixel -
-                radius
-            ),
-            sy * (
-                halfH -
-                placement.marginYPx * unitsPerPixel -
-                radius
-            ),
-            placement.distance *
-                (this.scene.useRightHandedSystem ? -1 : 1)
-        );
+        mesh.position.set(sx * (halfW -placement.marginXPx * unitsPerPixel - radius),
+            sy * (halfH - placement.marginYPx * unitsPerPixel - radius),
+            placement.distance * (this.scene.useRightHandedSystem ? -1 : 1));
     }
-
-    // private pinToCorner(mesh: Mesh, opts: pinOptions): void {
-    //     const placement = { distance: 3, marginXPx: 24, marginYPx: 24, sizePx: 60, ...opts,};
-
-
-    //     const eng = this.scene.getEngine();
-    //     const w = eng.getRenderWidth();
-    //     const h = eng.getRenderHeight();
-    //     const aspect = w / h;
-    //     const d = placement.distance;
-    //     let halfH, halfW;
-    //     halfH = d * Math.tan(this.camera.getCamera().fov / 2);
-    //     halfW = halfH * aspect;
-    //     const uPerPxX = (2 * halfW) / w;
-    //     const uPerPxY = (2 * halfH) / h;
-    //     const localRadius = mesh.getBoundingInfo().boundingSphere.radius;
-    //     const s = (placement.sizePx * uPerPxY) / (2 * localRadius);
-    //     mesh.scaling.setAll(s);
-
-    //     const r = localRadius * s;
-
-    //     const [sx, sy] = ANCHORS[placement.anchor];
-    //     mesh.position.set(
-    //         sx * (halfW - placement.marginXPx * uPerPxX - r),
-    //         sy * (halfH - placement.marginYPx * uPerPxY - r),
-    //         d * (this.scene.useRightHandedSystem ? -1 : 1)
-    //     );
-    // }
 
     public playerBadges(homePlayerIndex: number, localPlayer: string, otherPlayer: string): void {
 
@@ -483,26 +390,19 @@ export class GameUI {
                 if (!this.topPlayerBadge || !this.midPlayerBadge)
                     return;
 
-                this.pinToCorner(homeMesh, {
-                    anchor: "top-left",
-                    distance: 3,
+                this.pinToCorner(homeMesh, { anchor: "top-left", distance: 3,
                     marginXPx: 30 + this.topPlayerBadge.widthInPixels + 20,
-                    marginYPx: 45,
-                    sizePx: 60,
-                });
+                        marginYPx: 45, sizePx: 60,});
 
-                this.pinToCorner(otherMesh, {
-                    anchor: "top-left",
-                    distance: 3,
+                this.pinToCorner(otherMesh, { anchor: "top-left", distance: 3,
                     marginXPx: 30 + this.midPlayerBadge.widthInPixels + 20,
-                    marginYPx: 245,
-                    sizePx: 60,
-                });
-
-                //otherMesh.position.set(0, 0, 3 * (this.scene.useRightHandedSystem ? -1 : 1));
-
-            });
-
+                        marginYPx: 245, sizePx: 60,});
+                
+                const deltaTime = this.scene.getEngine().getDeltaTime() / 1000;
+                const rotationSpeed = 2; // radians per second
+                homeMesh.rotation.y += rotationSpeed * deltaTime;
+                otherMesh.rotation.y += rotationSpeed * deltaTime;
+        });
     }
 
     public toggleBadge(is1: boolean) {
@@ -516,8 +416,14 @@ export class GameUI {
     }
 
 
-
     public async displayWinner(winner: string) {
+        if (this.badgeMeshObserver) {
+            this.scene.onBeforeRenderObservable.remove(this.badgeMeshObserver);
+            this.badgeMeshObserver = null;
+        }
+        this.homeBadgeMesh?.dispose();
+        this.otherBadgeMesh?.dispose();
+
         let badge: GUI.Button | null = null;
         let newText: string;
         if (this.topPlayerBadge?.textBlock?.text === winner) {

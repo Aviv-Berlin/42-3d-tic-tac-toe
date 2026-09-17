@@ -2,23 +2,7 @@
 
 3D Tic-Tac-Toe Web App
 
-## Create a new .env
-
-Example:
-
-```
-SECRET=secret
-PORT=3001
-DB_DEV_HOST=localhost
-DB_PROD_HOST=database
-DB_PORT=5432
-DB_NAME=ttt_db
-DB_USER=ttt_user
-```
-
-## Set up after backend containerization
-
-Some environment variables have been changed, so you will need the next steps!
+## Instructions
 
 ### Install packages
 
@@ -29,9 +13,9 @@ From the root of the repository, run:
 
 ### Create environment and secret files
 
-From `app`, run:
+From the root of the repository, run:
 ```bash
-./setup_docker.sh
+./setup_env.sh
 ```
 
 ### Build the dist directory for the backend
@@ -50,9 +34,11 @@ From `app`, run:
 docker compose up --build
 ```
 
-### Run frontend (not containerized yet)
+### Run frontend and backend on the host machine
 
 From the root of the repository, run:
 ```bash
-./run.sh
+./run_dev.sh
 ```
+
+This will run three instances of the frontend (`5173`, `5174`, `5175`)

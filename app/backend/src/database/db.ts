@@ -13,13 +13,19 @@ console.log({
   DB_PORT: process.env.DB_PORT,
 });
 
-const pool = new Pool({
+const dbConfig = {
 	user: process.env.DB_USER,
 	host: process.env.NODE_ENV === "prod" ? process.env.DB_PROD_HOST : process.env.DB_DEV_HOST,
 	database: process.env.DB_NAME,
 	password: pw.trim(),
 	port: Number(process.env.DB_PORT),
-});
+};
+
+const pool = new Pool(dbConfig);
+
+export const dbUrl = `postgres://${dbConfig.user}:${dbConfig.password}@${dbConfig.host}:${dbConfig.port}/${dbConfig.database}`;
+
+console.log(`URL: ${dbUrl}`);
 
 export const query = (
 	text: string,

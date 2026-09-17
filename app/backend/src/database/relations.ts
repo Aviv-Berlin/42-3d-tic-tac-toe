@@ -1,5 +1,5 @@
 import { defineRelations } from "drizzle-orm";
-import * as schema from "./schema";
+import * as schema from "./schema.js";
 
 export const relations = defineRelations(schema, (r) => ({
 	matches: {
@@ -33,16 +33,6 @@ export const relations = defineRelations(schema, (r) => ({
 		}),
 		matchesWinner: r.many.matches({
 			alias: "matches_winner_users_id"
-		}),
-		conversations: r.many.conversations(),
-		matchesViaMoves: r.many.matches({
-			alias: "matches_id_users_id_via_moves"
-		}),
-	},
-	conversations: {
-		users: r.many.users({
-			from: r.conversations.id.through(r.messages.convoId),
-			to: r.users.id.through(r.messages.senderId)
 		}),
 	},
 }))

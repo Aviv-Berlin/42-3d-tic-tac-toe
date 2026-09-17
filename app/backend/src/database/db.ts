@@ -25,7 +25,7 @@ const pool = new Pool(dbConfig);
 
 export const dbUrl = `postgres://${dbConfig.user}:${dbConfig.password}@${dbConfig.host}:${dbConfig.port}/${dbConfig.database}`;
 
-console.log(`URL: ${dbUrl}`);
+// console.log(`URL: ${dbUrl}`);
 
 export const query = (
 	text: string,

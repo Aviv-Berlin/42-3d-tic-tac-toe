@@ -1,30 +1,19 @@
-// simple CRUD operation on db - creating a new user, reading data about a user, updating a user's dara and deleting a user
-//import pool from "./db.js";
-// const result = await pool.query(
-//	"SELECT * FROM users"
-// );
 import { query } from "./db.js";
-// const result = await query(
-//	"SELECT * FROM users"
-// );
+import { dbUrl } from './db.js'
+import { drizzle } from 'drizzle-orm/node-postgres';
+import { usersTable } from './schema.js';
+import { eq, lt, gte, ne } from 'drizzle-orm';
 
-/*
-export interface User {
-  id: number,
-  username: string,
-  email: string,
-  pw_hash: string,
-  full_score: number,
-  online_score: number
-}
-*/
+const db = drizzle(dbUrl!);
 
 export async function getUserIdByUsername(username: string) {
-	const result = await query(
-		'SELECT id FROM users WHERE username = $1;', [username]
-	);
+	const result = await db.select({
+		id: usersTable.id
+		}).from(usersTable)
+		.where(eq(usersTable.username, username));
 
-	return result.rows[0]?.id;
+	console.log(`ormquery result: ${result[0].id} from ${username}`)
+	return result[0].id;
 }
 
 export async function getUserIdByEmail(email: string) {

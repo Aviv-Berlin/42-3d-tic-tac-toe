@@ -82,7 +82,7 @@ async function createGameHistory(gameData: GameData) {
 	return (summary);
 }
 
-export async function getGameHistory(request: ExtdRequest, response: Response) {
+export async function getGameHistory(request: Request, response: Response) {
 
 	const id = request.userData?.id;
 	if (!id) {
@@ -117,7 +117,7 @@ export async function getGameHistory(request: ExtdRequest, response: Response) {
 	}
 }
 
-export async function getRankData(request: ExtdRequest, response: Response) {
+export async function getRankData(request: Request, response: Response) {
 	const id = request.userData?.id;
 	if (!id)
 		return response.status(400).json({
@@ -135,7 +135,7 @@ export async function getRankData(request: ExtdRequest, response: Response) {
 	}
 }
 
-export async function getUserStats(request: ExtdRequest, response: Response) {
+export async function getUserStats(request: Request, response: Response) {
 	const id = request.userData?.id;
 	if (!id)
 		return response.status(400).json({

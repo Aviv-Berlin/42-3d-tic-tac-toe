@@ -188,5 +188,6 @@ export default {
 	createUser,
 	updateUsername,
 	updatePassword,
+	updateHistory,
 	getUserScores
 };

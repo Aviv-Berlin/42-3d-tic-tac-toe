@@ -1,11 +1,11 @@
 import { WebSocket } from "ws";
-import { Match, matches, broadcast, lobbyMatches} from "../controllers/gameController.ts";
-import { GameState } from "../game/GameState.ts";
-import { AiPlayer } from "../game/AIPlayer.ts";
+import { Match, matches, broadcast, lobbyMatches} from "../controllers/gameController.js";
+import { GameState } from "../game/GameState.js";
+import { AiPlayer } from "../game/AIPlayer.js";
 
-import { GameData} from "../../../shared/game.ts";
-import  createPlayers from "../../../frontend/src/utils/players.ts"
-import { CancelGameMessage, PlayGameMessage, PlayLocalMessage } from "../../../shared/messages.ts"
+import { GameData} from "../../../shared/game.js";
+import  createPlayers from "../../../frontend/src/utils/players.js"
+import { CancelGameMessage, PlayGameMessage, PlayLocalMessage } from "../../../shared/messages.js"
 
 
 export interface PlayerConnection {

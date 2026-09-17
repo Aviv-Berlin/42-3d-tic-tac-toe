@@ -1,68 +1,58 @@
 # 42-3d-tic-tac-toe
-A web-based multiplayer 3D Tic-Tac-Toe game built for the 42 Berlin ft_transcendence project. Developed in TypeScript, the game features real-time multiplayer gameplay on a three-dimensional board rendered directly in the browser.
 
-## How to install
+3D Tic-Tac-Toe Web App
 
-Run `npm install` both from `app/frontend` and `app/backend`.
+## Create a new .env
 
-## How to run
+Example:
 
-From the root of the repository run the script `run.sh`. It will start one instance of the backend (port `3001`) and three instances of the frontend (ports `5173`, `5174` and `5175`).
-
-## How to run the frontend in dev mode through Vite
-
-Change to the `frontend` directory:
-
-```bash
-cd app/frontend
+```
+SECRET=secret
+PORT=3001
+DB_DEV_HOST=localhost
+DB_PROD_HOST=database
+DB_PORT=5432
+DB_NAME=ttt_db
+DB_USER=ttt_user
 ```
 
-Install dependencies:
+## Set up after backend containerization
 
+Some environment variables have been changed, so you will need the next steps!
+
+### Install packages
+
+From the root of the repository, run:
 ```bash
-npm install
+./install.sh
 ```
 
-Run vite through the script:
+### Create environment and secret files
 
+From `app`, run:
 ```bash
-npm run dev
+./setup_docker.sh
 ```
 
-The web app will be available locally at:
+### Build the dist directory for the backend
 
+From `app/backend`, run:
 ```bash
-http://localhost:5173
+npm run build
 ```
 
-To run a second instance on a different port:
+This will run the TypeScript compiler and store the JavaScript files in the `dist/` directory.
 
+### Build images and run containers (backend and database)
+
+From `app`, run:
 ```bash
-npm run dev:alt
+docker compose up --build
 ```
 
-Available at:
+### Run frontend (not containerized yet)
 
+From the root of the repository, run:
 ```bash
-http://localhost:5174
-```
-
-## How to run the backend
-
-Change to the `backend` directory:
-
-```bash
-cd ../backend
-```
-
-Install dependencies:
-
-```bash
-npm install
-```
-
-Run node through the script:
-
-```bash
-npm run dev
+./run.sh
 ```

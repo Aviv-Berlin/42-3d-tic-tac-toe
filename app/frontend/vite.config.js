@@ -2,14 +2,39 @@ import { defineConfig } from 'vite'
 import { parse } from 'cookie'
 import react from '@vitejs/plugin-react'
 import tailwindcss from '@tailwindcss/vite'
+  
+const protectedPlugin = () => ({
+  name: 'token_check_before_protected',
+  configureServer(server) {
+    server.middlewares.use((req, res, next) => {
+      if (req.url === '/home' || req.url === '/game-settings'
+		|| req.url === '/lobby' || req.url === '/waiting/:matchId'
+		|| req.url === '/game/:matchId' || req.url === '/game-end'
+		|| req.url === '/replay' || req.url === '/waiting-room'
+		|| req.url === '/profile' || req.url === '/settings') {
+		console.log("in vite config, req.url = ", req.url)
+        const cookies = parse(req.headers.cookie || '')
+        if (!cookies['token']) {
+          res.statusCode = 302
+          res.setHeader('Location', '/login')
+          res.end()
+          return
+        }
+		else (console.log("in vite.config.js, cookies['token'] = ", cookies['token']))
+      }
+      next()
+    })
+  },
+})
 
 // https://vite.dev/guide/api-plugin.html#configureserver
-const myPlugin = () => ({
+const beforeLoginPlugin = () => ({
   name: 'token_check_before_login',
   configureServer(server) {
     server.middlewares.use((req, res, next) => {
-      if (req.url === '/login' || req.url == '/register'
+      if (req.url === '/login' || req.url === '/register'
 		|| req.url === '/register-success') {
+		console.log("in vite config, req.url = ", req.url)
         const cookies = parse(req.headers.cookie || '')
         if (cookies['token']) {
           res.statusCode = 302
@@ -20,7 +45,7 @@ const myPlugin = () => ({
       }
       next()
     })
-  },
+  }
 })
 
 // https://vite.dev/config/
@@ -28,7 +53,8 @@ export default defineConfig({
   plugins: [
     react(),
     tailwindcss(),
-    myPlugin(),
+    beforeLoginPlugin(),
+	protectedPlugin()
   ],
   server: {
     proxy: {

@@ -8,7 +8,8 @@ const myPlugin = () => ({
   name: 'token_check_before_login',
   configureServer(server) {
     server.middlewares.use((req, res, next) => {
-      if (req.url === '/login') {
+      if (req.url === '/login' || req.url == '/register'
+		|| req.url === '/register-success') {
         const cookies = parse(req.headers.cookie || '')
         if (cookies['token']) {
           res.statusCode = 302
@@ -44,18 +45,3 @@ export default defineConfig({
     }
   }
 })
-
-/*
-app.use((req, res, next) => {
-
-    if (req.path.startsWith('/v1') || req.path.startsWith('/login')) return next();
-    if (req.path.match(/\.\w+$/)) {
-        return next();
-    }
-    const cookie = req.cookies;
-    if (!cookie || !cookie['token']) {
-        return (res.redirect(302, '/login'));
-    }
-    next();
-});
-*/

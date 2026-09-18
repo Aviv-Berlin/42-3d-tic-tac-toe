@@ -1,6 +1,5 @@
 import userQueries from "../database/userQueries.js";
 import { type Request, type Response } from 'express';
-import { useSetUsername } from '../../store/username';
 import bcrypt from 'bcrypt';
 import jwt from 'jsonwebtoken';
 

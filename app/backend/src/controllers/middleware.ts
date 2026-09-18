@@ -22,24 +22,24 @@ export const checkToken = async (request: Request, response: Response, next: Nex
 	const token = getTokenFrom(request)
 	if (!token) {
 		console.log("Error: checkToken(): missing token");
-		response.status(401).json({ error: 'missing or invalid token' })
+		response.clearCookie('token').status(401).json({ error: 'missing or invalid token' })
 		return;
 	}
 	const decodedToken = jwt.verify(token, secretKey)
 	if (typeof decodedToken === `string`) {
 		console.log("Error: checkToken(): invalid token");
-		response.status(401).json({ error: 'missing or invalid token' })
+		response.clearCookie('token').status(401).json({ error: 'missing or invalid token' })
 		return;
 	}
 	console.log(`decoded Token id = ${decodedToken.id}`);
 	if (!decodedToken.id) {
 		console.log("Error: checkToken(): token contains invalid id");
-		response.status(401).json({ error: 'missing or invalid token' })
+		response.clearCookie('token').status(401).json({ error: 'missing or invalid token' })
 		return;
 	}
 	const username = await userQueries.getUsernameByID(decodedToken.id);
 	if (!username) {
-		response.status(401).json({ error: 'token does not correspond to a user' })
+		response.clearCookie('token').status(401).json({ error: 'token does not correspond to a user' })
 		return;
 	}
 	request.userData = {

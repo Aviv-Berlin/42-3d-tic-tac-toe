@@ -1,11 +1,7 @@
-import { query } from "./db.js";
-import { dbUrl } from './db.js'
-import { drizzle } from 'drizzle-orm/node-postgres';
+import { db } from './db.js'
 import { matchesTable, usersTable, movesTable } from './schema.js';
 import { eq, lt, gte, ne, sql, notInArray } from 'drizzle-orm';
-import { playerExit } from "../game/socketHandlersBE.js";
 
-const db = drizzle(dbUrl!);
 
 export async function getUserIdByUsername(username: string) {
 	const result = await db.select({
@@ -13,7 +9,6 @@ export async function getUserIdByUsername(username: string) {
 		}).from(usersTable)
 		.where(eq(usersTable.username, username));
 
-	console.log(`ormquery result: ${result[0].id} from ${username}`)
 	return result[0]?.id;
 }
 
@@ -49,9 +44,6 @@ export async function getOnlineScoreByID(id: number) {
 		onlineScore: usersTable.onlineScore
 		}).from(usersTable)
 		.where(eq(usersTable.id, id));
-	query(
-		'SELECT online_score FROM users WHERE id = $1;', [id]
-	);
 
 	return result[0]?.onlineScore;
 }

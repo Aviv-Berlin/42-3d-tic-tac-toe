@@ -8,14 +8,14 @@ export interface MatchEntry {
 	player2: number,
 	winner: number,
 	difficulty: AiLevel,
-	started_at: Date,
-	ended_at: Date,
-	board_size: number
+	startedAt: Date,
+	endedAt: Date,
+	boardSize: number
   }
 
 async function calculateOnlineScore(game: GameData, p1ID: number, p2ID: number, winnerId: number | null) {
-	const p1Score = await getOnlineScoreByID(p1ID);
-	const p2Score = await getOnlineScoreByID(p2ID);
+	const p1Score = await getOnlineScoreByID(p1ID) ?? 0;
+	const p2Score = await getOnlineScoreByID(p2ID) ?? 0;
 	const scoreDiff = Math.abs(p1Score - p2Score);
 	let scoreBonus = scoreDiff / 30;
 	if (scoreBonus > 30)

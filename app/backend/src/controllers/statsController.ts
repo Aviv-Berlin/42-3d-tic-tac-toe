@@ -24,24 +24,24 @@ async function convertToGameData(row: MatchEntry, id: number) {
 	const level = row.difficulty;
 	const gameMode = opponentUsername === "ai" ? "ai" : opponentUsername === "local" ? "local" : "online";
 	const winner = user_id === row.winner ? player1 : opponent_id === row.winner ? player2 : null;
-	const size = row.board_size;
+	const size = row.boardSize;
 	const isFinished = true;
 	const isDraw = row.winner === null ? true : false;
-	const gameStart = row.started_at.getTime();
-	const gameEnd = row.ended_at.getTime();
+	const gameStart = row.startedAt.getTime();
+	const gameEnd = row.endedAt.getTime();
 	const gameID = row.id.toString();
 	const endMessage = isDraw ? "Draw" : winner ? `${winner.username} won` : null;
 
 	const moves = await statsQueries.getMatchReplay(row.id);
 	const mv : Move[] = [];
-	for (let i = 0; i < moves.rows.length; i++) {
+	for (let i = 0; i < moves.length; i++) {
 		const pos : GridPosition = {
-			x: moves.rows[i].coord_x,
-			y: moves.rows[i].coord_y,
-			z: moves.rows[i].coord_z
+			x: moves[i].coordX,
+			y: moves[i].coordY,
+			z: moves[i].coordZ
 		};
-		const player : CellState = moves.rows[i].player === user_id ? CellState.Player1 : CellState.Player2;
-		const time : Date = moves.rows[i].played_at;
+		const player : CellState = moves[i].player === user_id ? CellState.Player1 : CellState.Player2;
+		const time : Date = moves[i].playedAt;
 		mv.push({
 			pos: pos,
 			player: player,
@@ -92,7 +92,7 @@ export async function getGameHistory(request: Request, response: Response) {
 	}
 	try {
 		const result = await statsQueries.getRecentGames(id, 5);
-		if (!result || !result.rows) {
+		if (!result) {
 			return response.status(400).json({
 				error: 'invalid user id'
 			});
@@ -100,10 +100,10 @@ export async function getGameHistory(request: Request, response: Response) {
 
 		const recent_games : GameHistory[] = [];
 		for (let i = 0; i < 5; i++){
-			if (!result.rows[i]){
+			if (!result[i]){
 				break;
 			}
-			const game: GameData = await convertToGameData(result.rows[i], id);
+			const game: GameData = await convertToGameData(result[i], id);
 			const history: GameHistory = await createGameHistory(game);
 			recent_games.push(history);
 		}

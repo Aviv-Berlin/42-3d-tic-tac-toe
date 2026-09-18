@@ -20,7 +20,6 @@ const protectedPlugin = () => ({
           res.end()
           return
         }
-		else (console.log("in vite.config.js, cookies['token'] = ", cookies['token']))
       }
       next()
     })

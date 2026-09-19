@@ -19,6 +19,12 @@ export async function register(request: Request, response: Response) {
     });
   }
 
+  if (body.username.includes("@")){
+	return response.status(400).json({
+      error: 'username contains "@"'
+    });
+  }
+
 	try{
 		const existingUsername = await userQueries.getUserIdByUsername(body.username);
 		if (existingUsername) {
@@ -56,17 +62,22 @@ export async function register(request: Request, response: Response) {
 export async function login(request: Request, response: Response) {
 	const body = request.body;
 
-	if (!body.username || !body.password) {
+	if (!body.login || !body.password) {
 		return response.status(400).json({
 			error: 'login data incomplete'
 		});
 	}
 
 	try{
-		const userID = await userQueries.getUserIdByUsername(body.username);
+		let userID;
+		console.log("login:", body.login)
+		if (body.login.includes("@"))
+			userID = await userQueries.getUserIdByEmail(body.login);
+		else
+			userID = await userQueries.getUserIdByUsername(body.login);
 		if (!userID) {
 			return response.status(404).json({
-				error: 'username not found'
+				error: 'username/email not found'
 			});
 		}
 

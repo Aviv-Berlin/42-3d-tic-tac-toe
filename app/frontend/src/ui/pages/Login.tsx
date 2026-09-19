@@ -11,7 +11,7 @@ import { getErrorMessage } from '../../utils/errors'
 
 const Login = () => {
 
-  const [form, setForm] = useState({username: '', password: ''});
+  const [form, setForm] = useState({login: '', password: ''});
   const [submit, setSubmit] = useState(false);
   const [errorMessage, setErrorMessage] = useState('');
 
@@ -28,10 +28,10 @@ const Login = () => {
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
     setSubmit(true);
-    if (!form.username || !form.password) return;
+    if (!form.login || !form.password) return;
     try {
-      await auth.login(form)
-      setUsername(form.username);
+      const response = await auth.login(form)
+      setUsername(form.login); // what if form.login is email? Logged in with email but username was displayed correctly and no errors
       navigate("/home");
     } catch (err) {
       setErrorMessage(getErrorMessage(err));
@@ -46,7 +46,7 @@ const Login = () => {
       <AuthCard>
         <h1 className="text-3xl">Log in</h1>
         <form className="flex flex-col" onSubmit={handleSubmit}>
-          <Input name="username" value={form.username} handler={handleChange} submit={submit}/>
+          <Input name="login" alias="Username / Email" value={form.login} handler={handleChange} submit={submit}/>
           <Input name="password" value={form.password} handler={handleChange} submit={submit}/>
           <SubmitButton>Log in</SubmitButton>
         </form>

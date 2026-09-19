@@ -8,7 +8,7 @@ interface RegisterForm {
 }
 
 interface LoginForm {
-  username: string;
+  login: string;
   password: string;
 }
 

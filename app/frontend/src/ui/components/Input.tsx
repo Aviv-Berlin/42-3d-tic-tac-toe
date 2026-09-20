@@ -6,6 +6,7 @@ const normalize = (name: string) => {
 
 interface InputProps {
   name: string;
+  alias?: string;
   value: string;
   handler: (e: React.ChangeEvent<HTMLInputElement>) => void;
   validate?: () => boolean;
@@ -13,8 +14,8 @@ interface InputProps {
   submit?: boolean;
 }
 
-const Input = ({name, value, handler, validate, message, submit}: InputProps) => {
-  const label = normalize(name);
+const Input = ({name, alias, value, handler, validate, message, submit}: InputProps) => {
+  const label = alias ?? normalize(name);
   const type = (name.toLowerCase().includes("password")) ? "password" : "text";
   return (
     <div className="flex flex-col">

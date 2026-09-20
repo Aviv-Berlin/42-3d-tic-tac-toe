@@ -25,13 +25,21 @@ export const checkToken = async (request: Request, response: Response, next: Nex
 		response.clearCookie('token').status(401).json({ error: 'missing or invalid token' })
 		return;
 	}
+<<<<<<< HEAD
 	let decodedToken;
+=======
+	let	decodedToken;
+>>>>>>> main
 	try {
 		decodedToken = jwt.verify(token, secretKey)
 	}
 	catch {
 		console.log("Error: jwt could not verify token, maybe due to it being malformed");
+<<<<<<< HEAD
 		response.clearCookie('token').status(401).json({ error: 'missing or invalid token' })
+=======
+		response.clearCookie('token').status(401).json({error: 'missing or invalid token'})
+>>>>>>> main
 		return;
 	}
 	if (typeof decodedToken === `string`) {

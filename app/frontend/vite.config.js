@@ -8,11 +8,12 @@ const protectedPlugin = () => ({
   configureServer(server) {
     server.middlewares.use((req, res, next) => {
       if (req.url === '/home' || req.url === '/game-settings'
-		|| req.url === '/lobby' || req.url === '/waiting/:matchId'
-		|| req.url === '/game/:matchId' || req.url === '/game-end'
-		|| req.url === '/replay' || req.url === '/waiting-room'
-		|| req.url === '/profile' || req.url === '/settings') {
-		console.log("in vite config, req.url = ", req.url)
+          || req.url === '/lobby' || req.url === '/waiting-room'
+          || /^\/game\//.test(req.url) || /^\/waiting\//.test(req.url)
+          || req.url === '/game/:matchId' || req.url === '/waiting/:'
+          || req.url === '/replay' || req.url === '/waiting-room'
+          || req.url === '/profile' || req.url === '/settings') {
+        console.log("in vite config, req.url = ", req.url)
         const cookies = parse(req.headers.cookie || '')
         if (!cookies['token']) {
           res.statusCode = 302
@@ -53,7 +54,7 @@ export default defineConfig({
     react(),
     tailwindcss(),
     beforeLoginPlugin(),
-	protectedPlugin()
+	  protectedPlugin()
   ],
   server: {
     proxy: {

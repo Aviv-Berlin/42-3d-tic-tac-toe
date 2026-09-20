@@ -31,7 +31,8 @@ const Login = () => {
     if (!form.login || !form.password) return;
     try {
       const response = await auth.login(form)
-      setUsername(form.login); // what if form.login is email? Logged in with email but username was displayed correctly and no errors
+	  //console.log("response:", response.data.username)
+      setUsername(response.data.username); // what if form.login is email? Logged in with email but username was displayed correctly and no errors
       navigate("/home");
     } catch (err) {
       setErrorMessage(getErrorMessage(err));

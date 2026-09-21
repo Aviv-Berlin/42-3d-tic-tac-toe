@@ -1,7 +1,6 @@
-import { query } from "./db.js";
 import { db } from './db.js'
-import { matchesTable, usersTable, movesTable } from './schema.js';
-import { eq, lt, gte, ne, sql, notInArray, or, desc, and } from 'drizzle-orm';
+import { matchesTable, movesTable } from './schema.js';
+import { eq, ne, sql, or, desc, and } from 'drizzle-orm';
 
 
 export async function getUserGames(id: number) {

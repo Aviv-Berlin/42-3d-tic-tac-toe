@@ -1,6 +1,6 @@
 import { db } from './db.js'
 import { matchesTable, usersTable, movesTable } from './schema.js';
-import { eq, lt, gte, ne, sql, notInArray } from 'drizzle-orm';
+import { eq, sql, notInArray } from 'drizzle-orm';
 
 
 export async function getUserIdByUsername(username: string) {
@@ -54,9 +54,13 @@ export async function createUser(username: string, email: string, pw_hash: strin
 		username: username,
 		email: email,
 		pwHash: pw_hash
-	}).returning ({id: usersTable.id});
+	}).returning ({
+		id: usersTable.id,
+		username: usersTable.username,
+		email: usersTable.email
+	});
 
-	return result[0]?.id;
+	return result[0];
 }
 
 // Update and delete a user
@@ -74,9 +78,12 @@ export async function updatePassword(newPassword: string, id: number) {
 	const result = await db.update(usersTable).set({
 		pwHash: newPassword
 	}).where(eq(usersTable.id, id))
-	.returning({id: usersTable.id});
+	.returning({
+		id: usersTable.id,
+		username: usersTable.username
+	});
 
-	return result[0]?.id;
+	return result[0];
 }
 
 export async function updateUserScores(id: number, scoreChange: number, online: boolean) {
@@ -173,8 +180,8 @@ export async function getUserScores(id: number) {
 
 
 export async function deleteUser(id: number) {
-	await db.delete(usersTable).where(eq(usersTable.id, id));
-	return ;
+	const result = await db.delete(usersTable).where(eq(usersTable.id, id)).returning();
+	return result[0];
 }
 
 export async function updateHistory(userId: number, placeholderID: number) {

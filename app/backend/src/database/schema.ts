@@ -5,12 +5,12 @@ export const matchesTable = pgTable("matches", {
 	id: serial().primaryKey(),
 	player1: integer().notNull().references(() => usersTable.id),
 	player2: integer().notNull().references(() => usersTable.id),
-	difficulty: integer(),
+	difficulty: integer().notNull(),
 	winner: integer().references(() => usersTable.id),
-	startedAt: timestamp("started_at", { withTimezone: true }).default(sql`now()`),
-	endedAt: timestamp("ended_at", { withTimezone: true }),
+	startedAt: timestamp("started_at", { withTimezone: true }).default(sql`now()`).notNull(),
+	endedAt: timestamp("ended_at", { withTimezone: true }).notNull(),
 	boardSize: integer("board_size").notNull(),
-}, (table) => [
+}, () => [
 check("matches_difficulty_check", sql`(difficulty = ANY (ARRAY[0, 1, 2, 3]))`),]);
 
 export const movesTable = pgTable("moves", {

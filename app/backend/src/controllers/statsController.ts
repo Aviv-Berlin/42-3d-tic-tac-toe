@@ -3,7 +3,7 @@ import userQueries from "../database/userQueries.js";
 import { type Request, type Response } from 'express';
 import { GameHistory, PlayerData } from '../../../shared/game.js';
 import { MatchEntry } from '../database/gameQueries.js';
-import { GameData, Move } from '../../../shared/game.js';
+import { GameData, Move, AiLevel } from '../../../shared/game.js';
 import { GridPosition, CellState } from '../../../shared/game/Types.js';
 
 async function convertToGameData(row: MatchEntry, id: number) {
@@ -21,7 +21,7 @@ async function convertToGameData(row: MatchEntry, id: number) {
 		type: opponentUsername === "ai" ? "ai" : opponentUsername === "local" ? "guest" : "real",
 		username: opponentUsername
 	};
-	const level = row.difficulty;
+	const level = row.difficulty as AiLevel;
 	const gameMode = opponentUsername === "ai" ? "ai" : opponentUsername === "local" ? "local" : "online";
 	const winner = user_id === row.winner ? player1 : opponent_id === row.winner ? player2 : null;
 	const size = row.boardSize;
@@ -66,6 +66,7 @@ async function convertToGameData(row: MatchEntry, id: number) {
 	}
 	return (summary);
 }
+
 async function createGameHistory(gameData: GameData) {
 
 	const outcome =
@@ -80,6 +81,10 @@ async function createGameHistory(gameData: GameData) {
 		gameData: gameData
 	}
 	return (summary);
+}
+
+function isAiLevel(value: number): value is AiLevel {
+	return (value >= 0 && value <= 3);
 }
 
 export async function getGameHistory(request: Request, response: Response) {
@@ -100,12 +105,11 @@ export async function getGameHistory(request: Request, response: Response) {
 
 		const recent_games : GameHistory[] = [];
 		for (let i = 0; i < 5; i++){
-			if (!result[i]){
-				break;
+			if (result[i] && isAiLevel(result[i].difficulty)){
+				const game: GameData = await convertToGameData(result[i], id);
+				const history: GameHistory = await createGameHistory(game);
+				recent_games.push(history);
 			}
-			const game: GameData = await convertToGameData(result[i], id);
-			const history: GameHistory = await createGameHistory(game);
-			recent_games.push(history);
 		}
 		return response.status(200).json(recent_games);
 	}

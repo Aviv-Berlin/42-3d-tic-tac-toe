@@ -1,13 +1,14 @@
-import { query } from "./db.js";
 import userQueries, { updateUserScores, getOnlineScoreByID } from "./userQueries.js";
-import { Move, GameData, AiLevel } from "../../../shared/game.js";
+import { Move, GameData } from "../../../shared/game.js";
+import { db } from './db.js'
+import { matchesTable, movesTable } from './schema.js';
 
 export interface MatchEntry {
 	id: number,
 	player1: number,
 	player2: number,
-	winner: number,
-	difficulty: AiLevel,
+	winner: number | null,
+	difficulty: number | null,
 	startedAt: Date,
 	endedAt: Date,
 	boardSize: number
@@ -59,11 +60,18 @@ export async function createMatchEntry(game: GameData) {
 	const endDate = new Date(game.gameEnd);
 	// console.log(`p1: ${p1.type} ${p1.username}, p2: ${p2.type} ${p2.username}, winner: ${winner?.type} ${winner?.username}`);
 	// console.log(`Adding to DB: p1:${p1id}, p2:${p2id}, winner:${winnerId}`);
-	const result = await query(
-		'INSERT INTO matches (player1, player2, winner, difficulty, started_at, ended_at, board_size) VALUES ($1, $2, $3, $4, $5, $6, $7) RETURNING *;',
-		[p1id, p2id, winnerId, game.level, startDate, endDate, game.size]
-	);
-	createMoveHistory(game.moves, p1id, p2id, result.rows[0]);
+	const result = await db
+	.insert(matchesTable)
+	.values({
+		player1: p1id,
+		player2: p2id,
+		winner: winnerId,
+		difficulty: game.level,
+		startedAt: startDate,
+		endedAt: endDate,
+		boardSize: game.size
+	}).returning({id: matchesTable.id});
+	createMoveHistory(game.moves, p1id, p2id, result[0]?.id);
 	let p1score = 0
 	let p2score = 0;
 	let online = true;
@@ -79,15 +87,23 @@ export async function createMatchEntry(game: GameData) {
 	updateUserScores(p1id, p1score, online);
 	updateUserScores(p2id, p2score, online);
 	console.log(`match added to database`);
-	return result.rows[0];
+	return result[0].id;
 }
 
-export async function createMoveHistory(moves: Move[], p1: number, p2: number, match: MatchEntry) {
+export async function createMoveHistory(moves: Move[], p1: number, p2: number, id: number) {
 	const players = [0, p1, p2];
 	for (let i = 0; i < moves.length; i++) {
-		await query(
-			'INSERT INTO moves (move_nr, match_id, coord_x, coord_y, coord_z, player, played_at) VALUES ($1, $2, $3, $4, $5, $6, $7) RETURNING *;',
-			[i + 1, match.id, moves[i].pos.x, moves[i].pos.y, moves[i].pos.z, players[moves[i].player], moves[i].time])
+		await db
+		.insert(movesTable)
+		.values({
+			moveNr: i + 1,
+			matchId: id,
+			coordX: moves[i].pos.x,
+			coordY: moves[i].pos.y,
+			coordZ: moves[i].pos.z,
+			player: players[moves[i].player],
+			playedAt: moves[i].time
+		});
 	}
 }
 

@@ -2,37 +2,37 @@ import { defineRelations } from "drizzle-orm";
 import * as schema from "./schema.js";
 
 export const relations = defineRelations(schema, (r) => ({
-	matches: {
-		userPlayer1: r.one.users({
-			from: r.matches.player1,
-			to: r.users.id,
-			alias: "matches_player1_users_id"
+	matchesTable: {
+		userPlayer1: r.one.usersTable({
+			from: r.matchesTable.player1,
+			to: r.usersTable.id,
+			alias: "matchesTable_player1_users_id"
 		}),
-		userPlayer2: r.one.users({
-			from: r.matches.player2,
-			to: r.users.id,
-			alias: "matches_player2_users_id"
+		userPlayer2: r.one.usersTable({
+			from: r.matchesTable.player2,
+			to: r.usersTable.id,
+			alias: "matchesTable_player2_users_id"
 		}),
-		userWinner: r.one.users({
-			from: r.matches.winner,
-			to: r.users.id,
-			alias: "matches_winner_users_id"
+		userWinner: r.one.usersTable({
+			from: r.matchesTable.winner,
+			to: r.usersTable.id,
+			alias: "matchesTable_winner_users_id"
 		}),
-		users: r.many.users({
-			from: r.matches.id.through(r.moves.matchId),
-			to: r.users.id.through(r.moves.player),
-			alias: "matches_id_users_id_via_moves"
+		users: r.many.usersTable({
+			from: r.matchesTable.id.through(r.movesTable.matchId),
+			to: r.usersTable.id.through(r.movesTable.player),
+			alias: "matchesTable_id_users_id_via_moves"
 		}),
 	},
-	users: {
-		matchesPlayer1: r.many.matches({
-			alias: "matches_player1_users_id"
+	usersTable: {
+		matchesPlayer1: r.many.matchesTable({
+			alias: "matchesTable_player1_users_id"
 		}),
-		matchesPlayer2: r.many.matches({
-			alias: "matches_player2_users_id"
+		matchesPlayer2: r.many.matchesTable({
+			alias: "matchesTable_player2_users_id"
 		}),
-		matchesWinner: r.many.matches({
-			alias: "matches_winner_users_id"
+		matchesWinner: r.many.matchesTable({
+			alias: "matchesTable_winner_users_id"
 		}),
 	},
 }))

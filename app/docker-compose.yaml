@@ -1,4 +1,11 @@
 services:
+  frontend:
+    image: nginx:1.30.5-alpine-slim
+    ports:
+      - "80:80"
+    volumes:
+      - ./frontend/dist:/usr/share/nginx/html
+      - ./frontend/nginx.conf:/etc/nginx/conf.d/default.conf
   backend:
     build: backend
     image: ttt_backend

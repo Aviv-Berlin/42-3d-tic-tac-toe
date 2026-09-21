@@ -8,7 +8,9 @@
     "esModuleInterop": true,
     "skipLibCheck": true,
     "resolveJsonModule": true,
-    "isolatedModules": true
+    "isolatedModules": true,
+    "rootDir": "..",
+		"outDir": "dist"
   },
-  "include": ["src"]
+  "include": ["src", "../backend/src/express-types/index.d.ts"]
 }

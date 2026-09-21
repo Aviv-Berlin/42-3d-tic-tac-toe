@@ -2,7 +2,9 @@
 
 3D Tic-Tac-Toe Web App
 
-## Instructions
+## General Instructions
+
+These steps are needed for running both in development mode (local) and in production (Docker containers).
 
 ### Install packages
 
@@ -18,21 +20,37 @@ From the root of the repository, run:
 ./setup_env.sh
 ```
 
-### Build the dist directory for the backend
+## Production Instructions
 
-From `app/backend`, run:
+These steps are needed for running in production (Docker containers).
+
+### Build the dist directory for the backend and the frontend
+
+From the root of the repository, run:
 ```bash
-npm run build
+./build.sh
 ```
 
-This will run the TypeScript compiler and store the JavaScript files in the `dist/` directory.
+### Build images and run containers
 
-### Build images and run containers (backend and database)
-
-From `app`, run:
+From the root of the repository, run:
 ```bash
-docker compose up --build
+./run_prod.sh
 ```
+
+The app it's accessible at:
+
+```bash
+http://localhost:8080
+```
+
+## Development instructions
+
+These steps are needed for running in development mode (local).
+
+### Check database
+
+Make sure that you have an instance of PostgreSQL running.
 
 ### Run frontend and backend on the host machine
 

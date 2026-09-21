@@ -38,6 +38,12 @@ From the root of the repository, run:
 ./run_prod.sh
 ```
 
+The app it's accessible at:
+
+```bash
+http://localhost:8080
+```
+
 ## Development instructions
 
 These steps are needed for running in development mode (local).

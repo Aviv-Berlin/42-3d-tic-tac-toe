@@ -16,7 +16,7 @@ export function setupWebSocket(server: http.Server) {
 
 		aliveSockets.set(socket, true);
 
-		const url = new URL(request.url ?? "", `http://localhost`);
+		const url = new URL(request.url ?? "", `ws://backend`);
 		console.log(`new websocket connection at ${url}`);
 
 		const matchId = url.pathname.split("/").pop();

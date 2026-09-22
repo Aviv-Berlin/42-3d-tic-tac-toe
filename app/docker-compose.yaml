@@ -1,4 +1,8 @@
 services:
+  frontend:
+    build: frontend
+    ports:
+      - "8080:80"
   backend:
     build: backend
     image: ttt_backend

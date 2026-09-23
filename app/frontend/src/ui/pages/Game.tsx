@@ -5,7 +5,6 @@ import Canvas from '../components/Canvas';
 import { sendMessage, waitForSocket } from "../../services/websocket";
 import { useGameData } from "../../store/gameData"
 import { createStartGameMessage } from '../../../../shared/messages';
-import { WsMessage } from "../../../../shared/messages";
 
 const Game = () => {
   console.log("[GAME] Game page called ...");

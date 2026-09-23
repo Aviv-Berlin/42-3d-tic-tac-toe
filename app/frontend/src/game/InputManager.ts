@@ -26,7 +26,6 @@ export class InputManager {
         window.addEventListener("keydown", this.handleKeyDown);
         this.mouse = this.scene.onPointerObservable.add(this.handleMouse,
             BABYLON.PointerEventTypes.POINTERTAP | BABYLON.PointerEventTypes.POINTERDOUBLETAP);
-
     }
 
     public unregisterEvents(): void {
@@ -59,8 +58,7 @@ export class InputManager {
                 if (player.selectPos(pos))
                     player.choosePos();
             }
-        }
-        
+        }       
     }
 
     private handleKeyDown = (event: KeyboardEvent): void => {

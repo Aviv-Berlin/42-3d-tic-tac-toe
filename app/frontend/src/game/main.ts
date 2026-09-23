@@ -14,6 +14,10 @@ export async function createBabylonGame(canvas: HTMLCanvasElement, gameData: Gam
 
   const instanceID = crypto.randomUUID().slice(0, 8);
   console.log(`[Babylon ${instanceID}] CREATE`);
+
+  const ws = getSocket();
+  if (!ws) return;
+
   const engine = new BABYLON.Engine(canvas, true);
   const scene = new BABYLON.Scene(engine);
   const materials = new Materials(scene);
@@ -21,13 +25,17 @@ export async function createBabylonGame(canvas: HTMLCanvasElement, gameData: Gam
   const board = new Board(gameData.size, scene, materials);
   const ui = new GameUI(scene, onExit, materials, board, camera, true);
   
+<<<<<<< HEAD
   const ws = await waitForSocket();
   if (!ws) {
 	console.log("websocket missing")
 	return;
   }
+=======
+>>>>>>> main
 
-  const serverConnection = new GameServerConnection(gameData, ui, board, 2, ws, onExit);
+
+  const serverConnection = new GameServerConnection(gameData, ui, board, ws, onExit);
   
   const handleGameMessage = (event: MessageEvent) => {
     const data: WsMessage = JSON.parse(event.data);
@@ -39,12 +47,11 @@ export async function createBabylonGame(canvas: HTMLCanvasElement, gameData: Gam
   ui.register(serverConnection);
   const player = new LocalPlayer(gameData.player1.username, serverConnection, board);
   serverConnection.register(player);
-  ////
+
   if (gameData.player2.type === "guest") {
     const guestPlayer = new LocalPlayer("guest",serverConnection, board);
     serverConnection.register(guestPlayer);
   }
-///
 
   const input = new InputManager(serverConnection, scene, board, camera);
   input.registerEvents();
@@ -57,12 +64,14 @@ export async function createBabylonGame(canvas: HTMLCanvasElement, gameData: Gam
 
   //     if (now - lastRender >= frameInterval) {
   //         scene.render();
+  //         scene.activeCamera = camera.getCamera();
   //         lastRender = now;
   //     }
   // });
 
   engine.runRenderLoop(() => {
       scene.render();
+      scene.activeCamera = camera.getCamera();
   });
 
   const handleWheel = (event: WheelEvent) => { event.preventDefault();  };

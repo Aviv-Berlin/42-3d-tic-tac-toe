@@ -14,6 +14,10 @@ export function createBabylonGame(canvas: HTMLCanvasElement, gameData: GameData,
 
   const instanceID = crypto.randomUUID().slice(0, 8);
   console.log(`[Babylon ${instanceID}] CREATE`);
+
+  const ws = getSocket();
+  if (!ws) return;
+
   const engine = new BABYLON.Engine(canvas, true);
   const scene = new BABYLON.Scene(engine);
   const materials = new Materials(scene);
@@ -21,8 +25,7 @@ export function createBabylonGame(canvas: HTMLCanvasElement, gameData: GameData,
   const board = new Board(gameData.size, scene, materials);
   const ui = new GameUI(scene, onExit, materials, board, camera, true);
   
-  const ws = getSocket();
-  if (!ws) return;
+
 
   const serverConnection = new GameServerConnection(gameData, ui, board, ws, onExit);
   

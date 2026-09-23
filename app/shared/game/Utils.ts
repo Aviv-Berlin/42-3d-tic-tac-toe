@@ -1,4 +1,4 @@
-import { GridPosition, CellState, PLAYER_STATES } from "./Types.js"
+import { GridPosition } from "./Types.js"
 
 export function delay(milliseconds: number): Promise<void> {
     return new Promise(resolve => setTimeout(resolve, milliseconds));

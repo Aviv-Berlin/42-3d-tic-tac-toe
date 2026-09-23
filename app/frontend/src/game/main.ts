@@ -15,8 +15,11 @@ export async function createBabylonGame(canvas: HTMLCanvasElement, gameData: Gam
   const instanceID = crypto.randomUUID().slice(0, 8);
   console.log(`[Babylon ${instanceID}] CREATE`);
 
-  const ws = getSocket();
-  if (!ws) return;
+  const ws = await waitForSocket();
+  if (!ws) {
+	console.log("websocket missing")
+	return;
+  }
 
   const engine = new BABYLON.Engine(canvas, true);
   const scene = new BABYLON.Scene(engine);
@@ -24,16 +27,6 @@ export async function createBabylonGame(canvas: HTMLCanvasElement, gameData: Gam
   const camera = new CameraManager(scene, canvas);
   const board = new Board(gameData.size, scene, materials);
   const ui = new GameUI(scene, onExit, materials, board, camera, true);
-  
-<<<<<<< HEAD
-  const ws = await waitForSocket();
-  if (!ws) {
-	console.log("websocket missing")
-	return;
-  }
-=======
->>>>>>> main
-
 
   const serverConnection = new GameServerConnection(gameData, ui, board, ws, onExit);
   

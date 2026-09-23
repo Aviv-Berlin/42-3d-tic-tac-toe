@@ -2,11 +2,7 @@ import { useEffect, useRef } from "react";
 import { useNavigate } from "react-router-dom";
 import { createBabylonGame } from "../../game/main";
 import { GameData } from "../../../../shared/game";
-<<<<<<< HEAD
-import { useSetGameData } from "../../store/gameData"
-import { waitForSocket } from "../../services/websocket";
-=======
->>>>>>> main
+
 
 interface CanvasProps {
   gameData: GameData | undefined;

@@ -19,15 +19,3 @@ export function negateGP(a: GridPosition): GridPosition {
         z: -a.z
     };
 }
-
-export function playerStateToIndex(state: CellState): number {
-    const index = PLAYER_STATES.indexOf(state);
-
-    if (index === -1) {
-        throw new Error(
-            `CellState ${state} does not represent a player`
-        );
-    }
-
-    return index;
-}

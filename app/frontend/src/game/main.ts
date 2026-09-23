@@ -24,7 +24,7 @@ export function createBabylonGame(canvas: HTMLCanvasElement, gameData: GameData,
   const ws = getSocket();
   if (!ws) return;
 
-  const serverConnection = new GameServerConnection(gameData, ui, board, 2, ws, onExit);
+  const serverConnection = new GameServerConnection(gameData, ui, board, ws, onExit);
   
   const handleGameMessage = (event: MessageEvent) => {
     const data: WsMessage = JSON.parse(event.data);
@@ -36,12 +36,11 @@ export function createBabylonGame(canvas: HTMLCanvasElement, gameData: GameData,
   ui.register(serverConnection);
   const player = new LocalPlayer(gameData.player1.username, serverConnection, board);
   serverConnection.register(player);
-  ////
+
   if (gameData.player2.type === "guest") {
     const guestPlayer = new LocalPlayer("guest",serverConnection, board);
     serverConnection.register(guestPlayer);
   }
-///
 
   const input = new InputManager(serverConnection, scene, board, camera);
   input.registerEvents();
@@ -54,12 +53,14 @@ export function createBabylonGame(canvas: HTMLCanvasElement, gameData: GameData,
 
   //     if (now - lastRender >= frameInterval) {
   //         scene.render();
+  //         scene.activeCamera = camera.getCamera();
   //         lastRender = now;
   //     }
   // });
 
   engine.runRenderLoop(() => {
       scene.render();
+      scene.activeCamera = camera.getCamera();
   });
 
   const handleWheel = (event: WheelEvent) => { event.preventDefault();  };

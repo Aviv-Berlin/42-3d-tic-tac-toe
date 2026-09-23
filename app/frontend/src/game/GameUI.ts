@@ -1,4 +1,5 @@
-import type { Scene } from "@babylonjs/core";
+import * as BABYLON from "@babylonjs/core";
+import type { Scene, Mesh } from "@babylonjs/core";
 import * as GUI from "@babylonjs/gui";
 import { Materials } from "./Materials"
 import { Board } from "./Board"
@@ -6,13 +7,34 @@ import { GameServerConnection } from "./GameServerConnection"
 import { LOOKS } from './LookSetting';
 import { CameraManager } from "./CameraManager";
 
-//check here if I need scene or camera
+export const ANCHORS = {
+    // [signX, signY]
+    "bottom-left": [-1, -1],
+    "bottom-right": [1, -1],
+    "center-left": [-1, 0],
+    "center-right": [1, 0],
+    "top-left": [-1, 1],
+    "top-right": [1, 1],
+};
+
+type pinOptions = {
+    anchor: keyof typeof ANCHORS;
+    distance?: number;
+    marginXPx?: number;
+    marginYPx?: number;
+    sizePx?: number;
+};
 
 export class GameUI {
 
     private ui: GUI.AdvancedDynamicTexture;
     private topPlayerBadge: GUI.Button | null = null;
     private midPlayerBadge: GUI.Button | null = null;
+    private homeBadgeMesh: Mesh | null = null;
+    private otherBadgeMesh: Mesh | null = null;
+    private badgeMeshObserver: BABYLON.Observer<Scene> | null = null;
+    private badgeCamera: BABYLON.FreeCamera;
+    private readonly badgeLayerMask = 0x10000000;
     private vsBadge: GUI.Button | null = null;
     private exitButton: GUI.Button | null = null;
     private lookButton:  GUI.Button | null = null;
@@ -34,6 +56,31 @@ export class GameUI {
         this.board = board;
         this.camera = camera;
         this.ui = GUI.AdvancedDynamicTexture.CreateFullscreenUI("UI", true, scene);
+        
+        const mainCamera = this.camera.getCamera();
+        mainCamera.layerMask &= ~this.badgeLayerMask;
+        this.badgeCamera = new BABYLON.FreeCamera(
+            "badgeCamera",
+            BABYLON.Vector3.Zero(),
+            scene
+        );
+        this.badgeCamera.mode = BABYLON.Camera.ORTHOGRAPHIC_CAMERA;
+        this.badgeCamera.minZ = 0.01;
+        this.badgeCamera.maxZ = 100;
+        this.badgeCamera.layerMask = this.badgeLayerMask;
+
+        this.badgeCamera.setTarget(new BABYLON.Vector3(0, 0, scene.useRightHandedSystem ? -1 : 1));
+
+        // Render the board and GUI first, then the indicators.
+        scene.activeCameras = [mainCamera, this.badgeCamera];
+        scene.activeCamera = mainCamera;
+        // Mouse interaction still uses the board's camera.
+        scene.cameraToUseForPointers = mainCamera;
+        // Render the fullscreen GUI only once, through the main camera.
+        if (this.ui.layer) {
+            this.ui.layer.layerMask = mainCamera.layerMask;
+        }
+        this.updateBadgeCamera();
         if (displayExit)
             this.createExitButton();
         this.createLookButton();
@@ -41,12 +88,21 @@ export class GameUI {
     }
 
     private toggleLook(): void {
-        const nextLookIndex = (this.materials.getLookIndex() + 1) % LOOKS.length;
+        const nextLookIndex =
+            (this.materials.getLookIndex() + 1) % LOOKS.length;
+
         this.materials.applyLook(nextLookIndex);
         this.board.createBoard(false);
         this.board.refreshMoves();
         this.board.refreshPreview();
-        this.applyButtonLook();
+
+        const homeName = this.topPlayerBadge?.textBlock?.text;
+        const otherName = this.midPlayerBadge?.textBlock?.text;
+        if (homeName !== undefined && otherName !== undefined) {
+            this.playerBadges(this.homePlayerIndex, homeName, otherName);
+        } else {
+            this.applyButtonLook();
+        }
     }
 
     public register(game: GameServerConnection): void {
@@ -87,7 +143,7 @@ export class GameUI {
         button.height = "80px";
         button.cornerRadius = 55;
         button.thickness = 3;
-        // top-right corner
+        // bottom-right corner
         button.horizontalAlignment = GUI.Control.HORIZONTAL_ALIGNMENT_RIGHT;
         button.verticalAlignment = GUI.Control.VERTICAL_ALIGNMENT_BOTTOM;
         button.top = "-30px";
@@ -112,7 +168,6 @@ export class GameUI {
         const look = this.materials.getLook();
         const backgroundColor = look.backgroundColor;
         const backgroundAlpha = look.textCubeAlpha ?? look.cubeAlpha;
-
         const background = `rgba(${backgroundColor.r * 255},
             ${backgroundColor.g * 255}, ${backgroundColor.b * 255}, ${backgroundAlpha})`;
 
@@ -145,21 +200,16 @@ export class GameUI {
 
         // home Player
         if (this.topPlayerBadge) {
-
-
             this.topPlayerBadge.background = background;
             this.topPlayerBadge.color = homePlayerColor;
-
             if (this.topPlayerBadge.textBlock)
                 this.topPlayerBadge.textBlock.color = homePlayerColor;
         }
 
         // otherPlayer - can be online, guest or ai
         if (this.midPlayerBadge) {
-
             this.midPlayerBadge.background = background;
             this.midPlayerBadge.color = otherPlayerColor;
-
             if (this.midPlayerBadge.textBlock)
                 this.midPlayerBadge.textBlock.color = otherPlayerColor;
         }
@@ -167,9 +217,7 @@ export class GameUI {
         // VS badge
         if (this.vsBadge) {
             const vsColor = look.vsColor.toHexString();
-
             this.vsBadge.color = vsColor;
-
             if (this.vsBadge.textBlock)
                 this.vsBadge.textBlock.color = vsColor;
         }
@@ -206,14 +254,38 @@ export class GameUI {
         return badge;
     }
 
+    private updateBadgeCamera(): void {
+        const engine = this.scene.getEngine();
+        const unitsPerPixel = 0.01;
+        const halfW = engine.getRenderWidth() * unitsPerPixel / 2;
+        const halfH = engine.getRenderHeight() * unitsPerPixel / 2;
+        this.badgeCamera.orthoLeft = -halfW;
+        this.badgeCamera.orthoRight = halfW;
+        this.badgeCamera.orthoTop = halfH;
+        this.badgeCamera.orthoBottom = -halfH;
+    }
+
+
+    private pinToCorner(mesh: Mesh, opts: pinOptions): void {
+        const placement = { distance: 3, marginXPx: 24, marginYPx: 24,
+            sizePx: 60, ...opts,};
+        const engine = this.scene.getEngine();
+        const unitsPerPixel = 0.01;
+        const halfW = engine.getRenderWidth() * unitsPerPixel / 2;
+        const halfH = engine.getRenderHeight() * unitsPerPixel / 2;
+        const localRadius = mesh.getBoundingInfo().boundingSphere.radius;
+        if (localRadius <= 0)
+            return;
+        const radius = placement.sizePx * unitsPerPixel / 2;
+        mesh.scaling.setAll(radius / localRadius);
+        const [sx, sy] = ANCHORS[placement.anchor];
+
+        mesh.position.set(sx * (halfW -placement.marginXPx * unitsPerPixel - radius),
+            sy * (halfH - placement.marginYPx * unitsPerPixel - radius),
+            placement.distance * (this.scene.useRightHandedSystem ? -1 : 1));
+    }
+
     public playerBadges(homePlayerIndex: number, localPlayer: string, otherPlayer: string): void {
-        // const look = this.materials.getLook();
-        // const meshPlayer1 = this.board.createStyledMesh(look.moveStyle1, 0.3, "player1DemoMesh");     
-        // meshPlayer1.position = new BABYLON.Vector3(-7,3,10);
-        // meshPlayer1.material = this.materials.getPlayerMaterial(1);
-        // meshPlayer1.renderingGroupId = 0;
-        // meshPlayer1.isPickable = false;
-        // meshPlayer1.parent = this.camera.getCamera();
 
         this.homePlayerIndex = homePlayerIndex;
         
@@ -249,6 +321,61 @@ export class GameUI {
             this.ui.addControl(this.vsBadge);
         }
         this.applyButtonLook();
+
+    // Remove previous meshes and callback if called again.
+        if (this.badgeMeshObserver) {
+            this.scene.onBeforeRenderObservable.remove(this.badgeMeshObserver);
+            this.badgeMeshObserver = null;
+        }
+
+        this.homeBadgeMesh?.dispose();
+        this.otherBadgeMesh?.dispose();
+
+        const look = this.materials.getLook();
+        const homeIsPlayer1 = homePlayerIndex === 0;
+
+        const homeMesh = this.board.createStyledMesh(homeIsPlayer1 ? look.moveStyle1 : look.moveStyle2, 0.3, "homeBadgeMesh");
+        const otherMesh = this.board.createStyledMesh(homeIsPlayer1 ? look.moveStyle2 : look.moveStyle1, 0.3, "otherBadgeMesh");
+
+        homeMesh.material = this.materials.getPlayerMaterial(homeIsPlayer1 ? 1 : 2);
+        otherMesh.material = this.materials.getPlayerMaterial(homeIsPlayer1 ? 2 : 1);
+
+        for (const mesh of [homeMesh, otherMesh]) {
+            mesh.parent = this.badgeCamera;
+            mesh.isPickable = false;
+            mesh.layerMask = this.badgeLayerMask;
+            mesh.renderingGroupId = 0;
+
+            // Also handle shapes built from child meshes.
+            for (const child of mesh.getChildMeshes()) {
+                child.layerMask = this.badgeLayerMask;
+                child.isPickable = false;
+                child.renderingGroupId = 0;
+            }
+        }
+
+        this.homeBadgeMesh = homeMesh;
+        this.otherBadgeMesh = otherMesh;
+
+        this.badgeMeshObserver =
+            this.scene.onBeforeRenderObservable.add(() => {
+                this.updateBadgeCamera();
+                if (!this.topPlayerBadge || !this.midPlayerBadge)
+                    return;
+
+                this.pinToCorner(homeMesh, { anchor: "top-left", distance: 3,
+                    marginXPx: 30 + this.topPlayerBadge.widthInPixels + 20,
+                        marginYPx: 45, sizePx: 60,});
+
+                this.pinToCorner(otherMesh, { anchor: "top-left", distance: 3,
+                    marginXPx: 30 + this.midPlayerBadge.widthInPixels + 20,
+                        marginYPx: 245, sizePx: 60,});
+                
+                const deltaTime = this.scene.getEngine().getDeltaTime() / 1000;
+                const rotationSpeed = 2; // radians per second
+                homeMesh.rotation.y += rotationSpeed * deltaTime;
+                otherMesh.rotation.y += rotationSpeed * deltaTime;
+        });
     }
 
     public toggleBadge(is1: boolean) {
@@ -262,8 +389,14 @@ export class GameUI {
     }
 
 
-
     public async displayWinner(winner: string) {
+        if (this.badgeMeshObserver) {
+            this.scene.onBeforeRenderObservable.remove(this.badgeMeshObserver);
+            this.badgeMeshObserver = null;
+        }
+        this.homeBadgeMesh?.dispose();
+        this.otherBadgeMesh?.dispose();
+
         let badge: GUI.Button | null = null;
         let newText: string;
         if (this.topPlayerBadge?.textBlock?.text === winner) {
@@ -332,10 +465,22 @@ export class GameUI {
 
     public dispose(): void {
    
+        if (this.badgeMeshObserver) {
+            this.scene.onBeforeRenderObservable.remove(this.badgeMeshObserver);
+            this.badgeMeshObserver = null;
+        }
 
+        this.homeBadgeMesh?.dispose();
+        this.otherBadgeMesh?.dispose();
+        this.homeBadgeMesh = null;
+        this.otherBadgeMesh = null;
+        const mainCamera = this.camera.getCamera();
 
+        this.scene.activeCameras = null;
+        this.scene.activeCamera = mainCamera;
+        this.scene.cameraToUseForPointers = mainCamera;
 
-
+        this.badgeCamera.dispose();
         this.ui.dispose();
     }
 

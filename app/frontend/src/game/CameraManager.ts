@@ -49,29 +49,8 @@ export class CameraManager {
             return;
 
         const scene = this.camera.getScene();
-
         scene.onBeforeRenderObservable.remove(this.spinObserver);
         this.spinObserver = null;
-    }
-
-    public resetCamera(): void {
-    
-    this.camera.detachControl();
-    Animation.CreateAndStartAnimation("alphaAnim", this.camera, "alpha", 60, 30,
-        this.camera.alpha, this.initialAlpha, Animation.ANIMATIONLOOPMODE_CONSTANT);
-
-    Animation.CreateAndStartAnimation("betaAnim", this.camera, "beta", 60, 30,
-        this.camera.beta, this.initialBeta, Animation.ANIMATIONLOOPMODE_CONSTANT);
-
-    Animation.CreateAndStartAnimation("radiusAnim", this.camera, "radius", 60, 30,
-        this.camera.radius, this.initialRadius, Animation.ANIMATIONLOOPMODE_CONSTANT);
-
-    this.camera.setTarget(Vector3.Zero());
-
-
-    setTimeout(() => {
-        this.camera.attachControl(this.canvas, true);
-    }, 500);
     }
     
     public getCamera(): ArcRotateCamera {
@@ -127,7 +106,6 @@ export class CameraManager {
 
         let best = gridDirs[0];
         let bestDot = -Infinity;
-
         for (const gridDir of gridDirs) {
             const dot = Vector3.Dot(camDir, gridDir);
             if (dot > bestDot) {
@@ -135,7 +113,6 @@ export class CameraManager {
                 best = gridDir;
             }
         }
-
         return best.clone();
     }
 

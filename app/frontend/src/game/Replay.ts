@@ -120,15 +120,6 @@ export class Replay {
     }
   }
 
-  public isCellEmpty(pos: GridPosition): boolean {
-    return this.boardState[pos.x][pos.y][pos.z] === CellState.Empty;
-  }
-
-  public getCell(pos: GridPosition): CellState {
-    return this.boardState[pos.x][pos.y][pos.z];
-  }
-
-
   public dispose(): void {
     this.disposed = true;
     if (this.exitTimeout !== null) {

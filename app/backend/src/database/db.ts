@@ -1,6 +1,7 @@
 import { Pool } from "pg";
 import { readFile } from 'node:fs/promises'; // API for async file operations in Node.js
 import path from 'node:path';
+import { drizzle } from 'drizzle-orm/node-postgres';
 
 const filePath = process.env.NODE_ENV === "prod" ? '/run/secrets/db_password' : path.join(import.meta.dirname, '../../../secrets/postgres-passwd');
 const pw = await readFile(filePath, 'utf8');
@@ -13,13 +14,21 @@ console.log({
   DB_PORT: process.env.DB_PORT,
 });
 
-const pool = new Pool({
+const dbConfig = {
 	user: process.env.DB_USER,
 	host: process.env.NODE_ENV === "prod" ? process.env.DB_PROD_HOST : process.env.DB_DEV_HOST,
 	database: process.env.DB_NAME,
 	password: pw.trim(),
 	port: Number(process.env.DB_PORT),
-});
+};
+
+const pool = new Pool(dbConfig);
+
+const dbUrl = `postgres://${dbConfig.user}:${dbConfig.password}@${dbConfig.host}:${dbConfig.port}/${dbConfig.database}`;
+
+export const db = drizzle(dbUrl!);
+
+// console.log(`URL: ${dbUrl}`);
 
 export const query = (
 	text: string,

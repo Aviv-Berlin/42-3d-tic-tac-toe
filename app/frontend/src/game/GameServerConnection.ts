@@ -19,7 +19,6 @@ export class GameServerConnection {
     private guestPlayerIndex: number = -1;
     private players: LocalPlayer[] = [];
     private currentPlayerIndex: number = -1;
-    private nPlayers: number;
     private board: Board;
     private gameData: GameData;
     private gameID!: string;
@@ -27,12 +26,11 @@ export class GameServerConnection {
     private onExit: () => void;
     private boardAnimation: Promise<void> = Promise.resolve();
 
-    constructor(gameData: GameData, ui: GameUI, board: Board, nPlayers: number, ws: WebSocket, onExit: () => void) {
+    constructor(gameData: GameData, ui: GameUI, board: Board, ws: WebSocket, onExit: () => void) {
         this.gameData = gameData;
         this.N = gameData.size;
         this.ui = ui;
         this.board = board;
-        this.nPlayers = nPlayers;
         this.ws = ws;
         this.onExit = onExit;
         this.initBoard();
@@ -42,14 +40,13 @@ export class GameServerConnection {
 
         console.log("Received message:", message);
         switch (message.type) {
-            case "game-start":
+            case "game-start": {
                 console.log("GAME START");
                 console.log("youAre:", message.payload.youAre);
                 console.log("playerNames:", message.payload.playerNames);
                 console.log("playerNames[0]:", message.payload.playerNames[0]);
                 console.log("playerNames[1]:", message.payload.playerNames[1])
                 this.playerNames = message.payload.playerNames;
-                this.nPlayers = message.payload.nPlayers;
                 this.localPlayerIndex = message.payload.youAre;
                 this.otherPlayerIndex = 0;
                 if (this.localPlayerIndex === 0)
@@ -60,8 +57,9 @@ export class GameServerConnection {
                 this.boardAnimation = this.board.createBoard(true);
                 await this.boardAnimation;
                 break;
+            }
 
-            case "turn":
+            case "turn": {
                 await this.boardAnimation;
                 console.log("TURN", { playsNow: message.payload.playsNow,  localPlayerIndex: this.localPlayerIndex,
                     isMyTurn: message.payload.playsNow === this.localPlayerIndex, guestPlayerIndex: this.guestPlayerIndex, isGuestTurn: message.payload.playsNow === this.guestPlayerIndex});
@@ -79,15 +77,17 @@ export class GameServerConnection {
                     this.board.hidePreview();
                 }
                 break;
+            }
 
-            case "move":
+            case "move": {
                 await this.boardAnimation;  
                 this.board.hidePreview();
                 this.board.placeMoveMesh(message.payload.position, message.payload.player, false);
                 this.boardState[message.payload.position.x][message.payload.position.y][message.payload.position.z] = message.payload.player;
                 break;
+            }
 
-            case "end":
+            case "end": {
                 Object.assign(this.gameData, message.payload.gameData);
                 this.board.hidePreview();
                 if (message.payload.winningPos && this.gameData.winner) {
@@ -102,6 +102,7 @@ export class GameServerConnection {
                 }
                 setTimeout(() => {this.onExit();}, 3000);
                 break;
+            }
 
 			case "game-state": {
     			const state = message.payload;
@@ -130,7 +131,8 @@ export class GameServerConnection {
 			
     			// Restore whose turn it is
     			this.restoreTurn();
-				break;}
+				break;
+            }
 
 
             default:
@@ -189,8 +191,6 @@ export class GameServerConnection {
 	}
 
     public register(player: LocalPlayer): void {
-        if (this.players.length >= this.nPlayers)
-            throw new Error("Too many players were registered");
         if (player.name === "guest")
             this.guestPlayer = player;
         else
@@ -220,15 +220,6 @@ export class GameServerConnection {
                 return null;
     }
 
-    public getCurrentPlayerState(): CellState {
-        const state = PLAYER_STATES[this.currentPlayerIndex];
-
-        if (state === undefined) {
-            throw new Error("Current player has no CellState");
-        }
-
-        return state;
-    }
 
     private initBoard() {
         for(let x = 0; x < this.N; x++) {

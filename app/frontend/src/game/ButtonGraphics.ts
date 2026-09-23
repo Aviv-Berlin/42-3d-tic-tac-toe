@@ -189,9 +189,11 @@ export class ButtonGraphics {
         body.position = new BABYLON.Vector3(0, -0.5, 0);
         const head = BABYLON.MeshBuilder.CreateSphere("head", { diameter: 0.5 }, this.scene);
         head.position = new BABYLON.Vector3(0, 0.8, 0);
-        const merged = BABYLON.Mesh.MergeMeshes([body,head], true);
-            if (!merged)
-                throw new Error("Failed to merge cylinders");
+        let merged = BABYLON.Mesh.MergeMeshes([body,head], true);
+        if (!merged) {
+            merged = body;
+            head.dispose();
+        }
         merged.name = "player";
         const material = new BABYLON.StandardMaterial("buttonCube", this.scene);
         material.diffuseColor = new BABYLON.Color3(0, 0, 0);
@@ -206,48 +208,22 @@ export class ButtonGraphics {
         this.boardMeshes.forEach(mesh => mesh.dispose());
         this.boardMeshes = [];
 
-
         const finalMesh = BABYLON.MeshBuilder.CreateBox("smallCube", { size: 2.8 },  this.scene);
         finalMesh.position = new BABYLON.Vector3(0, 0, 0);
         const material = new BABYLON.StandardMaterial("buttonCube", this.scene);
-        //material.diffuseColor = new BABYLON.Color3(1, 1, 1);
         material.emissiveColor = BABYLON.Color3.FromHexString("#963400");
-        //material.emissiveColor = new BABYLON.Color3(0, 0, 0);
-        //material.diffuseColor = BABYLON.Color3.FromHexString("#e5e5e5");
         material.alpha = 1;
         material.disableLighting = true;
         finalMesh.material = material;
-        // finalMesh.enableEdgesRendering();
-        // finalMesh.edgesWidth = 15.0;
-        // finalMesh.edgesColor = new BABYLON.Color4(1, 1, 1, 1);
         finalMesh.metadata = { gridPosition: { x: 0, y: 0, z: 0}};
         this.boardMeshes.push(finalMesh);
 
     }
 
-    // public toggleCubeEdges(renderEdges: boolean): void {
-    //     for (const mesh of this.boardMeshes) {
-    //         if (renderEdges)
-    //             this.materials.applyCubeEdges(mesh);
-    //         else
-    //             mesh.disableEdgesRendering();
-    //     }
-    // }
-
-
-
     private getPosition(x: number, y: number, z: number, posOffset: number): BABYLON.Vector3 {
         const step = this.cellSize + this.materials.getLook().boardGap;;
         return new BABYLON.Vector3
 			((x - this.offset) * step, (y - this.offset + posOffset) * step, (z - this.offset) * step);
-    }
-
-
-
-
-
-    public refreshTextCubes(): void {
-        this.textCubeFactory.refreshLook();
     }
 
 }

@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react'
+import { useState } from 'react'
 import { Link, useNavigate } from 'react-router-dom'
 import AuthLayout from '../layouts/AuthLayout'
 import AuthCard from '../components/AuthCard'
@@ -31,7 +31,6 @@ const Login = () => {
     if (!form.login || !form.password) return;
     try {
       const response = await auth.login(form)
-	  //console.log("response:", response.data.username)
       setUsername(response.data.username); // what if form.login is email? Logged in with email but username was displayed correctly and no errors
       navigate("/home");
     } catch (err) {

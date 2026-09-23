@@ -3,7 +3,7 @@ import ProfileLayout from '../layouts/ProfileLayout';
 import GameRecap from '../components/GameRecap';
 import { GameHistory } from '../../../../shared/game'
 import statsService from "../../services/stats";
-import { Stats, UserGameStats, RankData } from "../../../../shared/form";
+import { UserGameStats, RankData } from "../../../../shared/form";
 
 const Profile = () => {
   const [games, setGames] = useState<GameHistory[]>([]);
@@ -47,6 +47,10 @@ const Profile = () => {
         <div className="flex gap-2 items-baseline justify-between">
           <p className="text-md">SCORE:</p>
           <p className="text-xl">{rankData.full_score}</p>
+        </div>
+        <div className="flex gap-2 items-baseline justify-between">
+          <p className="text-md">RANK:</p>
+          <p className="text-xl">{rankData.full_rank}/{rankData.total_users}</p>
         </div>
         <div className="flex gap-2 items-baseline justify-between">
           <p className="text-md">GAMES:</p>

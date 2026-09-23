@@ -49,6 +49,10 @@ const Profile = () => {
           <p className="text-xl">{rankData.full_score}</p>
         </div>
         <div className="flex gap-2 items-baseline justify-between">
+          <p className="text-md">RANK:</p>
+          <p className="text-xl">{rankData.full_rank}/{rankData.total_users}</p>
+        </div>
+        <div className="flex gap-2 items-baseline justify-between">
           <p className="text-md">GAMES:</p>
           <p className="text-xl">{gamesTotal}</p>
         </div>

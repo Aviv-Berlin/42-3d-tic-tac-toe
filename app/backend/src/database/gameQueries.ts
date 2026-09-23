@@ -21,17 +21,18 @@ async function calculateOnlineScore(game: GameData, p1ID: number, p2ID: number, 
 	let scoreBonus = scoreDiff / 30;
 	if (scoreBonus > 30)
 		scoreBonus = 30;
-	let p1score = 0;
+	let score = 0;
 	if (winnerId === p1ID)
-		p1score = game.size * 10 + scoreBonus;
+		score = game.size * 10 + scoreBonus;
 	else {
-		p1score = -10;
+		score = -10;
 		if (p1ID > p2ID)
-			p1score =- (scoreBonus / 2);
+			score =- (scoreBonus / 2);
 	}
 	if (winnerId !== p1ID && winnerId !== p2ID)
-		p1score = 0;
-	return (Math.round(p1score));
+		score = 0;
+	console.log(`p1Score: ${p1Score}, p2Score: ${p2Score}, scoreBonus: ${scoreBonus}, score: ${score}`);
+	return (Math.round(score));
 }
 
 function calculateAiScore(game: GameData, p1ID: number, p2ID: number, winnerId: number | null) {

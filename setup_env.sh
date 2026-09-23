@@ -3,7 +3,8 @@
 # .env
 env_file="app/backend/.env"
 echo "Creating $env_file"
-echo "SECRET=secret" > "$env_file"
+secret=$(openssl rand -base64 16)
+echo "SECRET=$secret" > "$env_file"
 echo "PORT=3001" >> "$env_file"
 echo "DB_PORT=5432" >> "$env_file"
 echo "DB_DEV_HOST=localhost" >> "$env_file"

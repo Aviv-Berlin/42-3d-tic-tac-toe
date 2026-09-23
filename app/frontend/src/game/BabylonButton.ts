@@ -2,12 +2,14 @@ import * as BABYLON from "@babylonjs/core";
 import { Materials } from "./Materials";
 import { ButtonGraphics } from "./ButtonGraphics";
 import { CameraManager } from "./CameraManager";
-
+import { babylonRegistery } from "./BabylonRegistery";
 
 export function babylonButton(canvas: HTMLCanvasElement, type: string): () => void {
 
   const engine = new BABYLON.Engine(canvas, true);
   const scene = new BABYLON.Scene(engine);
+  const registery = new babylonRegistery;
+  registery.add(type, canvas, engine, scene);
   const materials = new Materials(scene);
   const camera = new CameraManager(scene, canvas);
   let graphics: ButtonGraphics; 
@@ -101,8 +103,7 @@ export function babylonButton(canvas: HTMLCanvasElement, type: string): () => vo
   return () => {
     engine.stopRenderLoop();
     window.removeEventListener("resize", handleResize);
-    scene.dispose();
-    engine.dispose();
+    registery.dispose(engine);
   };
 }
 

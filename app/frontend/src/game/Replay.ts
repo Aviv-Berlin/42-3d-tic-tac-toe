@@ -7,12 +7,15 @@ import { CameraManager } from "./CameraManager";
 import { GameData } from "../../../shared/game";
 import { delay } from "../../../shared/game/Utils";
 import { checkWin } from "../../../backend/src/game/GameCheckWin";
+import { babylonRegistery } from "./BabylonRegistery";
 
 
 export function replayGame(canvas: HTMLCanvasElement, gameData: GameData, onExit: () => void) {
 
   const engine = new BABYLON.Engine(canvas, true);
   const scene = new BABYLON.Scene(engine);
+  const registery = new babylonRegistery;
+  registery.add("Replay", canvas, engine, scene);
   const materials = new Materials(scene);
   const camera = new CameraManager(scene, canvas);
   const board = new Board(gameData.size, scene, materials);
@@ -37,8 +40,7 @@ export function replayGame(canvas: HTMLCanvasElement, gameData: GameData, onExit
     replay.dispose();
     engine.stopRenderLoop();
     ui.dispose();
-    scene.dispose();
-    engine.dispose();
+    registery.dispose(engine);
   };
 }
 

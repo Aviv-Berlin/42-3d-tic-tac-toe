@@ -9,6 +9,7 @@ import { LocalPlayer } from "./LocalPlayer"
 import { GameData } from "../../../shared/game";
 import { WsMessage } from "../../../shared/messages"
 import { getSocket } from "../services/websocket";
+import { babylonRegistery } from "./BabylonRegistery";
 
 export function createBabylonGame(canvas: HTMLCanvasElement, gameData: GameData, onExit: () => void) {
 
@@ -20,6 +21,8 @@ export function createBabylonGame(canvas: HTMLCanvasElement, gameData: GameData,
 
   const engine = new BABYLON.Engine(canvas, true);
   const scene = new BABYLON.Scene(engine);
+  const registery = new babylonRegistery;
+  registery.add(`Game: ${instanceID}`, canvas, engine, scene);
   const materials = new Materials(scene);
   const camera = new CameraManager(scene, canvas);
   const board = new Board(gameData.size, scene, materials);
@@ -90,8 +93,7 @@ export function createBabylonGame(canvas: HTMLCanvasElement, gameData: GameData,
 	  ws.removeEventListener("message", handleGameMessage)
 
     ui.dispose();
-    scene.dispose();
-    engine.dispose();
+    registery.dispose(engine);
   };
 
   return cleanup;

@@ -8,9 +8,9 @@ import { CameraManager } from "./CameraManager";
 import { LocalPlayer } from "./LocalPlayer"
 import { GameData } from "../../../shared/game";
 import { WsMessage } from "../../../shared/messages"
-import { getSocket } from "../services/websocket";
+import { waitForSocket } from "../services/websocket";
 
-export function createBabylonGame(canvas: HTMLCanvasElement, gameData: GameData, onExit: () => void) {
+export async function createBabylonGame(canvas: HTMLCanvasElement, gameData: GameData, onExit: () => void) {
 
   const instanceID = crypto.randomUUID().slice(0, 8);
   console.log(`[Babylon ${instanceID}] CREATE`);
@@ -21,8 +21,11 @@ export function createBabylonGame(canvas: HTMLCanvasElement, gameData: GameData,
   const board = new Board(gameData.size, scene, materials);
   const ui = new GameUI(scene, onExit, materials, board, camera, true);
   
-  const ws = getSocket();
-  if (!ws) return;
+  const ws = await waitForSocket();
+  if (!ws) {
+	console.log("websocket missing")
+	return;
+  }
 
   const serverConnection = new GameServerConnection(gameData, ui, board, 2, ws, onExit);
   

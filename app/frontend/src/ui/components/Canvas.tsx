@@ -3,6 +3,7 @@ import { useNavigate } from "react-router-dom";
 import { createBabylonGame } from "../../game/main";
 import { GameData } from "../../../../shared/game";
 import { useSetGameData } from "../../store/gameData"
+import { waitForSocket } from "../../services/websocket";
 
 interface CanvasProps {
   gameData: GameData | undefined;
@@ -16,13 +17,20 @@ const Canvas = ({gameData}: CanvasProps) => {
   const setGameData = useSetGameData();
 
   useEffect(() => {
-    if (!canvasRef.current || !gameData) return;
+	if (!canvasRef.current || !gameData) return;
 
-    return createBabylonGame(canvasRef.current, gameData, () => {
-      //setGameData(gameData);
-      navigate('/game-end');
-    });
-  }, []);
+	let cleanup: (() => void) | undefined;
+
+	createBabylonGame(canvasRef.current, gameData, () => {
+		navigate('/game-end');
+	}).then((result) => {
+		cleanup = result;
+	});
+
+	return () => {
+		cleanup?.();
+	};
+}, []);
 
   return (
     <canvas

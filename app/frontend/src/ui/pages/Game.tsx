@@ -2,14 +2,13 @@ import { useSearchParams, useNavigate } from 'react-router-dom';
 import { useEffect } from 'react';
 import GameLayout from '../layouts/GameLayout';
 import Canvas from '../components/Canvas';
-import { sendMessage } from "../../services/websocket";
+import { sendMessage, waitForSocket } from "../../services/websocket";
 import { useGameData } from "../../store/gameData"
 import { createStartGameMessage } from '../../../../shared/messages';
-import { getSocket } from "../../services/websocket";
 import { WsMessage } from "../../../../shared/messages";
 
 const Game = () => {
-  //console.log("[GAME] Game page called ...");
+  console.log("[GAME] Game page called ...");
   const [searchParams] = useSearchParams();
   const navigate = useNavigate();
 
@@ -19,8 +18,8 @@ const Game = () => {
 	 useEffect(() => {
 
         if (!gameData) return;
-        console.log("[GAME] Send startGameMessage, Game:", gameData);
-        sendMessage(createStartGameMessage(gameData));
+        	console.log("[GAME] Send startGameMessage, Game:", gameData);
+        	sendMessage(createStartGameMessage(gameData));
     }, [gameData, navigate]);
 
 

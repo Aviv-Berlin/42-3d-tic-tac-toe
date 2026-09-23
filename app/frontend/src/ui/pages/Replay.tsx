@@ -21,7 +21,7 @@ const Replay = () => {
   }, []);
   return (
     <GameLayout>
-      <canvas ref={canvasRef} className="flex-1" />
+      <canvas ref={canvasRef} className="w-full h-full block"/>
     </GameLayout>
   );
 };

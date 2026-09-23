@@ -33,7 +33,7 @@ async function calculateOnlineScore(game: GameData, p1ID: number, p2ID: number, 
 		console.log('No winner - no score')
 		score = 0;
 	}
-	console.log(`p1Score: ${p1Score}, p2Score: ${p2Score}, scoreBonus: ${scoreBonus}, score: ${score}`);
+	// console.log(`p1Score: ${p1Score}, p2Score: ${p2Score}, scoreBonus: ${scoreBonus}, score: ${score}`);
 	return (Math.round(score));
 }
 

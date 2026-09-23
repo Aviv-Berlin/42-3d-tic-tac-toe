@@ -6,7 +6,7 @@ import Input from '../components/Input';
 import SubmitButton from '../components/SubmitButton';
 
 import settings from '../../services/settings';
-import { useUsername, useSetUsername } from '../../store/username';
+import { useSetUsername } from '../../store/username';
 import { getErrorMessage } from '../../utils/errors';
 
 const Settings = () => {
@@ -19,7 +19,6 @@ const Settings = () => {
   const [triggerChangeUsername, setTriggerChangeUsername] = useState(false);
   const [triggerChangePassword, setTriggerChangePassword] = useState(false);
   const [triggerDeleteAccount, setTriggerDeleteAccount] = useState(false);
-  const username = useUsername();
   const setUsername = useSetUsername();
 
   const navigate = useNavigate();

@@ -1,4 +1,4 @@
-import { GridPosition, CellState, PLAYER_STATES } from "./Types.js"
+import { GridPosition } from "./Types.js"
 
 export function delay(milliseconds: number): Promise<void> {
     return new Promise(resolve => setTimeout(resolve, milliseconds));
@@ -18,16 +18,4 @@ export function negateGP(a: GridPosition): GridPosition {
         y: -a.y,
         z: -a.z
     };
-}
-
-export function playerStateToIndex(state: CellState): number {
-    const index = PLAYER_STATES.indexOf(state);
-
-    if (index === -1) {
-        throw new Error(
-            `CellState ${state} does not represent a player`
-        );
-    }
-
-    return index;
 }

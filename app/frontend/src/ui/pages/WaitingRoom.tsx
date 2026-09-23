@@ -1,5 +1,5 @@
 import { useEffect } from "react";
-import {useParams, useNavigate } from "react-router-dom";
+import {useParams, useNavigate, useOutletContext } from "react-router-dom";
 import PrimaryButton from "../components/PrimaryButton";
 import { sendMessage, getSocket } from "../../services/websocket";
 import { useMatch, useSetMatch, useClearMatch } from "../../store/matchData"
@@ -18,6 +18,7 @@ const WaitingRoom = () => {
 	const setGameData = useSetGameData();
 	const clearMatch = useClearMatch();
 	const username = useUsername();
+	const { message }: any = useOutletContext();
 
 	useEffect(() => {
 		if (!matchId) {
@@ -25,70 +26,66 @@ const WaitingRoom = () => {
 			return;
 		}
 
-		const socket = getSocket();
+		// const socket = getSocket();
 
-		if (!socket)
+		// if (!socket) {
+		// 	console.log("[WR] no socket, returning");
+		// 	return;
+		// }
+		if (message === null || message === undefined) {
 			return;
-
-		const handleMessage = (event: MessageEvent) => {
-			const data = JSON.parse(event.data);
-			console.log("[WR] Received:", data);
-
-			if (data.type === "match-state") {
-				setMatch({
-					id: matchId,
-					host: data.host,
-					mode: data.mode,
-					level: data.level,
-					size: data.size,
-					requiredPlayers: data.requiredPlayers,
-					players: data.players,
-					status: data.status
-				});
-			}
-
-			if (data.type === "game-init") {
-				setMatch({
-					id: matchId,
-					host: data.host,
-					mode: data.mode,
-					level: data.level,
-					size: data.size,
-					requiredPlayers: data.requiredPlayers,
-					players: data.players,
-					status: data.status
-				});
-				setGameData(data.gameData);
-				navigate(`/game/${matchId}?game-mode=online&level=0&size=${data.size}`);
-			}
-
-			if (data.type === "game-canceled"){
-				clearMatch();
-				navigate("/lobby");
-			}
-
-			if (data.type === "left-match"){
-				clearMatch();
-				navigate("/lobby");
-			}
-
-			// if (data.type === "error") {
-			// 	clearMatch();
-			// 	//closeSocket();
-			// 	navigate("/lobby");
-			// }
-
+		}
+		console.log("[WR] Received:", message);
+		const data = message;
+		if (data.type === "match-state") {
+			setMatch({
+				id: matchId,
+				host: data.host,
+				mode: data.mode,
+				level: data.level,
+				size: data.size,
+				requiredPlayers: data.requiredPlayers,
+				players: data.players,
+				status: data.status
+			});
 		}
 
-		socket.addEventListener("message", handleMessage);
-
-		return () => {
-			socket.removeEventListener("message", handleMessage);
+		if (data.type === "game-init") {
+			setMatch({
+				id: matchId,
+				host: data.host,
+				mode: data.mode,
+				level: data.level,
+				size: data.size,
+				requiredPlayers: data.requiredPlayers,
+				players: data.players,
+				status: data.status
+			});
+			setGameData(data.gameData);
+			navigate(`/game/${matchId}?game-mode=online&level=0&size=${data.size}`);
 		}
-	}, [matchId, navigate]);
 
-	const requiredPlayers = match?.requiredPlayers ?? 0;
-	const connectedPlayers = match?.players.length ?? 0;
+		if (data.type === "game-canceled"){
+			clearMatch();
+			navigate("/lobby");
+		}
+
+		if (data.type === "left-match"){
+			clearMatch();
+			navigate("/lobby");
+		}
+
+		// if (data.type === "error") {
+		// 	clearMatch();
+		// 	//closeSocket();
+		// 	navigate("/lobby");
+		// }
+
+		return () => {}
+	}, [matchId, navigate, message]);
+
+	const requiredPlayers = match?.requiredPlayers ?? -1;
+	const connectedPlayers = match?.players.length ?? -2;
 
 	const statusMessage = (connectedPlayers: number, requiredPlayers: number) => {
 		if (match?.status === "canceled")

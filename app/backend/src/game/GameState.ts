@@ -34,8 +34,6 @@ export class GameState {
     private gameData: GameData;
 
     constructor(gameData: GameData, nPlayers: number) {
-        if (nPlayers < 2 || nPlayers > 4)
-            throw new Error("The game supports between 2 and 4 players");
         this.gameData = gameData;
         this.gameData.isFinished = false;
         this.gameData.winner = null;

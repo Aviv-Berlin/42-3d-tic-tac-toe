@@ -106,7 +106,7 @@ export async function updateUserScores(id: number, scoreChange: number, online: 
 	const curOnline = curOnlineRes[0]?.onlineScore ?? 0;
 	const newOnline = Math.max((curOnline + onlineScore), 0)
 
-	// console.log(`updating online score for user #${id} new score: ${onlineScore} online: ${online} full:${fullScore}`);
+	// console.log(`updating score for user #${id} cur: ${curFull}, new: ${newFull}`);
 	const result = await db.update(usersTable).set({
 		fullScore: newFull,
 		onlineScore: newOnline
@@ -115,7 +115,7 @@ export async function updateUserScores(id: number, scoreChange: number, online: 
 		fullScore: usersTable.fullScore,
 		onlineScore: usersTable.onlineScore});
 
-	console.log(`new scores: full:${result[0]?.fullScore} online:${result[0]?.onlineScore}`)
+	// console.log(`new scores: full:${result[0]?.fullScore} online:${result[0]?.onlineScore}`)
 	return result[0]?.onlineScore;
 }
 

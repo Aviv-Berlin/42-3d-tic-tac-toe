@@ -1,89 +1,89 @@
-// simple CRUD operation on db - creating a new user, reading data about a user, updating a user's dara and deleting a user
-//import pool from "./db.js";
-// const result = await pool.query(
-//	"SELECT * FROM users"
-// );
-import { query } from "./db.js";
-// const result = await query(
-//	"SELECT * FROM users"
-// );
+import { db } from './db.js'
+import { matchesTable, usersTable, movesTable } from './schema.js';
+import { eq, sql, notInArray } from 'drizzle-orm';
 
-/*
-export interface User {
-  id: number,
-  username: string,
-  email: string,
-  pw_hash: string,
-  full_score: number,
-  online_score: number
-}
-*/
 
 export async function getUserIdByUsername(username: string) {
-	const result = await query(
-		'SELECT id FROM users WHERE username = $1;', [username]
-	);
+	const result = await db.select({
+		id: usersTable.id
+		}).from(usersTable)
+		.where(eq(usersTable.username, username));
 
-	return result.rows[0]?.id;
+	return result[0]?.id;
 }
 
 export async function getUserIdByEmail(email: string) {
-	const result = await query(
-		'SELECT id FROM users WHERE email = $1;', [email]
-	);
+	const result = await db.select({
+		id: usersTable.id
+		}).from(usersTable)
+		.where(eq(usersTable.email, email));
 
-	return result.rows[0]?.id;
+	return result[0]?.id;
 }
 
 export async function getUsernameByID(id: number) {
-	const result = await query(
-		'SELECT username FROM users WHERE id = $1;', [id]
-	);
+	const result = await db.select({
+		username: usersTable.username
+		}).from(usersTable)
+		.where(eq(usersTable.id, id));
 
-	return result.rows[0]?.username;
+	return result[0]?.username;
 }
 
 export async function getHashedPasswordByID(id: number) {
-	const result = await query(
-		'SELECT pw_hash FROM users WHERE id = $1;', [id]
-	);
+	const result = await db.select({
+		pwHash: usersTable.pwHash
+		}).from(usersTable)
+		.where(eq(usersTable.id, id));
 
-	return result.rows[0]?.pw_hash;
+	return result[0]?.pwHash;
 }
 
 export async function getOnlineScoreByID(id: number) {
-	const result = await query(
-		'SELECT online_score FROM users WHERE id = $1;', [id]
-	);
+	const result = await db.select({
+		onlineScore: usersTable.onlineScore
+		}).from(usersTable)
+		.where(eq(usersTable.id, id));
 
-	return result.rows[0]?.online_score;
+	return result[0]?.onlineScore;
 }
 
 // Creating a user
 export async function createUser(username: string, email: string, pw_hash: string) {
-	const result = await query(
-		'INSERT INTO users (username, email, pw_hash) VALUES ($1, $2, $3) RETURNING *;', [username, email, pw_hash]
-	);
+	const result = await db.insert(usersTable).values({
+		username: username,
+		email: email,
+		pwHash: pw_hash
+	}).returning ({
+		id: usersTable.id,
+		username: usersTable.username,
+		email: usersTable.email
+	});
 
-	return result.rows[0]?.id;
+	return result[0];
 }
 
 // Update and delete a user
 
 export async function updateUsername(username: string, id: number) {
-	const result = await query(
-		'UPDATE users SET username = $1 WHERE id = $2 RETURNING *;', [username, id]
-	);
+	const result = await db.update(usersTable).set({
+		username: username
+	}).where(eq(usersTable.id, id))
+	.returning({username: usersTable.username});
 
-	return result.rows[0]?.username;
+	return result[0]?.username;
 }
 
 export async function updatePassword(newPassword: string, id: number) {
-	const result = await query(
-		'UPDATE users SET pw_hash = $1 WHERE id = $2 RETURNING *;', [newPassword, id]
-	);
+	const result = await db.update(usersTable).set({
+		pwHash: newPassword
+	}).where(eq(usersTable.id, id))
+	.returning({
+		id: usersTable.id,
+		username: usersTable.username
+	});
 
-	return result.rows[0]?.id;
+	return result[0];
 }
 
 export async function updateUserScores(id: number, scoreChange: number, online: boolean) {
@@ -91,12 +91,32 @@ export async function updateUserScores(id: number, scoreChange: number, online: 
 	let onlineScore = scoreChange;
 	if (!online)
 		onlineScore = 0;
-	console.log(`updating online score for user #${id} new score: ${onlineScore} online: ${online} full:${fullScore}`);
-	const result = await query(
-		'UPDATE users SET full_score = GREATEST(full_score + $1, 0), online_score = GREATEST(online_score + $2, 0) WHERE id = $3 RETURNING *;', [fullScore, onlineScore, id]
-	);
-	console.log(`new scores: full:${result.rows[0].full_score} online:${result.rows[0].online_score}`)
-	return result.rows[0]?.online_score;
+
+	const curFullRes = await db.select({
+		fullScore: usersTable.fullScore
+	}).from(usersTable)
+	.where(eq(usersTable.id, id));
+	const curFull = curFullRes[0]?.fullScore ?? 0;
+	const newFull = Math.max((curFull + fullScore), 0)
+
+	const curOnlineRes = await db.select({
+		onlineScore: usersTable.onlineScore
+	}).from(usersTable)
+	.where(eq(usersTable.id, id));
+	const curOnline = curOnlineRes[0]?.onlineScore ?? 0;
+	const newOnline = Math.max((curOnline + onlineScore), 0)
+
+	// console.log(`updating online score for user #${id} new score: ${onlineScore} online: ${online} full:${fullScore}`);
+	const result = await db.update(usersTable).set({
+		fullScore: newFull,
+		onlineScore: newOnline
+	}).where(eq(usersTable.id, id))
+	.returning({
+		fullScore: usersTable.fullScore,
+		onlineScore: usersTable.onlineScore});
+
+	console.log(`new scores: full:${result[0]?.fullScore} online:${result[0]?.onlineScore}`)
+	return result[0]?.onlineScore;
 }
 
 
@@ -105,77 +125,82 @@ export async function updateUserScores(id: number, scoreChange: number, online: 
 // ----+-----------+------------+-------------+--------------+-------------
 //   4 |         1 |       1138 |           1 |         1021 |           2
 export async function getUserScores(id: number) {
-	const result = await query(`
-		SELECT *
-		FROM (
-			SELECT
-				id,
-				RANK() OVER (ORDER BY full_score DESC) AS full_rank,
-				full_score,
-				RANK() OVER (ORDER BY online_score DESC) AS online_rank,
-				online_score,
-				COUNT(*) OVER () AS total_users
-			FROM users
-			WHERE id NOT IN (1, 2, 3)
-		) ranked_users
-		WHERE id = $1;
+	const rankedUsers = db
+	.select({
+		id: usersTable.id,
+		fullRank: sql<number>`RANK() OVER (ORDER BY ${usersTable.fullScore} DESC)`.as('full_rank'),
+		fullScore: usersTable.fullScore,
+		onlineRank: sql<number>`RANK() OVER (ORDER BY ${usersTable.onlineScore} DESC)`.as('online_rank'),
+		onlineScore: usersTable.onlineScore,
+		totalUsers: sql<number>`COUNT (*) OVER ()`.as('total_users')
+	}).from(usersTable)
+	.where(notInArray(usersTable.id, [1, 2, 3]))
+	.as('ranked_users');
 
-	`, [id]);
+	const result = await db
+	.select()
+	.from(rankedUsers)
+	.where(eq(rankedUsers.id, id));
+
+	// query(`
+	// 	SELECT *
+	// 	FROM (
+	// 		SELECT
+	// 			id,
+	// 			RANK() OVER (ORDER BY full_score DESC) AS full_rank,
+	// 			full_score,
+	// 			RANK() OVER (ORDER BY online_score DESC) AS online_rank,
+	// 			online_score,
+	// 			COUNT(*) OVER () AS total_users
+	// 		FROM users
+	// 		WHERE id NOT IN (1, 2, 3)
+	// 	) ranked_users
+	// 	WHERE id = $1;
+	// `, [id]);
+
 	const data = {
-		id: Number(result.rows[0].id),
-		full_rank: Number(result.rows[0].full_rank),
-		full_score: Number(result.rows[0].full_score),
-		online_rank: Number(result.rows[0].online_rank),
-		online_score: Number(result.rows[0].online_score),
-		total_users: Number(result.rows[0].total_users)
+		id: Number(result[0].id),
+		full_rank: Number(result[0].fullRank),
+		full_score: Number(result[0].fullScore),
+		online_rank: Number(result[0].onlineRank),
+		online_score: Number(result[0].onlineScore),
+		total_users: Number(result[0].totalUsers)
 	}
+
+	console.log(`
+		id: ${Number(result[0].id)},
+		full_rank: ${Number(result[0].fullRank)},
+		full_score: ${Number(result[0].fullScore)},
+		online_rank: ${Number(result[0].onlineRank)},
+		online_score: ${Number(result[0].onlineScore)},
+		total_users: ${Number(result[0].totalUsers)}`);
+
 	return data;
 }
 
 
 export async function deleteUser(id: number) {
-	const result = await query(
-		'DELETE FROM users WHERE id = $1 RETURNING *;', [id]
-	);
-	return result.rows[0]?.id;
+	const result = await db.delete(usersTable).where(eq(usersTable.id, id)).returning();
+	return result[0];
 }
 
 export async function updateHistory(userId: number, placeholderID: number) {
 
-	await query(
-		`UPDATE matches
-		 SET player1 = $1
-		 WHERE player1 = $2;`,
-		[placeholderID, userId]
-	);
+	await db.update(matchesTable)
+	.set({player1: placeholderID})
+	.where(eq(matchesTable.player1, userId));
 
-	await query(
-		`UPDATE matches
-		 SET player2 = $1
-		 WHERE player2 = $2;`,
-		[placeholderID, userId]
-	);
+	await db.update(matchesTable)
+	.set({player2: placeholderID})
+	.where(eq(matchesTable.player2, userId));
 
-	await query(
-		`UPDATE matches
-		 SET winner = $1
-		 WHERE winner = $2;`,
-		[placeholderID, userId]
-	);
+	await db.update(matchesTable)
+	.set({winner: placeholderID})
+	.where(eq(matchesTable.winner, userId));
 
-	await query(
-		`UPDATE moves
-		 SET player = $1
-		 WHERE player = $2;`,
-		[placeholderID, userId]
-	);
-
-	await query(
-		`DELETE FROM friendships
-		 WHERE user_id = $1
-		    OR friend_id = $1;`,
-		[userId]
-	);
+	await db.update(movesTable)
+	.set({player: placeholderID})
+	.where(eq(movesTable.player, userId));
 }
 
 export default {

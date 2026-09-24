@@ -1,4 +1,4 @@
-import { useEffect } from "react"
+import { useEffect, useState } from "react"
 import { Outlet, useLocation, useNavigate } from "react-router-dom"
 import { useUsername } from "../../store/username";
 import { openSocket, closeSocket } from "../../services/websocket";
@@ -7,6 +7,8 @@ const MatchSocketProvider = () => {
   const location = useLocation();
   const username = useUsername();
   const navigate = useNavigate();
+
+	const [message, setMessage] = useState(null);
 
 	useEffect(() => {
 		const matchPath = location.pathname.match(
@@ -19,13 +21,14 @@ const MatchSocketProvider = () => {
 			return;
 		}
 
-		const matchId = matchPath[2];
+		const [, page, matchId] = matchPath;
+    	console.log(`[PROVIDER] Entering ${page}/${matchId}`);
 
 		const ws = openSocket(matchId, username);
 
 		const handleMessage = (event: MessageEvent) => {
 			const data = JSON.parse(event.data);
-
+			setMessage(data);
 			console.log("[PROVIDER] Received:", data);
 			if (data.type === "error" && data.message === "Game already open in another tab"){
 				closeSocket();
@@ -45,7 +48,7 @@ const MatchSocketProvider = () => {
 
 	}, [location.pathname, navigate]);
 
-	return <Outlet />;
+	return <Outlet context={{ message }}/>;
 };
 
 export default MatchSocketProvider;

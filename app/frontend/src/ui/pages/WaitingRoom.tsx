@@ -62,7 +62,8 @@ const WaitingRoom = () => {
 				status: data.status
 			});
 			setGameData(data.gameData);
-			navigate(`/game/${matchId}?game-mode=online&level=0&size=${data.size}`);
+			//navigate(`/game/${matchId}?game-mode=online&level=0&size=${data.size}`)
+			navigate(`/game/${matchId}?game-mode=online&level=0&size=${data.size}`, {replace: true});
 		}
 
 		if (data.type === "game-canceled"){

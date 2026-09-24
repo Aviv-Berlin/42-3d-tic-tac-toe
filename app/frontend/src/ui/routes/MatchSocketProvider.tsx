@@ -21,7 +21,8 @@ const MatchSocketProvider = () => {
 			return;
 		}
 
-		const matchId = matchPath[2];
+		const [, page, matchId] = matchPath;
+    	console.log(`[PROVIDER] Entering ${page}/${matchId}`);
 
 		const ws = openSocket(matchId, username);
 

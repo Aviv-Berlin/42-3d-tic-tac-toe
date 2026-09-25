@@ -26,11 +26,18 @@ export const matches = new Map<string, Match>();
 // SSE endpoint function
 export async function lobby(request: Request, response: Response){
 	// Set headers for SSE
-	response.writeHead(200, {
-	'Content-Type': 'text/event-stream',
-	'Cache-Control': 'no-cache',
-	'Connection': 'keep-alive',
-	});
+	response.setHeader('Content-Type', 'text/event-stream');
+	response.setHeader('Cache-Control', 'no-cache');
+	response.setHeader('Connection', 'keep-alive');
+	response.setHeader('X-Accel-Buffering', 'no');
+
+	response.flushHeaders();
+
+	// response.writeHead(200, {
+	// 'Content-Type': 'text/event-stream',
+	// 'Cache-Control': 'no-cache',
+	// 'Connection': 'keep-alive',
+	// });
 
 	// Send initial comment to establish the connection
 	// Comments start with a colon and are ignored by EventSource / clients

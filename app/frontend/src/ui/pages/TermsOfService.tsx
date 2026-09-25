@@ -22,15 +22,14 @@ const TermsOfService = () => {
         <p> - Do not use the app for any unlawful purpose.</p>
         <p> - Do not attempt to hack, disrupt, or reverse-engineer the app&apos;s authentication, servers, or gameplay logic.</p>
         <p> - Do not use bots, scripts, or automated tools to play games on your behalf.</p>
-        <p> - Do not harass, abuse, or impersonate other users, including through the messaging feature.</p>
+        <p> - Do not harass, abuse, or impersonate other users.</p>
         <p> - Do not attempt to access another user&apos;s account or data without authorization.</p>
 
       <h2 className="text-2xl mt-4">Social features</h2>
-        <p> - The app lets you add friends and exchange messages with other users. Message content is visible to your conversation partner and may be retained as part of their account history even if you delete your own account.</p>
-        <p> - Your username, activity status, and game results may be visible to other users, including your friends.</p>
+        <p> - Your username, activity status, and game results may be visible to other users.</p>
 
       <h2 className="text-2xl mt-4">Your content and data</h2>
-        <p> - Game data, friends list, and message content are collected and retained as described in our Privacy Policy.</p>
+        <p> - Game data is collected and retained as described in our Privacy Policy.</p>
         <p> - You retain no ownership claim over gameplay statistics or match history generated through your use of the app; we may retain this data, including in anonymized form, as described in our Privacy Policy.</p>
 
       <h2 className="text-2xl mt-4">Contact</h2>

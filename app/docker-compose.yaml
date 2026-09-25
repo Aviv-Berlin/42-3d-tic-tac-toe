@@ -15,8 +15,6 @@ services:
       POSTGRES_PASSWORD_FILE: /run/secrets/db_password
     secrets:
       - db_password
-    ports:
-      - "3001:3001"
     restart: always
   database:
     build: backend/postgres
@@ -29,8 +27,6 @@ services:
       - db_password
     volumes:
       - postgres_volume:/var/lib/postgresql/data
-    ports:
-      - "5432:5432"
     restart: always
 
 secrets:

@@ -5,7 +5,7 @@ services:
       - "8080:443"
     secrets:
       - ssl_key
-      - ssl_cert
+      - ssl_crt
   backend:
     build: backend
     image: ttt_backend

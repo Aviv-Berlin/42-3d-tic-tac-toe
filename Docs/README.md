@@ -1,90 +1,28 @@
+*This project has been created as part of the 42 curriculum by @akosloff, @smoon, @lhagemos, @sgaspari, and @hallison*
 
-# Setup
+A web-based multiplayer 3D Tic-Tac-Toe game.
 
-```bash
-git clone <repo>
-```
+**Features:**
+- User account creation & secure login
+- Live online games (user vs. user, user vs. AI)
+- Local games (two players at one screen)
+- Customizable game settings (difficulty, board size, visual mode)
+- User profile with recent game history, score and stats
+- User settings page to manage account
 
-## Requirements
-- Node.js LTS
+**Requirements**
+- Node.js
 - npm
-- PostgreSQL
+- Docker
 
-## Configure Database
+## Instructions
+To set-up, build and run the game:
+`./run.sh`
 
-After installing PostgreSQL, set up the database:
+This first time you run this script, you will be prompted to enter information required for SSL key & certification creation. Alternately, you may provide an existing key and certification here:
 
-### Create Database User
-
-```bash
-sudo -u postgres createuser ttt_user --pwprompt
 ```
-
-### Create Database Owned by Database User
-
-```bash
-sudo -u postgres createdb -O ttt_user ttt_db
+/secrets/ttt_nginx.crt
+/secrets/ttt_nginx.key
 ```
-### Import Schema / Data
-
-> [!NOTE]
-> These commands initialize the database schema. Running `schema.sql` on an existing database will remove existing tables and their data because it contains `DROP TABLE IF EXISTS` statements. 
-
-```bash
-cd app/backend/src/database
-```
-
-#### Snapshot (schema + all existing data)
-```bash
-sudo psql -U ttt_user -d ttt_db < schemaAndData.sql
-```
-
-#### Fresh database
-```bash
-sudo psql -U ttt_user -d ttt_db < schema.sql
-```
-
-#### Database with custom seed data
-```bash
-sudo psql -U ttt_user -d ttt_db < schema.sql
-sudo psql -U ttt_user -d ttt_db < seed.sql
-```
-
-## Configure .env
-
-Create '.env' file at 'app/backend/' and set values for all variables.
-
-```bash
-# TOKEN
-SECRET=
-
-# SERVER
-PORT=3001
-
-# DATABASE
-DB_HOST=localhost
-DB_PORT=5432
-DB_NAME=ttt_db
-DB_USER=ttt_user
-```
-
-## Install dependencies and run application
-
-Run backend and frontend in seperate terminals:
-
-```bash
-# backend
-cd app/backend
-npm install
-npm run dev
-
-# frontend
-cd app/frontend
-npm install
-npm run dev
-```
-
-
-
-
 

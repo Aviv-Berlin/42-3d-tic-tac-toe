@@ -2,7 +2,10 @@ services:
   frontend:
     build: frontend
     ports:
-      - "8080:80"
+      - "8080:443"
+    secrets:
+      - ssl_key
+      - ssl_crt
   backend:
     build: backend
     image: ttt_backend
@@ -33,6 +36,10 @@ services:
 secrets:
     db_password:
       file: ./secrets/postgres-passwd
+    ssl_key:
+      file: ./secrets/ttt_nginx.key
+    ssl_crt:
+      file: ./secrets/ttt_nginx.crt
 
 volumes:
   postgres_volume:

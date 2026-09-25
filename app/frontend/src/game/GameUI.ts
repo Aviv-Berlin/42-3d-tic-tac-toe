@@ -235,7 +235,7 @@ export class GameUI {
         this.instructions.verticalAlignment = GUI.Control.VERTICAL_ALIGNMENT_BOTTOM;
         this.instructions.paddingLeft = "40px";
         this.instructions.paddingBottom = "40px";
-        this.instructions.text = "click on cube to place preview, double click or enter to place move\n1 to toggle cube sizes, mouse drag to rotate board, move with a,d,w,s,e,q";
+        this.instructions.text = "Mouse: Drag to rotate board. Click to choose position. Double-click to confirm move.\nKeyboard: Arrow keys to rotate board. Keys a, d, w, s, e, q to choose position. Enter to confirm.";
         this.ui.addControl(this.instructions);
     }
 

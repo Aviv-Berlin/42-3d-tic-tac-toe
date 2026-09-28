@@ -51,22 +51,6 @@ export async function getUserGameStats(id: number) {
 	}).from(matchesTable)
 	.where(or(eq(matchesTable.player1, id), eq(matchesTable.player2, id)));
 
-	// query(`
-	// 	SELECT
-	// 	CASE
-	// 		WHEN player2 = 2 THEN 'ai'
-	// 		ELSE 'online' END,
-	// 	COUNT(*) FILTER (WHERE winner = $1) AS wins,
-	// 	COUNT(*) FILTER (WHERE winner = null) AS draws,
-	// 	COUNT(*) FILTER (WHERE winner != $1) AS losses,
-	// 	COUNT(*) AS total
-	// 	FROM matches
-	// 	WHERE (player1 = $1 OR player2 = $1) AND player2 != 1
-	// 	GROUP BY
-	// 		CASE
-	// 			WHEN player2 = 2 THEN 'ai'
-	// 			ELSE 'online' END;
-	// `, [id]);
 	const online = {
 		wins: Number(onlineResult[0]?.wins ?? 0),
 		draws: Number(onlineResult[0]?.draws ?? 0),

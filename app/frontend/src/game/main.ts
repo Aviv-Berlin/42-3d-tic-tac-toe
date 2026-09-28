@@ -52,19 +52,6 @@ export async function createBabylonGame(canvas: HTMLCanvasElement, gameData: Gam
   const input = new InputManager(serverConnection, scene, board, camera);
   input.registerEvents();
 
-  //temp to reduce rendering while I work, delete this later
-  // const frameInterval = 1000 / 10;
-  // let lastRender = 0;
-  // engine.runRenderLoop(() => {
-  //     const now = performance.now();
-
-  //     if (now - lastRender >= frameInterval) {
-  //         scene.render();
-  //         scene.activeCamera = camera.getCamera();
-  //         lastRender = now;
-  //     }
-  // });
-
   engine.runRenderLoop(() => {
       scene.render();
       scene.activeCamera = camera.getCamera();

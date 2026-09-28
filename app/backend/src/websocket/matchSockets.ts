@@ -125,9 +125,6 @@ export function PlayGame(message: PlayGameMessage, socket: WebSocket, match: Mat
 	const sockets = matchSockets.get(matchId);
  	if (!sockets) return;
 
-	// const match = matches.get(matchId);
-	// if (!match) return
-
 	const sender = [...sockets].find(
 		player => player.ws === socket
 	);
@@ -292,7 +289,6 @@ export function handlePlayerLeave(matchId: string, disconnectedPlayer: PlayerCon
 			console.log(`[WR/PlayerLeave] Match ${matchId} is available again.`);
 		}
 		else {
-			// update player count -> needs to be implemented in the frontend lobby
 			broadcast("lobby-update", { type: "updated", match });
 		}
 

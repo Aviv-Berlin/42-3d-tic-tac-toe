@@ -6,7 +6,7 @@
 
 3D Tic-Tac-Toe is a web-based multiplayer game that expands traditional Tic-Tac-Toe into a three-dimensional board.
 
-The project combines an interactive 3D game with a complete web application. Users can create accounts, play locally or online, compete against an AI opponent, customize game visuals, and review statistics and watch recaps of previous games.
+The project combines an interactive 3D game with a complete web application. Users can create accounts, play locally or online, compete against an AI opponent, customize game visuals, review statistics and watch replays of previous games.
 
 
 
@@ -26,7 +26,7 @@ The project combines an interactive 3D game with a complete web application. Use
 - User profiles
 - Match history
 - Game statistics
-- Player scores and ranking
+- Player scores and rankings
 - Account settings
 - Support for multiple browsers
 
@@ -36,10 +36,10 @@ The project combines an interactive 3D game with a complete web application. Use
 
 ## Project Management
 
-The project was developed collaboratively by a team of five. We had weekly in person meetings to discuss progress and goals, make decisions, distribute and coordinate the work.
+The project was developed collaboratively by a team of five. We had weekly in-person meetings to discuss progress and goals, make decisions, and distribute and coordinate the work. In between we communicated on our slack channel.
 Work was divided between frontend development, backend development, database design, infrastructure, networking, and game development. Larger features such as online multiplayer required collaboration between several team members.
 
-We used Git and GitHub branches to develop individual features, integration to the main branch was done with pull requests that required review and approval by at least one other team member.
+We used Git and GitHub branches to develop individual features, Integration into the main branch was done through pull requests, which required review and approval by at least one other team member.
 
 ### Team Roles
 
@@ -51,7 +51,7 @@ We used Git and GitHub branches to develop individual features, integration to t
 | @sgaspari | Project Manager / Frontend / DevOps Developer |
 | @smoon | Backend Developer |
 
-*Tech Lead was shared responsibility as tech stack decisions were made by the entire team.
+*Tech Lead was a shared responsibility, as technical decisions were made by the entire team.*
 
 ### Tools and Communication
 
@@ -443,24 +443,26 @@ The architecture, implementation decisions, integration, testing, and final code
 
 ## Individual Contributions
 
+## Individual Contributions
+
 ### Aviv Kosloff — @akosloff
 
-Product Owner and game developer. Developed the Babylon.js 3D game, core gameplay and UX, mouse and keyboard interaction, visual game behavior, game-state logic, and the AI opponent with three difficulty levels. Also worked on integrating the game with the frontend and backend and on gameplay-related debugging and visual improvements.
+Product Owner and game developer. Designed and implemented the Babylon.js 3D game, including core gameplay, UX, mouse and keyboard controls, camera behavior, player-move visualization, and game-state logic. Developed the AI opponent and its three difficulty levels, and worked on frontend/backend game integration, gameplay debugging, and visual improvements.
 
-### Hallison — @hallison
+### Hillary Alison — @hallison
 
-Focused on authentication, security, and infrastructure. Developed the user authentication and session-management system, including token handling and validation, backend middleware, protected frontend routes, and server-level redirects. Containerized the database and created the initial Docker Compose and environment/secrets setup. Also improved database-query security, automated SSL certificate generation and secret storage, contributed to UI and board design, and reviewed, tested, and debugged pull requests across the project.
+Focused on authentication, security, and infrastructure. Developed token handling and validation, backend authentication middleware, protected frontend routes, and server-level redirects. Containerized the database, created the initial Docker Compose and environment/secrets setup, improved database-query security, automated SSL certificate generation and secret storage, contributed to UI and board design, and reviewed and debugged pull requests.
 
 ### Lea Hagemoser — @lhagemos
 
-Worked across backend, database, and real-time communication. Set up the server and environment configuration, implemented WebSocket communication and the shared connection provider, created the database schema and database setup, developed authentication, lobby and settings endpoints, and worked on matchmaking and real-time lobby communication.
+Worked across backend, database, and real-time communication. Set up the server and environment configuration, implemented WebSocket communication and the shared connection provider, and created the database schema and initial setup. Developed authentication, lobby, and settings endpoints, and worked on matchmaking, match creation and joining, and real-time lobby communication.
 
 ### Simone Gaspari — @sgaspari
 
-Focused on frontend development and infrastructure. Built the React and Tailwind CSS interface, developed reusable frontend components, wrote the setup and startup Bash scripts, and containerized the frontend and backend using Docker.
+Project Manager, frontend, and DevOps developer. Built the React and Tailwind CSS interface and developed reusable frontend components. Wrote Bash scripts to automate installation and application startup, containerized the frontend and backend using Docker, and worked on container integration, application setup, and general frontend implementation across the project.
 
 ### Steven Moon — @smoon
 
-Focused primarily on backend and multiplayer functionality. Worked on WebSockets, backend game logic, SQL queries, ORM integration, ranking and scoring, Nginx configuration, general bug fixing, and the project's logo.
+Focused on backend, multiplayer, and data-layer functionality. Worked on WebSockets and backend game logic, developed SQL queries and ORM integration, and implemented the ranking and scoring system. Configured Nginx, contributed general debugging and bug fixes across the project, and created the project's logo.
 
 

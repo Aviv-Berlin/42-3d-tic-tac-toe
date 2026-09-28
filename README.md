@@ -6,7 +6,7 @@
 
 3D Tic-Tac-Toe is a web-based multiplayer game that expands traditional Tic-Tac-Toe into a three-dimensional board.
 
-The project combines an interactive 3D game with a complete web application. Users can create accounts, play locally or online, compete against an AI opponent, customize game visuals, review statistics and watch replays of previous games.
+The project combines an interactive 3D game with a complete web application. Users can create accounts, play locally or online, compete against an AI opponent, customize game visuals, review statistics, and watch replays of previous games.
 
 
 
@@ -32,14 +32,27 @@ The project combines an interactive 3D game with a complete web application. Use
 
 
 
----
+## Instructions
+To set-up, build and run the game:
+`./run.sh`
+
+This first time you run this script, you will be prompted to enter information required for SSL key & certification creation. Alternately, you may provide an existing key and certification here:
+
+```
+/secrets/ttt_nginx.crt
+/secrets/ttt_nginx.key
+```
+
+**Requirements**
+- Node.js
+- npm
+- Docker
 
 ## Project Management
 
-The project was developed collaboratively by a team of five. We had weekly in-person meetings to discuss progress and goals, make decisions, and distribute and coordinate the work. In between we communicated on our slack channel.
+The project was developed collaboratively by a team of five. We had weekly in-person meetings to discuss progress and goals, make decisions, and distribute and coordinate the work. Between meetings, we communicated through our Slack channel.
 Work was divided between frontend development, backend development, database design, infrastructure, networking, and game development. Larger features such as online multiplayer required collaboration between several team members.
-
-We used Git and GitHub branches to develop individual features, Integration into the main branch was done through pull requests, which required review and approval by at least one other team member.
+We used Git and GitHub branches to develop individual features. Changes were integrated into the main branch through pull requests, which required review and approval by at least one other team member.
 
 ### Team Roles
 
@@ -148,7 +161,7 @@ It was chosen because the project has clear relationships between users, matches
 
 #### ORM
 
-An ORM is used for part of the database layer. It provides a structured abstraction for database access and reduces repetitive SQL code.
+Drizzle ORM is used for part of the database layer. It provides a structured abstraction for database access and reduces repetitive SQL code.
 
 ### Infrastructure
 
@@ -426,7 +439,23 @@ Babylon.js is used to create the interactive 3D environment, including game boar
 
 ## Resources
 
+Babylon.js:
+https://doc.babylonjs.com/
+https://playground.babylonjs.com
+https://www.youtube.com/watch?v=e6EkrLr8g_o
 
+React:
+https://www.helsinki.fi/en/admissions-and-education/open-university/multidisciplinary-themed-modules/full-stack
+https://react.dev/
+
+- [TypeScript Documentation](https://www.typescriptlang.org/docs/)
+- [Tailwind CSS Documentation](https://tailwindcss.com/docs)
+- [Node.js Documentation](https://nodejs.org/docs/latest/api/)
+- [Express Documentation](https://expressjs.com/)
+- [MDN WebSocket API](https://developer.mozilla.org/en-US/docs/Web/API/WebSocket)
+- [PostgreSQL Documentation](https://www.postgresql.org/docs/)
+- [Docker Documentation](https://docs.docker.com/)
+- [Nginx Documentation](https://nginx.org/en/docs/)
 
 ### Use of AI
 
@@ -440,8 +469,6 @@ AI tools were used as supporting tools during development for:
 The architecture, implementation decisions, integration, testing, and final code remained the responsibility of the project team.
 
 ---
-
-## Individual Contributions
 
 ## Individual Contributions
 

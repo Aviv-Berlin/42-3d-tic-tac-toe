@@ -43,6 +43,8 @@ This first time you run this script, you will be prompted to enter information r
 /secrets/ttt_nginx.key
 ```
 
+Other than creating ssl certificates, the script installs npm dependencies, sets up a default .env file (including requesting a database password if `app/secrets/postgres-passwd` is not present), builds the project using npm build, and runs docker compose to containerize and run the project.
+
 **Requirements**
 - Node.js
 - npm
@@ -348,7 +350,7 @@ The project uses React for the frontend and Express for the backend.
 
 React provides reusable and stateful UI components, while Express provides a lightweight and well-supported foundation for the application's backend and REST API.
 
-**Main contributor:** @sgaspari  
+**Main contributor:** @sgaspari
 **Additional contributors:** Team
 
 ### Major — Real-Time Features

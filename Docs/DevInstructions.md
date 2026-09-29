@@ -1,14 +1,5 @@
+### Previous Instructions for Setup
 
-# Setup
-
-```bash
-git clone <repo>
-```
-
-## Requirements
-- Node.js LTS
-- npm
-- PostgreSQL
 
 ## Configure Database
 
@@ -28,7 +19,7 @@ sudo -u postgres createdb -O ttt_user ttt_db
 ### Import Schema / Data
 
 > [!NOTE]
-> These commands initialize the database schema. Running `schema.sql` on an existing database will remove existing tables and their data because it contains `DROP TABLE IF EXISTS` statements. 
+> These commands initialize the database schema. Running `schema.sql` on an existing database will remove existing tables and their data because it contains `DROP TABLE IF EXISTS` statements.
 
 ```bash
 cd app/backend/src/database
@@ -83,7 +74,6 @@ cd app/frontend
 npm install
 npm run dev
 ```
-
 
 
 

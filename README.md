@@ -147,7 +147,6 @@ They are used for:
 - Player connection and disconnection
 - Match state
 - Waiting rooms
-- Lobby communication
 
 This allows both players to receive game updates immediately.
 

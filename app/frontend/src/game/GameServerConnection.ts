@@ -62,7 +62,7 @@ export class GameServerConnection {
             case "turn": {
                 await this.boardAnimation;
                 //console.log("TURN", { playsNow: message.payload.playsNow,  localPlayerIndex: this.localPlayerIndex,
-                    isMyTurn: message.payload.playsNow === this.localPlayerIndex, guestPlayerIndex: this.guestPlayerIndex, isGuestTurn: message.payload.playsNow === this.guestPlayerIndex});
+                    // isMyTurn: message.payload.playsNow === this.localPlayerIndex, guestPlayerIndex: this.guestPlayerIndex, isGuestTurn: message.payload.playsNow === this.guestPlayerIndex});
                 this.currentPlayerIndex = message.payload.playsNow;
                 if (message.payload.playsNow === this.localPlayerIndex) {
                     this.ui.toggleBadge(true);

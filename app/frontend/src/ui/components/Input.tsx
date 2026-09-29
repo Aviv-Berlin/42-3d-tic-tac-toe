@@ -24,7 +24,7 @@ const Input = ({name, alias, value, handler, validate, message, submit}: InputPr
         <input className="border focus:outline-none border-dark-grey p-2" type={type} name={name} onChange={handler} />
         <p className="text-sm text-dark-orange min-h-5">
           {submit && !value && "This field cannot be empty"}
-          {!(submit && !value) && validate && value && !validate() && message}
+          {!submit && value && validate && !validate() && message}
         </p>
       </label>
     </div>

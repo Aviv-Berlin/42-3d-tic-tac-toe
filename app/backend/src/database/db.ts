@@ -28,7 +28,7 @@ export const dbUrl = `postgres://${dbConfig.user}:${dbConfig.password}@${dbConfi
 
 export const db = drizzle(dbUrl!);
 
-console.log(`URL: ${dbUrl}`);
+// console.log(`URL: ${dbUrl}`);
 
 export const query = (
 	text: string,

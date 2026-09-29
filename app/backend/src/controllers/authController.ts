@@ -32,7 +32,7 @@ export async function register(request: Request, response: Response) {
 				error: 'username already exists'
 			});
 		}
-	
+
 		const existingEmail = await userQueries.getUserIdByEmail(body.email);
 		if (existingEmail) {
 			return response.status(409).json({
@@ -70,7 +70,7 @@ export async function login(request: Request, response: Response) {
 
 	try{
 		let userID;
-		console.log("login:", body.login)
+		//console.log("login:", body.login)
 		if (body.login.includes("@"))
 			userID = await userQueries.getUserIdByEmail(body.login);
 		else
@@ -107,7 +107,7 @@ export async function login(request: Request, response: Response) {
 
 export async function logout(request: Request, response: Response) {
 	void request;
-	console.log("logout in authController");
+	//console.log("logout in authController");
 	return response.clearCookie('token').status(200).send({});
 }
 

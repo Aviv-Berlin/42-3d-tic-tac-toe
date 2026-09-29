@@ -12,14 +12,14 @@ function joinGame(message: JoinGameMessage, ws: WebSocket, match: Match) {
 
 	if (game) {
 		game.addPlayer(ws, data.player1.username);
-		console.log(`Added player to game ${data.gameID}`);
+		//console.log(`Added player to game ${data.gameID}`);
 	}
 	else {
-		console.log(`Game not found inside match, setting up GameState`);
+		//console.log(`Game not found inside match, setting up GameState`);
 		game = new GameState(data, 2);
 		game.addPlayer(ws, data.player1.username);
 		match.state = game; //games.push(game);
-		console.log(`Game ${data.gameID} created`);
+		//console.log(`Game ${data.gameID} created`);
 	}
 	if (data.player2.type === "ai") {
 		const ai = new AiPlayer(game, data.level, data.size);
@@ -41,7 +41,7 @@ export function makeMove(message: MoveMessage, ws: WebSocket, match: Match) {
 	const data = message.payload;
 	const game = match.state;
 	if (!game) {
-		console.log(`Error: gameState not yet created ${data.gameID}`);
+		//console.log(`Error: gameState not yet created ${data.gameID}`);
 		ws.send(JSON.stringify(`Error: gameState not yet created ${data.gameID}`));
 		return ;
 	}
@@ -54,7 +54,7 @@ export function playerExit(message: ExitMessage, ws: WebSocket, match: Match) {
 	const data = message.payload;
 	const game = match.state;
 	if (!game) {
-		console.log(`[playerExit] Invalid gameID ${data.gameID}`);
+		//console.log(`[playerExit] Invalid gameID ${data.gameID}`);
 		ws.send(JSON.stringify(`Invalid gameID ${data.gameID}`));
 		return ;
 	}

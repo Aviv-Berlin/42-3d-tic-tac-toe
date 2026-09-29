@@ -16,20 +16,20 @@ const MatchSocketProvider = () => {
 		);
 
 		if (!matchPath) {
-			console.log("[PROVIDER] User left match");
+			//console.log("[PROVIDER] User left match");
 			closeSocket();
 			return;
 		}
 
 		const [, page, matchId] = matchPath;
-    	console.log(`[PROVIDER] Entering ${page}/${matchId}`);
+    	//console.log(`[PROVIDER] Entering ${page}/${matchId}`);
 
 		const ws = openSocket(matchId, username);
 
 		const handleMessage = (event: MessageEvent) => {
 			const data = JSON.parse(event.data);
 			setMessage(data);
-			console.log("[PROVIDER] Received:", data);
+			//console.log("[PROVIDER] Received:", data);
 			if (data.type === "error" && data.message === "Game already open in another tab"){
 				closeSocket();
 				navigate("/game-already-open");

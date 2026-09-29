@@ -2,8 +2,8 @@ import { isAxiosError } from "axios";
 
 export function getErrorMessage(err: unknown): string {
   if (isAxiosError(err)) {
-    console.log(err.message);
-    console.log(err.response?.data?.error);
+    //console.log(err.message);
+    //console.log(err.response?.data?.error);
     if (err.response?.data?.error === "username/email not found" ||
       err.response?.data?.error === "bad credentials" ||
       err.response?.data?.error === "data incomplete") {

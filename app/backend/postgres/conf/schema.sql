@@ -1,7 +1,4 @@
 DROP TABLE IF EXISTS moves;
-DROP TABLE IF EXISTS messages;
-DROP TABLE IF EXISTS conversations;
-DROP TABLE IF EXISTS friendships;
 DROP TABLE IF EXISTS matches;
 DROP TABLE IF EXISTS users;
 --DROP TABLE IF EXISTS stats; -- at first not nessescary, only if computing slows down consider
@@ -21,33 +18,6 @@ INSERT INTO users (username, email, pw_hash) VALUES
 ('guest', 'guest@example.com', 'trG45Vm'),
 ('ai', 'ai@example.com', 'trG45Vu'),
 ('deleted', 'deleted@example.com', 'trG45Vm');
-
-CREATE TABLE friendships(
-	id SERIAL PRIMARY KEY,
-	user_id INT NOT NULL REFERENCES users(id),
-	friend_id INT NOT NULL REFERENCES users(id),
-	status TEXT DEFAULT 'pending'
-	CHECK (status IN ('pending', 'accepted', 'blocked')),
-	UNIQUE (user_id, friend_id),
-	CHECK (user_id < friend_id)
-);
-
-CREATE TABLE conversations(
-	id SERIAL PRIMARY KEY,
-	user1 INT NOT NULL REFERENCES users(id),
-	user2 INT NOT NULL REFERENCES users(id),
-	created_at TIMESTAMPTZ DEFAULT NOW(),
-	UNIQUE (user1, user2),
-	CHECK (user1 < user2)
-);
-
-CREATE TABLE messages(
-	id SERIAL PRIMARY KEY,
-	convo_id INT NOT NULL REFERENCES conversations(id),
-	sender_id INT NOT NULL REFERENCES users(id),
-	message TEXT NOT NULL,
-	created_at TIMESTAMPTZ DEFAULT NOW()
-);
 
 CREATE TABLE matches(
 	id SERIAL PRIMARY KEY,

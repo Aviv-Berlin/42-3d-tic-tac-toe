@@ -2,7 +2,7 @@ import { defineConfig } from 'vite'
 import { parse } from 'cookie'
 import react from '@vitejs/plugin-react'
 import tailwindcss from '@tailwindcss/vite'
-  
+
 const protectedPlugin = () => ({
   name: 'token_check_before_protected',
   configureServer(server) {
@@ -13,7 +13,7 @@ const protectedPlugin = () => ({
           || req.url === '/game/:matchId' || req.url === '/waiting/:'
           || req.url === '/replay' || req.url === '/waiting-room'
           || req.url === '/profile' || req.url === '/settings') {
-        console.log("in vite config, req.url = ", req.url)
+        //console.log("in vite config, req.url = ", req.url)
         const cookies = parse(req.headers.cookie || '')
         if (!cookies['token']) {
           res.statusCode = 302
@@ -34,7 +34,7 @@ const beforeLoginPlugin = () => ({
     server.middlewares.use((req, res, next) => {
       if (req.url === '/login' || req.url === '/register'
 		|| req.url === '/register-success') {
-		console.log("in vite config, req.url = ", req.url)
+		//console.log("in vite config, req.url = ", req.url)
         const cookies = parse(req.headers.cookie || '')
         if (cookies['token']) {
           res.statusCode = 302

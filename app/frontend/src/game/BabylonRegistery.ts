@@ -19,7 +19,7 @@ export class babylonRegistery {
         babylonRegistery.nextId++;
         const id = babylonRegistery.nextId;
         babylonRegistery.runs.push({id, name, canvas, engine, scene});
-        console.log(`[Babylon] #${id} created: ${name} | running: ${babylonRegistery.runs.length}`);
+        //console.log(`[Babylon] #${id} created: ${name} | running: ${babylonRegistery.runs.length}`);
     }
 
     public dispose(engine: BABYLON.Engine): void {
@@ -34,7 +34,7 @@ export class babylonRegistery {
         run.engine.dispose();
 
         babylonRegistery.runs = babylonRegistery.runs.filter(current => current.engine !== engine);
-        console.log(`[Babylon] disposed: #${run.id} ${run.name} | running: ${babylonRegistery.runs.length}`);
+        //console.log(`[Babylon] disposed: #${run.id} ${run.name} | running: ${babylonRegistery.runs.length}`);
     }
 
 

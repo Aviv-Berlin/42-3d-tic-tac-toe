@@ -6,13 +6,13 @@ import { drizzle } from 'drizzle-orm/node-postgres';
 const filePath = process.env.NODE_ENV === "prod" ? '/run/secrets/db_password' : path.join(import.meta.dirname, '../../../secrets/postgres-passwd');
 const pw = await readFile(filePath, 'utf8');
 
-console.log({
-  DB_USER: process.env.DB_USER,
-  DB_HOST: process.env.NODE_ENV === "prod" ? process.env.DB_PROD_HOST : process.env.DB_DEV_HOST,
-  DB_NAME: process.env.DB_NAME,
-  DB_PASSWORD: "****",
-  DB_PORT: process.env.DB_PORT,
-});
+// console.log({
+//   DB_USER: process.env.DB_USER,
+//   DB_HOST: process.env.NODE_ENV === "prod" ? process.env.DB_PROD_HOST : process.env.DB_DEV_HOST,
+//   DB_NAME: process.env.DB_NAME,
+//   DB_PASSWORD: "****",
+//   DB_PORT: process.env.DB_PORT,
+// });
 
 const dbConfig = {
 	user: process.env.DB_USER,

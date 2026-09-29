@@ -11,7 +11,7 @@ const secretKey: string = secret;
 const getTokenFrom = (request: Request) => {
 	const cookie = request.cookies;
 	if (!cookie){
-		console.log('getTokenFrom... !cookies')
+		//console.log('getTokenFrom... !cookies')
 		return null
 	}
 	const token_cookie = cookie['token']
@@ -21,7 +21,7 @@ const getTokenFrom = (request: Request) => {
 export const checkToken = async (request: Request, response: Response, next: NextFunction) => {
 	const token = getTokenFrom(request)
 	if (!token) {
-		console.log("Error: checkToken(): missing token");
+		//console.log("Error: checkToken(): missing token");
 		response.clearCookie('token').status(401).json({ error: 'missing or invalid token' })
 		return;
 	}
@@ -30,18 +30,18 @@ export const checkToken = async (request: Request, response: Response, next: Nex
 		decodedToken = jwt.verify(token, secretKey)
 	}
 	catch {
-		console.log("Error: jwt could not verify token, maybe due to it being malformed");
+		//console.log("Error: jwt could not verify token, maybe due to it being malformed");
 		response.clearCookie('token').status(401).json({error: 'missing or invalid token'})
 		return;
 	}
 	if (typeof decodedToken === `string`) {
-		console.log("Error: checkToken(): invalid token");
+		//console.log("Error: checkToken(): invalid token");
 		response.clearCookie('token').status(401).json({ error: 'missing or invalid token' })
 		return;
 	}
-	console.log(`decoded Token id = ${decodedToken.id}`);
+	//console.log(`decoded Token id = ${decodedToken.id}`);
 	if (!decodedToken.id) {
-		console.log("Error: checkToken(): token contains invalid id");
+		//console.log("Error: checkToken(): token contains invalid id");
 		response.clearCookie('token').status(401).json({ error: 'missing or invalid token' })
 		return;
 	}

@@ -17,25 +17,25 @@ export function setupWebSocket(server: http.Server) {
 		aliveSockets.set(socket, true);
 
 		const url = new URL(request.url ?? "", `ws://backend`);
-		console.log(`new websocket connection at ${url}`);
+		//console.log(`new websocket connection at ${url}`);
 
 		const matchId = url.pathname.split("/").pop();
 		const username = url.searchParams.get("username");
 
 		if (!matchId || !username) {
-			console.log("[WS/connected] No match ID provided");
+			//console.log("[WS/connected] No match ID provided");
 			socket.close();
 			return;
 		}
 
 		let match = matches.get(matchId);
 		if (!match) {
-			console.log(`[WS/connected] Match not found: ${matchId}`);
+			//console.log(`[WS/connected] Match not found: ${matchId}`);
 			socket.send(JSON.stringify({ type: "error", message: "Match not found" }));
 			return;
 		}
 		else {
-			console.log(`[WS/connected] Match found: ${matchId}`);
+			//console.log(`[WS/connected] Match found: ${matchId}`);
 		}
 
 		if (!matchSockets.has(matchId)) {
@@ -46,13 +46,13 @@ export function setupWebSocket(server: http.Server) {
 		const existingPlayer = [...sockets].find(player => player.username === username)
 
 		if (existingPlayer && existingPlayer.ws){
-			console.log(`[WS/connected] Player already connected: ${matchId}`);
+			//console.log(`[WS/connected] Player already connected: ${matchId}`);
 			socket.send(JSON.stringify({ type: "error", message: "Game already open in another tab" }));
 			return;
 		}
 
 		if (existingPlayer){
-			console.log(`[WS/connection] Player ${username} reconnected to match ${matchId}.`)
+			//console.log(`[WS/connection] Player ${username} reconnected to match ${matchId}.`)
 			existingPlayer.ws = socket;
 			if (existingPlayer.disconnectTimer){
 				clearTimeout(existingPlayer.disconnectTimer)
@@ -88,7 +88,7 @@ export function setupWebSocket(server: http.Server) {
 		 socket.on("message", (event) => {
 
 			const message: WsMessage = JSON.parse(event.toString());
-			console.log(`[WS/message] Server received message (type: ${message.type})`);
+			//console.log(`[WS/message] Server received message (type: ${message.type})`);
 			// console.log(`No. of matches: ${matches.size}`);
 
 			if (message.type === "leave-match"){
@@ -133,7 +133,7 @@ export function setupWebSocket(server: http.Server) {
 
 			if (!player) return;
 
-			console.log(`[WS/close] Player ${player.username} disconnected from match ${matchId}`)
+			//console.log(`[WS/close] Player ${player.username} disconnected from match ${matchId}`)
 
 			player.ws = null;
 
@@ -142,7 +142,7 @@ export function setupWebSocket(server: http.Server) {
 					return;
 				}
 
-				console.log(`[WS/close] Player ${player.username} did not reconnect`)
+				//console.log(`[WS/close] Player ${player.username} did not reconnect`)
 
 				handlePlayerLeave(matchId, player);
 				if (match && match.status === "started" && match.state && !match.state.isFinished()){
@@ -158,7 +158,7 @@ export function setupWebSocket(server: http.Server) {
 		// console.log(`${Date.now()} setInterval`);
 		aliveSockets.forEach((alive, socket) => {
 			if (alive === false) {
-				console.log(`no pong received from socket, terminating`)
+				//console.log(`no pong received from socket, terminating`)
 				aliveSockets.delete(socket);
 				socket.terminate();
 				return;

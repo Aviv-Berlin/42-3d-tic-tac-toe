@@ -20,7 +20,7 @@ const GameEnd = () => {
   }, [gameData]);
 
   if (!gameData || !username) {
-    console.log("missing gameData or username");
+    //console.log("missing gameData or username");
     return null;
   }
 

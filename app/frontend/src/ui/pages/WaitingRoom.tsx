@@ -35,7 +35,7 @@ const WaitingRoom = () => {
 		if (message === null || message === undefined) {
 			return;
 		}
-		console.log("[WR] Received:", message);
+		//console.log("[WR] Received:", message);
 		const data = message;
 		if (data.type === "match-state") {
 			setMatch({
@@ -101,11 +101,11 @@ const WaitingRoom = () => {
 	const handlePlay = () => {
 		if (!matchId) return;
 		sendMessage(createPlayGameMessage(matchId));
-		console.log("[WR] Starting game request sent...");
+		//console.log("[WR] Starting game request sent...");
 	};
 
 	const handleCancel = () => {
-		console.log("[WR] remove the game")
+		//console.log("[WR] remove the game")
 		if (!matchId) return;
 		sendMessage(createCancelGameMessage(matchId));
 	}

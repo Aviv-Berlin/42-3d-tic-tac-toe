@@ -21,7 +21,7 @@ const NavDropDown = () => {
 	  closeSocket();
       navigate('/login');
     } catch (err) {
-      console.log(err);
+      //console.log(err);
     }
   }
 

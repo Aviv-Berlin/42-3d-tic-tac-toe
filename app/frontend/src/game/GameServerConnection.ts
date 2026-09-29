@@ -38,14 +38,14 @@ export class GameServerConnection {
 
     public async handleMessage(message: WsMessage) {
 
-        console.log("Received message:", message);
+        //console.log("Received message:", message);
         switch (message.type) {
             case "game-start": {
-                console.log("GAME START");
-                console.log("youAre:", message.payload.youAre);
-                console.log("playerNames:", message.payload.playerNames);
-                console.log("playerNames[0]:", message.payload.playerNames[0]);
-                console.log("playerNames[1]:", message.payload.playerNames[1])
+                //console.log("GAME START");
+                //console.log("youAre:", message.payload.youAre);
+                //console.log("playerNames:", message.payload.playerNames);
+                //console.log("playerNames[0]:", message.payload.playerNames[0]);
+                //console.log("playerNames[1]:", message.payload.playerNames[1])
                 this.playerNames = message.payload.playerNames;
                 this.localPlayerIndex = message.payload.youAre;
                 this.otherPlayerIndex = 0;
@@ -53,7 +53,7 @@ export class GameServerConnection {
                     this.otherPlayerIndex = 1;
                 this.guestPlayerIndex = this.playerNames.findIndex(name => name === "guest");
                 this.gameID = message.payload.gameID;
-                this.ui.playerBadges(this.localPlayerIndex, this.playerNames[this.localPlayerIndex], this.playerNames[this.otherPlayerIndex]);                
+                this.ui.playerBadges(this.localPlayerIndex, this.playerNames[this.localPlayerIndex], this.playerNames[this.otherPlayerIndex]);
                 this.boardAnimation = this.board.createBoard(true);
                 await this.boardAnimation;
                 break;
@@ -61,7 +61,7 @@ export class GameServerConnection {
 
             case "turn": {
                 await this.boardAnimation;
-                console.log("TURN", { playsNow: message.payload.playsNow,  localPlayerIndex: this.localPlayerIndex,
+                //console.log("TURN", { playsNow: message.payload.playsNow,  localPlayerIndex: this.localPlayerIndex,
                     isMyTurn: message.payload.playsNow === this.localPlayerIndex, guestPlayerIndex: this.guestPlayerIndex, isGuestTurn: message.payload.playsNow === this.guestPlayerIndex});
                 this.currentPlayerIndex = message.payload.playsNow;
                 if (message.payload.playsNow === this.localPlayerIndex) {
@@ -73,14 +73,14 @@ export class GameServerConnection {
                     this.guestPlayer.yourTurn(this.boardState, this.N, PLAYER_STATES[this.guestPlayerIndex]);
                 }
                 else {
-                    this.ui.toggleBadge(false);                
+                    this.ui.toggleBadge(false);
                     this.board.hidePreview();
                 }
                 break;
             }
 
             case "move": {
-                await this.boardAnimation;  
+                await this.boardAnimation;
                 this.board.hidePreview();
                 this.board.placeMoveMesh(message.payload.position, message.payload.player, false);
                 this.boardState[message.payload.position.x][message.payload.position.y][message.payload.position.z] = message.payload.player;
@@ -106,7 +106,7 @@ export class GameServerConnection {
 
 			case "game-state": {
     			const state = message.payload;
-				
+
 				this.boardState = state.boardState;
     			this.playerNames = state.playerNames;
     			this.localPlayerIndex = state.localPlayerIndex;
@@ -116,11 +116,11 @@ export class GameServerConnection {
     			this.gameData = state.gameData;
                 this.gameID = this.gameData.gameID;
 				setGameData(this.gameData);
-				console.log("GameData:", this.gameData);
+				//console.log("GameData:", this.gameData);
 
     			// restore board and player badges
     			this.renderBoard();
-                this.ui.playerBadges(this.localPlayerIndex, this.playerNames[this.localPlayerIndex], this.playerNames[this.otherPlayerIndex]);                
+                this.ui.playerBadges(this.localPlayerIndex, this.playerNames[this.localPlayerIndex], this.playerNames[this.otherPlayerIndex]);
 
 
 				// restore end of game
@@ -128,7 +128,7 @@ export class GameServerConnection {
 					this.restoreEnd();
 					break;
 				}
-			
+
     			// Restore whose turn it is
     			this.restoreTurn();
 				break;
@@ -136,7 +136,7 @@ export class GameServerConnection {
 
 
             default:
-                console.log(`Unknown message: ${message}`);
+                //console.log(`Unknown message: ${message}`);
         }
     }
 
@@ -146,7 +146,7 @@ export class GameServerConnection {
     			    for (let y = 0; y < this.N; y++) {
     			        for (let z = 0; z < this.N; z++) {
     			            const player = this.boardState[x][y][z];
-						
+
     			            if (player !== CellState.Empty) {
     			                this.board.placeMoveMesh(
     			                    { x, y, z },

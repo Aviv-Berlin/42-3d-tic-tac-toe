@@ -54,7 +54,7 @@ export function initGame(match: Match, sockets: Set<PlayerConnection>) {
 	  endMessage: null
    	 };
 
-  	console.log("[InitGame] GameData:", gameData);
+  	//console.log("[InitGame] GameData:", gameData);
 
     // create GameState
 	const game = new GameState(gameData, match.requiredPlayers);
@@ -206,9 +206,9 @@ export function CancelGame(message: CancelGameMessage, socket: WebSocket) {
 	}
 
 	// Host cancels
-	console.log(
-		`[WR/CancelGame] Host ${match.host} canceled match ${matchId}.`
-	);
+	// console.log(
+	// 	`[WR/CancelGame] Host ${match.host} canceled match ${matchId}.`
+	// );
 
 	if (match.players.length < match.requiredPlayers) {
 		broadcast("lobby-update", {
@@ -245,11 +245,11 @@ export function handlePlayerLeave(matchId: string, disconnectedPlayer: PlayerCon
 	if (!sockets || !disconnectedPlayer || !match) return;
 
 	sockets.delete(disconnectedPlayer);
-	console.log(`[WR/PlayerLeave] Player ${disconnectedPlayer.username} left match ${matchId}`);
+	//console.log(`[WR/PlayerLeave] Player ${disconnectedPlayer.username} left match ${matchId}`);
 
 	// Host leaves before game started, remove match and notify lobby
 	if (match && disconnectedPlayer.username === match.host && match.status !== "started") {
-		console.log(`[WR/PlayerLeave] Host ${match.host} disconnected. Canceling match ${matchId}.`);
+		//console.log(`[WR/PlayerLeave] Host ${match.host} disconnected. Canceling match ${matchId}.`);
 		broadcast("lobby-update", { type: "removed", match });
 		match.status = "canceled";
 		broadcastMatch(matchId, {
@@ -286,14 +286,14 @@ export function handlePlayerLeave(matchId: string, disconnectedPlayer: PlayerCon
 					players: match.players,
 					status: match.status
 			});
-			console.log(`[WR/PlayerLeave] Match ${matchId} is available again.`);
+			//console.log(`[WR/PlayerLeave] Match ${matchId} is available again.`);
 		}
 		else {
 			broadcast("lobby-update", { type: "updated", match });
 		}
 
 		if (sockets.size === 0) {
-			console.log(`[WR/PlayerLeave] All players disconnected from match ${matchId}. Cleaning up.`);
+			//console.log(`[WR/PlayerLeave] All players disconnected from match ${matchId}. Cleaning up.`);
 			lobbyMatches.delete(matchId);
 			matchSockets.delete(matchId);
 			matches.delete(matchId);

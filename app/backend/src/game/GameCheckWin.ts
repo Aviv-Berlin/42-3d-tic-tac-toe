@@ -3,10 +3,8 @@ import { GridPosition, CellState, points } from "../../../shared/game/Types.js"
 
 function checkForward(boardState: CellState[][][], startPos: GridPosition, player: CellState, vec: GridPosition): GridPosition[] {
 	const positions: GridPosition[] = [];
-	//let count: number = 0;
 	let checkPos: GridPosition = addGP(startPos, vec);
 	while (boardState[checkPos.x]?.[checkPos.y]?.[checkPos.z] === player) {
-		//count++;
 		positions.push(checkPos);
 		checkPos = addGP(checkPos, vec);
 	}

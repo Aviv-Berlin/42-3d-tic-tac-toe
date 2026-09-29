@@ -142,22 +142,6 @@ export async function getUserScores(id: number) {
 	.from(rankedUsers)
 	.where(eq(rankedUsers.id, id));
 
-	// query(`
-	// 	SELECT *
-	// 	FROM (
-	// 		SELECT
-	// 			id,
-	// 			RANK() OVER (ORDER BY full_score DESC) AS full_rank,
-	// 			full_score,
-	// 			RANK() OVER (ORDER BY online_score DESC) AS online_rank,
-	// 			online_score,
-	// 			COUNT(*) OVER () AS total_users
-	// 		FROM users
-	// 		WHERE id NOT IN (1, 2, 3)
-	// 	) ranked_users
-	// 	WHERE id = $1;
-	// `, [id]);
-
 	const data = {
 		id: Number(result[0].id),
 		full_rank: Number(result[0].fullRank),

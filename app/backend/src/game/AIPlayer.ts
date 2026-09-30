@@ -44,7 +44,7 @@ export class AiPlayer {
             // Handle game ending if the AI needs to do something
            		break;
             default:
-                console.log(`Unknown message: ${message}`);
+                //console.log(`Unknown message: ${message}`);
         }
     }
 
@@ -136,7 +136,7 @@ export class AiPlayer {
             if (opponentScore.score > bestOpponentScore)
                 bestOpponentScore = opponentScore.score;
         }
-        console.log("myScore=", myScore, ", emptyScore", emptyScore, ", opponent", bestOpponentScore, ", ", pos.x, ",", pos.y, ",", pos.z);
+        //console.log("myScore=", myScore, ", emptyScore", emptyScore, ", opponent", bestOpponentScore, ", ", pos.x, ",", pos.y, ",", pos.z);
         const finalScore = Math.max(myScore.score, emptyScore.score);
         return { score: finalScore, winsGame: myScore.isWinner, blocksWin};
     }

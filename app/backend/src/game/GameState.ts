@@ -45,23 +45,23 @@ export class GameState {
 
     public async startGame(): Promise<void> {
         if (this.gameData.gameStart > 0){
-			console.log("[startGame] game already started")
+			//console.log("[startGame] game already started")
             return ;
 		}
         if (this.players.length < this.nPlayers) {
-            console.log(`[startGame] Still waiting for players`);
+            //console.log(`[startGame] Still waiting for players`);
             return ;
         }
         this.gameData.gameStart = Date.now();
         const msg = createGameStartMessage(this.gameData.gameID, this.playerNames, this.nPlayers, 0);
         console.log("[startGame] Sending game-start messages");
         this.disributeMessage(msg);
-        console.log("[startGame] Finished sending game-start messages");
+        //console.log("[startGame] Finished sending game-start messages");
 
 
         if (this.gameData.moves === null)
             this.gameData.moves = [];
-        console.log(`[startGame] handing yourTurn to player`);
+        //console.log(`[startGame] handing yourTurn to player`);
         this.currentPlayerIndex = Math.floor(Math.random() * this.players.length);
         this.disributeMessage(CreateTurnMessage(this.gameData.gameID, this.currentPlayerIndex));
 	}
@@ -92,7 +92,7 @@ export class GameState {
         const winningPositions = checkWin(this.boardState, pos, playerState, this.N);
         if (winningPositions) {
             this.finishGame(this.currentPlayerIndex, winningPositions);
-            console.log(`game won!`);
+            //console.log(`game won!`);
             return true;
         }
         if (this.moveCounter >= this.N * this.N * this.N) {
@@ -239,7 +239,7 @@ export class GameState {
         for (let i = 0; i < this.players.length; i++) {
             const player = this.players[i];
             if (player.type === "remote" && player.socket === ws) {
-                console.log("player quit game");
+                //console.log("player quit game");
             }
         }
     }

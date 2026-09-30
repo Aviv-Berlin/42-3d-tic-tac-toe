@@ -45,7 +45,7 @@ export async function lobby(request: Request, response: Response){
 
 	// Add this client to the set
 	clients.add(response);
-	console.log(`[LOBBY] client connected (current matches: ${lobbyMatches.size} / total clients: ${clients.size})`);
+	//console.log(`[LOBBY] client connected (current matches: ${lobbyMatches.size} / total clients: ${clients.size})`);
 
 	sendEvent(response, 'lobby-update', {
 		type: "initial",
@@ -55,7 +55,7 @@ export async function lobby(request: Request, response: Response){
 	// Handle client disconnect
 	request.on('close', () => {
 		clients.delete(response);
-		console.log(`[LOBBY] client disconnected (current matches: ${lobbyMatches.size} / total clients: ${clients.size})`);
+		//console.log(`[LOBBY] client disconnected (current matches: ${lobbyMatches.size} / total clients: ${clients.size})`);
 	});
 }
 
@@ -94,12 +94,12 @@ export async function createMatch(request: Request, response: Response) {
 	const gameHost = request.userData.username;
 	const existingMatch = Array.from(lobbyMatches.values()).find(match => match.host === gameHost);
 	if (existingMatch) {
-		console.log(`[createMatch] Host ${gameHost} already has a match.`);
+		//console.log(`[createMatch] Host ${gameHost} already has a match.`);
 		return response.status(400).json({
 			error: "You already have a hosted match"
 		});
 	}
-	console.log('[createMatch] match created by host:', gameHost);
+	//console.log('[createMatch] match created by host:', gameHost);
 
 	const matchId = crypto.randomUUID(); // Generate a unique match ID
 	const newMatch: Match = {
@@ -139,7 +139,7 @@ export async function createLocalMatch(request: Request, response: Response) {
 		});
 	}
 	const gameHost = request.userData.username;
-	console.log('[createMatch] match created by host:', gameHost);
+	//console.log('[createMatch] match created by host:', gameHost);
 
 	const matchId = crypto.randomUUID(); // Generate a unique match ID
 	const newMatch: Match = {
@@ -201,7 +201,7 @@ export async function joinMatch(request: Request, response: Response) {
 
 	// Add player to the match
 	match.players.push(gamePlayer);
-	console.log(`[joinMatch] Player ${gamePlayer} joined match ${body.matchId} (host: ${match?.host})`);
+	//console.log(`[joinMatch] Player ${gamePlayer} joined match ${body.matchId} (host: ${match?.host})`);
 	broadcastMatch(match.id, {
 		type: "match-state",
 		host: match.host,
@@ -221,7 +221,7 @@ export async function joinMatch(request: Request, response: Response) {
 			match: match
 		});
 		lobbyMatches.delete(match.id);
-		console.log('[joinMatch] match is full - removed from lobby');
+		//console.log('[joinMatch] match is full - removed from lobby');
 	}
 	else {
 		broadcast('lobby-update', {

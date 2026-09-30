@@ -23,9 +23,9 @@ const Profile = () => {
       setGames(historyResponse.data);
       setRankData(rankResponse.data);
       setStats(statsResponse.data);
-      console.log("Retrieved stats");
+      //console.log("Retrieved stats");
     } catch (err) {
-      console.log(err);
+      //console.log(err);
     }
   };
 

@@ -24,7 +24,7 @@ const dbConfig = {
 
 const pool = new Pool(dbConfig);
 
-const dbUrl = `postgres://${dbConfig.user}:${dbConfig.password}@${dbConfig.host}:${dbConfig.port}/${dbConfig.database}`;
+export const dbUrl = `postgres://${dbConfig.user}:${dbConfig.password}@${dbConfig.host}:${dbConfig.port}/${dbConfig.database}`;
 
 export const db = drizzle(dbUrl!);
 

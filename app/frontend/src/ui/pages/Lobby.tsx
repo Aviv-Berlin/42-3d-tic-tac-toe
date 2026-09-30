@@ -18,7 +18,7 @@ const Lobby = () => {
   const joinMatch = async (matchId: string) => {
     try {
       const response = await gameService.joinMatch(matchId);
-    	console.log("Joined match:", response.data.match);
+    	//console.log("Joined match:", response.data.match);
     	navigate(`/waiting/${response.data.match.id}`);
     } catch (err) {
       setErrorMessage(getErrorMessage(err));

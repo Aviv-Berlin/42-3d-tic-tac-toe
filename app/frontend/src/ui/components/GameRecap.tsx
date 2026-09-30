@@ -25,7 +25,7 @@ const GameRecap = ( { gameHistory }: GameRecapProps) => {
         level = "hard";
         break;
       default:
-        console.log("ai difficulty couldn't be found");
+        //console.log("ai difficulty couldn't be found");
     }
     if (level)
       opponent = `ai (${level})`

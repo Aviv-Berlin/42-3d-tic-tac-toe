@@ -30,7 +30,7 @@ async function calculateOnlineScore(game: GameData, p1ID: number, p2ID: number, 
 			score = score - (scoreBonus / 2);
 	}
 	if (winnerId !== p1ID && winnerId !== p2ID) {
-		console.log('No winner - no score')
+		//console.log('No winner - no score')
 		score = 0;
 	}
 	// console.log(`p1Score: ${p1Score}, p2Score: ${p2Score}, scoreBonus: ${scoreBonus}, score: ${score}`);
@@ -89,7 +89,7 @@ export async function createMatchEntry(game: GameData) {
 	}
 	updateUserScores(p1id, p1score, online);
 	updateUserScores(p2id, p2score, online);
-	console.log(`match added to database`);
+	//console.log(`match added to database`);
 	return result[0].id;
 }
 

@@ -27,7 +27,7 @@ const Register = () => {
     e.preventDefault();
     setSubmit(true);
     if (!validateForm(form)) {
-      console.log("invalid form");
+      //console.log("invalid form");
       return;
     }
     try {

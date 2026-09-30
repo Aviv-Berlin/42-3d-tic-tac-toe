@@ -4,7 +4,7 @@ import meService from "../../services/me"
 import { useSetUsername, useUsername } from '../../store/username';
 
 const ProtectedRoute = () => {
-  
+
   const navigate = useNavigate();
   const setUsername = useSetUsername();
   const currentDisplayName = useUsername();
@@ -20,7 +20,7 @@ const ProtectedRoute = () => {
         setRetrieved(true);
       } catch (err) {
         setRetrieved(false);
-        console.log(err);
+        //console.log(err);
         navigate("/login");
       }
     }

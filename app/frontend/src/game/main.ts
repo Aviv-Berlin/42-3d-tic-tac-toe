@@ -14,11 +14,11 @@ import { babylonRegistery } from "./BabylonRegistery";
 export async function createBabylonGame(canvas: HTMLCanvasElement, gameData: GameData, onExit: () => void) {
 
   const instanceID = crypto.randomUUID().slice(0, 8);
-  console.log(`[Babylon ${instanceID}] CREATE`);
+  //console.log(`[Babylon ${instanceID}] CREATE`);
 
   const ws = await waitForSocket();
   if (!ws) {
-	console.log("websocket missing")
+	//console.log("websocket missing")
 	return;
   }
 
@@ -32,10 +32,10 @@ export async function createBabylonGame(canvas: HTMLCanvasElement, gameData: Gam
   const ui = new GameUI(scene, onExit, materials, board, camera, true);
 
   const serverConnection = new GameServerConnection(gameData, ui, board, ws, onExit);
-  
+
   const handleGameMessage = (event: MessageEvent) => {
     const data: WsMessage = JSON.parse(event.data);
-    console.log(`[Babylon ${instanceID}] Received message from server:`, data);
+    //console.log(`[Babylon ${instanceID}] Received message from server:`, data);
     serverConnection.handleMessage(data);
   }
   ws.addEventListener("message", handleGameMessage)
@@ -68,10 +68,10 @@ export async function createBabylonGame(canvas: HTMLCanvasElement, gameData: Gam
   const cleanup = () => {
     if (disposed)
       return;
-    console.log(`[Babylon ${instanceID}] CLEANUP`);
+    //console.log(`[Babylon ${instanceID}] CLEANUP`);
     disposed = true;
 
-    console.log("Cleaning up Babylon game");
+    //console.log("Cleaning up Babylon game");
 
     input.unregisterEvents();
     resizeObserver.disconnect();

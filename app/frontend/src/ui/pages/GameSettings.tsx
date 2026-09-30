@@ -46,7 +46,7 @@ const GameSettings = () => {
       const response = await gameService.createLocal(gameMode, level, size);
       const match = response.data.match;
 
-      console.log("match created:", match);
+      //console.log("match created:", match);
 
       const socket = openSocket(match.id, username);
 
@@ -54,7 +54,7 @@ const GameSettings = () => {
         const data = JSON.parse(event.data);
 
         if (data.type === "game-init") {
-          console.log("game-init msg frontend received");
+          //console.log("game-init msg frontend received");
 
           setGameData(data.gameData);
 
@@ -84,7 +84,7 @@ const GameSettings = () => {
   }
       try {
         const response = await gameService.createOnline(size);
-        console.log("Created match:", response.data.match);
+        //console.log("Created match:", response.data.match);
         navigate(`/waiting/${response.data.match.id}`);
       } catch (err) {
         setErrorMessage(getErrorMessage(err));

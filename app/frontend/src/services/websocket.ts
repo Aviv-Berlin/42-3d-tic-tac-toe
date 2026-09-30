@@ -13,7 +13,7 @@ function createSocketCreatedPromise(): Promise<WebSocket> {
 }
 
 export function openSocket(matchId: string, username: string): WebSocket {
-	console.log(`[openSocket] Username: ${username}, matchId: ${matchId}`);
+	//console.log(`[openSocket] Username: ${username}, matchId: ${matchId}`);
 
 	if (
 		socket &&
@@ -40,7 +40,7 @@ export function openSocket(matchId: string, username: string): WebSocket {
 	currentMatchId = matchId;
 
 	socket.onopen = () => {
-		console.log("[WS/open] WebSocket connected");
+		//console.log("[WS/open] WebSocket connected");
 	};
 
 	socket.onerror = (error) => {
@@ -51,12 +51,12 @@ export function openSocket(matchId: string, username: string): WebSocket {
 		const data = JSON.parse(event.data);
 
 		if (data.type === "error") {
-			console.log("[WS/error message]", data.message);
+			//console.log("[WS/error message]", data.message);
 		}
 	};
 
 	socket.onclose = () => {
-		console.log("[WS/close] Websocket disconnected");
+		//console.log("[WS/close] Websocket disconnected");
 
 		socket = null;
 		currentMatchId = null;

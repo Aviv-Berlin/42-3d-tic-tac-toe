@@ -7,7 +7,7 @@ import { useGameData } from "../../store/gameData"
 import { createStartGameMessage } from '../../../../shared/messages';
 
 const Game = () => {
-  console.log("[GAME] Game page called ...");
+  //console.log("[GAME] Game page called ...");
   const [searchParams] = useSearchParams();
   const navigate = useNavigate();
 
@@ -17,7 +17,7 @@ const Game = () => {
 	 useEffect(() => {
 
         if (!gameData) return;
-        	console.log("[GAME] Send startGameMessage, Game:", gameData);
+        	//console.log("[GAME] Send startGameMessage, Game:", gameData);
         	sendMessage(createStartGameMessage(gameData));
     }, [gameData, navigate]);
 
@@ -32,7 +32,7 @@ const Game = () => {
 				);
 
   if (!isValid) {
-    console.log("invalid search parameters");
+    //console.log("invalid search parameters");
   }
 
 

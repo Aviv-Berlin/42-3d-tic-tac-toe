@@ -46,8 +46,6 @@ sudo psql -U ttt_user -d ttt_db < seed.sql
 Create '.env' file at 'app/backend/' and set values for all variables.
 
 ```bash
-# TOKEN
-SECRET=
 
 # SERVER
 PORT=3001

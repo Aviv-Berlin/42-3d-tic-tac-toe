@@ -2,6 +2,11 @@ import userQueries from "../database/userQueries.js";
 import { type Request, type Response } from 'express';
 import bcrypt from 'bcrypt';
 import jwt from 'jsonwebtoken';
+import path from 'node:path';
+import { readFile } from 'node:fs/promises'; // API for async file operations in Node.js
+
+const filePath = process.env.NODE_ENV === "prod" ? '/run/secrets/jwt_secret' : path.join(import.meta.dirname, '../../../secrets/jwt_secret');
+const secret = await readFile(filePath, 'utf8');
 
 // Register a new user
 export async function register(request: Request, response: Response) {
@@ -92,7 +97,7 @@ export async function login(request: Request, response: Response) {
 		const userIDforToken = {
 			id: userID
 		};
-		const token = jwt.sign(userIDforToken, process.env.SECRET as string);
+		const token = jwt.sign(userIDforToken, secret as string);
 
 		return response.cookie('token', token).status(200).send({username});
 

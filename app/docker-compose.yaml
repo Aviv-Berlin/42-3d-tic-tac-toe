@@ -15,6 +15,7 @@ services:
       POSTGRES_PASSWORD_FILE: /run/secrets/db_password
     secrets:
       - db_password
+      - jwt_secret
     restart: always
   database:
     build: backend/postgres
@@ -36,6 +37,8 @@ secrets:
       file: ./secrets/ttt_nginx.key
     ssl_crt:
       file: ./secrets/ttt_nginx.crt
+    jwt_secret:
+      file: ./secrets/jwt-secret
 
 volumes:
   postgres_volume:

@@ -14,3 +14,4 @@ const useUsernameStore = create<UsernameStore>()(
 
 export const useUsername = () => useUsernameStore((state) => state.username)
 export const useSetUsername = () => useUsernameStore((state) => state.setUsername)
+export const unsetUsername = () => useUsernameStore.setState({username: ''})

@@ -1,5 +1,4 @@
 import axios from 'axios'
-import { useSetUsername } from '../store/username';
 
 interface RegisterForm {
   username: string;
@@ -29,16 +28,7 @@ const login = (form: LoginForm) => {
 }
 
 const logout = () => {
- // const setUsername = useSetUsername();
   const url = "/v1/auth/logout";
- /* 
-  try {
-	console.log("Trying setUsername") 
-  	setUsername('nothing');
-  } catch (err) {
-      console.log(err);
-  }
-	  */
   return axios.post(url, {});
 }
 

@@ -48,10 +48,10 @@ const Register = () => {
         <form className="flex flex-col" onSubmit={handleSubmit}>
           <Input name="username" value={form.username} handler={handleChange} submit={submit}
             validate={() => form.username.length <= 10 && !form.username.includes("@")} message="Username must be 10 characters or less and cannot contain @" />
-          <Input name="email" value={form.email} handler={handleChange}
-            validate={() => form.email.includes('@')} message="Invalid email" submit={submit} />
-          <Input name="password" value={form.password} handler={handleChange}
-            validate={() => form.password.length >= 8} message="Passwords must be at least 8 characters long" submit={submit}/>
+          <Input name="email" value={form.email} handler={handleChange} submit={submit}
+            validate={() => form.email.length <= 64 && form.email.includes("@")} message="Email must not exceed 64 characters and must contain @" />
+          <Input name="password" value={form.password} handler={handleChange} submit={submit}
+            validate={() => form.password.length >= 8 && form.password.length <= 16} message="Passwords must be 8-16 characters long" />
           <Input name="confirmPassword" value={form.confirmPassword} handler={handleChange}
             validate={() => form.password === form.confirmPassword} message="Passwords don't match" submit={submit}/>
           <SubmitButton>Sign up</SubmitButton>

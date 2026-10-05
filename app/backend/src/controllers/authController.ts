@@ -18,7 +18,21 @@ export async function register(request: Request, response: Response) {
       error: 'username too large'
     });
   }
-
+  if (body.email.length > 64) {
+    return response.status(400).json({
+      error: 'email too long'
+    });
+  }
+  if (body.password.length > 16) {
+    return response.status(400).json({
+      error: 'password too long'
+    });
+  }
+  if (!(body.email.includes("@"))){
+	return response.status(400).json({
+      error: 'invalid email'
+    });
+  }
   if (body.username.includes("@")){
 	return response.status(400).json({
       error: 'username contains "@"'

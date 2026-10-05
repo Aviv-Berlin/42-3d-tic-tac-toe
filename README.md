@@ -43,7 +43,7 @@ This first time you run this script, you will be prompted to enter information r
 /secrets/ttt_nginx.key
 ```
 
-Other than creating ssl certificates, the script installs npm dependencies, sets up default .env files and `postgres-passwd` secret, builds the project using npm build, and runs docker compose to containerize and run the project.
+Other than creating ssl certificates, the script installs npm dependencies, sets up default .env files and secrets, builds the project using npm build, and runs docker compose to containerize and run the project.
 
 **Requirements**
 - Node.js

@@ -5,8 +5,6 @@
 env_file="app/backend/.env"
 if [[ ! -s $env_file ]]; then
 	echo "Creating $env_file"
-	secret=$(openssl rand -base64 16)
-	echo "SECRET=$secret" >> "$env_file"
 	echo "PORT=3001" >> "$env_file"
 	echo "DB_PORT=5432" >> "$env_file"
 	echo "DB_DEV_HOST=localhost" >> "$env_file"
@@ -24,9 +22,14 @@ if [[ ! -s $postgres_env_file ]]; then
 fi
 
 # secrets
-secret_file="app/secrets/postgres-passwd"
-if [[ ! -s $secret_file ]]; then
-    echo "Creating $secret_file"
-	postgres_passwd=$(openssl rand -hex 16)
-	echo -n "$postgres_passwd" > "$secret_file"
+postgres_pw_file="app/secrets/postgres-passwd"
+if [[ ! -s $postgres_pw_file ]]; then
+    echo "Creating $postgres_pw_file"
+	$(openssl rand -hex 16 > $postgres_pw_file)
+fi
+
+jwt_secret_file="app/secrets/jwt-secret"
+if [[ ! -s $jwt_secret_file ]]; then
+    echo "Creating $jwt_secret_file"
+	$(openssl rand -base64 16 > $jwt_secret_file)
 fi

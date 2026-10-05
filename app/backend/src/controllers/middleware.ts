@@ -1,8 +1,12 @@
 import { type Request, type Response, type NextFunction } from 'express';
 import userQueries from "../database/userQueries.js";
 import jwt from 'jsonwebtoken';
+import path from 'node:path';
+import { readFile } from 'node:fs/promises'; // API for async file operations in Node.js
 
-const secret = process.env.SECRET
+const filePath = process.env.NODE_ENV === "prod" ? '/run/secrets/jwt_secret' : path.join(import.meta.dirname, '../../../secrets/jwt_secret');
+const secret = await readFile(filePath, 'utf8');
+
 if (!secret){
 	throw new Error("Missing SECRET");
 }

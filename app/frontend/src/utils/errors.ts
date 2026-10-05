@@ -20,6 +20,16 @@ export function getErrorMessage(err: unknown): string {
       return "This game is not ready. Pleasy try again later.";
     } else if (err.response?.data?.error === "match is full") {
       return "This game is currently full.";
+    } else if (err.response?.data?.error === "username too large") {
+      return "Username is too long.";
+    } else if (err.response?.data?.error === "password too long") {
+      return "Password is too long.";
+    } else if (err.response?.data?.error === "invalid email") {
+      return "Email is invalid.";
+    } else if (err.response?.data?.error === "email too long") {
+      return "Email is too long.";
+    } else if (err.response?.data?.error === 'username contains "@"') {
+      return "Username cannot contain @.";
     } else {
       return "Server error. Please try again later.";
     }

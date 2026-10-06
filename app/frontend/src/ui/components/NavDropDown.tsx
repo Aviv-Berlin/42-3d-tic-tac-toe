@@ -20,8 +20,8 @@ const NavDropDown = () => {
     try {
       await auth.logout();
 	    closeSocket();
-      unsetUsername();
-      navigate('/login');
+      	unsetUsername();
+      	navigate('/login');
     } catch (err) {
       console.log(err);
     }

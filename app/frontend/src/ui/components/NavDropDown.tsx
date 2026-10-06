@@ -5,6 +5,7 @@ import DropDownButton from './DropDownButton'
 import { useUsername } from '../../store/username'
 import auth from '../../services/auth'
 import { closeSocket } from '../../services/websocket';
+import { unsetUsername } from '../../store/username';
 
 const NavDropDown = () => {
   const [open, setOpen] = useState(false);
@@ -18,10 +19,11 @@ const NavDropDown = () => {
   const handleLogOut = async () => {
     try {
       await auth.logout();
-	  closeSocket();
-      navigate('/login');
+	    closeSocket();
+      	unsetUsername();
+      	navigate('/login');
     } catch (err) {
-      //console.log(err);
+      console.log(err);
     }
   }
 

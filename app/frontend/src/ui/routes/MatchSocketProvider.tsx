@@ -11,6 +11,7 @@ const MatchSocketProvider = () => {
 	const [message, setMessage] = useState(null);
 
 	useEffect(() => {
+		setMessage(null);
 		const matchPath = location.pathname.match(
 			/^\/(waiting|game)\/([^/]+)$/
 		);

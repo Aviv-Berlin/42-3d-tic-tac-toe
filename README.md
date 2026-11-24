@@ -491,6 +491,6 @@ Project Manager, frontend, and DevOps developer. Built the React and Tailwind CS
 
 ### Steven Moon — @smoon
 
-Focused on backend, multiplayer, and data-layer functionality. Worked on WebSockets and backend game logic, developed SQL queries and ORM integration, and implemented the ranking and scoring system. Configured Nginx, contributed general debugging and bug fixes across the project, and created the project's logo.
+Backend developer focusing on game logic, multiplayer, and data-layer functionality. Built real-time multiplayer backend with WebSockets, supporting multiple concurrent game sessions, developed SQL queries and ORM backed API endpoints for updating user and game data, and implemented the ranking and scoring systems. Configured Nginx and handled debugging across the stack. Designed the project's logo.
 
 
